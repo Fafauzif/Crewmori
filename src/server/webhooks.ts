@@ -2,6 +2,7 @@ import { receiptSchema, type Receipt } from "./contracts";
 import { transaction } from "./db";
 import { assertService } from "./errors";
 import { fingerprint } from "./security";
+import { reconcileObservation } from "./payments";
 import { appendEvent } from "./repository";
 
 // Observation is deliberately separate from invoice allocation. A valid signature
@@ -20,6 +21,11 @@ export async function recordPaymentObservation(provider: "sandbox" | "stripe_tes
       assertService(prior.fingerprint === hash, "PROVIDER_EVENT_CONFLICT", "This provider event ID has different content.", 409);
       return { replayed: true, state: prior.state };
     }
+    // A signed event can arrive before the Checkout-create response is persisted.
+    if (request && provider === "stripe_test" && !request.provider_reference && reference && request.domain_request_id && request.currency === receipt.currency && Number(request.expected_minor) === receipt.grossMinor) {
+      await client.query("update crewmori.payment_requests set provider_reference=$2 where id=$1 and provider_reference is null", [request.id, reference]);
+      request.provider_reference = reference;
+    }
     if (!request || (provider === "stripe_test" && (!reference || request.provider_reference !== reference))) {
       await client.query("update crewmori.provider_inbox set state='quarantined' where provider=$1 and event_id=$2", [provider, receipt.eventId]);
       return { replayed: false, state: "quarantined" };
@@ -36,6 +42,7 @@ export async function recordPaymentObservation(provider: "sandbox" | "stripe_tes
     const result = await client.query("insert into crewmori.payment_observations(workspace_id,request_id,provider,event_id,provider_reference,gross_minor,fee_minor,currency,occurred_at,state) values($1,$2,$3,$4,$5,$6,$7,$8,$9,'review_required') returning id", [request.workspace_id, receipt.requestId, provider, receipt.eventId, reference, receipt.grossMinor, receipt.feeMinor, receipt.currency, receipt.occurredAt]);
     await client.query("update crewmori.provider_inbox set state='processed' where provider=$1 and event_id=$2", [provider, receipt.eventId]);
     await appendEvent(client, request.workspace_id, "receipt.observed", "A verified receipt observation is awaiting allocation review.", [{ table: "payment_observations", id: result.rows[0].id }]);
-    return { replayed: false, state: "review_required", observationId: result.rows[0].id };
+    const state = await reconcileObservation(client, result.rows[0].id);
+    return { replayed: false, state, observationId: result.rows[0].id };
   });
 }

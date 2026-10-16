@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { requireConfiguration, runtimeConfig } from "../config";
 import { assertService } from "../errors";
-import { providerJson, type Fetch } from "./http";
+import { providerBytes, providerJson, type Fetch } from "./http";
 
 export const googleScopes = {
   gmail: "https://www.googleapis.com/auth/gmail.compose",
@@ -51,6 +51,10 @@ export class GoogleAdapter {
     this.require("gmail");
     return this.json("https://gmail.googleapis.com/gmail/v1/users/me/drafts/send", { id: z.string().min(1).max(200).parse(draftId) }, z.object({ id: z.string(), threadId: z.string().optional() }), true);
   }
+  async sendMessage(input: z.infer<typeof emailDraftSchema>) {
+    this.require("gmail");
+    return this.json("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", { raw: mimeMessage(input) }, z.object({ id: z.string(), threadId: z.string().optional() }), true);
+  }
   async freeBusy(timeMin: string, timeMax: string) {
     this.require("calendar_read");
     z.iso.datetime({ offset: true }).parse(timeMin); z.iso.datetime({ offset: true }).parse(timeMax);
@@ -62,6 +66,18 @@ export class GoogleAdapter {
     const value = z.object({ id: z.string().regex(/^[a-v0-9]{5,1024}$/), summary: z.string().min(1).max(200), start: z.iso.datetime({ offset: true }), end: z.iso.datetime({ offset: true }), timezone: z.string().max(80), attendees: z.array(z.email()).max(20) }).strict().parse(input);
     assertService(Date.parse(value.end) > Date.parse(value.start), "INVALID_DATES", "End must follow start.");
     return this.json("https://www.googleapis.com/calendar/v3/calendars/primary/events?sendUpdates=all", { id: value.id, summary: value.summary, start: { dateTime: value.start, timeZone: value.timezone }, end: { dateTime: value.end, timeZone: value.timezone }, attendees: value.attendees.map((email) => ({ email })) }, z.object({ id: z.string(), htmlLink: z.string().optional() }), true);
+  }
+  async downloadFile(id: string) {
+    this.require("drive");
+    z.string().regex(/^[A-Za-z0-9_-]{1,200}$/).parse(id);
+    const headers = { authorization: `Bearer ${this.token}` };
+    const meta = await providerJson("Google Drive", `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?fields=id,name,mimeType,size`, { headers }, z.object({ id: z.string(), name: z.string(), mimeType: z.string(), size: z.string().optional() }), { fetch: this.transport });
+    const document = meta.mimeType === "application/vnd.google-apps.document";
+    assertService(document || ["text/plain", "application/pdf", "image/png", "image/jpeg"].includes(meta.mimeType), "UNSUPPORTED_FILE", "Import a Google document, PDF, TXT, PNG, or JPEG.", 422);
+    assertService(!meta.size || Number(meta.size) <= 10_485_760, "FILE_TOO_LARGE", "Choose a file of at most 10 MiB.", 422);
+    const endpoint = document ? `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/export?mimeType=text%2Fplain` : `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?alt=media`;
+    const bytes = await providerBytes("Google Drive", endpoint, { headers }, this.transport);
+    return { bytes, name: document ? `${meta.name}.txt` : meta.name, type: document ? "text/plain" : meta.mimeType };
   }
   async listFiles() {
     this.require("drive");
