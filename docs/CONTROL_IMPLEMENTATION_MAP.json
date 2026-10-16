@@ -32130,6 +32130,20 @@
       "status": "implemented_local",
       "verification": "static presence; no individual manual-pass claim",
       "note": "Individual option in existing registered sample-scenario selector; requires explicit replacement confirmation."
+    },
+    {
+      "id": "impl.priority.compare_request_offer",
+      "label": "Compare request and offer",
+      "implementation_refs": [
+        {
+          "file": "src/views/home-team.tsx",
+          "symbol": "PriorityCard"
+        }
+      ],
+      "command": null,
+      "status": "implemented_local",
+      "verification": "Keyboard Enter opens native disclosure in the 390px rendered Home view; source terms remain unchanged.",
+      "note": "Local disclosure only; expands original request and proposed offer without committing records. Shared between Home and Team."
     }
   ]
 }

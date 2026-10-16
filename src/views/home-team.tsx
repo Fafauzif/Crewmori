@@ -5,8 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowRight,
   ArrowUpRight,
-  Clock,
-  Coins,
   FileText,
   Play,
   Pause,
@@ -208,7 +206,7 @@ export function AskBar({ onAsk }: { onAsk: (text?: string) => void }) {
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
-      <Button type="submit">
+      <Button type="submit" variant="secondary">
         {t("Delegate")}
         <ArrowRight size={16} />
       </Button>
@@ -288,7 +286,7 @@ export function PriorityCard() {
           : review
             ? "A clear offer, ready for your judgment."
             : offer.status === "draft"
-              ? "A useful draft, ready to shape."
+              ? "Your offer draft is ready."
               : `This offer is ${label(offer.status)}.`;
   const intro = accepted
     ? `Follow the saved project checklist for deposit, inputs, and delivery. ${project?.committed_start_at ? "Your agreed dates are recorded in Work." : "A start date is not committed until the prerequisites are satisfied."}`
@@ -315,47 +313,52 @@ export function PriorityCard() {
         <div className="decision-copy">
           <h2>{headline}</h2>
           <p>{intro}</p>
-          <div className="comparison">
-            <div>
-              <span className="eyebrow">{t("Original request")}</span>
-              <strong>
-                {requestedCount
-                  ? requestedCount + " requested assets"
-                  : a<string>(request?.deliverables).join(", ") ||
-                    "Scope to clarify"}
-                {request?.budget
-                  ? " · " + money(request.budget)
-                  : " · Budget to clarify"}
-              </strong>
-              <p>
-                {request?.delivery_business_days
-                  ? n(request.delivery_business_days) +
-                    " business days requested."
-                  : "Requested timing remains open."}
-              </p>
+          <details className="decision-evidence">
+            <summary>{t("Compare request and offer")}</summary>
+            <div className="comparison">
+              <div>
+                <span className="eyebrow">{t("Original request")}</span>
+                <strong>
+                  {requestedCount
+                    ? requestedCount + " requested assets"
+                    : a<string>(request?.deliverables).join(", ") ||
+                      "Scope to clarify"}
+                  {request?.budget
+                    ? " · " + money(request.budget)
+                    : " · Budget to clarify"}
+                </strong>
+                <p>
+                  {request?.delivery_business_days
+                    ? n(request.delivery_business_days) +
+                      " business days requested."
+                    : "Requested timing remains open."}
+                </p>
+              </div>
+              <div>
+                <span className="eyebrow">{t("Proposed offer")}</span>
+                <strong>{s(v.title)}</strong>
+                <p>
+                  {v.price ? money(v.price) : "Price to confirm"}
+                  {terms.delivery_business_days
+                    ? " · " + n(terms.delivery_business_days) + " business days"
+                    : ""}
+                  {v.estimated_effort_minutes
+                    ? " · " +
+                      n(v.estimated_effort_minutes) / 60 +
+                      " estimated hours"
+                    : ""}
+                </p>
+              </div>
             </div>
-            <div>
-              <span className="eyebrow">{t("Proposed offer")}</span>
-              <strong>{s(v.title)}</strong>
-              <p>
-                {v.price ? money(v.price) : "Price to confirm"}
-                {terms.delivery_business_days
-                  ? " · " + n(terms.delivery_business_days) + " business days"
-                  : ""}
-                {v.estimated_effort_minutes
-                  ? " · " +
-                    n(v.estimated_effort_minutes) / 60 +
-                    " estimated hours"
-                  : ""}
-              </p>
-            </div>
-          </div>
+          </details>
         </div>
         <aside className="term-summary">
           <span className="eyebrow">{t("At a glance")}</span>
           <dl>
             <dt>{t("Project total")}</dt>
-            <dd>{v.price ? money(v.price) : "To confirm"}</dd>
+            <dd className="term-total">
+              {v.price ? money(v.price) : "To confirm"}
+            </dd>
             <dt>
               {t("Deposit")}
               {v.terms ? " (" + n(terms.deposit_basis_points) / 100 + "%)" : ""}
@@ -415,6 +418,10 @@ export function Home({ onAsk }: { onAsk: (text?: string) => void }) {
         saved.findIndex((x) => x.role_id === item.role_id) === index,
     )
     .slice(0, 3);
+  const visibleUpdates = updates.filter((item) => !dismissed.includes(item.id));
+  const reviewCount = rows("offers").filter((x) =>
+    ["awaiting_review", "draft"].includes(s(x.status)),
+  ).length;
   const receipts = rows("receipts"),
     accepted = rows("acceptances").length > 0,
     hasLeads = rows("opportunities").length > 0;
@@ -423,39 +430,29 @@ export function Home({ onAsk }: { onAsk: (text?: string) => void }) {
       <AskBar onAsk={onAsk} />
       <Panel className="home-hero">
         <div>
-          <div className="eyebrow">
-            ● Studio dispatch · {n(policy?.available_effort_minutes) / 60}h
-            working capacity
-          </div>
+          <div className="eyebrow">{t("Studio briefing")}</div>
           <h1>
             {t("Welcome back")}, {s(owner?.display_name, "Alya")}.
           </h1>
           <p className="intro">
             {accepted
-              ? "Your next chapter is taking shape. Here’s what needs your attention."
+              ? "Your projects are moving. Here’s what needs your attention."
               : hasLeads
                 ? "Your current requests and saved decisions are ready to pick up."
                 : "A fresh workspace, and a team ready to help you begin."}
           </p>
           <div className="hero-stats">
             <span>
-              <Clock size={13} />
-              {n(policy?.available_effort_minutes) / 60}h studio capacity
+              <strong>{n(policy?.available_effort_minutes) / 60}h</strong>{" "}
+              studio capacity
             </span>
             <span>
-              <FileText size={13} />
-              {
-                rows("offers").filter((x) =>
-                  ["awaiting_review", "draft"].includes(s(x.status)),
-                ).length
-              }{" "}
-              offers to review
+              <strong>{reviewCount}</strong>{" "}
+              {t(reviewCount === 1 ? "offer to review" : "offers to review")}
             </span>
             <span>
-              <Coins size={13} />
-              {receipts.length
-                ? `${receipts.length} recorded receipt${receipts.length > 1 ? "s" : ""}`
-                : "No deposits received"}
+              <strong>{receipts.length}</strong> recorded{" "}
+              {receipts.length === 1 ? "receipt" : "receipts"}
             </span>
           </div>
         </div>
@@ -485,44 +482,59 @@ export function Home({ onAsk }: { onAsk: (text?: string) => void }) {
         <h2>{t("While you were away")}</h2>
         <small>Saved updates from your team</small>
       </div>
-      {updates.length ? (
-        <div className="grid3">
-          {updates
-            .filter((u) => !dismissed.includes(u.id))
-            .map((u) => (
-              <article className={`update-card ${s(u.role_id)}`} key={u.id}>
-                <div className="update-head">
-                  <img src={roleAsset(s(u.role_id))} alt="" />
-                  <div>
-                    <strong>
-                      {roles.find((r) => r.id === u.role_id)?.name || "Team"}
-                    </strong>
-                    <small>{date(u.occurred_at)}</small>
-                  </div>
-                  <button
-                    style={{ marginLeft: "auto" }}
-                    aria-label={`Dismiss ${label(u.role_id)} update`}
-                    onClick={() =>
-                      command("ui.set", {
-                        values: { dismissed_updates: [...dismissed, u.id] },
-                      })
-                    }
-                  >
-                    ×
-                  </button>
+      {visibleUpdates.length ? (
+        <div className="home-updates">
+          {visibleUpdates.map((u) => (
+            <article className={`update-card ${s(u.role_id)}`} key={u.id}>
+              <div className="update-head">
+                <img src={roleAsset(s(u.role_id))} alt="" />
+                <div>
+                  <strong>
+                    {roles.find((r) => r.id === u.role_id)?.name || "Team"}
+                  </strong>
+                  <small>{date(u.occurred_at)}</small>
                 </div>
-                <h3>{label(u.kind)}</h3>
-                <p>{s(u.summary)}</p>
-                <RecordLink href={eventHref(u, state)}>
-                  Open saved update
-                </RecordLink>
-              </article>
-            ))}
+                <button
+                  style={{ marginLeft: "auto" }}
+                  aria-label={`Dismiss ${label(u.role_id)} update`}
+                  onClick={() =>
+                    command("ui.set", {
+                      values: { dismissed_updates: [...dismissed, u.id] },
+                    })
+                  }
+                >
+                  ×
+                </button>
+              </div>
+              <h3>
+                {t(
+                  (
+                    {
+                      "offer.review_requested": "Offer ready for review",
+                      "assessment.completed": "Assessment ready",
+                      "source.recorded": "Request saved",
+                    } as Record<string, string>
+                  )[s(u.kind)] ||
+                    label(u.kind).replace(/^./, (letter) =>
+                      letter.toUpperCase(),
+                    ),
+                )}
+              </h3>
+              <p>{s(u.summary)}</p>
+              <RecordLink href={eventHref(u, state)}>
+                Open saved update
+              </RecordLink>
+            </article>
+          ))}
         </div>
       ) : (
         <Panel>
           <p className="muted">
-            Your crew’s saved updates will appear here as work progresses.
+            {dismissed.length
+              ? t("You’re all caught up. Restore dismissed updates below.")
+              : t(
+                  "Your crew’s saved updates will appear here as work progresses.",
+                )}
           </p>
         </Panel>
       )}
@@ -776,7 +788,10 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
               className="studio-bubble"
               style={{ left: "49%", top: "25%", borderColor: "var(--scout)" }}
             >
-              <div className="eyebrow">Assessment saved</div>
+              <div className="eyebrow">
+                Saved ·{" "}
+                {date(scoutFinding.updated_at || scoutFinding.created_at)}
+              </div>
               <p title={s(scoutFinding.summary)}>
                 “{s(scoutFinding.summary).slice(0, 95)}
                 {s(scoutFinding.summary).length > 95 ? "…" : ""}”
@@ -792,7 +807,12 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
                 borderColor: "var(--operations)",
               }}
             >
-              <div className="eyebrow">Scope considered</div>
+              <div className="eyebrow">
+                Saved ·{" "}
+                {date(
+                  operationsFinding.updated_at || operationsFinding.created_at,
+                )}
+              </div>
               <p title={s(operationsFinding.summary)}>
                 “{s(operationsFinding.summary).slice(0, 95)}
                 {s(operationsFinding.summary).length > 95 ? "…" : ""}”
@@ -802,7 +822,8 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
           {roles.map((r) => (
             <button
               key={r.id}
-              className="studio-node"
+              className={`studio-node ${agent === r.id ? "selected" : ""}`}
+              aria-pressed={agent === r.id}
               style={
                 {
                   left: r.x + "%",
@@ -854,7 +875,8 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
           {roles.map((r) => (
             <button
               key={r.id}
-              className="team-list-item"
+              className={`team-list-item ${agent === r.id ? "selected" : ""}`}
+              aria-pressed={agent === r.id}
               onClick={() => select(r.id)}
             >
               <img src={roleAsset(r.id)} alt="" />

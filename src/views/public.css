@@ -72,9 +72,9 @@
   max-width: 560px;
 }
 .public-lead {
-  font-family: Newsreader, Georgia, serif;
-  font-size: 26px;
-  line-height: 1.4;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 18px;
+  line-height: 1.65;
   color: #566159;
 }
 .public-eyebrow {
@@ -124,35 +124,52 @@
 .public-value-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  gap: 40px;
+  padding: 32px 0;
+  border-top: 1px solid var(--border);
+}
+.public-benefit {
+  min-width: 0;
 }
 .public-value-grid h2 {
   font-family: Newsreader, Georgia, serif;
   font-size: 28px;
-  line-height: 1.15;
+  line-height: 1.2;
   font-weight: 400;
+  margin: 12px 0 16px;
+  max-width: 20ch;
+  text-wrap: balance;
+}
+.public-benefit p {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.65;
 }
 .public-step {
-  color: #566159;
+  color: var(--forest);
   font-size: 12px;
+  font-variant-numeric: tabular-nums;
 }
 .public-profile-invite {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 32px;
-  margin: 64px 0 16px;
-  padding: 40px;
-  background: #e5efe7;
-  border-radius: 24px;
+  margin: 24px 0 0;
+  padding: 40px 0 24px;
+  border-top: 1px solid var(--border);
 }
 .public-profile-invite h2 {
   font-family: Newsreader, Georgia, serif;
   font-size: 36px;
   font-weight: 400;
+  margin: 12px 0 16px;
 }
 .public-profile-invite p {
-  max-width: 640px;
+  max-width: 60ch;
+}
+.public-profile-invite > .btn {
+  flex-shrink: 0;
 }
 .public-small {
   font-size: 12px;
@@ -728,10 +745,7 @@
     height: 48px;
   }
   .public-value-grid {
-    gap: 16px;
-  }
-  .public-value-grid .panel {
-    padding: 24px;
+    gap: 24px;
   }
   .public-footer {
     margin-left: 32px;
@@ -784,7 +798,7 @@
     line-height: 1.05;
   }
   .public-lead {
-    font-size: 22px;
+    font-size: 18px;
   }
   .public-hero-art {
     min-height: 250px;
@@ -811,10 +825,21 @@
   .public-portfolio {
     grid-template-columns: 1fr;
   }
+  .public-value-grid {
+    gap: 24px;
+    padding: 24px 0;
+  }
+  .public-benefit + .public-benefit {
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .public-value-grid h2 {
+    max-width: none;
+  }
   .public-profile-invite {
     display: block;
-    margin-top: 32px;
-    padding: 24px;
+    margin-top: 8px;
+    padding: 32px 0 16px;
   }
   .public-profile-invite h2 {
     font-size: 30px;

@@ -1,8 +1,8 @@
 {
   "name": "Crewmori active product overlay",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "date": "2026-10-16",
-  "status": "Implementation contract; no frontend authored in this pack run",
+  "status": "Implemented frontend design contract; presentation refinement verified in TASTE_REFINEMENT.md",
   "sourcePrecedence": {
     "behavior": "spec/DECISIONS.md and flow/data contracts",
     "composition": "first two approved Stitch screens",
@@ -456,5 +456,16 @@
     "suppliedCanvasIncludesClearSpace": true,
     "allowRoleRecolor": false,
     "allowLogoBandAnimation": false
+  },
+  "presentationRefinement": {
+    "composerRadius": 12,
+    "composerActionRadius": 8,
+    "majorPanelRadius": 24,
+    "heroFacts": "unboxed 12px metadata",
+    "scoutSurface": "24% scout tint mixed with surface; runtime --scout-surface",
+    "decisionComparison": "native details/summary, collapsed initially",
+    "updates": "single paper surface, internal dividers, functional Inter headings",
+    "lists": "ruled rows inside one shared surface",
+    "studio": "original six characters, larger map art, role name and written state; job descriptions in compact view and inspector"
   }
 }

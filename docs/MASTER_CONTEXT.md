@@ -1,6 +1,6 @@
 # Crewmori — current master implementation context
 
-Version 2.1 · 16 October 2026 · Frontend source handoff
+Version 2.2 · 16 October 2026 · Frontend source handoff
 
 This is the active continuation context for the implemented frontend. The original `Crewmori_Master_Implementation_Pack` is retained as specification and provenance, with its historical documents preserved. Statements in the input pack saying “no frontend has been implemented” describe the earlier planning phase. Historical instructions requesting real providers, a different stack, older naming or a different visual system do not override this implementation's frontend-only boundary.
 
@@ -208,7 +208,7 @@ The application root is the repository/archive root. The deliverable excludes `n
 
 ## Final implementation evidence and detailed differences
 
-The final integrated checks, exact browser coverage and delivery integrity are recorded in `VERIFICATION.md`. The source inventory maps 34 routes, 88 flows, 734 original controls and 363 named steps. `TRACEABILITY.md` and `CONTROL_IMPLEMENTATION_MAP.json` also register 29 implementation additions and explicitly list 12 detailed interaction differences. A mapped control is not an individual manual test pass.
+The final integrated checks, exact browser coverage and delivery integrity are recorded in `VERIFICATION.md`. The source inventory maps 34 routes, 88 flows, 734 original controls and 363 named steps. `TRACEABILITY.md` and `CONTROL_IMPLEMENTATION_MAP.json` also register 30 implementation additions and explicitly list 12 detailed interaction differences. A mapped control is not an individual manual test pass.
 
 Operational rescheduling is implemented through `project.proposeReschedule`, an owner-reviewed offer amendment, exact buyer acceptance and prerequisite checks. It reuses the existing project/reservation and preserves previous schedule/financial history. Owner and buyer offer review surfaces show the proposed dates in Asia/Jakarta. A proposal cannot silently overwrite a commitment.
 
@@ -221,3 +221,14 @@ Final integrated verification: 95 automated tests passed; clean installation, Ty
 ## Presentation patch 1.0.1
 
 The user-deployed baseline at https://crewmori.vercel.app/ was reviewed alongside the supplied spacing crop. The revised source improves decision-card action spacing, canonical search borders/focus, acquisition filter alignment, command-field shrinking, mobile sample labels, update dismissal targets, the existing unread indicator and Money filter label width. It changes four runtime presentation files and no business services, projections or fixtures. Current build/test/browser evidence and GitHub redeployment steps are in POLISH_NOTES.md. The patch has not been pushed to the user's repository by this run.
+
+
+## Taste refinement release 1.1.0
+
+The current presentation pass applies the bundled Taste skill through the Crewmori adapter and uses the specific Linear/Basecamp references recorded in `TASTE_REFINEMENT.md`. It keeps the supplied brand, local Newsreader/Inter fonts, six illustrations, Global Studio, all routes and local business behavior.
+
+Home uses unboxed briefing facts, a flat Scout surface, a native request/offer comparison disclosure, a divided terms rail, and one adaptive saved-update strip. Dismissed updates reflow; dismissing all shows a truthful caught-up state with Undo. Team has larger character art, readable written states, selected-control semantics, quiet chrome and dated saved assessments. The public introduction has clearer body typography/copy and open benefit sections. Leads share a ruled list; promotion previews and secondary actions are quieter.
+
+Runtime changes are limited to `src/app/globals.css`, `src/views/home-team.tsx`, `src/views/acquisition.tsx`, `src/views/acquisition.css`, `src/views/public.tsx`, `src/views/public.css` and `src/lib/i18n.ts`. Commands, store, projections, fixtures and untouched Work/Money/Settings views are byte-identical to release 1.0.1. The only added control is the non-mutating comparison disclosure, registered as `impl.priority.compare_request_offer`; implementation-added entries now total 30, separate from the original 734.
+
+Package and lockfile identify 1.1.0; persistence schema remains 1.1.0. `DESIGN.md` and `docs/design-tokens.json` record the evolution and runtime mapping. `TASTE_REFINEMENT.md` and `VERIFICATION.md` distinguish this revision's selected checks from the broader original verification. The original detailed interaction/localization/production limits remain applicable. This source has not been pushed to the founder's GitHub repository or public deployment.

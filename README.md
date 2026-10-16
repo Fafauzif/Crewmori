@@ -137,3 +137,10 @@ The delivered revision passes clean `npm ci`, type checking, lint, 95 automated 
 ## Spacing polish release 1.0.1
 
 This patch refines Team action spacing, search borders/focus, filter layout, command-field shrinking, phone header labels and small control targets. Read `docs/POLISH_NOTES.md` for the exact scope and validation. Upload the extracted project contents to the existing repository and commit to its Vercel-connected branch to publish this revision.
+
+
+## Taste refinement release 1.1.0
+
+This version quiets the supporting chrome, simplifies Home decisions/updates, improves Team illustration/state hierarchy, and replaces repeated public/acquisition cards with open sections or ruled lists. It preserves the original brand and local workflows. See `docs/TASTE_REFINEMENT.md` for design references and exact verification. The updated master context is version 2.2.
+
+Replace the existing GitHub repository contents with this ZIP's extracted project files and commit to the branch connected to Vercel. Keep the repository root, Next.js preset, `npm ci`, and `npm run build`. Existing browser sample records remain compatible. A new source ZIP does not automatically update the deployed site.

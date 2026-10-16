@@ -2,7 +2,7 @@
 
 This companion map links the original specification to the delivered local frontend. **It is an ownership and static coverage map, not a claim that every control passed manual testing.** The original route, flow and control registries remain unchanged.
 
-The supplied inventory contains **34 routes, 88 flows, 734 controls and 363 named steps**. All original IDs are present in [CONTROL_IMPLEMENTATION_MAP.json](CONTROL_IMPLEMENTATION_MAP.json), including owning code symbols, command boundaries, source flow, status and verification scope. The file also registers 29 implementation-added controls/options under `impl.*`; these are not added to the original counts. SHA-256 hashes record the unchanged source inventory.
+The supplied inventory contains **34 routes, 88 flows, 734 controls and 363 named steps**. All original IDs are present in [CONTROL_IMPLEMENTATION_MAP.json](CONTROL_IMPLEMENTATION_MAP.json), including owning code symbols, command boundaries, source flow, status and verification scope. The file also registers 30 implementation-added controls/options under `impl.*`; these are not added to the original counts. SHA-256 hashes record the unchanged source inventory.
 
 | Surface | Code owner | Mutation and effect boundary |
 | --- | --- | --- |

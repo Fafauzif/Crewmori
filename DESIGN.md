@@ -1,3 +1,45 @@
+---
+version: alpha
+name: Crewmori
+description: A warm, useful studio workspace for a freelancer and six illustrated business specialists.
+colors:
+  primary: "#245C47"
+  primary-hover: "#1B4B39"
+  background: "#F5F3EC"
+  surface: "#FFFEFA"
+  text: "#202A25"
+  muted: "#566159"
+  border: "#D9DED3"
+  control-edge: "#566159"
+  selected: "#E5EFE7"
+  scout: "#F2C983"
+  promoter: "#EFAF9B"
+  sales: "#B9D8EC"
+  account: "#D3C6E7"
+  operations: "#C6D4B5"
+  finance: "#B6D9C6"
+typography:
+  sans:
+    fontFamily: "Inter, Arial, sans-serif"
+  display:
+    fontFamily: "Newsreader, Georgia, serif"
+rounded:
+  DEFAULT: "24px"
+  control: "12px"
+  composer-action: "8px"
+spacing:
+  workspace: "32px"
+  section: "32px"
+  panel: "32px"
+  gutter: "24px"
+components:
+  button: {}
+  field: {}
+  panel: {}
+  dialog: {}
+  composer: {}
+---
+
 # Crewmori product design contract
 
 Resolved frontend contract, 16 October 2026. Read `DECISIONS.md` first. This file is the active product overlay; preserve uploaded brand files unchanged. The implementation run must compare its actual Home and Team screenshots against the two approved Stitch anchor images before extending the system. No third-party skill can override these decisions.
@@ -185,3 +227,14 @@ Update the final master AI context pack, developer brief, active design overlay,
 ## Spacing refinement — 1.0.1
 
 Shared search controls use the existing surface/edge/focus tokens with one border; the native field baseline has low specificity so the canonical component can own its interior. Team decision footer labels occupy a separate line, with a 12px wrapping action gap. Ask fields shrink safely; phone sample controls use a short visible label and the full accessible name. Acquisition filters hide redundant captions visually while preserving their labels; Money filters reserve at least 145px on desktop to keep selected labels readable. Home dismissal targets are 44px and share the existing hover treatment. Runtime ownership remains globals.css, acquisition.css, money.css and the shell. See docs/POLISH_NOTES.md for review evidence.
+
+## Taste refinement — 16 October 2026
+
+This intentional evolution reduces repeated containers while preserving the approved Newsreader/Inter typography, forest/cream palette, supplied crew artwork, Global Studio map, and approximately 24px major panels. Use the bundled Taste guidance through `skills/CREWMORI_SKILL_ADAPTER.md`; the source principles and verification record are in `docs/TASTE_REFINEMENT.md`.
+
+The shared composer has a 12px radius and an 8px inset button. Home facts are unboxed and aligned; the Scout backing is flat apricot. The original-request comparison is a flat disclosure, and visible terms use a divided rail rather than another card. Saved updates share one paper strip with internal rules and Inter functional headings. Team artwork is larger, and selected map/list nodes have a persistent forest treatment with an accessible pressed state. Decision facts, update metadata, roster labels, and written task state use at least 12px; optional decorative eyebrows follow the existing type contract.
+
+Public benefit sections and opportunity records use open sections or shared ruled surfaces. Supporting controls recede through quieter borders and backgrounds, while the current decision retains a clear primary action. Preserve existing content, canonical destinations, disclosure access, focus feedback, mobile stacking, and business behavior. These component-specific decisions supersede the earlier nested-card treatment; they do not introduce a second palette or change the major-panel token.
+
+
+Token mapping: runtime CSS variables in `src/app/globals.css` remain the implemented palette owner; this frontmatter mirrors their accepted primitive values. `docs/design-tokens.json` is the retained machine-readable companion, updated with the component-specific refinement. `--scout-surface` derives from 24% `--scout` mixed with `--surface`; no independent palette is introduced. Local Newsreader/Inter font-face declarations feed all shared and domain components.

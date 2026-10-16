@@ -203,13 +203,12 @@ function Entry() {
           <p className="public-eyebrow">A LITTLE TEAM. A LOT MORE ROOM.</p>
           <h1>{t("Your business, with good company.")}</h1>
           <p className="public-lead">
-            Six thoughtful specialists help you find opportunities, keep
-            conversations moving, and take care of the business around your
-            work.
+            Six specialists help you find work, shape offers, plan projects, and
+            keep track of money.
           </p>
           <p>
-            You bring the expertise. Your crew brings a little breathing room.
-            Every important decision stays yours.
+            You do the client work. Your crew handles the business around it,
+            with you approving the commitments.
           </p>
           <div className="public-actions">
             <Button
@@ -248,30 +247,30 @@ function Entry() {
         </div>
       </section>
       <section className="public-value-grid" aria-label="How your crew helps">
-        <Panel>
-          <span className="public-step">01</span>
-          <h2>Good opportunities, thoughtfully considered.</h2>
+        <article className="public-benefit">
+          <span className="public-step">Opportunities</span>
+          <h2>From inquiry to offer.</h2>
           <p>
-            Capture a brief, review the fit, and shape an offer around the work
-            you want to do.
+            Keep the original request beside your crew’s assessment. Set scope,
+            price, and timing before sharing an offer.
           </p>
-        </Panel>
-        <Panel>
-          <span className="public-step">02</span>
-          <h2>The useful details, in one place.</h2>
+        </article>
+        <article className="public-benefit">
+          <span className="public-step">Work</span>
+          <h2>The project stays connected.</h2>
           <p>
-            Keep your clients, commitments, files, and payments connected to the
-            same project.
+            Follow the accepted scope, required inputs, dates, files, and
+            payments in one project workspace.
           </p>
-        </Panel>
-        <Panel>
-          <span className="public-step">03</span>
-          <h2>Your judgement comes first.</h2>
+        </article>
+        <article className="public-benefit">
+          <span className="public-step">Approvals</span>
+          <h2>You make the commitments.</h2>
           <p>
-            Review the exact terms and messages before your crew takes the next
-            step.
+            Review exact terms and messages before sharing. Your crew prepares
+            the business work; professional delivery stays yours.
           </p>
-        </Panel>
+        </article>
       </section>
       <section className="public-profile-invite">
         <div>
@@ -282,7 +281,7 @@ function Entry() {
             becomes a shared offer.
           </p>
         </div>
-        <LinkButton href="/u/alya" variant="secondary">
+        <LinkButton href="/u/alya" variant="ghost">
           View sample freelancer →
         </LinkButton>
       </section>
@@ -2134,14 +2133,12 @@ function Inquiry({ id, grant }: { id: string; grant: string }) {
                 <Button
                   variant="secondary"
                   onClick={(e) =>
-                    e.currentTarget
-                      .closest("dialog")
-                      ?.dispatchEvent(
-                        new Event("cancel", {
-                          bubbles: true,
-                          cancelable: true,
-                        }),
-                      )
+                    e.currentTarget.closest("dialog")?.dispatchEvent(
+                      new Event("cancel", {
+                        bubbles: true,
+                        cancelable: true,
+                      }),
+                    )
                   }
                 >
                   Cancel brief edits

@@ -1,6 +1,6 @@
 # Crewmori — developer functionality and implementation handoff
 
-Updated 16 October 2026 · Frontend implementation 1.0.1 · Runtime schema 1.1.0
+Updated 16 October 2026 · Frontend implementation 1.1.0 · Runtime schema 1.1.0
 
 Crewmori is a freelancer-owned AI business team. Six specialists prepare business work; the freelancer performs the commissioned professional work. This handoff contains an implemented Next.js frontend with persistent local sample data, deterministic agent outcomes, owner approval controls, public/buyer projections and actual downloadable files.
 
@@ -245,7 +245,7 @@ The final source archive has one obvious installable root, includes the lockfile
 
 ## Final implementation evidence and detailed differences
 
-The final integrated checks, exact browser coverage and delivery integrity are recorded in `VERIFICATION.md`. The source inventory maps 34 routes, 88 flows, 734 original controls and 363 named steps. `TRACEABILITY.md` and `CONTROL_IMPLEMENTATION_MAP.json` also register 29 implementation additions and explicitly list 12 detailed interaction differences. A mapped control is not an individual manual test pass.
+The final integrated checks, exact browser coverage and delivery integrity are recorded in `VERIFICATION.md`. The source inventory maps 34 routes, 88 flows, 734 original controls and 363 named steps. `TRACEABILITY.md` and `CONTROL_IMPLEMENTATION_MAP.json` also register 30 implementation additions and explicitly list 12 detailed interaction differences. A mapped control is not an individual manual test pass.
 
 Operational rescheduling is implemented through `project.proposeReschedule`, an owner-reviewed offer amendment, exact buyer acceptance and prerequisite checks. It reuses the existing project/reservation and preserves previous schedule/financial history. Owner and buyer offer review surfaces show the proposed dates in Asia/Jakarta. A proposal cannot silently overwrite a commitment.
 
@@ -258,3 +258,14 @@ Final integrated verification: 95 automated tests passed; clean installation, Ty
 ## Presentation patch 1.0.1
 
 This update adjusts spacing and responsive shared controls only. Team footer labels/buttons, search borders/focus, filter widths, mobile sample labels, command-field shrink behavior, dismissal targets and the existing unread indicator are refined. The command, financial, permission and lifecycle contracts are unchanged. See docs/POLISH_NOTES.md inside the source repository for exact files and review evidence.
+
+
+## Taste refinement release 1.1.0
+
+The current presentation pass applies the bundled Taste skill through the Crewmori adapter and uses the specific Linear/Basecamp references recorded in `TASTE_REFINEMENT.md`. It keeps the supplied brand, local Newsreader/Inter fonts, six illustrations, Global Studio, all routes and local business behavior.
+
+Home uses unboxed briefing facts, a flat Scout surface, a native request/offer comparison disclosure, a divided terms rail, and one adaptive saved-update strip. Dismissed updates reflow; dismissing all shows a truthful caught-up state with Undo. Team has larger character art, readable written states, selected-control semantics, quiet chrome and dated saved assessments. The public introduction has clearer body typography/copy and open benefit sections. Leads share a ruled list; promotion previews and secondary actions are quieter.
+
+Runtime changes are limited to `src/app/globals.css`, `src/views/home-team.tsx`, `src/views/acquisition.tsx`, `src/views/acquisition.css`, `src/views/public.tsx`, `src/views/public.css` and `src/lib/i18n.ts`. Commands, store, projections, fixtures and untouched Work/Money/Settings views are byte-identical to release 1.0.1. The only added control is the non-mutating comparison disclosure, registered as `impl.priority.compare_request_offer`; implementation-added entries now total 30, separate from the original 734.
+
+Package and lockfile identify 1.1.0; persistence schema remains 1.1.0. `DESIGN.md` and `docs/design-tokens.json` record the evolution and runtime mapping. `TASTE_REFINEMENT.md` and `VERIFICATION.md` distinguish this revision's selected checks from the broader original verification. The original detailed interaction/localization/production limits remain applicable. This source has not been pushed to the founder's GitHub repository or public deployment.

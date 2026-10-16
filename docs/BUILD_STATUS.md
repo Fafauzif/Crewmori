@@ -73,3 +73,8 @@ Read `MASTER_AI_CONTEXT.md` and `DEVELOPER_FUNCTIONALITY.md` before making archi
 ## Presentation patch 1.0.1
 
 Focused spacing review complete. The latest package contains the shared-control and responsive polish described in POLISH_NOTES.md; all 95 regression tests, lint, TypeScript, strict static UI audit and production build pass. The public baseline was inspected; publishing this revision requires committing the updated extracted files to the user's Vercel-connected repository.
+
+
+## Taste refinement 1.1.0
+
+The visual revision preserves local command/projection/data behavior. TypeScript, lint, all 95 regression tests, production build and strict static UI audit pass for this revision. Home/Team and public/acquisition layouts were inspected in Chromium at the viewports recorded in TASTE_REFINEMENT.md, with an independent review and correction pass. The new native comparison disclosure, update dismissal/caught-up/Undo, lead no-results/clear, and teammate inspection were exercised. Original detailed functional differences and verification limits remain unchanged. No new dependency or real integration was added, and the public deployment was not changed.

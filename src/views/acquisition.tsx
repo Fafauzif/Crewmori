@@ -308,7 +308,7 @@ function LeadList() {
           <option value="client">Client A–Z</option>
         </select>
         <Button
-          variant="secondary"
+          variant="ghost"
           onClick={() =>
             set({ q: null, status: null, source: null, sort: null, page: null })
           }
@@ -321,7 +321,7 @@ function LeadList() {
           {filtered.length}{" "}
           {filtered.length === 1 ? "opportunity" : "opportunities"}
         </span>
-        <Button variant="secondary" onClick={() => set({ import: "1" })}>
+        <Button variant="ghost" onClick={() => set({ import: "1" })}>
           Import request
         </Button>
       </div>
@@ -349,7 +349,7 @@ function LeadList() {
           </Button>
         </Empty>
       ) : (
-        <div className="stack">
+        <Panel className="opportunity-list">
           {filtered.slice((page - 1) * 8, page * 8).map((lead) => {
             const assessment = rows("assessments").find(
               (x) =>
@@ -359,7 +359,7 @@ function LeadList() {
             );
             const req = record("requirements", s(lead.requirements_id));
             return (
-              <Panel key={lead.id}>
+              <article className="opportunity-record" key={lead.id}>
                 <div className="acq-lead-row">
                   <div className="acq-client-mark" aria-hidden="true">
                     {s(record("clients", s(lead.client_id))?.name).slice(0, 1)}
@@ -403,15 +403,15 @@ function LeadList() {
                   </div>
                   <LinkButton
                     href={`/app/opportunities/${lead.id}?return=${encodeURIComponent(search.toString())}`}
-                    variant="secondary"
+                    variant="ghost"
                   >
                     Open lead →
                   </LinkButton>
                 </div>
-              </Panel>
+              </article>
             );
           })}
-        </div>
+        </Panel>
       )}
       <Pager
         count={filtered.length}
@@ -1316,13 +1316,13 @@ function OfferList() {
           <option value="amount">Amount by currency</option>
         </select>
         <Button
-          variant="secondary"
+          variant="ghost"
           onClick={() => set({ q: null, status: null, sort: null })}
         >
           Clear filters
         </Button>
       </div>
-      <p className="muted" aria-live="polite">
+      <p className="muted offer-list-count" aria-live="polite">
         {filtered.length} offer{filtered.length === 1 ? "" : "s"}
       </p>
       {filtered.length ? (
@@ -2526,24 +2526,24 @@ function PromotionList() {
           onChange={(v) => set({ channel: v })}
         />
         <Button
-          variant="secondary"
+          variant="ghost"
           onClick={() => set({ q: null, status: null, channel: null })}
         >
           Clear filters
         </Button>
       </div>
-      <p className="muted" aria-live="polite">
+      <p className="muted promotion-list-count" aria-live="polite">
         {filtered.length} promotion{filtered.length === 1 ? "" : "s"}
       </p>
       {filtered.length ? (
-        <div className="grid2">
+        <div className="grid2 promotion-list">
           {filtered.map((p) => {
             const version = record(
               "promotion_versions",
               s(p.current_version_id),
             );
             return (
-              <Panel key={p.id}>
+              <Panel className="promotion-draft" key={p.id}>
                 <div className="row acq-section-head">
                   <span className="eyebrow">{label(version?.destination)}</span>
                   <Status value={p.archived ? "archived" : p.status} />
@@ -2554,10 +2554,7 @@ function PromotionList() {
                 <p className="acq-promo-copy">{s(version?.content)}</p>
                 <div className="row acq-section-head">
                   <span className="muted">Version {n(version?.revision)}</span>
-                  <Button
-                    variant="secondary"
-                    onClick={() => set({ draft: p.id })}
-                  >
+                  <Button variant="ghost" onClick={() => set({ draft: p.id })}>
                     Open draft →
                   </Button>
                 </div>

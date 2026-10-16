@@ -68,3 +68,12 @@ All authentication, AI, email, calendar/provider publication and payment behavio
 ## Presentation patch 1.0.1 verification
 
 On 16 October 2026 the existing public Vercel deployment and the user's screenshot were reviewed for spacing. The revised local source was checked at native desktop size plus 1280x900 and 390x844 iframe layout viewports. Measured Team label/action separation and 12px button gaps, visible full Money currency labels, single-border search, clear-search focus, a long Ask value, phone header layout and narrow document widths passed inspection. Invoice form layout and Escape/focus return were also observed. Lint, TypeScript, all 95 regression tests, strict static UI audit and the production build pass. See POLISH_NOTES.md for scope and publication steps. Original broader verification limits remain applicable.
+
+
+## Taste refinement 1.1.0 verification
+
+The revision reruns TypeScript, lint, the existing 95-test suite, optimized production build and strict static UI audit successfully. Dependencies are unchanged from 1.0.1; clean installation was previously verified and was not repeated solely for the package version change. Formatting of changed runtime files passes Prettier. The design-document linter reports no errors; its orphan-token warnings reflect palette tokens consumed by the CSS runtime rather than component entries in its document schema.
+
+Rendered review covered Home at native desktop, 1440x1000 and 390x844; Team at native desktop, 1440x1000, 1280x900 and 390x844; public entry at desktop/390px; populated/no-results Leads at desktop and populated Leads/Promotion at 390px. Temporary same-origin iframe layout viewports were used and excluded from delivery. DOM geometry at inspected wide/phone views showed no document-wide horizontal overflow. The last saved-assessment date captions were inspected at both desktop layout widths.
+
+Keyboard Enter expands the request/offer comparison with visible focus and full content. Update dismissal, all-dismissed caught-up text and Undo restore the current updates. Leads search produced an explicit no-results state; Clear search returned populated rows, and Add lead opened its existing form. An independent reviewer inspected desktop/phone Home/Team and exercised comparison and teammate-inspector access. This pass did not re-certify every original workflow, native popup, assistive technology, browser or device. Existing reduced-motion rules are retained and no new animation is introduced.

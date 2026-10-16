@@ -4,7 +4,7 @@
 .acq-toolbar {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
   margin: 24px 0 14px;
 }
@@ -23,7 +23,21 @@
 }
 .acq-list-meta {
   justify-content: space-between;
-  margin: 0 0 18px;
+  margin: 0 0 16px;
+}
+.opportunity-list {
+  padding: 8px 32px;
+}
+.opportunity-record {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
+}
+.opportunity-record:last-child {
+  border-bottom: 0;
+}
+.offer-list-count,
+.promotion-list-count {
+  margin-bottom: 16px;
 }
 .acq-lead-row {
   display: flex;
@@ -49,8 +63,11 @@
 }
 .acq-lead-main h2 {
   font-family: Inter, Arial, sans-serif;
-  font-size: 20px;
-  margin: 12px 0;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 26px;
+  letter-spacing: 0;
+  margin: 8px 0;
 }
 .acq-lead-main h2 a,
 .acq-offer-row h3 a {
@@ -70,7 +87,7 @@
 }
 .acq-fit {
   max-width: 720px;
-  margin: 18px 0 0;
+  margin: 12px 0 0;
   line-height: 1.65;
 }
 .acq-detail {
@@ -204,8 +221,11 @@
   border-bottom: 0;
 }
 .acq-offer-row h3 {
-  font-size: 17px;
-  line-height: 1.5;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 26px;
+  letter-spacing: 0;
   margin: 8px 0;
 }
 .acq-offer-row > div:nth-child(2) {
@@ -264,6 +284,36 @@
   line-height: 1.5;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+.promotion-list {
+  column-gap: 40px;
+  row-gap: 8px;
+}
+.promotion-draft {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+}
+.promotion-draft > h2 {
+  margin: 0;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 26px;
+  letter-spacing: 0;
+}
+.promotion-draft .acq-promo-copy {
+  font-family: Inter, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+}
+.promotion-draft > .row:last-child {
+  margin-top: auto;
 }
 .acq-review-box {
   border: 1px solid #245c47;
@@ -329,6 +379,12 @@
   }
 }
 @media (max-width: 600px) {
+  .opportunity-list {
+    padding: 0 20px;
+  }
+  .promotion-list {
+    gap: 0;
+  }
   .acq-toolbar {
     align-items: stretch;
   }

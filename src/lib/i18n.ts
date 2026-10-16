@@ -1,5 +1,16 @@
 /** Central EN/ID UI dictionary. User-authored business content stays in its source language. */
 const pairs = `
+You’re all caught up. Restore dismissed updates below.|Semua pembaruan sudah dibaca. Pulihkan pembaruan di bawah.
+Your crew’s saved updates will appear here as work progresses.|Pembaruan tersimpan dari tim akan tampil di sini saat pekerjaan berjalan.
+Studio briefing|Ringkasan studio
+Compare request and offer|Bandingkan permintaan dan penawaran
+offer to review|penawaran untuk ditinjau
+offers to review|penawaran untuk ditinjau
+Offer ready for review|Penawaran siap ditinjau
+Assessment ready|Penilaian siap
+Request saved|Permintaan tersimpan
+Your offer draft is ready.|Draf penawaran Anda siap.
+
 Home|Beranda
 Team|Tim
 Opportunities|Peluang
