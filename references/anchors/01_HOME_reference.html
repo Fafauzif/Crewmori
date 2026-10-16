@@ -1,0 +1,777 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="web_dashboard" name="shell-type">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+    @layer base {
+      html, body { margin: 0; padding: 0; background-color: #F7F5EE; }
+      body { overscroll-behavior: none; }
+    }
+    ::-webkit-scrollbar { display: none; }
+    .font-serif-editorial {
+      font-family: 'Newsreader', Georgia, serif;
+    }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface": "#FFFEFA",
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed-dim": "#bec9c0",
+            "error": "#ba1a1a",
+            "primary-fixed": "#b5efd3",
+            "on-surface": "#191c1a",
+            "secondary-fixed": "#dae5db",
+            "on-error": "#ffffff",
+            "primary": "#245C47",
+            "on-primary": "#ffffff",
+            "attention-bg": "#FFF1D6",
+            "on-tertiary-fixed": "#370d0d",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed-variant": "#3f4942",
+            "tertiary": "#5e2c2a",
+            "outline-variant": "#c0c9c2",
+            "attention-text": "#80520B",
+            "background": "#F7F5EE",
+            "secondary-container": "#d7e3d8",
+            "on-background": "#191c1a",
+            "control-border": "#788378",
+            "error-container": "#ffdad6",
+            "on-surface-variant": "#404944",
+            "error-text": "#9B3431",
+            "on-primary-fixed-variant": "#16503c",
+            "tertiary-fixed": "#ffdad8",
+            "selected": "#E5EFE7",
+            "error-bg": "#FBE8E4",
+            "role-promoter": "#EFAF9B",
+            "on-tertiary": "#ffffff",
+            "surface-dim": "#d9dbd7",
+            "on-tertiary-container": "#feb2ae",
+            "surface-bright": "#f8faf6",
+            "border": "#E3DECF",
+            "tertiary-fixed-dim": "#ffb3af",
+            "primary-fixed-dim": "#99d3b8",
+            "role-operations": "#C6D4B5",
+            "surface-variant": "#e1e3df",
+            "muted-surface": "#ECEAE1",
+            "text": "#1E2722",
+            "surface-container": "#edeeeb",
+            "inverse-on-surface": "#f0f1ee",
+            "canvas": "#F7F5EE",
+            "surface-container-highest": "#e1e3df",
+            "outline": "#707974",
+            "on-primary-container": "#99d2b8",
+            "on-secondary-container": "#5a655d",
+            "role-scout": "#F2C983",
+            "on-tertiary-fixed-variant": "#6d3735",
+            "tertiary-container": "#7a4240",
+            "on-primary-fixed": "#002115",
+            "inverse-surface": "#2e312f",
+            "inverse-primary": "#99d3b8",
+            "surface-container-low": "#f2f4f0",
+            "on-secondary-fixed": "#141e18",
+            "secondary": "#566159",
+            "primary-container": "#245c47",
+            "surface-tint": "#316853",
+            "role-finance": "#B6D9C6",
+            "secondary-text": "#5C6760",
+            "on-error-container": "#93000a",
+            "role-account-manager": "#D3C6E7",
+            "role-sales": "#B9D8EC",
+            "surface-container-high": "#e7e9e5"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "2xl": "1rem",
+            "3xl": "1.5rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "gutter": "1.5rem",
+            "margin": "1.5rem",
+            "space-xl": "2rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem"
+          },
+          fontFamily: {
+            "headline-md": ["Manrope"],
+            "title-md": ["Manrope"],
+            "headline-lg-mobile": ["Manrope"],
+            "label-md": ["Inter"],
+            "body-strong": ["Inter"],
+            "body-lg": ["Inter"],
+            "caption": ["Inter"],
+            "headline-lg": ["Manrope"],
+            "label-sm": ["Inter"],
+            "headline-sm": ["Manrope"],
+            "body-md": ["Inter"]
+          },
+          fontSize: {
+            "headline-md": ["28px", { lineHeight: "36px", fontWeight: "600" }],
+            "title-md": ["18px", { lineHeight: "24px", fontWeight: "600" }],
+            "headline-lg-mobile": ["24px", { lineHeight: "32px", fontWeight: "700" }],
+            "label-md": ["14px", { lineHeight: "20px", fontWeight: "500" }],
+            "body-strong": ["16px", { lineHeight: "24px", fontWeight: "500" }],
+            "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+            "caption": ["12px", { lineHeight: "16px", fontWeight: "400" }],
+            "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "700" }],
+            "label-sm": ["13px", { lineHeight: "18px", fontWeight: "500" }],
+            "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+            "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-[#F7F5EE] font-body-md text-text min-h-screen">
+<!-- LEFT SIDEBAR -->
+<aside class="fixed left-0 top-0 h-full w-[212px] bg-[#FAF8F3] z-50 flex flex-col justify-between p-space-md border-r border-[#E5E0D3]">
+<div class="flex flex-col gap-space-lg"><!-- Brand Mark -->
+<div class="flex items-center gap-space-sm px-space-xs py-space-xs">
+<img alt="Crewmori Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1W8dHF_4Ok-KBzVvKnFdEHCo82MLmGAPI9nHePfySctrahXt3-KGkealekkxI_JoTB8KSWSQsvFiihMvhW2jVJWZm9-QrCFd9_8OYxTLNUoYt2VoQxqd6jDOi9KTIViYXHVcua9dGK9HBtjDhZ6-vdvuZNiJNc_Vy0pczA2TAuJnRhAW0GqWMSNgdF8hOeYj0c66-EwjEXQKpbR68bD2wC2d-KCEa5BiArdsY_aeCQsM05Xjgvdo-nGtw">
+<span class="font-title-md text-title-md text-primary tracking-tight font-bold">Crewmori</span>
+</div>
+
+<!-- PRIMARY NAVIGATION -->
+<nav class="flex flex-col gap-1" data-active-classes="bg-selected text-primary font-body-strong">
+<a class="flex items-center gap-space-sm px-space-md py-2 rounded-xl bg-[#E8F0EA] text-primary font-body-strong transition-colors font-body-md text-body-md shadow-xs" data-path="home" href="#">
+<span class="material-symbols-outlined text-[20px]">home</span>
+<span class="">Home</span>
+</a>
+<a class="flex items-center gap-space-sm px-space-md py-2 rounded-xl text-secondary-text hover:bg-[#EFECE3] hover:text-on-surface transition-colors font-body-md text-body-md" data-path="team" href="#">
+<span class="material-symbols-outlined text-[20px]">group</span>
+<span class="">Team</span>
+</a>
+<a class="flex items-center gap-space-sm px-space-md py-2 rounded-xl text-secondary-text hover:bg-[#EFECE3] hover:text-on-surface transition-colors font-body-md text-body-md" data-path="opportunities" href="#">
+<span class="material-symbols-outlined text-[20px]">explore</span>
+<span class="">Opportunities</span>
+</a>
+<a class="flex items-center gap-space-sm px-space-md py-2 rounded-xl text-secondary-text hover:bg-[#EFECE3] hover:text-on-surface transition-colors font-body-md text-body-md" data-path="work" href="#">
+<span class="material-symbols-outlined text-[20px]">work</span>
+<span class="">Work</span>
+</a>
+<a class="flex items-center gap-space-sm px-space-md py-2 rounded-xl text-secondary-text hover:bg-[#EFECE3] hover:text-on-surface transition-colors font-body-md text-body-md" data-path="money" href="#">
+<span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+<span class="">Money</span>
+</a>
+</nav>
+
+<!-- QUIET DIVIDER & SAMPLE CONNECTIONS / YOUR TOOLS GROUP -->
+<div class="flex flex-col gap-1 pt-2 border-t border-[#E5E0D3]">
+<div class="px-space-md pt-1 pb-1">
+<span class="font-caption text-[10px] uppercase tracking-wider text-secondary-text font-semibold">Sample Connections</span>
+</div>
+<nav class="flex flex-col gap-0.5">
+<a class="flex items-center gap-space-sm px-space-md py-1.5 rounded-xl text-secondary-text hover:bg-[#EFECE3] hover:text-on-surface transition-colors font-body-md text-[13px]" href="#">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+<span class="">Gmail</span>
+</a>
+<a class="flex items-center gap-space-sm px-space-md py-1.5 rounded-xl text-secondary-text hover:bg-[#EFECE3] hover:text-on-surface transition-colors font-body-md text-[13px]" href="#">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span class="">Google Calendar</span>
+</a>
+<a class="flex items-center gap-space-sm px-space-md py-1.5 rounded-xl text-secondary-text hover:bg-[#EFECE3] hover:text-on-surface transition-colors font-body-md text-[13px]" href="#">
+<span class="material-symbols-outlined text-[18px]">cloud</span>
+<span class="">Google Drive</span>
+</a>
+<a class="flex items-center gap-space-sm px-space-md py-1 text-[12px] text-primary hover:underline transition-colors mt-0.5" href="#">
+<span class="material-symbols-outlined text-[15px]">link</span>
+<span class="">Manage connections</span>
+</a>
+</nav>
+</div></div>
+<div class="flex flex-col gap-space-md pt-space-md border-t border-[#E5E0D3]">
+<nav class="flex flex-col">
+<a class="flex items-center gap-space-sm px-space-md py-2 rounded-xl text-secondary-text hover:bg-[#EFECE3] hover:text-on-surface transition-colors font-body-md text-body-md" data-path="settings" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="">Settings</span>
+</a>
+</nav>
+<div class="flex items-center gap-space-sm p-2 rounded-2xl bg-[#F0ECE1] border border-[#E2DC withhold border-[#DDD6C8]]">
+<img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-[#D8D0BF]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIKzfVv6kQ5tRQSgaCeXPySAtuMeLlgKPeO1ccXFOwieb2iX-uy74LmhMB4eC9mTBvQZzsG7_gerdtfqAnyz7XTnZStx_-y389Z9kfSxnup4_O715nZqm8bajXmoiTIylpR5mx2MrisnDav-Y07LGnn_2dVJBazkExJU55vYndbsad8RJhOxw9bNfzZdt1lhRmzdZB4z61C9eTriAhT8R7nZgv-MYglz-nMdNOF4LIvqY7XSal0lY">
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-text font-semibold truncate leading-tight">Alya Putri</span>
+<span class="font-caption text-[11px] text-secondary-text truncate leading-tight">Motion Designer</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- MAIN VIEWPORT WRAPPER -->
+<div class="pl-[212px]">
+<!-- TOP HEADER -->
+<header class="fixed top-0 left-[212px] right-0 h-[68px] bg-[#FAF8F3]/90 backdrop-blur-md border-b border-[#E5E0D3] z-40 flex items-center justify-between px-space-xl">
+<div class="flex items-center gap-space-md"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#EAE5D8] font-caption text-[12px] text-secondary-text border border-[#DCD5C5]">Issue № 24 · Autumn Term</span></div>
+<div class="flex items-center gap-space-md">
+<button class="inline-flex items-center gap-space-xs px-3.5 py-1.5 rounded-full bg-[#FAF8F3] border border-[#C8C1B0] text-text font-label-md text-[13px] hover:bg-[#F0ECE1] transition-colors" onclick="alert('Running sample studio routine...')" type="button">
+<span class="material-symbols-outlined text-[17px] text-primary">play_arrow</span>
+<span class="">Run sample task</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FAF8F3] border border-[#C8C1B0] font-label-md text-[13px] text-text hover:bg-[#F0ECE1] transition-colors cursor-pointer" id="btn-focus-toggle" onclick="toggleFocusMode()" type="button">
+<span class="material-symbols-outlined text-[17px] text-secondary-text" id="focus-icon">center_focus_weak</span>
+<span class="text-secondary-text">Focus mode:</span>
+<span class="font-body-strong text-text font-medium" id="focus-status-text">Off / Normal</span>
+</button>
+<button aria-label="Notifications" class="w-9 h-9 rounded-full border border-[#C8C1B0] bg-[#FAF8F3] flex items-center justify-center text-secondary-text hover:text-text hover:bg-[#F0ECE1] transition-colors" type="button">
+<span class="material-symbols-outlined text-[19px]">notifications</span>
+</button>
+</div>
+</header>
+<main class="relative pt-[84px] min-h-screen bg-[#F7F5EE] px-8 pb-12 flex flex-col justify-between">
+<div class="flex flex-col w-full max-w-[1240px] mx-auto gap-7">
+<!-- TOP SEARCH & DELEGATION: Floating Pill Field -->
+<div class="w-full flex items-center justify-between bg-surface rounded-full pl-5 pr-2 py-2 border border-[#E0D9C8] shadow-[0_2px_12px_rgba(32,42,37,0.04)]">
+<div class="flex items-center gap-3 flex-1">
+<span class="material-symbols-outlined text-[20px] text-primary">search</span>
+<input class="bg-transparent border-none outline-none font-body-md text-[15px] text-text w-full placeholder:text-[#8C958E] focus:ring-0 p-0" id="delegation-query" type="text" value="Ask your team anything... (e.g. Find my next US motion client)">
+</div>
+<button class="bg-primary text-on-primary px-5 py-2 rounded-full font-label-md text-[13px] font-medium hover:bg-primary/90 transition-all shadow-xs flex items-center gap-1.5 cursor-pointer flex-shrink-0" id="btn-delegate" type="button">
+<span class="">Delegate</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- HERO BANNER: Asymmetric Magazine Editorial Layout -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-surface rounded-3xl p-8 lg:p-10 border border-[#E6E0D2] shadow-sm relative overflow-hidden">
+<div class="lg:col-span-8 flex flex-col justify-between gap-6 z-10">
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-2 text-secondary-text font-caption tracking-widest uppercase text-[11px] font-semibold">
+<span class="w-2 h-2 rounded-full bg-primary inline-block"></span>
+<span class="">Studio Dispatch · 12h available capacity remaining this week</span>
+</div>
+<h1 class="font-serif-editorial text-[44px] md:text-[52px] leading-[1.08] text-text font-normal tracking-[-0.02em]">
+Welcome back, Alya.
+</h1>
+<p class="font-serif-editorial italic text-[20px] md:text-[22px] leading-relaxed text-[#505D56] max-w-2xl">
+Your autonomous team scanned incoming opportunities, validated studio hours, and drafted financial terms while you were away.
+</p>
+</div>
+<!-- Compact Stat ribbon inside hero -->
+<div class="flex flex-wrap items-center gap-4 pt-4 border-t border-[#EEE8DB]">
+<div class="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#F5F2E8] border border-[#E2DBD0]">
+<span class="material-symbols-outlined text-[16px] text-primary">timelapse</span>
+<span class="text-[13px] text-text"><strong class="font-semibold">12h</strong> studio capacity</span>
+</div>
+<div class="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#F5F2E8] border border-[#E2DBD0]">
+<span class="material-symbols-outlined text-[16px] text-primary">monetization_on</span>
+<span class="text-[13px] text-text"><strong class="font-semibold">$1,280</strong> pipeline in review</span>
+</div>
+<div class="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#F5F2E8] border border-[#E2DBD0]">
+<span class="material-symbols-outlined text-[16px] text-[#A66236]">stars</span>
+<span class="text-[13px] text-text">1 inbound offer awaiting review</span>
+</div>
+</div>
+</div>
+<!-- Right Side: Dedicated Illustration Box with Scout character holding artist stylus -->
+<div class="lg:col-span-4 flex items-center justify-center">
+<div class="w-full h-full min-h-[220px] rounded-2xl bg-gradient-to-br from-[#FFF5DA] via-[#FDF0E7] to-[#FCE6D8] border border-[#EED7B8] p-5 flex flex-col items-center justify-center relative shadow-inner overflow-hidden">
+<!-- Stylized decorative accents -->
+<div class="absolute -top-6 -right-6 w-24 h-24 bg-white/50 rounded-full blur-xl pointer-events-none"></div>
+<div class="absolute bottom-2 left-3 text-[10px] uppercase font-caption tracking-wider font-semibold text-[#8C6B38]">
+Scout · Field Agent
+</div>
+<!-- Illustration SVG: Scout holding an artist stylus / pen prop -->
+<div class="relative w-36 h-36 flex items-center justify-center">
+<svg class="w-full h-full drop-shadow-md" fill="none" viewBox="0 0 140 140">
+<!-- Soft shadow base -->
+<ellipse cx="70" cy="126" fill="#DCC7AC" fill-opacity="0.6" rx="42" ry="7"></ellipse>
+<!-- Stylus / Giant Pencil held by character (slanted in hand) -->
+<g transform="rotate(-30 70 70)">
+<rect fill="#F59E0B" height="72" rx="4" stroke="#202A25" stroke-width="2.5" width="14" x="90" y="24"></rect>
+<polygon fill="#FEEBC8" points="90,24 104,24 97,6" stroke="#202A25" stroke-width="2.5"></polygon>
+<polygon fill="#202A25" points="95,10 99,10 97,6"></polygon>
+<rect fill="#E2E8F0" height="10" stroke="#202A25" stroke-width="2" width="14" x="90" y="86"></rect>
+<rect fill="#F87171" height="8" rx="2" stroke="#202A25" stroke-width="2" width="14" x="90" y="96"></rect>
+</g>
+<!-- Scout Body (Egg/Organic bean shape) -->
+<path d="M42 74C42 46 54 28 76 28C96 28 104 46 104 74C104 98 90 114 68 114C46 114 42 96 42 74Z" fill="#F2C983" stroke="#202A25" stroke-width="3"></path>
+<!-- Left Eye (simple dot) -->
+<circle cx="60" cy="62" fill="#202A25" r="4"></circle>
+<!-- Right Eye with Monocle/Magnifier lens ring -->
+<circle cx="82" cy="62" fill="#FFFFFF" fill-opacity="0.5" r="11" stroke="#202A25" stroke-width="3"></circle>
+<circle cx="82" cy="62" fill="#202A25" r="4.2"></circle>
+<path d="M91 70L99 78" stroke="#202A25" stroke-linecap="round" stroke-width="3"></path>
+<!-- Cheerful mouth -->
+<path d="M64 78C68 83 74 83 78 78" stroke="#202A25" stroke-linecap="round" stroke-width="2.5"></path>
+<!-- Little beret/cap for artistic flair -->
+<ellipse cx="76" cy="28" fill="#245C47" rx="18" ry="6"></ellipse>
+<circle cx="76" cy="22" fill="#245C47" r="3"></circle>
+<!-- Feet -->
+<ellipse cx="58" cy="116" fill="#202A25" rx="7" ry="3.5"></ellipse>
+<ellipse cx="78" cy="116" fill="#202A25" rx="7" ry="3.5"></ellipse>
+<!-- Hand resting on hip/pen -->
+<circle cx="40" cy="78" fill="#F2C983" r="5" stroke="#202A25" stroke-width="2"></circle>
+</svg>
+</div>
+<span class="text-caption text-[12px] text-[#705831] font-medium mt-1">Brief matched &amp; calibrated</span>
+</div>
+</div>
+</section>
+<!-- "NEEDS YOU" DECISION CARD: Open Editorial Memorandum -->
+<section class="bg-[#FFFDF8] rounded-3xl p-7 lg:p-8 border-2 border-[#EEDBB2] shadow-sm relative">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between pb-5 border-b border-[#EFE7D5] gap-3">
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 rounded-full bg-[#FFF1D6] text-[#80520B] font-label-sm text-[12px] font-semibold border border-[#E9C884]">
+Needs you · Autonomous proposal ready
+</span>
+<span class="text-secondary-text font-caption text-[13px] flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary">verified</span>
+Northstar Studio · Inbound Motion Brief
+</span>
+</div>
+<span class="font-caption text-secondary-text text-[12px]">Received 4 hours ago via Emma Reed</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-6">
+<div class="lg:col-span-8 flex flex-col gap-4">
+<h2 class="font-serif-editorial text-[30px] md:text-[34px] leading-tight text-text font-normal">
+Review Northstar Studio offer: 2 Hero Launch Animations
+</h2>
+<p class="font-body-lg text-[15px] leading-relaxed text-secondary-text">
+Emma Reed originally requested <strong>4 animations ($500)</strong> with rapid turnaround. To protect your studio focus, the autonomous team calibrated this to <strong>2 hero launch animations for $450 over 5 business days</strong>, fitting perfectly within your 12-hour studio window with a required 60% advance deposit ($270).
+</p>
+<!-- Side-by-Side Scope Comparison: Request vs Calibrated Proposal -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mt-1">
+<!-- Original Inbound -->
+<div class="rounded-2xl p-4 bg-[#F7F4EB] border border-[#E5DECD] flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-caption text-[11px] uppercase tracking-wider text-secondary-text font-semibold">
+<span class="">Inbound Request</span>
+<span class="line-through text-[#9B3431]">Unbalanced</span>
+</div>
+<div class="text-[16px] font-medium text-text">4 Animations · USD 500</div>
+<div class="text-[12px] text-secondary-text">Requires 18+ hours. Would create weekend studio deficit.</div>
+</div>
+<!-- Team Calibrated Proposal -->
+<div class="rounded-2xl p-4 bg-[#F2F7F2] border border-[#CDE1D3] flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-caption text-[11px] uppercase tracking-wider text-primary font-semibold">
+<span class="">Team Calibrated Proposal</span>
+<span class="text-primary font-bold">Recommended</span>
+</div>
+<div class="text-[16px] font-semibold text-primary">2 Hero Animations · USD 450</div>
+<div class="text-[12px] text-secondary-text">5 Days · 12h cap · 60% gross deposit ($270) locked upfront.</div>
+</div>
+</div>
+</div>
+<!-- Action Column -->
+<div class="lg:col-span-4 flex flex-col justify-between bg-[#FBF9F2] rounded-2xl p-5 border border-[#EAE3D3] gap-5">
+<div class="flex flex-col gap-3">
+<span class="font-caption uppercase text-[11px] tracking-wider text-secondary-text font-semibold">Summary Terms</span>
+<div class="flex justify-between items-center text-[14px] pb-2 border-b border-[#EAE4D7]">
+<span class="text-secondary-text">Fixed Price</span>
+<span class="font-medium text-text">$450.00 USD</span>
+</div>
+<div class="flex justify-between items-center text-[14px] pb-2 border-b border-[#EAE4D7]">
+<span class="text-secondary-text">Upfront Deposit (60%)</span>
+<span class="font-semibold text-primary">$270.00 USD</span>
+</div>
+<div class="flex justify-between items-center text-[14px] pb-2 border-b border-[#EAE4D7]">
+<span class="text-secondary-text">Capacity Required</span>
+<span class="font-medium text-text">12 Hours total</span>
+</div>
+<div class="flex justify-between items-center text-[14px]">
+<span class="text-secondary-text">Delivery Target</span>
+<span class="font-medium text-text">Friday 5:00 PM</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 pt-2">
+<button class="w-full bg-primary text-on-primary py-3 rounded-xl font-label-md text-[14px] font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs" onclick="openInspector('scout')" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+<span class="">Review offer</span>
+</button>
+<button class="w-full bg-surface border border-[#C8C1B0] text-text py-2.5 rounded-xl font-label-md text-[13px] hover:bg-[#F2ECE1] transition-colors flex items-center justify-center gap-2 cursor-pointer" onclick="openInspector('finance')" type="button">
+<span class="material-symbols-outlined text-[17px] text-secondary-text">tune</span>
+<span class="">Adjust terms</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- "WHILE YOU WERE AWAY" ROW: 3 Pastel Tinted Cards -->
+<section class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h2 class="font-serif-editorial text-[26px] text-text font-normal">While you were away</h2>
+<span class="font-caption text-secondary-text text-[12px]">3 background autonomous checkpoints completed</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+<!-- Scout: Apricot Tinted Card -->
+<div class="rounded-3xl p-6 bg-[#FFF4EC] border border-[#FADECB] shadow-xs hover:border-[#F2C983] transition-all cursor-pointer flex flex-col justify-between gap-4 group" onclick="openInspector('scout')">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-10 h-10 rounded-2xl bg-[#FFE4D0] border border-[#F2C983] flex items-center justify-center p-1">
+<svg class="w-full h-full" fill="none" viewBox="0 0 72 72">
+<path d="M18 36C18 22 26 12 40 12C52 12 56 22 56 36C56 50 48 60 34 60C20 60 18 48 18 36Z" fill="#F2C983" stroke="#202A25" stroke-width="2.5"></path>
+<circle cx="29" cy="31" fill="#202A25" r="3"></circle>
+<circle cx="43" cy="31" fill="#FFFFFF" fill-opacity="0.4" r="8" stroke="#202A25" stroke-width="2.5"></circle>
+<circle cx="43" cy="31" fill="#202A25" r="3.2"></circle>
+</svg>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-[14px] font-semibold text-text">Scout</span>
+<span class="font-caption text-[11px] text-secondary-text">Opportunity Specialist</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full text-[11px] font-label-sm font-medium bg-[#FFE0CC] text-[#934A1B]">Matched</span>
+</div>
+<div class="flex flex-col gap-1.5">
+<p class="font-serif-editorial text-[20px] text-text font-normal leading-snug group-hover:text-primary transition-colors">
+"Found a possible client for you."
+</p>
+<p class="font-body-md text-[13px] leading-relaxed text-secondary-text">
+Emma Reed @ Northstar Studio. Matched recent fintech 3D &amp; kinetic UI reels to Emma's brief requirements.
+</p>
+</div>
+<div class="flex items-center gap-1.5 text-primary font-label-md text-[13px] font-medium pt-1">
+<span class="">View matched reel</span>
+<span class="material-symbols-outlined text-[15px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+</div>
+</div>
+<!-- Operations: Soft Sage Tinted Card -->
+<div class="rounded-3xl p-6 bg-[#F1F6EE] border border-[#D5E3CF] shadow-xs hover:border-[#A4C499] transition-all cursor-pointer flex flex-col justify-between gap-4 group" onclick="openInspector('operations')">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-10 h-10 rounded-2xl bg-[#E2EEDC] border border-[#C6D4B5] flex items-center justify-center p-1">
+<svg class="w-full h-full" fill="none" viewBox="0 0 72 72">
+<path d="M18 58V32C18 20 26 12 36 12C46 12 54 20 54 32V58H18Z" fill="#C6D4B5" stroke="#202A25" stroke-width="2.5"></path>
+<circle cx="29" cy="32" fill="#202A25" r="2.8"></circle>
+<circle cx="43" cy="32" fill="#202A25" r="2.8"></circle>
+<rect fill="#FFFFFF" height="12" rx="2" stroke="#202A25" stroke-width="2" width="12" x="30" y="40"></rect>
+</svg>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-[14px] font-semibold text-text">Operations</span>
+<span class="font-caption text-[11px] text-secondary-text">Capacity &amp; Schedule</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full text-[11px] font-label-sm font-medium bg-[#E0EED9] text-[#406830]">Cap Locked</span>
+</div>
+<div class="flex flex-col gap-1.5">
+<p class="font-serif-editorial text-[20px] text-text font-normal leading-snug group-hover:text-primary transition-colors">
+"This deadline is getting close."
+</p>
+<p class="font-body-md text-[13px] leading-relaxed text-secondary-text">
+Validated 12h studio ceiling for this week. Safe delivery partition set to Friday evening with zero overtime risk.
+</p>
+</div>
+<div class="flex items-center gap-1.5 text-primary font-label-md text-[13px] font-medium pt-1">
+<span class="">Review calendar allocation</span>
+<span class="material-symbols-outlined text-[15px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+</div>
+</div>
+<!-- Finance: Mint/Teal Tinted Card -->
+<div class="rounded-3xl p-6 bg-[#EDF7F2] border border-[#CEE7DC] shadow-xs hover:border-[#96D1B9] transition-all cursor-pointer flex flex-col justify-between gap-4 group" onclick="openInspector('finance')">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-10 h-10 rounded-2xl bg-[#DDF1E7] border border-[#B6D9C6] flex items-center justify-center p-1">
+<svg class="w-full h-full" fill="none" viewBox="0 0 72 72">
+<circle cx="36" cy="36" fill="#B6D9C6" r="24" stroke="#202A25" stroke-width="2.5"></circle>
+<circle cx="29" cy="30" fill="#202A25" r="2.8"></circle>
+<circle cx="43" cy="30" fill="#202A25" r="2.8"></circle>
+<rect fill="#FFFFFF" height="15" rx="2" stroke="#202A25" stroke-width="2" width="14" x="29" y="38"></rect>
+</svg>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-[14px] font-semibold text-text">Finance</span>
+<span class="font-caption text-[11px] text-secondary-text">Invoicing &amp; Cashflow</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full text-[11px] font-label-sm font-medium bg-[#DCF2E7] text-[#1D5E44]">Deposit Ready</span>
+</div>
+<div class="flex flex-col gap-1.5">
+<p class="font-serif-editorial text-[20px] text-text font-normal leading-snug group-hover:text-primary transition-colors">
+"I prepared a smaller offer that fits your week."
+</p>
+<p class="font-body-md text-[13px] leading-relaxed text-secondary-text">
+60% gross deposit ($270 / IDR 3,969,000) structured with sandbox terms to cover upfront project cost immediately.
+</p>
+</div>
+<div class="flex items-center gap-1.5 text-primary font-label-md text-[13px] font-medium pt-1">
+<span class="">Inspect deposit draft</span>
+<span class="material-symbols-outlined text-[15px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+</div>
+</div>
+</div>
+</section>
+<!-- BOTTOM "YOUR TEAM": Compact Horizontal Strip with Silhouette Badges -->
+<section class="bg-surface rounded-3xl p-6 border border-[#E6E0D2] shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+<div class="flex flex-col">
+<span class="font-serif-editorial text-[22px] text-text font-normal">Your Business Team</span>
+<span class="font-caption text-secondary-text text-[12px]">All 6 agents active. Tap any specialist to review current autonomous tasks.</span>
+</div>
+<div class="flex flex-wrap items-center gap-2.5">
+<!-- Scout -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAF8F3] hover:bg-[#FFF4EC] border border-[#E2DBD0] hover:border-[#F2C983] transition-all cursor-pointer group" onclick="openInspector('scout')">
+<span class="w-6 h-6 rounded-full bg-[#F2C983]/30 border border-[#F2C983] flex items-center justify-center p-0.5">
+<svg class="w-full h-full" viewBox="0 0 72 72"><circle cx="36" cy="36" fill="#F2C983" r="20"></circle></svg>
+</span>
+<div class="flex items-center gap-1 text-[13px]">
+<span class="font-medium text-text">Scout</span>
+<span class="text-[11px] text-secondary-text">· Reviewing Brief</span>
+</div>
+</button>
+<!-- Operations -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAF8F3] hover:bg-[#F1F6EE] border border-[#E2DBD0] hover:border-[#C6D4B5] transition-all cursor-pointer group" onclick="openInspector('operations')">
+<span class="w-6 h-6 rounded-full bg-[#C6D4B5]/30 border border-[#C6D4B5] flex items-center justify-center p-0.5">
+<svg class="w-full h-full" viewBox="0 0 72 72"><circle cx="36" cy="36" fill="#C6D4B5" r="20"></circle></svg>
+</span>
+<div class="flex items-center gap-1 text-[13px]">
+<span class="font-medium text-text">Operations</span>
+<span class="text-[11px] text-secondary-text">· 12h Cap Lock</span>
+</div>
+</button>
+<!-- Finance -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAF8F3] hover:bg-[#EDF7F2] border border-[#E2DBD0] hover:border-[#B6D9C6] transition-all cursor-pointer group" onclick="openInspector('finance')">
+<span class="w-6 h-6 rounded-full bg-[#B6D9C6]/30 border border-[#B6D9C6] flex items-center justify-center p-0.5">
+<svg class="w-full h-full" viewBox="0 0 72 72"><circle cx="36" cy="36" fill="#B6D9C6" r="20"></circle></svg>
+</span>
+<div class="flex items-center gap-1 text-[13px]">
+<span class="font-medium text-text">Finance</span>
+<span class="text-[11px] text-secondary-text">· $270 Deposit</span>
+</div>
+</button>
+<!-- Promoter -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAF8F3] hover:bg-[#FFF1EE] border border-[#E2DBD0] hover:border-[#EFAF9B] transition-all cursor-pointer group" onclick="openInspector('promoter')">
+<span class="w-6 h-6 rounded-full bg-[#EFAF9B]/30 border border-[#EFAF9B] flex items-center justify-center p-0.5">
+<svg class="w-full h-full" viewBox="0 0 72 72"><circle cx="36" cy="36" fill="#EFAF9B" r="20"></circle></svg>
+</span>
+<div class="flex items-center gap-1 text-[13px]">
+<span class="font-medium text-text">Promoter</span>
+<span class="text-[11px] text-secondary-text">· Easing Reel</span>
+</div>
+</button>
+<!-- Sales -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAF8F3] hover:bg-[#EEF6FB] border border-[#E2DBD0] hover:border-[#B9D8EC] transition-all cursor-pointer group" onclick="openInspector('sales')">
+<span class="w-6 h-6 rounded-full bg-[#B9D8EC]/30 border border-[#B9D8EC] flex items-center justify-center p-0.5">
+<svg class="w-full h-full" viewBox="0 0 72 72"><circle cx="36" cy="36" fill="#B9D8EC" r="20"></circle></svg>
+</span>
+<div class="flex items-center gap-1 text-[13px]">
+<span class="font-medium text-text">Sales</span>
+<span class="text-[11px] text-secondary-text">· $85/hr Standard</span>
+</div>
+</button>
+<!-- Account Manager -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAF8F3] hover:bg-[#F6F2FB] border border-[#E2DBD0] hover:border-[#D3C6E7] transition-all cursor-pointer group" onclick="openInspector('account')">
+<span class="w-6 h-6 rounded-full bg-[#D3C6E7]/30 border border-[#D3C6E7] flex items-center justify-center p-0.5">
+<svg class="w-full h-full" viewBox="0 0 72 72"><circle cx="36" cy="36" fill="#D3C6E7" r="20"></circle></svg>
+</span>
+<div class="flex items-center gap-1 text-[13px]">
+<span class="font-medium text-text">Account Mgr</span>
+<span class="text-[11px] text-secondary-text">· Client Channel</span>
+</div>
+</button>
+</div>
+</section>
+</div>
+</main>
+</div>
+<!-- Slide-in Inspector Drawer (Hidden by default) -->
+<div class="fixed inset-y-0 right-0 w-[400px] bg-[#FAF8F3] shadow-2xl z-50 flex-col justify-between p-6 border-l border-[#E2DBD0] hidden" id="agent-inspector">
+<div class="flex flex-col gap-6">
+<div class="flex items-center justify-between pb-4 border-b border-[#E6E0D2]">
+<div class="flex items-center gap-3">
+<div class="w-14 h-14 rounded-2xl flex items-center justify-center border shadow-xs flex-shrink-0 p-1.5 bg-[#FFF4EC] border-[#F2C983]" id="inspector-avatar"><svg class="w-12 h-12 drop-shadow-sm" viewBox="0 0 72 72" fill="none"><path d="M18 36C18 22 26 12 40 12C52 12 56 22 56 36C56 50 48 60 34 60C20 60 18 48 18 36Z" fill="#F2C983" stroke="#202A25" stroke-width="2.5"></path><circle cx="29" cy="31" r="3" fill="#202A25"></circle><circle cx="43" cy="31" r="8" fill="#FFFFFF" fill-opacity="0.4" stroke="#202A25" stroke-width="2.5"></circle><circle cx="43" cy="31" r="3.2" fill="#202A25"></circle><path d="M49 37L57 45" stroke="#202A25" stroke-width="2.5" stroke-linecap="round"></path><path d="M31 43C34 46 38 46 41 43" stroke="#202A25" stroke-width="2" stroke-linecap="round"></path></svg></div>
+<div class="flex flex-col">
+<span class="font-serif-editorial text-[24px] text-text font-normal leading-tight" id="inspector-name">Scout</span>
+<span class="font-caption text-[12px] text-secondary-text" id="inspector-role">Opportunity Specialist</span>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-[#ECE7DC] flex items-center justify-center text-secondary-text hover:text-text cursor-pointer transition-colors" onclick="toggleInspectorVisibility()" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between bg-[#F2EDE2] p-3.5 rounded-2xl border border-[#E5DECD]">
+<span class="font-label-md text-[13px] text-secondary-text">Current State</span>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-label-sm font-medium bg-[#FFE0CC] text-[#934A1B]" id="inspector-status">Working</span>
+</div>
+<div class="flex flex-col gap-1.5">
+<span class="font-caption text-[11px] text-secondary-text uppercase tracking-wider font-semibold">Active Autonomous Assignment</span>
+<p class="font-body-strong text-[14px] text-text bg-white p-4 rounded-2xl border border-[#E6E0D2] shadow-xs" id="inspector-task">Found a possible client for you: Emma Reed @ Northstar Studio. Filtered 4 animations into 2 hero launch items.</p>
+</div>
+<div class="flex flex-col gap-1.5">
+<span class="font-caption text-[11px] text-secondary-text uppercase tracking-wider font-semibold">Evidence &amp; Audit Trail</span>
+<p class="font-body-md text-[13px] text-secondary-text bg-[#F7F4EB] p-4 rounded-2xl border border-[#E2DBD0] leading-relaxed" id="inspector-evidence">Matched recent fintech 3D and kinetic UI reels. Inbound brief validated against 12h available weekly capacity.</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-2.5 pt-4 border-t border-[#E6E0D2]">
+<button class="w-full bg-primary text-on-primary py-3 rounded-xl font-label-md text-[13px] font-medium hover:bg-primary/90 transition-colors cursor-pointer shadow-xs" onclick="alert('Action approved and logged to studio ledger.'); toggleInspectorVisibility();" type="button">
+Approve recommendation
+</button>
+<button class="w-full bg-[#FAF8F3] border border-[#C8C1B0] text-text py-2.5 rounded-xl font-label-md text-[13px] hover:bg-[#F2ECE1] transition-colors cursor-pointer" onclick="toggleInspectorVisibility()" type="button">
+Dismiss drawer
+</button>
+</div>
+</div>
+<!-- SINGLE CURSOR DISCIPLINE: Animated cursor placed beside Scout evidence (not covering controls) -->
+<div class="fixed z-30 pointer-events-none transition-transform duration-100 ease-out hidden lg:block" id="scout-animated-cursor" style="left: 480px; top: 236px; transform: translate(calc(10% + 2.94785px), -0.17994px);">
+<div class="flex items-center gap-1.5 bg-[#F2C983] text-[#202A25] px-2.5 py-1 rounded-full text-[12px] font-medium shadow-md border border-[#202A25]/20">
+<span class="w-2 h-2 rounded-full bg-[#202A25] animate-ping"></span>
+<span class="">Scout is reviewing brief</span>
+</div>
+<svg class="w-4 h-4 text-[#202A25] -mt-1 ml-2 drop-shadow-sm" fill="currentColor" viewBox="0 0 24 24">
+<path d="M5.65376 12.3673H5.65451L13.5855 20.2983L17.2217 16.6621L9.29074 8.73114V8.73039L5.65376 12.3673Z"></path>
+</svg>
+</div>
+<!-- INTERACTIVITY SCRIPT -->
+<script>
+    let isFocusMode = false;
+    let cursorInterval = null;
+
+    const agentDatabase = {
+      scout: {
+        name: "Scout",
+        role: "Opportunity Specialist",
+        status: "Working",
+        statusColor: "bg-[#FFE0CC] text-[#934A1B]",
+        avatarBg: "bg-[#FFF4EC] border-[#F2C983]",
+        avatarSvg: `<svg class="w-12 h-12 drop-shadow-sm" viewBox="0 0 72 72" fill="none"><path d="M18 36C18 22 26 12 40 12C52 12 56 22 56 36C56 50 48 60 34 60C20 60 18 48 18 36Z" fill="#F2C983" stroke="#202A25" stroke-width="2.5"/><circle cx="29" cy="31" r="3" fill="#202A25"/><circle cx="43" cy="31" r="8" fill="#FFFFFF" fill-opacity="0.4" stroke="#202A25" stroke-width="2.5"/><circle cx="43" cy="31" r="3.2" fill="#202A25"/><path d="M49 37L57 45" stroke="#202A25" stroke-width="2.5" stroke-linecap="round"/><path d="M31 43C34 46 38 46 41 43" stroke="#202A25" stroke-width="2" stroke-linecap="round"/></svg>`,
+        task: "Found a possible client for you: Emma Reed @ Northstar Studio. Filtered 4 animations into 2 hero launch items.",
+        evidence: "Matched recent fintech 3D and kinetic UI reels. Inbound brief validated against 12h available weekly capacity."
+      },
+      operations: {
+        name: "Operations",
+        role: "Capacity & Schedule",
+        status: "Cap Locked",
+        statusColor: "bg-[#E0EED9] text-[#406830]",
+        avatarBg: "bg-[#F1F6EE] border-[#C6D4B5]",
+        avatarSvg: `<svg class="w-12 h-12 drop-shadow-sm" viewBox="0 0 72 72" fill="none"><path d="M18 58V32C18 20 26 12 36 12C46 12 54 20 54 32V58H18Z" fill="#C6D4B5" stroke="#202A25" stroke-width="2.5"/><circle cx="29" cy="32" r="2.8" fill="#202A25"/><circle cx="43" cy="32" r="2.8" fill="#202A25"/><rect x="30" y="40" width="12" height="12" rx="2" fill="#FFFFFF" stroke="#202A25" stroke-width="2"/><path d="M33 46L35.5 48.5L39 43" stroke="#202A25" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+        task: "Deadline lock: strict 12-hour studio ceiling enforced to ensure delivery by Friday 5:00 PM without freelance fatigue.",
+        evidence: "12 hours available capacity verified against existing freelance milestones. Zero weekend overtime approved."
+      },
+      finance: {
+        name: "Finance",
+        role: "Invoicing & Cashflow",
+        status: "Deposit Ready",
+        statusColor: "bg-[#DCF2E7] text-[#1D5E44]",
+        avatarBg: "bg-[#EDF7F2] border-[#B6D9C6]",
+        avatarSvg: `<svg class="w-12 h-12 drop-shadow-sm" viewBox="0 0 72 72" fill="none"><circle cx="36" cy="36" r="24" fill="#B6D9C6" stroke="#202A25" stroke-width="2.5"/><circle cx="29" cy="30" r="2.8" fill="#202A25"/><circle cx="43" cy="30" r="2.8" fill="#202A25"/><rect x="29" y="38" width="14" height="15" rx="2" fill="#FFFFFF" stroke="#202A25" stroke-width="2"/><line x1="32" y1="43" x2="40" y2="43" stroke="#202A25" stroke-width="2"/><line x1="32" y1="48" x2="40" y2="48" stroke="#202A25" stroke-width="2"/></svg>`,
+        task: "Structured 60% gross deposit ($270 / IDR 3,969,000) with instant Stripe conversion lock.",
+        evidence: "Upfront escrow protects initial asset drafting costs. Remainder $180 due upon final render delivery."
+      },
+      promoter: {
+        name: "Promoter",
+        role: "Distribution & Social Presence",
+        status: "Draft Ready",
+        statusColor: "bg-[#FFF1D6] text-[#80520B]",
+        avatarBg: "bg-[#FFF1EE] border-[#EFAF9B]",
+        avatarSvg: `<svg class="w-12 h-12 drop-shadow-sm" viewBox="0 0 72 72" fill="none"><path d="M36 10C37 22 40 26 50 29C60 31 63 33 63 36C63 39 60 41 50 43C40 46 37 50 36 62C35 50 32 46 22 43C12 41 9 39 9 36C9 33 12 31 22 29C32 26 35 22 36 10Z" fill="#EFAF9B" stroke="#202A25" stroke-width="2.5"/><circle cx="29" cy="34" r="2.8" fill="#202A25"/><circle cx="43" cy="34" r="2.8" fill="#202A25"/></svg>`,
+        task: "Drafting showcase breakdown on geometric velocity curves for After Effects post.",
+        evidence: "Video artifact easing_curves_reel_v02.mp4 processed & copy scheduled for Thu 2:00 PM."
+      },
+      sales: {
+        name: "Sales",
+        role: "Deal Structuring & Pipeline",
+        status: "Active",
+        statusColor: "bg-[#EEF6FB] text-[#23587C]",
+        avatarBg: "bg-[#EEF6FB] border-[#B9D8EC]",
+        avatarSvg: `<svg class="w-12 h-12 drop-shadow-sm" viewBox="0 0 72 72" fill="none"><rect x="20" y="14" width="32" height="44" rx="14" fill="#B9D8EC" stroke="#202A25" stroke-width="2.5"/><circle cx="29" cy="32" r="2.8" fill="#202A25"/><circle cx="43" cy="32" r="2.8" fill="#202A25"/></svg>`,
+        task: "Holding pipeline baseline at $85/hr standard for international direct clients.",
+        evidence: "Standard pricing tier confirmed: minimum project commitment USD 450."
+      },
+      account: {
+        name: "Account Manager",
+        role: "Client Care & Retainer",
+        status: "Monitoring",
+        statusColor: "bg-[#F6F2FB] text-[#553C7B]",
+        avatarBg: "bg-[#F6F2FB] border-[#D3C6E7]",
+        avatarSvg: `<svg class="w-12 h-12 drop-shadow-sm" viewBox="0 0 72 72" fill="none"><rect x="16" y="16" width="40" height="40" rx="10" fill="#D3C6E7" stroke="#202A25" stroke-width="2.5"/><circle cx="29" cy="32" r="2.8" fill="#202A25"/><circle cx="43" cy="32" r="2.8" fill="#202A25"/></svg>`,
+        task: "Monitoring client channel for Emma Reed sign-off on 2 hero animation scope.",
+        evidence: "Inbound channel: Emma Reed (Head of Brand, Northstar Studio) verified."
+      }
+    };
+
+    function openInspector(agentKey) {
+      const data = agentDatabase[agentKey];
+      if (!data) return;
+
+      const drawer = document.getElementById('agent-inspector');
+      if (drawer) {
+        drawer.classList.remove('hidden');
+        drawer.classList.add('flex');
+      }
+
+      document.getElementById('inspector-name').innerText = data.name;
+      document.getElementById('inspector-role').innerText = data.role;
+      
+      const statusElem = document.getElementById('inspector-status');
+      statusElem.innerText = data.status;
+      statusElem.className = `inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-label-sm font-medium ${data.statusColor}`;
+
+      const avatarBox = document.getElementById('inspector-avatar');
+      avatarBox.className = `w-14 h-14 rounded-2xl flex items-center justify-center border shadow-xs flex-shrink-0 p-1.5 ${data.avatarBg}`;
+      avatarBox.innerHTML = data.avatarSvg;
+
+      document.getElementById('inspector-task').innerText = data.task;
+      document.getElementById('inspector-evidence').innerText = data.evidence;
+    }
+
+    function toggleInspectorVisibility() {
+      const drawer = document.getElementById('agent-inspector');
+      if (drawer) {
+        drawer.classList.add('hidden');
+        drawer.classList.remove('flex');
+      }
+    }
+
+    function toggleFocusMode() {
+      isFocusMode = !isFocusMode;
+      const statusText = document.getElementById('focus-status-text');
+      const icon = document.getElementById('focus-icon');
+      const cursor = document.getElementById('scout-animated-cursor');
+
+      if (isFocusMode) {
+        statusText.innerText = "On / Calm";
+        icon.innerText = "center_focus_strong";
+        icon.classList.remove('text-secondary-text');
+        icon.classList.add('text-primary');
+        if (cursor) cursor.style.display = 'none';
+        if (cursorInterval) clearInterval(cursorInterval);
+      } else {
+        statusText.innerText = "Off / Normal";
+        icon.innerText = "center_focus_weak";
+        icon.classList.remove('text-primary');
+        icon.classList.add('text-secondary-text');
+        if (cursor) cursor.style.display = '';
+        startCursorAnimation();
+      }
+    }
+
+    function startCursorAnimation() {
+      const cursor = document.getElementById('scout-animated-cursor');
+      if (!cursor) return;
+      let angle = 0;
+      if (cursorInterval) clearInterval(cursorInterval);
+      cursorInterval = setInterval(() => {
+        if (isFocusMode) return;
+        angle += 0.04;
+        const x = Math.sin(angle) * 3;
+        const y = Math.cos(angle * 1.2) * 2;
+        cursor.style.transform = `translate(calc(10% + ${x}px), ${y}px)`;
+      }, 50);
+    }
+
+    startCursorAnimation();
+
+    document.getElementById('btn-delegate')?.addEventListener('click', function() {
+      const query = document.getElementById('delegation-query');
+      const oldVal = query.value;
+      query.value = "Delegating: " + oldVal + " ...";
+      setTimeout(() => {
+        query.value = oldVal;
+        alert("Delegated to Scout & Operations: Researching US motion client leads calibrated for your 12h weekly studio capacity.");
+      }, 450);
+    });
+  </script>
+
+
+</body></html>

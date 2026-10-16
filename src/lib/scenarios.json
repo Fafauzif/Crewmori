@@ -1,0 +1,4066 @@
+{
+  "schema_version": "1.0.0",
+  "application_policy": "Always restore a fresh baseline, replace named tables, then upsert complete records. Never stack overlays. Confirm if edited work would be lost. Apply UI state only after state commit.",
+  "scenarios": [
+    {
+      "id": "review_ready",
+      "title": "Ready for your review",
+      "description": "Canonical baseline: no share, acceptance, reservation, project, invoice or receipt.",
+      "sample_clock": "2026-10-16T09:00:00+07:00",
+      "base_fixture_id": "crewmori_sample_v1",
+      "replace_tables": [],
+      "upsert_records": {},
+      "ui_state": {},
+      "assertions": [
+        "Northstar awaits owner review",
+        "No received money or reserved dates"
+      ]
+    },
+    {
+      "id": "first_use",
+      "title": "First use",
+      "description": "A sample sign-up has not completed onboarding. Existing sample records are hidden behind setup until the user skips to demo or completes setup.",
+      "sample_clock": "2026-10-16T09:00:00+07:00",
+      "base_fixture_id": "crewmori_sample_v1",
+      "replace_tables": [],
+      "upsert_records": {
+        "onboarding_sessions": {
+          "onboarding_alya": {
+            "id": "onboarding_alya",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "owner_id": "owner_alya",
+            "state": "in_progress",
+            "current_step": "business",
+            "completed_steps": [],
+            "draft": {},
+            "skipped_connection_ids": []
+          }
+        }
+      },
+      "ui_state": {
+        "route": "/onboarding",
+        "session": {
+          "mode": "sample",
+          "actor": "owner_alya"
+        }
+      },
+      "assertions": [
+        "Setup resumes at business",
+        "Skip loads explicit sample workspace, never a real connection"
+      ]
+    },
+    {
+      "id": "running_handoff",
+      "title": "Team handoff in progress",
+      "description": "Operations and Finance are working on the recorded request; their final artifacts do not yet exist in this branch.",
+      "sample_clock": "2026-10-16T09:00:00+07:00",
+      "base_fixture_id": "crewmori_sample_v1",
+      "replace_tables": [
+        "artifacts",
+        "handoffs",
+        "events"
+      ],
+      "upsert_records": {
+        "agent_runs": {
+          "run_operations_northstar": {
+            "id": "run_operations_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "operations",
+            "task_kind": "assess_opportunity",
+            "title": "Check effort and timing",
+            "status": "running",
+            "attempt": 1,
+            "previous_attempt_id": null,
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "output_artifact_ids": [],
+            "blocked_reason": null,
+            "error_code": null,
+            "progress_step": 1,
+            "progress_total": 3,
+            "control_version": 1,
+            "semantic_focus_target": "team.agent.operations",
+            "source_ids": [
+              "source_northstar_request"
+            ]
+          },
+          "run_finance_northstar": {
+            "id": "run_finance_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "finance",
+            "task_kind": "assess_opportunity",
+            "title": "Check deposit assumptions",
+            "status": "running",
+            "attempt": 1,
+            "previous_attempt_id": null,
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "output_artifact_ids": [],
+            "blocked_reason": null,
+            "error_code": null,
+            "progress_step": 1,
+            "progress_total": 3,
+            "control_version": 1,
+            "semantic_focus_target": "team.agent.finance",
+            "source_ids": [
+              "source_northstar_request"
+            ]
+          },
+          "run_sales_northstar": {
+            "id": "run_sales_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "sales",
+            "task_kind": "draft_offer",
+            "title": "Prepare a focused offer",
+            "status": "waiting_input",
+            "attempt": 1,
+            "previous_attempt_id": null,
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "output_artifact_ids": [],
+            "blocked_reason": "Await Operations and Finance assessments for requirements version 1",
+            "error_code": null,
+            "progress_step": 0,
+            "progress_total": 3,
+            "control_version": 1,
+            "semantic_focus_target": "team.agent.sales",
+            "source_ids": [
+              "source_northstar_request"
+            ]
+          },
+          "run_scout_northstar": {
+            "id": "run_scout_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "scout",
+            "task_kind": "assess_opportunity",
+            "title": "Assess the launch request",
+            "status": "completed",
+            "attempt": 1,
+            "previous_attempt_id": null,
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "output_artifact_ids": [
+              "artifact_scout_northstar"
+            ],
+            "blocked_reason": null,
+            "error_code": null,
+            "progress_step": 3,
+            "progress_total": 3,
+            "control_version": 1,
+            "semantic_focus_target": "team.agent.scout",
+            "source_ids": [
+              "source_northstar_request"
+            ]
+          }
+        },
+        "assessments": {
+          "assessment_operations_northstar": {
+            "id": "assessment_operations_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "operations",
+            "opportunity_id": "opportunity_northstar",
+            "requirements_version": 1,
+            "policy_version": 1,
+            "status": "pending",
+            "summary": "Assessment is in progress.",
+            "factual_findings": [],
+            "assumptions": [],
+            "unknowns": [
+              "Assessment not completed"
+            ],
+            "proposed_effort_minutes": null,
+            "source_ids": [
+              "source_northstar_request"
+            ],
+            "run_id": "run_operations_northstar"
+          },
+          "assessment_finance_northstar": {
+            "id": "assessment_finance_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "finance",
+            "opportunity_id": "opportunity_northstar",
+            "requirements_version": 1,
+            "policy_version": 1,
+            "status": "pending",
+            "summary": "Assessment is in progress.",
+            "factual_findings": [],
+            "assumptions": [],
+            "unknowns": [
+              "Assessment not completed"
+            ],
+            "proposed_effort_minutes": null,
+            "source_ids": [
+              "source_northstar_request"
+            ],
+            "run_id": "run_finance_northstar"
+          }
+        },
+        "offers": {
+          "offer_northstar": {
+            "id": "offer_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "client_id": "client_northstar",
+            "opportunity_id": "opportunity_northstar",
+            "current_version_id": "offer_northstar_v1",
+            "status": "draft",
+            "accepted_version_id": null,
+            "shared_version_id": null
+          }
+        },
+        "offer_versions": {
+          "offer_northstar_v1": {
+            "id": "offer_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T07:00:00+07:00",
+            "updated_at": "2026-10-14T07:00:00+07:00",
+            "offer_id": "offer_northstar",
+            "revision": 1,
+            "title": "Two hero launch animations",
+            "deliverables": [
+              {
+                "key": "animation_1",
+                "label": "Hero launch animation 1",
+                "quantity": 1
+              },
+              {
+                "key": "animation_2",
+                "label": "Hero launch animation 2",
+                "quantity": 1
+              }
+            ],
+            "price": {
+              "amount_minor": 45000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "estimated_effort_minutes": 720,
+            "terms": {
+              "delivery_business_days": 5,
+              "deposit_basis_points": 6000,
+              "reservation_hours": 48,
+              "start_basis": "next_business_day_after_confirmed_deposit_and_required_inputs",
+              "timezone": "Asia/Jakarta",
+              "workdays": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "holidays": [],
+              "start_local_time": "09:00",
+              "due_local_time": "17:00",
+              "required_input_keys": [
+                "brand_assets",
+                "launch_message"
+              ],
+              "acceptance_disclosure": "Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day five, counting that start day as day one. Late prerequisites require rescheduling."
+            },
+            "requirements_id": "requirements_northstar",
+            "requirements_version": 1,
+            "policy_version": 1,
+            "assessment_ids": [
+              "assessment_scout_northstar"
+            ],
+            "state": "draft",
+            "buyer_note": "A focused pair of animations for your launch.",
+            "expires_at": "2026-10-23T17:00:00+07:00",
+            "predecessor_id": null,
+            "immutable_after_acceptance": false
+          }
+        },
+        "artifacts": {
+          "artifact_scout_northstar": {
+            "id": "artifact_scout_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "kind": "assessment",
+            "title": "Lead fit brief",
+            "creator_run_id": "run_scout_northstar",
+            "role_id": "scout",
+            "record_ref": {
+              "table": "assessments",
+              "id": "assessment_scout_northstar",
+              "version": 1
+            },
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "source_ids": [
+              "source_northstar_request"
+            ],
+            "status": "current"
+          }
+        },
+        "handoffs": {
+          "handoff_scout_sales": {
+            "id": "handoff_scout_sales",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "from_run_id": "run_scout_northstar",
+            "to_run_id": "run_sales_northstar",
+            "artifact_id": "artifact_scout_northstar",
+            "status": "consumed",
+            "input_version": 1
+          }
+        },
+        "events": {
+          "event_001": {
+            "id": "event_001",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T07:01:00+07:00",
+            "updated_at": "2026-10-14T07:01:00+07:00",
+            "sequence": 1,
+            "occurred_at": "2026-10-14T07:01:00+07:00",
+            "kind": "source.recorded",
+            "role_id": "scout",
+            "run_id": null,
+            "summary": "Northstar's sample request was recorded.",
+            "record_refs": [
+              {
+                "table": "opportunities",
+                "id": "opportunity_northstar",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "team.agent.scout",
+            "cause_command_id": null,
+            "visibility": "owner"
+          },
+          "event_002": {
+            "id": "event_002",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T07:10:00+07:00",
+            "updated_at": "2026-10-14T07:10:00+07:00",
+            "sequence": 2,
+            "occurred_at": "2026-10-14T07:10:00+07:00",
+            "kind": "assessment.completed",
+            "role_id": "scout",
+            "run_id": null,
+            "summary": "The launch request fits; a narrower scope is recommended.",
+            "record_refs": [
+              {
+                "table": "assessments",
+                "id": "assessment_scout_northstar",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "team.agent.scout",
+            "cause_command_id": null,
+            "visibility": "owner"
+          }
+        }
+      },
+      "ui_state": {
+        "route": "/app/team"
+      },
+      "assertions": [
+        "Sales is waiting for inputs",
+        "No finished Operations/Finance artifacts or success events",
+        "At most two task cursors"
+      ]
+    },
+    {
+      "id": "shared_offer",
+      "title": "Offer shared",
+      "description": "Exact v1 approved and shared to Emma in the sample workspace.",
+      "sample_clock": "2026-10-16T09:00:00+07:00",
+      "base_fixture_id": "crewmori_sample_v1",
+      "replace_tables": [],
+      "upsert_records": {
+        "offers": {
+          "offer_northstar": {
+            "id": "offer_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 2,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-16T08:40:00+07:00",
+            "client_id": "client_northstar",
+            "opportunity_id": "opportunity_northstar",
+            "current_version_id": "offer_northstar_v1",
+            "status": "shared",
+            "accepted_version_id": null,
+            "shared_version_id": "offer_northstar_v1"
+          }
+        },
+        "offer_versions": {
+          "offer_northstar_v1": {
+            "id": "offer_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T07:00:00+07:00",
+            "updated_at": "2026-10-14T07:00:00+07:00",
+            "offer_id": "offer_northstar",
+            "revision": 1,
+            "title": "Two hero launch animations",
+            "deliverables": [
+              {
+                "key": "animation_1",
+                "label": "Hero launch animation 1",
+                "quantity": 1
+              },
+              {
+                "key": "animation_2",
+                "label": "Hero launch animation 2",
+                "quantity": 1
+              }
+            ],
+            "price": {
+              "amount_minor": 45000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "estimated_effort_minutes": 720,
+            "terms": {
+              "delivery_business_days": 5,
+              "deposit_basis_points": 6000,
+              "reservation_hours": 48,
+              "start_basis": "next_business_day_after_confirmed_deposit_and_required_inputs",
+              "timezone": "Asia/Jakarta",
+              "workdays": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "holidays": [],
+              "start_local_time": "09:00",
+              "due_local_time": "17:00",
+              "required_input_keys": [
+                "brand_assets",
+                "launch_message"
+              ],
+              "acceptance_disclosure": "Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day five, counting that start day as day one. Late prerequisites require rescheduling."
+            },
+            "requirements_id": "requirements_northstar",
+            "requirements_version": 1,
+            "policy_version": 1,
+            "assessment_ids": [
+              "assessment_scout_northstar",
+              "assessment_operations_northstar",
+              "assessment_finance_northstar"
+            ],
+            "state": "shared",
+            "buyer_note": "A focused pair of animations for your launch.",
+            "expires_at": "2026-10-23T17:00:00+07:00",
+            "predecessor_id": null,
+            "immutable_after_acceptance": false
+          }
+        },
+        "approvals": {
+          "approval_northstar_v1": {
+            "id": "approval_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:35:00+07:00",
+            "updated_at": "2026-10-16T08:35:00+07:00",
+            "subject_ref": {
+              "table": "offer_versions",
+              "id": "offer_northstar_v1",
+              "version": 1
+            },
+            "action": "share_offer",
+            "approved_by": "owner_alya",
+            "destination_contact_id": "contact_emma",
+            "state": "current",
+            "approved_at": "2026-10-16T08:35:00+07:00"
+          }
+        },
+        "share_records": {
+          "share_northstar_v1": {
+            "id": "share_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:40:00+07:00",
+            "updated_at": "2026-10-16T08:40:00+07:00",
+            "offer_id": "offer_northstar",
+            "offer_version_id": "offer_northstar_v1",
+            "approval_id": "approval_northstar_v1",
+            "contact_id": "contact_emma",
+            "state": "sample_shared",
+            "shared_at": "2026-10-16T08:40:00+07:00",
+            "connection_id": "gmail",
+            "command_id": "command_share_northstar_v1"
+          }
+        },
+        "agent_runs": {
+          "run_sales_northstar": {
+            "id": "run_sales_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "sales",
+            "task_kind": "draft_offer",
+            "title": "Prepare a focused offer",
+            "status": "completed",
+            "attempt": 1,
+            "previous_attempt_id": null,
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "output_artifact_ids": [
+              "artifact_offer_northstar"
+            ],
+            "blocked_reason": null,
+            "error_code": null,
+            "progress_step": 3,
+            "progress_total": 3,
+            "control_version": 1,
+            "semantic_focus_target": "team.agent.sales",
+            "source_ids": [
+              "source_northstar_request"
+            ]
+          }
+        },
+        "events": {
+          "event_006": {
+            "id": "event_006",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:35:00+07:00",
+            "updated_at": "2026-10-16T08:35:00+07:00",
+            "sequence": 6,
+            "occurred_at": "2026-10-16T08:35:00+07:00",
+            "kind": "offer.approved",
+            "role_id": "sales",
+            "run_id": null,
+            "summary": "Alya approved the exact offer for Emma.",
+            "record_refs": [
+              {
+                "table": "approvals",
+                "id": "approval_northstar_v1",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "offer.review",
+            "cause_command_id": "command_approve_northstar_v1",
+            "visibility": "owner"
+          },
+          "event_007": {
+            "id": "event_007",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:40:00+07:00",
+            "updated_at": "2026-10-16T08:40:00+07:00",
+            "sequence": 7,
+            "occurred_at": "2026-10-16T08:40:00+07:00",
+            "kind": "offer.shared",
+            "role_id": "sales",
+            "run_id": null,
+            "summary": "The approved offer was shared in the sample workspace.",
+            "record_refs": [
+              {
+                "table": "share_records",
+                "id": "share_northstar_v1",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "offer.share",
+            "cause_command_id": "command_share_northstar_v1",
+            "visibility": "owner"
+          }
+        }
+      },
+      "ui_state": {
+        "route": "/buyer/engagement_northstar/offer"
+      },
+      "assertions": [
+        "Buyer can review current shared offer",
+        "No project exists before acceptance"
+      ]
+    },
+    {
+      "id": "accepted_awaiting_prerequisites",
+      "title": "Accepted; next steps pending",
+      "description": "Acceptance creates one project, provisional reservation and draft deposit invoice/request. Neither deposit nor inputs are complete.",
+      "sample_clock": "2026-10-16T09:00:00+07:00",
+      "base_fixture_id": "crewmori_sample_v1",
+      "replace_tables": [],
+      "upsert_records": {
+        "offers": {
+          "offer_northstar": {
+            "id": "offer_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 3,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-16T08:40:00+07:00",
+            "client_id": "client_northstar",
+            "opportunity_id": "opportunity_northstar",
+            "current_version_id": "offer_northstar_v1",
+            "status": "accepted",
+            "accepted_version_id": "offer_northstar_v1",
+            "shared_version_id": "offer_northstar_v1"
+          }
+        },
+        "offer_versions": {
+          "offer_northstar_v1": {
+            "id": "offer_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T07:00:00+07:00",
+            "updated_at": "2026-10-14T07:00:00+07:00",
+            "offer_id": "offer_northstar",
+            "revision": 1,
+            "title": "Two hero launch animations",
+            "deliverables": [
+              {
+                "key": "animation_1",
+                "label": "Hero launch animation 1",
+                "quantity": 1
+              },
+              {
+                "key": "animation_2",
+                "label": "Hero launch animation 2",
+                "quantity": 1
+              }
+            ],
+            "price": {
+              "amount_minor": 45000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "estimated_effort_minutes": 720,
+            "terms": {
+              "delivery_business_days": 5,
+              "deposit_basis_points": 6000,
+              "reservation_hours": 48,
+              "start_basis": "next_business_day_after_confirmed_deposit_and_required_inputs",
+              "timezone": "Asia/Jakarta",
+              "workdays": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "holidays": [],
+              "start_local_time": "09:00",
+              "due_local_time": "17:00",
+              "required_input_keys": [
+                "brand_assets",
+                "launch_message"
+              ],
+              "acceptance_disclosure": "Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day five, counting that start day as day one. Late prerequisites require rescheduling."
+            },
+            "requirements_id": "requirements_northstar",
+            "requirements_version": 1,
+            "policy_version": 1,
+            "assessment_ids": [
+              "assessment_scout_northstar",
+              "assessment_operations_northstar",
+              "assessment_finance_northstar"
+            ],
+            "state": "accepted",
+            "buyer_note": "A focused pair of animations for your launch.",
+            "expires_at": "2026-10-23T17:00:00+07:00",
+            "predecessor_id": null,
+            "immutable_after_acceptance": true
+          }
+        },
+        "approvals": {
+          "approval_northstar_v1": {
+            "id": "approval_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:35:00+07:00",
+            "updated_at": "2026-10-16T08:35:00+07:00",
+            "subject_ref": {
+              "table": "offer_versions",
+              "id": "offer_northstar_v1",
+              "version": 1
+            },
+            "action": "share_offer",
+            "approved_by": "owner_alya",
+            "destination_contact_id": "contact_emma",
+            "state": "current",
+            "approved_at": "2026-10-16T08:35:00+07:00"
+          }
+        },
+        "share_records": {
+          "share_northstar_v1": {
+            "id": "share_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:40:00+07:00",
+            "updated_at": "2026-10-16T08:40:00+07:00",
+            "offer_id": "offer_northstar",
+            "offer_version_id": "offer_northstar_v1",
+            "approval_id": "approval_northstar_v1",
+            "contact_id": "contact_emma",
+            "state": "sample_shared",
+            "shared_at": "2026-10-16T08:40:00+07:00",
+            "connection_id": "gmail",
+            "command_id": "command_share_northstar_v1"
+          }
+        },
+        "agent_runs": {
+          "run_sales_northstar": {
+            "id": "run_sales_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "sales",
+            "task_kind": "draft_offer",
+            "title": "Prepare a focused offer",
+            "status": "completed",
+            "attempt": 1,
+            "previous_attempt_id": null,
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "output_artifact_ids": [
+              "artifact_offer_northstar"
+            ],
+            "blocked_reason": null,
+            "error_code": null,
+            "progress_step": 3,
+            "progress_total": 3,
+            "control_version": 1,
+            "semantic_focus_target": "team.agent.sales",
+            "source_ids": [
+              "source_northstar_request"
+            ]
+          }
+        },
+        "events": {
+          "event_006": {
+            "id": "event_006",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:35:00+07:00",
+            "updated_at": "2026-10-16T08:35:00+07:00",
+            "sequence": 6,
+            "occurred_at": "2026-10-16T08:35:00+07:00",
+            "kind": "offer.approved",
+            "role_id": "sales",
+            "run_id": null,
+            "summary": "Alya approved the exact offer for Emma.",
+            "record_refs": [
+              {
+                "table": "approvals",
+                "id": "approval_northstar_v1",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "offer.review",
+            "cause_command_id": "command_approve_northstar_v1",
+            "visibility": "owner"
+          },
+          "event_007": {
+            "id": "event_007",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:40:00+07:00",
+            "updated_at": "2026-10-16T08:40:00+07:00",
+            "sequence": 7,
+            "occurred_at": "2026-10-16T08:40:00+07:00",
+            "kind": "offer.shared",
+            "role_id": "sales",
+            "run_id": null,
+            "summary": "The approved offer was shared in the sample workspace.",
+            "record_refs": [
+              {
+                "table": "share_records",
+                "id": "share_northstar_v1",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "offer.share",
+            "cause_command_id": "command_share_northstar_v1",
+            "visibility": "owner"
+          },
+          "event_008": {
+            "id": "event_008",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "sequence": 8,
+            "occurred_at": "2026-10-16T08:50:00+07:00",
+            "kind": "offer.accepted",
+            "role_id": null,
+            "run_id": null,
+            "summary": "Emma accepted the shared version; a provisional reservation and deposit request were created.",
+            "record_refs": [
+              {
+                "table": "acceptances",
+                "id": "acceptance_northstar_v1",
+                "version": 1
+              },
+              {
+                "table": "projects",
+                "id": "project_northstar",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "project.prerequisites",
+            "cause_command_id": "command_accept_northstar_v1",
+            "visibility": "owner"
+          }
+        },
+        "acceptances": {
+          "acceptance_northstar_v1": {
+            "id": "acceptance_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "offer_id": "offer_northstar",
+            "offer_version_id": "offer_northstar_v1",
+            "contact_id": "contact_emma",
+            "share_id": "share_northstar_v1",
+            "accepted_at": "2026-10-16T08:50:00+07:00",
+            "terms_snapshot": {
+              "delivery_business_days": 5,
+              "deposit_basis_points": 6000,
+              "reservation_hours": 48,
+              "start_basis": "next_business_day_after_confirmed_deposit_and_required_inputs",
+              "timezone": "Asia/Jakarta",
+              "workdays": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "holidays": [],
+              "start_local_time": "09:00",
+              "due_local_time": "17:00",
+              "required_input_keys": [
+                "brand_assets",
+                "launch_message"
+              ],
+              "acceptance_disclosure": "Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day five, counting that start day as day one. Late prerequisites require rescheduling."
+            },
+            "price_snapshot": {
+              "amount_minor": 45000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "command_id": "command_accept_northstar_v1"
+          }
+        },
+        "projects": {
+          "project_northstar": {
+            "id": "project_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "client_id": "client_northstar",
+            "opportunity_id": "opportunity_northstar",
+            "offer_id": "offer_northstar",
+            "accepted_version_id": "offer_northstar_v1",
+            "acceptance_id": "acceptance_northstar_v1",
+            "title": "Northstar launch animations",
+            "state": "awaiting_prerequisites",
+            "professional_delivery_state": "not_started",
+            "deposit_state": "awaiting_payment",
+            "inputs_state": "awaiting_inputs",
+            "committed_start_at": null,
+            "committed_due_at": null,
+            "reservation_id": "reservation_northstar",
+            "required_input_ids": [
+              "input_northstar_brand",
+              "input_northstar_message"
+            ],
+            "milestone_ids": [
+              "milestone_northstar_delivery"
+            ],
+            "work_task_ids": [
+              "task_northstar_first_cut"
+            ],
+            "shared_attachment_ids": []
+          }
+        },
+        "buyer_grants": {
+          "grant_northstar": {
+            "id": "grant_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "engagement_id": "engagement_northstar",
+            "contact_id": "contact_emma",
+            "conversation_id": "conversation_northstar",
+            "offer_id": "offer_northstar",
+            "project_id": "project_northstar",
+            "state": "active",
+            "expires_at": "2026-11-16T09:00:00+07:00",
+            "token_kind": "local_demo_navigation_only"
+          }
+        },
+        "engagements": {
+          "engagement_northstar": {
+            "id": "engagement_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "client_id": "client_northstar",
+            "contact_id": "contact_emma",
+            "opportunity_id": "opportunity_northstar",
+            "conversation_id": "conversation_northstar",
+            "offer_id": "offer_northstar",
+            "buyer_grant_id": "grant_northstar",
+            "project_id": "project_northstar",
+            "stage": "awaiting_prerequisites"
+          }
+        },
+        "clients": {
+          "client_northstar": {
+            "id": "client_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "name": "Northstar",
+            "contact_ids": [
+              "contact_emma"
+            ],
+            "status": "active",
+            "website": "https://northstar.example",
+            "profession_context": "Product launch",
+            "next_action": "Await the deposit and required inputs",
+            "private_note_ids": [
+              "note_northstar"
+            ]
+          }
+        },
+        "opportunities": {
+          "opportunity_northstar": {
+            "id": "opportunity_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "client_id": "client_northstar",
+            "contact_id": "contact_emma",
+            "source_ids": [
+              "source_northstar_request"
+            ],
+            "requirements_id": "requirements_northstar",
+            "conversation_id": "conversation_northstar",
+            "title": "Product launch animations",
+            "status": "linked_engagement",
+            "assigned_role": "sales",
+            "offer_id": "offer_northstar",
+            "acquisition_cash_cost": null,
+            "acquisition_minutes": null,
+            "unknowns": [
+              "Final launch copy and brand assets have not been supplied."
+            ]
+          }
+        },
+        "required_inputs": {
+          "input_northstar_brand": {
+            "id": "input_northstar_brand",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "project_id": "project_northstar",
+            "key": "brand_assets",
+            "label": "Brand assets",
+            "required": true,
+            "state": "missing",
+            "answer": null,
+            "attachment_ids": [],
+            "provided_at": null
+          },
+          "input_northstar_message": {
+            "id": "input_northstar_message",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "project_id": "project_northstar",
+            "key": "launch_message",
+            "label": "Final launch message",
+            "required": true,
+            "state": "missing",
+            "answer": null,
+            "attachment_ids": [],
+            "provided_at": null
+          }
+        },
+        "reservations": {
+          "reservation_northstar": {
+            "id": "reservation_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "project_id": "project_northstar",
+            "acceptance_id": "acceptance_northstar_v1",
+            "state": "provisional",
+            "effort_minutes": 720,
+            "expires_at": "2026-10-18T08:50:00+07:00",
+            "committed_at": null,
+            "start_at": null,
+            "due_at": null
+          }
+        },
+        "milestones": {
+          "milestone_northstar_delivery": {
+            "id": "milestone_northstar_delivery",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "project_id": "project_northstar",
+            "title": "Deliver the two launch animations",
+            "state": "not_started",
+            "due_at": null,
+            "shared_with_buyer": true
+          }
+        },
+        "work_tasks": {
+          "task_northstar_first_cut": {
+            "id": "task_northstar_first_cut",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "project_id": "project_northstar",
+            "title": "Create the first cut in your chosen tools",
+            "state": "not_started",
+            "assignee_kind": "owner",
+            "assignee_id": "owner_alya",
+            "due_at": null,
+            "notes": "Professional delivery is performed by the freelancer. Agent completion does not complete this task."
+          }
+        },
+        "invoices": {
+          "invoice_northstar_deposit": {
+            "id": "invoice_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "client_id": "client_northstar",
+            "project_id": "project_northstar",
+            "offer_version_id": "offer_northstar_v1",
+            "kind": "deposit",
+            "number": "SAMPLE-2026-001",
+            "state": "draft",
+            "currency": "USD",
+            "line_ids": [
+              "line_northstar_deposit"
+            ],
+            "due_at": "2026-10-18T08:50:00+07:00",
+            "issued_at": null,
+            "void_reason": null,
+            "authorized_by_acceptance_id": "acceptance_northstar_v1"
+          }
+        },
+        "invoice_lines": {
+          "line_northstar_deposit": {
+            "id": "line_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "invoice_id": "invoice_northstar_deposit",
+            "description": "60% deposit — two hero launch animations",
+            "quantity": 1,
+            "unit_amount": {
+              "amount_minor": 27000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "tax_basis_points": 0
+          }
+        },
+        "payment_requests": {
+          "payment_request_northstar_deposit": {
+            "id": "payment_request_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "invoice_id": "invoice_northstar_deposit",
+            "expected": {
+              "amount_minor": 27000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "state": "created",
+            "mode": "sample",
+            "expires_at": "2026-10-18T08:50:00+07:00",
+            "attempt": 1,
+            "external_reference": null
+          }
+        }
+      },
+      "ui_state": {
+        "route": "/buyer/engagement_northstar"
+      },
+      "assertions": [
+        "Reservation expires 18 October at 08:50 Jakarta time",
+        "No committed start or due date",
+        "Expected deposit USD270 is not received money"
+      ]
+    },
+    {
+      "id": "active_paid_project",
+      "title": "Project in progress",
+      "description": "Branch accepted on 14 October; deposit and required inputs completed 15 October; start committed for 16 October 09:00.",
+      "sample_clock": "2026-10-16T09:00:00+07:00",
+      "base_fixture_id": "crewmori_sample_v1",
+      "replace_tables": [],
+      "upsert_records": {
+        "offers": {
+          "offer_northstar": {
+            "id": "offer_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 3,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-14T08:20:00+07:00",
+            "client_id": "client_northstar",
+            "opportunity_id": "opportunity_northstar",
+            "current_version_id": "offer_northstar_v1",
+            "status": "accepted",
+            "accepted_version_id": "offer_northstar_v1",
+            "shared_version_id": "offer_northstar_v1"
+          }
+        },
+        "offer_versions": {
+          "offer_northstar_v1": {
+            "id": "offer_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T07:00:00+07:00",
+            "updated_at": "2026-10-14T07:00:00+07:00",
+            "offer_id": "offer_northstar",
+            "revision": 1,
+            "title": "Two hero launch animations",
+            "deliverables": [
+              {
+                "key": "animation_1",
+                "label": "Hero launch animation 1",
+                "quantity": 1
+              },
+              {
+                "key": "animation_2",
+                "label": "Hero launch animation 2",
+                "quantity": 1
+              }
+            ],
+            "price": {
+              "amount_minor": 45000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "estimated_effort_minutes": 720,
+            "terms": {
+              "delivery_business_days": 5,
+              "deposit_basis_points": 6000,
+              "reservation_hours": 48,
+              "start_basis": "next_business_day_after_confirmed_deposit_and_required_inputs",
+              "timezone": "Asia/Jakarta",
+              "workdays": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "holidays": [],
+              "start_local_time": "09:00",
+              "due_local_time": "17:00",
+              "required_input_keys": [
+                "brand_assets",
+                "launch_message"
+              ],
+              "acceptance_disclosure": "Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day five, counting that start day as day one. Late prerequisites require rescheduling."
+            },
+            "requirements_id": "requirements_northstar",
+            "requirements_version": 1,
+            "policy_version": 1,
+            "assessment_ids": [
+              "assessment_scout_northstar",
+              "assessment_operations_northstar",
+              "assessment_finance_northstar"
+            ],
+            "state": "accepted",
+            "buyer_note": "A focused pair of animations for your launch.",
+            "expires_at": "2026-10-23T17:00:00+07:00",
+            "predecessor_id": null,
+            "immutable_after_acceptance": true
+          }
+        },
+        "approvals": {
+          "approval_northstar_v1": {
+            "id": "approval_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T08:10:00+07:00",
+            "updated_at": "2026-10-14T08:10:00+07:00",
+            "subject_ref": {
+              "table": "offer_versions",
+              "id": "offer_northstar_v1",
+              "version": 1
+            },
+            "action": "share_offer",
+            "approved_by": "owner_alya",
+            "destination_contact_id": "contact_emma",
+            "state": "current",
+            "approved_at": "2026-10-14T08:10:00+07:00"
+          }
+        },
+        "share_records": {
+          "share_northstar_v1": {
+            "id": "share_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-14T08:20:00+07:00",
+            "updated_at": "2026-10-14T08:20:00+07:00",
+            "offer_id": "offer_northstar",
+            "offer_version_id": "offer_northstar_v1",
+            "approval_id": "approval_northstar_v1",
+            "contact_id": "contact_emma",
+            "state": "sample_shared",
+            "shared_at": "2026-10-14T08:20:00+07:00",
+            "connection_id": "gmail",
+            "command_id": "command_share_northstar_v1"
+          }
+        },
+        "agent_runs": {
+          "run_sales_northstar": {
+            "id": "run_sales_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "sales",
+            "task_kind": "draft_offer",
+            "title": "Prepare a focused offer",
+            "status": "completed",
+            "attempt": 1,
+            "previous_attempt_id": null,
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "output_artifact_ids": [
+              "artifact_offer_northstar"
+            ],
+            "blocked_reason": null,
+            "error_code": null,
+            "progress_step": 3,
+            "progress_total": 3,
+            "control_version": 1,
+            "semantic_focus_target": "team.agent.sales",
+            "source_ids": [
+              "source_northstar_request"
+            ]
+          }
+        },
+        "events": {
+          "event_006": {
+            "id": "event_006",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T08:10:00+07:00",
+            "updated_at": "2026-10-14T08:10:00+07:00",
+            "sequence": 6,
+            "occurred_at": "2026-10-14T08:10:00+07:00",
+            "kind": "offer.approved",
+            "role_id": "sales",
+            "run_id": null,
+            "summary": "Alya approved the exact offer for Emma.",
+            "record_refs": [
+              {
+                "table": "approvals",
+                "id": "approval_northstar_v1",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "offer.review",
+            "cause_command_id": "command_approve_northstar_v1",
+            "visibility": "owner"
+          },
+          "event_007": {
+            "id": "event_007",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T08:20:00+07:00",
+            "updated_at": "2026-10-14T08:20:00+07:00",
+            "sequence": 7,
+            "occurred_at": "2026-10-14T08:20:00+07:00",
+            "kind": "offer.shared",
+            "role_id": "sales",
+            "run_id": null,
+            "summary": "The approved offer was shared in the sample workspace.",
+            "record_refs": [
+              {
+                "table": "share_records",
+                "id": "share_northstar_v1",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "offer.share",
+            "cause_command_id": "command_share_northstar_v1",
+            "visibility": "owner"
+          },
+          "event_008": {
+            "id": "event_008",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T08:30:00+07:00",
+            "updated_at": "2026-10-14T08:30:00+07:00",
+            "sequence": 8,
+            "occurred_at": "2026-10-14T08:30:00+07:00",
+            "kind": "offer.accepted",
+            "role_id": null,
+            "run_id": null,
+            "summary": "Emma accepted the shared version; a provisional reservation and deposit request were created.",
+            "record_refs": [
+              {
+                "table": "acceptances",
+                "id": "acceptance_northstar_v1",
+                "version": 1
+              },
+              {
+                "table": "projects",
+                "id": "project_northstar",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "project.prerequisites",
+            "cause_command_id": "command_accept_northstar_v1",
+            "visibility": "owner"
+          },
+          "event_009": {
+            "id": "event_009",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-15T08:00:00+07:00",
+            "updated_at": "2026-10-15T08:00:00+07:00",
+            "sequence": 9,
+            "occurred_at": "2026-10-15T08:00:00+07:00",
+            "kind": "receipt.reconciled",
+            "role_id": "finance",
+            "run_id": null,
+            "summary": "The sample deposit receipt was confirmed and allocated.",
+            "record_refs": [
+              {
+                "table": "receipts",
+                "id": "receipt_northstar_deposit",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "money.receipt",
+            "cause_command_id": "command_simulate_receipt_001",
+            "visibility": "owner"
+          },
+          "event_010": {
+            "id": "event_010",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-15T08:10:00+07:00",
+            "updated_at": "2026-10-15T08:10:00+07:00",
+            "sequence": 10,
+            "occurred_at": "2026-10-15T08:10:00+07:00",
+            "kind": "project.start_committed",
+            "role_id": "operations",
+            "run_id": null,
+            "summary": "Deposit and required inputs are complete. Start is 16 October; delivery is 22 October at 17:00 Jakarta time.",
+            "record_refs": [
+              {
+                "table": "projects",
+                "id": "project_northstar",
+                "version": 1
+              },
+              {
+                "table": "reservations",
+                "id": "reservation_northstar",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "project.timeline",
+            "cause_command_id": "command_commit_northstar_start",
+            "visibility": "owner"
+          }
+        },
+        "acceptances": {
+          "acceptance_northstar_v1": {
+            "id": "acceptance_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-14T08:30:00+07:00",
+            "updated_at": "2026-10-14T08:30:00+07:00",
+            "offer_id": "offer_northstar",
+            "offer_version_id": "offer_northstar_v1",
+            "contact_id": "contact_emma",
+            "share_id": "share_northstar_v1",
+            "accepted_at": "2026-10-14T08:30:00+07:00",
+            "terms_snapshot": {
+              "delivery_business_days": 5,
+              "deposit_basis_points": 6000,
+              "reservation_hours": 48,
+              "start_basis": "next_business_day_after_confirmed_deposit_and_required_inputs",
+              "timezone": "Asia/Jakarta",
+              "workdays": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "holidays": [],
+              "start_local_time": "09:00",
+              "due_local_time": "17:00",
+              "required_input_keys": [
+                "brand_assets",
+                "launch_message"
+              ],
+              "acceptance_disclosure": "Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day five, counting that start day as day one. Late prerequisites require rescheduling."
+            },
+            "price_snapshot": {
+              "amount_minor": 45000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "command_id": "command_accept_northstar_v1"
+          }
+        },
+        "projects": {
+          "project_northstar": {
+            "id": "project_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T08:30:00+07:00",
+            "updated_at": "2026-10-14T08:30:00+07:00",
+            "client_id": "client_northstar",
+            "opportunity_id": "opportunity_northstar",
+            "offer_id": "offer_northstar",
+            "accepted_version_id": "offer_northstar_v1",
+            "acceptance_id": "acceptance_northstar_v1",
+            "title": "Northstar launch animations",
+            "state": "active",
+            "professional_delivery_state": "in_progress",
+            "deposit_state": "confirmed",
+            "inputs_state": "complete",
+            "committed_start_at": "2026-10-16T09:00:00+07:00",
+            "committed_due_at": "2026-10-22T17:00:00+07:00",
+            "reservation_id": "reservation_northstar",
+            "required_input_ids": [
+              "input_northstar_brand",
+              "input_northstar_message"
+            ],
+            "milestone_ids": [
+              "milestone_northstar_delivery"
+            ],
+            "work_task_ids": [
+              "task_northstar_first_cut"
+            ],
+            "shared_attachment_ids": []
+          }
+        },
+        "buyer_grants": {
+          "grant_northstar": {
+            "id": "grant_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "engagement_id": "engagement_northstar",
+            "contact_id": "contact_emma",
+            "conversation_id": "conversation_northstar",
+            "offer_id": "offer_northstar",
+            "project_id": "project_northstar",
+            "state": "active",
+            "expires_at": "2026-11-16T09:00:00+07:00",
+            "token_kind": "local_demo_navigation_only"
+          }
+        },
+        "engagements": {
+          "engagement_northstar": {
+            "id": "engagement_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "client_id": "client_northstar",
+            "contact_id": "contact_emma",
+            "opportunity_id": "opportunity_northstar",
+            "conversation_id": "conversation_northstar",
+            "offer_id": "offer_northstar",
+            "buyer_grant_id": "grant_northstar",
+            "project_id": "project_northstar",
+            "stage": "active_project"
+          }
+        },
+        "clients": {
+          "client_northstar": {
+            "id": "client_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "name": "Northstar",
+            "contact_ids": [
+              "contact_emma"
+            ],
+            "status": "active",
+            "website": "https://northstar.example",
+            "profession_context": "Product launch",
+            "next_action": "Create the first cut",
+            "private_note_ids": [
+              "note_northstar"
+            ]
+          }
+        },
+        "opportunities": {
+          "opportunity_northstar": {
+            "id": "opportunity_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "client_id": "client_northstar",
+            "contact_id": "contact_emma",
+            "source_ids": [
+              "source_northstar_request"
+            ],
+            "requirements_id": "requirements_northstar",
+            "conversation_id": "conversation_northstar",
+            "title": "Product launch animations",
+            "status": "linked_engagement",
+            "assigned_role": "sales",
+            "offer_id": "offer_northstar",
+            "acquisition_cash_cost": null,
+            "acquisition_minutes": null,
+            "unknowns": [
+              "Final launch copy and brand assets have not been supplied."
+            ]
+          }
+        },
+        "required_inputs": {
+          "input_northstar_brand": {
+            "id": "input_northstar_brand",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-14T08:30:00+07:00",
+            "updated_at": "2026-10-14T08:30:00+07:00",
+            "project_id": "project_northstar",
+            "key": "brand_assets",
+            "label": "Brand assets",
+            "required": true,
+            "state": "provided",
+            "answer": "Use the sample brand pack already attached to the brief.",
+            "attachment_ids": [],
+            "provided_at": "2026-10-15T08:00:00+07:00"
+          },
+          "input_northstar_message": {
+            "id": "input_northstar_message",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-14T08:30:00+07:00",
+            "updated_at": "2026-10-14T08:30:00+07:00",
+            "project_id": "project_northstar",
+            "key": "launch_message",
+            "label": "Final launch message",
+            "required": true,
+            "state": "provided",
+            "answer": "Make the new product's first step feel simple.",
+            "attachment_ids": [],
+            "provided_at": "2026-10-15T08:10:00+07:00"
+          }
+        },
+        "reservations": {
+          "reservation_northstar": {
+            "id": "reservation_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T08:30:00+07:00",
+            "updated_at": "2026-10-14T08:30:00+07:00",
+            "project_id": "project_northstar",
+            "acceptance_id": "acceptance_northstar_v1",
+            "state": "committed",
+            "effort_minutes": 720,
+            "expires_at": "2026-10-16T08:30:00+07:00",
+            "committed_at": "2026-10-15T08:10:00+07:00",
+            "start_at": "2026-10-16T09:00:00+07:00",
+            "due_at": "2026-10-22T17:00:00+07:00"
+          }
+        },
+        "milestones": {
+          "milestone_northstar_delivery": {
+            "id": "milestone_northstar_delivery",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-14T08:30:00+07:00",
+            "updated_at": "2026-10-14T08:30:00+07:00",
+            "project_id": "project_northstar",
+            "title": "Deliver the two launch animations",
+            "state": "in_progress",
+            "due_at": "2026-10-22T17:00:00+07:00",
+            "shared_with_buyer": true
+          }
+        },
+        "work_tasks": {
+          "task_northstar_first_cut": {
+            "id": "task_northstar_first_cut",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T08:30:00+07:00",
+            "updated_at": "2026-10-14T08:30:00+07:00",
+            "project_id": "project_northstar",
+            "title": "Create the first cut in your chosen tools",
+            "state": "in_progress",
+            "assignee_kind": "owner",
+            "assignee_id": "owner_alya",
+            "due_at": "2026-10-20T17:00:00+07:00",
+            "notes": "Professional delivery is performed by the freelancer. Agent completion does not complete this task."
+          }
+        },
+        "invoices": {
+          "invoice_northstar_deposit": {
+            "id": "invoice_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-14T08:30:00+07:00",
+            "updated_at": "2026-10-14T08:30:00+07:00",
+            "client_id": "client_northstar",
+            "project_id": "project_northstar",
+            "offer_version_id": "offer_northstar_v1",
+            "kind": "deposit",
+            "number": "SAMPLE-2026-001",
+            "state": "paid",
+            "currency": "USD",
+            "line_ids": [
+              "line_northstar_deposit"
+            ],
+            "due_at": "2026-10-16T08:30:00+07:00",
+            "issued_at": "2026-10-15T07:50:00+07:00",
+            "void_reason": null,
+            "authorized_by_acceptance_id": "acceptance_northstar_v1"
+          }
+        },
+        "invoice_lines": {
+          "line_northstar_deposit": {
+            "id": "line_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-14T08:30:00+07:00",
+            "updated_at": "2026-10-14T08:30:00+07:00",
+            "invoice_id": "invoice_northstar_deposit",
+            "description": "60% deposit — two hero launch animations",
+            "quantity": 1,
+            "unit_amount": {
+              "amount_minor": 27000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "tax_basis_points": 0
+          }
+        },
+        "payment_requests": {
+          "payment_request_northstar_deposit": {
+            "id": "payment_request_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-14T08:30:00+07:00",
+            "updated_at": "2026-10-14T08:30:00+07:00",
+            "invoice_id": "invoice_northstar_deposit",
+            "expected": {
+              "amount_minor": 27000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "state": "confirmed",
+            "mode": "sample",
+            "expires_at": "2026-10-16T08:30:00+07:00",
+            "attempt": 1,
+            "external_reference": null
+          }
+        },
+        "receipts": {
+          "receipt_northstar_deposit": {
+            "id": "receipt_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-15T08:00:00+07:00",
+            "updated_at": "2026-10-15T08:00:00+07:00",
+            "payment_request_id": "payment_request_northstar_deposit",
+            "gross": {
+              "amount_minor": 27000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "fee": {
+              "amount_minor": 540,
+              "currency": "USD",
+              "scale": 2
+            },
+            "net": {
+              "amount_minor": 26460,
+              "currency": "USD",
+              "scale": 2
+            },
+            "observation_state": "sample_confirmed",
+            "reconciliation_state": "reconciled",
+            "provider": "sample",
+            "provider_event_id": "sample_receipt_full_001",
+            "received_at": "2026-10-15T08:00:00+07:00",
+            "evidence_source_id": null
+          }
+        },
+        "allocations": {
+          "allocation_northstar_deposit": {
+            "id": "allocation_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-15T08:00:00+07:00",
+            "updated_at": "2026-10-15T08:00:00+07:00",
+            "receipt_id": "receipt_northstar_deposit",
+            "invoice_id": "invoice_northstar_deposit",
+            "amount": {
+              "amount_minor": 27000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "state": "posted",
+            "reason": "Exact currency and identified invoice"
+          }
+        },
+        "calendar_events": {
+          "calendar_northstar_start": {
+            "id": "calendar_northstar_start",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-15T08:10:00+07:00",
+            "updated_at": "2026-10-15T08:10:00+07:00",
+            "project_id": "project_northstar",
+            "title": "Northstar work starts",
+            "kind": "committed_start",
+            "state": "committed",
+            "starts_at": "2026-10-16T09:00:00+07:00",
+            "ends_at": "2026-10-16T09:30:00+07:00",
+            "timezone": "Asia/Jakarta",
+            "external_invitation_state": "not_requested",
+            "connection_id": "calendar",
+            "shared_with_buyer": true
+          },
+          "calendar_northstar_due": {
+            "id": "calendar_northstar_due",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-15T08:10:00+07:00",
+            "updated_at": "2026-10-15T08:10:00+07:00",
+            "project_id": "project_northstar",
+            "title": "Northstar delivery due",
+            "kind": "committed_deadline",
+            "state": "committed",
+            "starts_at": "2026-10-22T17:00:00+07:00",
+            "ends_at": "2026-10-22T17:30:00+07:00",
+            "timezone": "Asia/Jakarta",
+            "external_invitation_state": "not_requested",
+            "connection_id": "calendar",
+            "shared_with_buyer": true
+          }
+        }
+      },
+      "ui_state": {
+        "route": "/app/projects/project_northstar"
+      },
+      "assertions": [
+        "Gross receipt27000 fee540 net26460 USDcents",
+        "Estimated net IDR3969000",
+        "Offer balance18000 USDcents",
+        "Due22October17:00; payment does not complete delivery"
+      ]
+    },
+    {
+      "id": "partial_receipt",
+      "title": "Partial deposit receipt",
+      "description": "Confirmed sample USD100 gross receipt allocated to deposit invoice; remainder needs follow-up.",
+      "sample_clock": "2026-10-16T09:00:00+07:00",
+      "base_fixture_id": "crewmori_sample_v1",
+      "replace_tables": [],
+      "upsert_records": {
+        "offers": {
+          "offer_northstar": {
+            "id": "offer_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 3,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-16T08:40:00+07:00",
+            "client_id": "client_northstar",
+            "opportunity_id": "opportunity_northstar",
+            "current_version_id": "offer_northstar_v1",
+            "status": "accepted",
+            "accepted_version_id": "offer_northstar_v1",
+            "shared_version_id": "offer_northstar_v1"
+          }
+        },
+        "offer_versions": {
+          "offer_northstar_v1": {
+            "id": "offer_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T07:00:00+07:00",
+            "updated_at": "2026-10-14T07:00:00+07:00",
+            "offer_id": "offer_northstar",
+            "revision": 1,
+            "title": "Two hero launch animations",
+            "deliverables": [
+              {
+                "key": "animation_1",
+                "label": "Hero launch animation 1",
+                "quantity": 1
+              },
+              {
+                "key": "animation_2",
+                "label": "Hero launch animation 2",
+                "quantity": 1
+              }
+            ],
+            "price": {
+              "amount_minor": 45000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "estimated_effort_minutes": 720,
+            "terms": {
+              "delivery_business_days": 5,
+              "deposit_basis_points": 6000,
+              "reservation_hours": 48,
+              "start_basis": "next_business_day_after_confirmed_deposit_and_required_inputs",
+              "timezone": "Asia/Jakarta",
+              "workdays": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "holidays": [],
+              "start_local_time": "09:00",
+              "due_local_time": "17:00",
+              "required_input_keys": [
+                "brand_assets",
+                "launch_message"
+              ],
+              "acceptance_disclosure": "Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day five, counting that start day as day one. Late prerequisites require rescheduling."
+            },
+            "requirements_id": "requirements_northstar",
+            "requirements_version": 1,
+            "policy_version": 1,
+            "assessment_ids": [
+              "assessment_scout_northstar",
+              "assessment_operations_northstar",
+              "assessment_finance_northstar"
+            ],
+            "state": "accepted",
+            "buyer_note": "A focused pair of animations for your launch.",
+            "expires_at": "2026-10-23T17:00:00+07:00",
+            "predecessor_id": null,
+            "immutable_after_acceptance": true
+          }
+        },
+        "approvals": {
+          "approval_northstar_v1": {
+            "id": "approval_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:35:00+07:00",
+            "updated_at": "2026-10-16T08:35:00+07:00",
+            "subject_ref": {
+              "table": "offer_versions",
+              "id": "offer_northstar_v1",
+              "version": 1
+            },
+            "action": "share_offer",
+            "approved_by": "owner_alya",
+            "destination_contact_id": "contact_emma",
+            "state": "current",
+            "approved_at": "2026-10-16T08:35:00+07:00"
+          }
+        },
+        "share_records": {
+          "share_northstar_v1": {
+            "id": "share_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:40:00+07:00",
+            "updated_at": "2026-10-16T08:40:00+07:00",
+            "offer_id": "offer_northstar",
+            "offer_version_id": "offer_northstar_v1",
+            "approval_id": "approval_northstar_v1",
+            "contact_id": "contact_emma",
+            "state": "sample_shared",
+            "shared_at": "2026-10-16T08:40:00+07:00",
+            "connection_id": "gmail",
+            "command_id": "command_share_northstar_v1"
+          }
+        },
+        "agent_runs": {
+          "run_sales_northstar": {
+            "id": "run_sales_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "sales",
+            "task_kind": "draft_offer",
+            "title": "Prepare a focused offer",
+            "status": "completed",
+            "attempt": 1,
+            "previous_attempt_id": null,
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "output_artifact_ids": [
+              "artifact_offer_northstar"
+            ],
+            "blocked_reason": null,
+            "error_code": null,
+            "progress_step": 3,
+            "progress_total": 3,
+            "control_version": 1,
+            "semantic_focus_target": "team.agent.sales",
+            "source_ids": [
+              "source_northstar_request"
+            ]
+          }
+        },
+        "events": {
+          "event_006": {
+            "id": "event_006",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:35:00+07:00",
+            "updated_at": "2026-10-16T08:35:00+07:00",
+            "sequence": 6,
+            "occurred_at": "2026-10-16T08:35:00+07:00",
+            "kind": "offer.approved",
+            "role_id": "sales",
+            "run_id": null,
+            "summary": "Alya approved the exact offer for Emma.",
+            "record_refs": [
+              {
+                "table": "approvals",
+                "id": "approval_northstar_v1",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "offer.review",
+            "cause_command_id": "command_approve_northstar_v1",
+            "visibility": "owner"
+          },
+          "event_007": {
+            "id": "event_007",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:40:00+07:00",
+            "updated_at": "2026-10-16T08:40:00+07:00",
+            "sequence": 7,
+            "occurred_at": "2026-10-16T08:40:00+07:00",
+            "kind": "offer.shared",
+            "role_id": "sales",
+            "run_id": null,
+            "summary": "The approved offer was shared in the sample workspace.",
+            "record_refs": [
+              {
+                "table": "share_records",
+                "id": "share_northstar_v1",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "offer.share",
+            "cause_command_id": "command_share_northstar_v1",
+            "visibility": "owner"
+          },
+          "event_008": {
+            "id": "event_008",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "sequence": 8,
+            "occurred_at": "2026-10-16T08:50:00+07:00",
+            "kind": "offer.accepted",
+            "role_id": null,
+            "run_id": null,
+            "summary": "Emma accepted the shared version; a provisional reservation and deposit request were created.",
+            "record_refs": [
+              {
+                "table": "acceptances",
+                "id": "acceptance_northstar_v1",
+                "version": 1
+              },
+              {
+                "table": "projects",
+                "id": "project_northstar",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "project.prerequisites",
+            "cause_command_id": "command_accept_northstar_v1",
+            "visibility": "owner"
+          },
+          "event_009": {
+            "id": "event_009",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:55:00+07:00",
+            "updated_at": "2026-10-16T08:55:00+07:00",
+            "sequence": 9,
+            "occurred_at": "2026-10-16T08:55:00+07:00",
+            "kind": "receipt.review_required",
+            "role_id": "finance",
+            "run_id": null,
+            "summary": "The observed receipt needs review; the deposit is not complete.",
+            "record_refs": [
+              {
+                "table": "receipts",
+                "id": "receipt_northstar_deposit",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "money.receipt",
+            "cause_command_id": "command_simulate_receipt_001",
+            "visibility": "owner"
+          }
+        },
+        "acceptances": {
+          "acceptance_northstar_v1": {
+            "id": "acceptance_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "offer_id": "offer_northstar",
+            "offer_version_id": "offer_northstar_v1",
+            "contact_id": "contact_emma",
+            "share_id": "share_northstar_v1",
+            "accepted_at": "2026-10-16T08:50:00+07:00",
+            "terms_snapshot": {
+              "delivery_business_days": 5,
+              "deposit_basis_points": 6000,
+              "reservation_hours": 48,
+              "start_basis": "next_business_day_after_confirmed_deposit_and_required_inputs",
+              "timezone": "Asia/Jakarta",
+              "workdays": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "holidays": [],
+              "start_local_time": "09:00",
+              "due_local_time": "17:00",
+              "required_input_keys": [
+                "brand_assets",
+                "launch_message"
+              ],
+              "acceptance_disclosure": "Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day five, counting that start day as day one. Late prerequisites require rescheduling."
+            },
+            "price_snapshot": {
+              "amount_minor": 45000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "command_id": "command_accept_northstar_v1"
+          }
+        },
+        "projects": {
+          "project_northstar": {
+            "id": "project_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "client_id": "client_northstar",
+            "opportunity_id": "opportunity_northstar",
+            "offer_id": "offer_northstar",
+            "accepted_version_id": "offer_northstar_v1",
+            "acceptance_id": "acceptance_northstar_v1",
+            "title": "Northstar launch animations",
+            "state": "awaiting_prerequisites",
+            "professional_delivery_state": "not_started",
+            "deposit_state": "awaiting_payment",
+            "inputs_state": "awaiting_inputs",
+            "committed_start_at": null,
+            "committed_due_at": null,
+            "reservation_id": "reservation_northstar",
+            "required_input_ids": [
+              "input_northstar_brand",
+              "input_northstar_message"
+            ],
+            "milestone_ids": [
+              "milestone_northstar_delivery"
+            ],
+            "work_task_ids": [
+              "task_northstar_first_cut"
+            ],
+            "shared_attachment_ids": []
+          }
+        },
+        "buyer_grants": {
+          "grant_northstar": {
+            "id": "grant_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "engagement_id": "engagement_northstar",
+            "contact_id": "contact_emma",
+            "conversation_id": "conversation_northstar",
+            "offer_id": "offer_northstar",
+            "project_id": "project_northstar",
+            "state": "active",
+            "expires_at": "2026-11-16T09:00:00+07:00",
+            "token_kind": "local_demo_navigation_only"
+          }
+        },
+        "engagements": {
+          "engagement_northstar": {
+            "id": "engagement_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "client_id": "client_northstar",
+            "contact_id": "contact_emma",
+            "opportunity_id": "opportunity_northstar",
+            "conversation_id": "conversation_northstar",
+            "offer_id": "offer_northstar",
+            "buyer_grant_id": "grant_northstar",
+            "project_id": "project_northstar",
+            "stage": "awaiting_prerequisites"
+          }
+        },
+        "clients": {
+          "client_northstar": {
+            "id": "client_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "name": "Northstar",
+            "contact_ids": [
+              "contact_emma"
+            ],
+            "status": "active",
+            "website": "https://northstar.example",
+            "profession_context": "Product launch",
+            "next_action": "Await the deposit and required inputs",
+            "private_note_ids": [
+              "note_northstar"
+            ]
+          }
+        },
+        "opportunities": {
+          "opportunity_northstar": {
+            "id": "opportunity_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "client_id": "client_northstar",
+            "contact_id": "contact_emma",
+            "source_ids": [
+              "source_northstar_request"
+            ],
+            "requirements_id": "requirements_northstar",
+            "conversation_id": "conversation_northstar",
+            "title": "Product launch animations",
+            "status": "linked_engagement",
+            "assigned_role": "sales",
+            "offer_id": "offer_northstar",
+            "acquisition_cash_cost": null,
+            "acquisition_minutes": null,
+            "unknowns": [
+              "Final launch copy and brand assets have not been supplied."
+            ]
+          }
+        },
+        "required_inputs": {
+          "input_northstar_brand": {
+            "id": "input_northstar_brand",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "project_id": "project_northstar",
+            "key": "brand_assets",
+            "label": "Brand assets",
+            "required": true,
+            "state": "missing",
+            "answer": null,
+            "attachment_ids": [],
+            "provided_at": null
+          },
+          "input_northstar_message": {
+            "id": "input_northstar_message",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "project_id": "project_northstar",
+            "key": "launch_message",
+            "label": "Final launch message",
+            "required": true,
+            "state": "missing",
+            "answer": null,
+            "attachment_ids": [],
+            "provided_at": null
+          }
+        },
+        "reservations": {
+          "reservation_northstar": {
+            "id": "reservation_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "project_id": "project_northstar",
+            "acceptance_id": "acceptance_northstar_v1",
+            "state": "provisional",
+            "effort_minutes": 720,
+            "expires_at": "2026-10-18T08:50:00+07:00",
+            "committed_at": null,
+            "start_at": null,
+            "due_at": null
+          }
+        },
+        "milestones": {
+          "milestone_northstar_delivery": {
+            "id": "milestone_northstar_delivery",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "project_id": "project_northstar",
+            "title": "Deliver the two launch animations",
+            "state": "not_started",
+            "due_at": null,
+            "shared_with_buyer": true
+          }
+        },
+        "work_tasks": {
+          "task_northstar_first_cut": {
+            "id": "task_northstar_first_cut",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "project_id": "project_northstar",
+            "title": "Create the first cut in your chosen tools",
+            "state": "not_started",
+            "assignee_kind": "owner",
+            "assignee_id": "owner_alya",
+            "due_at": null,
+            "notes": "Professional delivery is performed by the freelancer. Agent completion does not complete this task."
+          }
+        },
+        "invoices": {
+          "invoice_northstar_deposit": {
+            "id": "invoice_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "client_id": "client_northstar",
+            "project_id": "project_northstar",
+            "offer_version_id": "offer_northstar_v1",
+            "kind": "deposit",
+            "number": "SAMPLE-2026-001",
+            "state": "partially_paid",
+            "currency": "USD",
+            "line_ids": [
+              "line_northstar_deposit"
+            ],
+            "due_at": "2026-10-18T08:50:00+07:00",
+            "issued_at": "2026-10-16T08:52:00+07:00",
+            "void_reason": null,
+            "authorized_by_acceptance_id": "acceptance_northstar_v1"
+          }
+        },
+        "invoice_lines": {
+          "line_northstar_deposit": {
+            "id": "line_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "invoice_id": "invoice_northstar_deposit",
+            "description": "60% deposit — two hero launch animations",
+            "quantity": 1,
+            "unit_amount": {
+              "amount_minor": 27000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "tax_basis_points": 0
+          }
+        },
+        "payment_requests": {
+          "payment_request_northstar_deposit": {
+            "id": "payment_request_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "invoice_id": "invoice_northstar_deposit",
+            "expected": {
+              "amount_minor": 27000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "state": "pending",
+            "mode": "sample",
+            "expires_at": "2026-10-18T08:50:00+07:00",
+            "attempt": 1,
+            "external_reference": null
+          }
+        },
+        "receipts": {
+          "receipt_northstar_deposit": {
+            "id": "receipt_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:55:00+07:00",
+            "updated_at": "2026-10-16T08:55:00+07:00",
+            "payment_request_id": "payment_request_northstar_deposit",
+            "gross": {
+              "amount_minor": 10000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "fee": {
+              "amount_minor": 200,
+              "currency": "USD",
+              "scale": 2
+            },
+            "net": {
+              "amount_minor": 9800,
+              "currency": "USD",
+              "scale": 2
+            },
+            "observation_state": "sample_confirmed",
+            "reconciliation_state": "review_required",
+            "provider": "sample",
+            "provider_event_id": "sample_receipt_partial_001",
+            "received_at": "2026-10-16T08:55:00+07:00",
+            "evidence_source_id": null
+          }
+        },
+        "allocations": {
+          "allocation_northstar_deposit": {
+            "id": "allocation_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:55:00+07:00",
+            "updated_at": "2026-10-16T08:55:00+07:00",
+            "receipt_id": "receipt_northstar_deposit",
+            "invoice_id": "invoice_northstar_deposit",
+            "amount": {
+              "amount_minor": 10000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "state": "posted",
+            "reason": "Exact currency and identified invoice"
+          }
+        },
+        "finance_issues": {
+          "issue_northstar_receipt": {
+            "id": "issue_northstar_receipt",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:55:00+07:00",
+            "updated_at": "2026-10-16T08:55:00+07:00",
+            "kind": "partial_receipt",
+            "state": "open",
+            "invoice_id": "invoice_northstar_deposit",
+            "receipt_id": "receipt_northstar_deposit",
+            "summary": "A $100 gross receipt leaves $170 of the deposit outstanding.",
+            "resolution": null,
+            "resolution_evidence_ids": [],
+            "assigned_role": "finance"
+          }
+        }
+      },
+      "ui_state": {
+        "route": "/app/money/payments/receipt_northstar_deposit"
+      },
+      "assertions": [
+        "Deposit invoice remainsUSD170 outstanding",
+        "No start commitment",
+        "No second allocation on replay"
+      ]
+    },
+    {
+      "id": "wrong_currency_receipt",
+      "title": "Receipt currency mismatch",
+      "description": "IDR27000 observation against USD270 request stays unallocated and open for review.",
+      "sample_clock": "2026-10-16T09:00:00+07:00",
+      "base_fixture_id": "crewmori_sample_v1",
+      "replace_tables": [],
+      "upsert_records": {
+        "offers": {
+          "offer_northstar": {
+            "id": "offer_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 3,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-16T08:40:00+07:00",
+            "client_id": "client_northstar",
+            "opportunity_id": "opportunity_northstar",
+            "current_version_id": "offer_northstar_v1",
+            "status": "accepted",
+            "accepted_version_id": "offer_northstar_v1",
+            "shared_version_id": "offer_northstar_v1"
+          }
+        },
+        "offer_versions": {
+          "offer_northstar_v1": {
+            "id": "offer_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T07:00:00+07:00",
+            "updated_at": "2026-10-14T07:00:00+07:00",
+            "offer_id": "offer_northstar",
+            "revision": 1,
+            "title": "Two hero launch animations",
+            "deliverables": [
+              {
+                "key": "animation_1",
+                "label": "Hero launch animation 1",
+                "quantity": 1
+              },
+              {
+                "key": "animation_2",
+                "label": "Hero launch animation 2",
+                "quantity": 1
+              }
+            ],
+            "price": {
+              "amount_minor": 45000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "estimated_effort_minutes": 720,
+            "terms": {
+              "delivery_business_days": 5,
+              "deposit_basis_points": 6000,
+              "reservation_hours": 48,
+              "start_basis": "next_business_day_after_confirmed_deposit_and_required_inputs",
+              "timezone": "Asia/Jakarta",
+              "workdays": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "holidays": [],
+              "start_local_time": "09:00",
+              "due_local_time": "17:00",
+              "required_input_keys": [
+                "brand_assets",
+                "launch_message"
+              ],
+              "acceptance_disclosure": "Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day five, counting that start day as day one. Late prerequisites require rescheduling."
+            },
+            "requirements_id": "requirements_northstar",
+            "requirements_version": 1,
+            "policy_version": 1,
+            "assessment_ids": [
+              "assessment_scout_northstar",
+              "assessment_operations_northstar",
+              "assessment_finance_northstar"
+            ],
+            "state": "accepted",
+            "buyer_note": "A focused pair of animations for your launch.",
+            "expires_at": "2026-10-23T17:00:00+07:00",
+            "predecessor_id": null,
+            "immutable_after_acceptance": true
+          }
+        },
+        "approvals": {
+          "approval_northstar_v1": {
+            "id": "approval_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:35:00+07:00",
+            "updated_at": "2026-10-16T08:35:00+07:00",
+            "subject_ref": {
+              "table": "offer_versions",
+              "id": "offer_northstar_v1",
+              "version": 1
+            },
+            "action": "share_offer",
+            "approved_by": "owner_alya",
+            "destination_contact_id": "contact_emma",
+            "state": "current",
+            "approved_at": "2026-10-16T08:35:00+07:00"
+          }
+        },
+        "share_records": {
+          "share_northstar_v1": {
+            "id": "share_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:40:00+07:00",
+            "updated_at": "2026-10-16T08:40:00+07:00",
+            "offer_id": "offer_northstar",
+            "offer_version_id": "offer_northstar_v1",
+            "approval_id": "approval_northstar_v1",
+            "contact_id": "contact_emma",
+            "state": "sample_shared",
+            "shared_at": "2026-10-16T08:40:00+07:00",
+            "connection_id": "gmail",
+            "command_id": "command_share_northstar_v1"
+          }
+        },
+        "agent_runs": {
+          "run_sales_northstar": {
+            "id": "run_sales_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "sales",
+            "task_kind": "draft_offer",
+            "title": "Prepare a focused offer",
+            "status": "completed",
+            "attempt": 1,
+            "previous_attempt_id": null,
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "output_artifact_ids": [
+              "artifact_offer_northstar"
+            ],
+            "blocked_reason": null,
+            "error_code": null,
+            "progress_step": 3,
+            "progress_total": 3,
+            "control_version": 1,
+            "semantic_focus_target": "team.agent.sales",
+            "source_ids": [
+              "source_northstar_request"
+            ]
+          }
+        },
+        "events": {
+          "event_006": {
+            "id": "event_006",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:35:00+07:00",
+            "updated_at": "2026-10-16T08:35:00+07:00",
+            "sequence": 6,
+            "occurred_at": "2026-10-16T08:35:00+07:00",
+            "kind": "offer.approved",
+            "role_id": "sales",
+            "run_id": null,
+            "summary": "Alya approved the exact offer for Emma.",
+            "record_refs": [
+              {
+                "table": "approvals",
+                "id": "approval_northstar_v1",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "offer.review",
+            "cause_command_id": "command_approve_northstar_v1",
+            "visibility": "owner"
+          },
+          "event_007": {
+            "id": "event_007",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:40:00+07:00",
+            "updated_at": "2026-10-16T08:40:00+07:00",
+            "sequence": 7,
+            "occurred_at": "2026-10-16T08:40:00+07:00",
+            "kind": "offer.shared",
+            "role_id": "sales",
+            "run_id": null,
+            "summary": "The approved offer was shared in the sample workspace.",
+            "record_refs": [
+              {
+                "table": "share_records",
+                "id": "share_northstar_v1",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "offer.share",
+            "cause_command_id": "command_share_northstar_v1",
+            "visibility": "owner"
+          },
+          "event_008": {
+            "id": "event_008",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "sequence": 8,
+            "occurred_at": "2026-10-16T08:50:00+07:00",
+            "kind": "offer.accepted",
+            "role_id": null,
+            "run_id": null,
+            "summary": "Emma accepted the shared version; a provisional reservation and deposit request were created.",
+            "record_refs": [
+              {
+                "table": "acceptances",
+                "id": "acceptance_northstar_v1",
+                "version": 1
+              },
+              {
+                "table": "projects",
+                "id": "project_northstar",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "project.prerequisites",
+            "cause_command_id": "command_accept_northstar_v1",
+            "visibility": "owner"
+          },
+          "event_009": {
+            "id": "event_009",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:55:00+07:00",
+            "updated_at": "2026-10-16T08:55:00+07:00",
+            "sequence": 9,
+            "occurred_at": "2026-10-16T08:55:00+07:00",
+            "kind": "receipt.review_required",
+            "role_id": "finance",
+            "run_id": null,
+            "summary": "The observed receipt needs review; the deposit is not complete.",
+            "record_refs": [
+              {
+                "table": "receipts",
+                "id": "receipt_northstar_deposit",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "money.receipt",
+            "cause_command_id": "command_simulate_receipt_001",
+            "visibility": "owner"
+          }
+        },
+        "acceptances": {
+          "acceptance_northstar_v1": {
+            "id": "acceptance_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "offer_id": "offer_northstar",
+            "offer_version_id": "offer_northstar_v1",
+            "contact_id": "contact_emma",
+            "share_id": "share_northstar_v1",
+            "accepted_at": "2026-10-16T08:50:00+07:00",
+            "terms_snapshot": {
+              "delivery_business_days": 5,
+              "deposit_basis_points": 6000,
+              "reservation_hours": 48,
+              "start_basis": "next_business_day_after_confirmed_deposit_and_required_inputs",
+              "timezone": "Asia/Jakarta",
+              "workdays": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "holidays": [],
+              "start_local_time": "09:00",
+              "due_local_time": "17:00",
+              "required_input_keys": [
+                "brand_assets",
+                "launch_message"
+              ],
+              "acceptance_disclosure": "Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day five, counting that start day as day one. Late prerequisites require rescheduling."
+            },
+            "price_snapshot": {
+              "amount_minor": 45000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "command_id": "command_accept_northstar_v1"
+          }
+        },
+        "projects": {
+          "project_northstar": {
+            "id": "project_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "client_id": "client_northstar",
+            "opportunity_id": "opportunity_northstar",
+            "offer_id": "offer_northstar",
+            "accepted_version_id": "offer_northstar_v1",
+            "acceptance_id": "acceptance_northstar_v1",
+            "title": "Northstar launch animations",
+            "state": "awaiting_prerequisites",
+            "professional_delivery_state": "not_started",
+            "deposit_state": "awaiting_payment",
+            "inputs_state": "awaiting_inputs",
+            "committed_start_at": null,
+            "committed_due_at": null,
+            "reservation_id": "reservation_northstar",
+            "required_input_ids": [
+              "input_northstar_brand",
+              "input_northstar_message"
+            ],
+            "milestone_ids": [
+              "milestone_northstar_delivery"
+            ],
+            "work_task_ids": [
+              "task_northstar_first_cut"
+            ],
+            "shared_attachment_ids": []
+          }
+        },
+        "buyer_grants": {
+          "grant_northstar": {
+            "id": "grant_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "engagement_id": "engagement_northstar",
+            "contact_id": "contact_emma",
+            "conversation_id": "conversation_northstar",
+            "offer_id": "offer_northstar",
+            "project_id": "project_northstar",
+            "state": "active",
+            "expires_at": "2026-11-16T09:00:00+07:00",
+            "token_kind": "local_demo_navigation_only"
+          }
+        },
+        "engagements": {
+          "engagement_northstar": {
+            "id": "engagement_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "client_id": "client_northstar",
+            "contact_id": "contact_emma",
+            "opportunity_id": "opportunity_northstar",
+            "conversation_id": "conversation_northstar",
+            "offer_id": "offer_northstar",
+            "buyer_grant_id": "grant_northstar",
+            "project_id": "project_northstar",
+            "stage": "awaiting_prerequisites"
+          }
+        },
+        "clients": {
+          "client_northstar": {
+            "id": "client_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "name": "Northstar",
+            "contact_ids": [
+              "contact_emma"
+            ],
+            "status": "active",
+            "website": "https://northstar.example",
+            "profession_context": "Product launch",
+            "next_action": "Await the deposit and required inputs",
+            "private_note_ids": [
+              "note_northstar"
+            ]
+          }
+        },
+        "opportunities": {
+          "opportunity_northstar": {
+            "id": "opportunity_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "client_id": "client_northstar",
+            "contact_id": "contact_emma",
+            "source_ids": [
+              "source_northstar_request"
+            ],
+            "requirements_id": "requirements_northstar",
+            "conversation_id": "conversation_northstar",
+            "title": "Product launch animations",
+            "status": "linked_engagement",
+            "assigned_role": "sales",
+            "offer_id": "offer_northstar",
+            "acquisition_cash_cost": null,
+            "acquisition_minutes": null,
+            "unknowns": [
+              "Final launch copy and brand assets have not been supplied."
+            ]
+          }
+        },
+        "required_inputs": {
+          "input_northstar_brand": {
+            "id": "input_northstar_brand",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "project_id": "project_northstar",
+            "key": "brand_assets",
+            "label": "Brand assets",
+            "required": true,
+            "state": "missing",
+            "answer": null,
+            "attachment_ids": [],
+            "provided_at": null
+          },
+          "input_northstar_message": {
+            "id": "input_northstar_message",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "project_id": "project_northstar",
+            "key": "launch_message",
+            "label": "Final launch message",
+            "required": true,
+            "state": "missing",
+            "answer": null,
+            "attachment_ids": [],
+            "provided_at": null
+          }
+        },
+        "reservations": {
+          "reservation_northstar": {
+            "id": "reservation_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "project_id": "project_northstar",
+            "acceptance_id": "acceptance_northstar_v1",
+            "state": "provisional",
+            "effort_minutes": 720,
+            "expires_at": "2026-10-18T08:50:00+07:00",
+            "committed_at": null,
+            "start_at": null,
+            "due_at": null
+          }
+        },
+        "milestones": {
+          "milestone_northstar_delivery": {
+            "id": "milestone_northstar_delivery",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "project_id": "project_northstar",
+            "title": "Deliver the two launch animations",
+            "state": "not_started",
+            "due_at": null,
+            "shared_with_buyer": true
+          }
+        },
+        "work_tasks": {
+          "task_northstar_first_cut": {
+            "id": "task_northstar_first_cut",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "project_id": "project_northstar",
+            "title": "Create the first cut in your chosen tools",
+            "state": "not_started",
+            "assignee_kind": "owner",
+            "assignee_id": "owner_alya",
+            "due_at": null,
+            "notes": "Professional delivery is performed by the freelancer. Agent completion does not complete this task."
+          }
+        },
+        "invoices": {
+          "invoice_northstar_deposit": {
+            "id": "invoice_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "client_id": "client_northstar",
+            "project_id": "project_northstar",
+            "offer_version_id": "offer_northstar_v1",
+            "kind": "deposit",
+            "number": "SAMPLE-2026-001",
+            "state": "issued",
+            "currency": "USD",
+            "line_ids": [
+              "line_northstar_deposit"
+            ],
+            "due_at": "2026-10-18T08:50:00+07:00",
+            "issued_at": "2026-10-16T08:52:00+07:00",
+            "void_reason": null,
+            "authorized_by_acceptance_id": "acceptance_northstar_v1"
+          }
+        },
+        "invoice_lines": {
+          "line_northstar_deposit": {
+            "id": "line_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "invoice_id": "invoice_northstar_deposit",
+            "description": "60% deposit — two hero launch animations",
+            "quantity": 1,
+            "unit_amount": {
+              "amount_minor": 27000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "tax_basis_points": 0
+          }
+        },
+        "payment_requests": {
+          "payment_request_northstar_deposit": {
+            "id": "payment_request_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:50:00+07:00",
+            "updated_at": "2026-10-16T08:50:00+07:00",
+            "invoice_id": "invoice_northstar_deposit",
+            "expected": {
+              "amount_minor": 27000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "state": "pending",
+            "mode": "sample",
+            "expires_at": "2026-10-18T08:50:00+07:00",
+            "attempt": 1,
+            "external_reference": null
+          }
+        },
+        "receipts": {
+          "receipt_northstar_deposit": {
+            "id": "receipt_northstar_deposit",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:55:00+07:00",
+            "updated_at": "2026-10-16T08:55:00+07:00",
+            "payment_request_id": "payment_request_northstar_deposit",
+            "gross": {
+              "amount_minor": 27000,
+              "currency": "IDR",
+              "scale": 0
+            },
+            "fee": {
+              "amount_minor": 0,
+              "currency": "IDR",
+              "scale": 0
+            },
+            "net": {
+              "amount_minor": 27000,
+              "currency": "IDR",
+              "scale": 0
+            },
+            "observation_state": "sample_confirmed",
+            "reconciliation_state": "review_required",
+            "provider": "sample",
+            "provider_event_id": "sample_receipt_wrong_currency_001",
+            "received_at": "2026-10-16T08:55:00+07:00",
+            "evidence_source_id": null
+          }
+        },
+        "finance_issues": {
+          "issue_northstar_receipt": {
+            "id": "issue_northstar_receipt",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:55:00+07:00",
+            "updated_at": "2026-10-16T08:55:00+07:00",
+            "kind": "wrong_currency",
+            "state": "open",
+            "invoice_id": "invoice_northstar_deposit",
+            "receipt_id": "receipt_northstar_deposit",
+            "summary": "The observed receipt is IDR27000; the request is USD270. Do not convert or mark it paid.",
+            "resolution": null,
+            "resolution_evidence_ids": [],
+            "assigned_role": "finance"
+          }
+        }
+      },
+      "ui_state": {
+        "route": "/app/money/payments/receipt_northstar_deposit"
+      },
+      "assertions": [
+        "Invoice remainsUSD270 outstanding",
+        "No FX conversion or false paid state"
+      ]
+    },
+    {
+      "id": "disconnected_gmail",
+      "title": "Reconnect before sharing",
+      "description": "Offer is approved but sending is blocked by disconnected sample Gmail. Reconnect preserves exact draft and requires deliberate retry.",
+      "sample_clock": "2026-10-16T09:00:00+07:00",
+      "base_fixture_id": "crewmori_sample_v1",
+      "replace_tables": [],
+      "upsert_records": {
+        "offers": {
+          "offer_northstar": {
+            "id": "offer_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "client_id": "client_northstar",
+            "opportunity_id": "opportunity_northstar",
+            "current_version_id": "offer_northstar_v1",
+            "status": "approved",
+            "accepted_version_id": null,
+            "shared_version_id": null
+          }
+        },
+        "offer_versions": {
+          "offer_northstar_v1": {
+            "id": "offer_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T07:00:00+07:00",
+            "updated_at": "2026-10-14T07:00:00+07:00",
+            "offer_id": "offer_northstar",
+            "revision": 1,
+            "title": "Two hero launch animations",
+            "deliverables": [
+              {
+                "key": "animation_1",
+                "label": "Hero launch animation 1",
+                "quantity": 1
+              },
+              {
+                "key": "animation_2",
+                "label": "Hero launch animation 2",
+                "quantity": 1
+              }
+            ],
+            "price": {
+              "amount_minor": 45000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "estimated_effort_minutes": 720,
+            "terms": {
+              "delivery_business_days": 5,
+              "deposit_basis_points": 6000,
+              "reservation_hours": 48,
+              "start_basis": "next_business_day_after_confirmed_deposit_and_required_inputs",
+              "timezone": "Asia/Jakarta",
+              "workdays": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "holidays": [],
+              "start_local_time": "09:00",
+              "due_local_time": "17:00",
+              "required_input_keys": [
+                "brand_assets",
+                "launch_message"
+              ],
+              "acceptance_disclosure": "Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day five, counting that start day as day one. Late prerequisites require rescheduling."
+            },
+            "requirements_id": "requirements_northstar",
+            "requirements_version": 1,
+            "policy_version": 1,
+            "assessment_ids": [
+              "assessment_scout_northstar",
+              "assessment_operations_northstar",
+              "assessment_finance_northstar"
+            ],
+            "state": "approved",
+            "buyer_note": "A focused pair of animations for your launch.",
+            "expires_at": "2026-10-23T17:00:00+07:00",
+            "predecessor_id": null,
+            "immutable_after_acceptance": false
+          }
+        },
+        "approvals": {
+          "approval_northstar_v1": {
+            "id": "approval_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:35:00+07:00",
+            "updated_at": "2026-10-16T08:35:00+07:00",
+            "subject_ref": {
+              "table": "offer_versions",
+              "id": "offer_northstar_v1",
+              "version": 1
+            },
+            "action": "share_offer",
+            "approved_by": "owner_alya",
+            "destination_contact_id": "contact_emma",
+            "state": "current",
+            "approved_at": "2026-10-16T08:35:00+07:00"
+          }
+        },
+        "connections": {
+          "gmail": {
+            "id": "gmail",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "label": "Gmail",
+            "state": "reconnect_required",
+            "mode": "sample",
+            "capabilities": [
+              "read_sample_messages",
+              "draft_message",
+              "simulate_send"
+            ],
+            "approved_capabilities": [
+              "read_sample_messages",
+              "draft_message",
+              "simulate_send"
+            ],
+            "account_label": "Sample Alya account",
+            "interrupted_command_id": "command_share_northstar_v1",
+            "error_code": "CONNECTION_REVOKED"
+          }
+        }
+      },
+      "ui_state": {
+        "route": "/app/offers/offer_northstar"
+      },
+      "assertions": [
+        "No share record exists",
+        "Reconnect alone does not automatically send"
+      ]
+    },
+    {
+      "id": "recoverable_task_failure",
+      "title": "Task needs retry",
+      "description": "Finance assessment attempt failed before emitting its output; Sales waits for valid checked inputs.",
+      "sample_clock": "2026-10-16T09:00:00+07:00",
+      "base_fixture_id": "crewmori_sample_v1",
+      "replace_tables": [
+        "artifacts",
+        "handoffs",
+        "events"
+      ],
+      "upsert_records": {
+        "agent_runs": {
+          "run_finance_northstar": {
+            "id": "run_finance_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "finance",
+            "task_kind": "assess_opportunity",
+            "title": "Check deposit assumptions",
+            "status": "failed",
+            "attempt": 1,
+            "previous_attempt_id": null,
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "output_artifact_ids": [],
+            "blocked_reason": "Sample fee assumption source could not be read",
+            "error_code": "SAMPLE_SOURCE_UNAVAILABLE",
+            "progress_step": 1,
+            "progress_total": 3,
+            "control_version": 1,
+            "semantic_focus_target": "team.agent.finance",
+            "source_ids": [
+              "source_northstar_request"
+            ]
+          },
+          "run_operations_northstar": {
+            "id": "run_operations_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "operations",
+            "task_kind": "assess_opportunity",
+            "title": "Check effort and timing",
+            "status": "completed",
+            "attempt": 1,
+            "previous_attempt_id": null,
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "output_artifact_ids": [
+              "artifact_operations_northstar"
+            ],
+            "blocked_reason": null,
+            "error_code": null,
+            "progress_step": 3,
+            "progress_total": 3,
+            "control_version": 1,
+            "semantic_focus_target": "team.agent.operations",
+            "source_ids": [
+              "source_northstar_request"
+            ]
+          },
+          "run_scout_northstar": {
+            "id": "run_scout_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "scout",
+            "task_kind": "assess_opportunity",
+            "title": "Assess the launch request",
+            "status": "completed",
+            "attempt": 1,
+            "previous_attempt_id": null,
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "output_artifact_ids": [
+              "artifact_scout_northstar"
+            ],
+            "blocked_reason": null,
+            "error_code": null,
+            "progress_step": 3,
+            "progress_total": 3,
+            "control_version": 1,
+            "semantic_focus_target": "team.agent.scout",
+            "source_ids": [
+              "source_northstar_request"
+            ]
+          },
+          "run_sales_northstar": {
+            "id": "run_sales_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "sales",
+            "task_kind": "draft_offer",
+            "title": "Prepare a focused offer",
+            "status": "waiting_input",
+            "attempt": 1,
+            "previous_attempt_id": null,
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "output_artifact_ids": [],
+            "blocked_reason": "Await a current Finance assessment",
+            "error_code": null,
+            "progress_step": 0,
+            "progress_total": 3,
+            "control_version": 1,
+            "semantic_focus_target": "team.agent.sales",
+            "source_ids": [
+              "source_northstar_request"
+            ]
+          }
+        },
+        "assessments": {
+          "assessment_finance_northstar": {
+            "id": "assessment_finance_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "role_id": "finance",
+            "opportunity_id": "opportunity_northstar",
+            "requirements_version": 1,
+            "policy_version": 1,
+            "status": "failed",
+            "summary": "Finance assessment has not completed.",
+            "factual_findings": [],
+            "assumptions": [],
+            "unknowns": [
+              "Retry required"
+            ],
+            "proposed_effort_minutes": null,
+            "source_ids": [
+              "source_northstar_request"
+            ],
+            "run_id": "run_finance_northstar"
+          }
+        },
+        "offers": {
+          "offer_northstar": {
+            "id": "offer_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "client_id": "client_northstar",
+            "opportunity_id": "opportunity_northstar",
+            "current_version_id": "offer_northstar_v1",
+            "status": "draft",
+            "accepted_version_id": null,
+            "shared_version_id": null
+          }
+        },
+        "offer_versions": {
+          "offer_northstar_v1": {
+            "id": "offer_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T07:00:00+07:00",
+            "updated_at": "2026-10-14T07:00:00+07:00",
+            "offer_id": "offer_northstar",
+            "revision": 1,
+            "title": "Two hero launch animations",
+            "deliverables": [
+              {
+                "key": "animation_1",
+                "label": "Hero launch animation 1",
+                "quantity": 1
+              },
+              {
+                "key": "animation_2",
+                "label": "Hero launch animation 2",
+                "quantity": 1
+              }
+            ],
+            "price": {
+              "amount_minor": 45000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "estimated_effort_minutes": 720,
+            "terms": {
+              "delivery_business_days": 5,
+              "deposit_basis_points": 6000,
+              "reservation_hours": 48,
+              "start_basis": "next_business_day_after_confirmed_deposit_and_required_inputs",
+              "timezone": "Asia/Jakarta",
+              "workdays": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "holidays": [],
+              "start_local_time": "09:00",
+              "due_local_time": "17:00",
+              "required_input_keys": [
+                "brand_assets",
+                "launch_message"
+              ],
+              "acceptance_disclosure": "Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day five, counting that start day as day one. Late prerequisites require rescheduling."
+            },
+            "requirements_id": "requirements_northstar",
+            "requirements_version": 1,
+            "policy_version": 1,
+            "assessment_ids": [
+              "assessment_scout_northstar",
+              "assessment_operations_northstar"
+            ],
+            "state": "draft",
+            "buyer_note": "A focused pair of animations for your launch.",
+            "expires_at": "2026-10-23T17:00:00+07:00",
+            "predecessor_id": null,
+            "immutable_after_acceptance": false
+          }
+        },
+        "artifacts": {
+          "artifact_scout_northstar": {
+            "id": "artifact_scout_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "kind": "assessment",
+            "title": "Lead fit brief",
+            "creator_run_id": "run_scout_northstar",
+            "role_id": "scout",
+            "record_ref": {
+              "table": "assessments",
+              "id": "assessment_scout_northstar",
+              "version": 1
+            },
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "source_ids": [
+              "source_northstar_request"
+            ],
+            "status": "current"
+          },
+          "artifact_operations_northstar": {
+            "id": "artifact_operations_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "kind": "assessment",
+            "title": "Effort and timing check",
+            "creator_run_id": "run_operations_northstar",
+            "role_id": "operations",
+            "record_ref": {
+              "table": "assessments",
+              "id": "assessment_operations_northstar",
+              "version": 1
+            },
+            "input_refs": [
+              {
+                "table": "requirements",
+                "id": "requirements_northstar",
+                "version": 1
+              },
+              {
+                "table": "policies",
+                "id": "policy_business",
+                "version": 1
+              }
+            ],
+            "source_ids": [
+              "source_northstar_request"
+            ],
+            "status": "current"
+          }
+        },
+        "handoffs": {
+          "handoff_scout_sales": {
+            "id": "handoff_scout_sales",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "from_run_id": "run_scout_northstar",
+            "to_run_id": "run_sales_northstar",
+            "artifact_id": "artifact_scout_northstar",
+            "status": "consumed",
+            "input_version": 1
+          },
+          "handoff_operations_sales": {
+            "id": "handoff_operations_sales",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "from_run_id": "run_operations_northstar",
+            "to_run_id": "run_sales_northstar",
+            "artifact_id": "artifact_operations_northstar",
+            "status": "consumed",
+            "input_version": 1
+          }
+        },
+        "events": {
+          "event_001": {
+            "id": "event_001",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T07:01:00+07:00",
+            "updated_at": "2026-10-14T07:01:00+07:00",
+            "sequence": 1,
+            "occurred_at": "2026-10-14T07:01:00+07:00",
+            "kind": "source.recorded",
+            "role_id": "scout",
+            "run_id": null,
+            "summary": "Northstar's sample request was recorded.",
+            "record_refs": [
+              {
+                "table": "opportunities",
+                "id": "opportunity_northstar",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "team.agent.scout",
+            "cause_command_id": null,
+            "visibility": "owner"
+          },
+          "event_002": {
+            "id": "event_002",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T07:10:00+07:00",
+            "updated_at": "2026-10-14T07:10:00+07:00",
+            "sequence": 2,
+            "occurred_at": "2026-10-14T07:10:00+07:00",
+            "kind": "assessment.completed",
+            "role_id": "scout",
+            "run_id": null,
+            "summary": "The launch request fits; a narrower scope is recommended.",
+            "record_refs": [
+              {
+                "table": "assessments",
+                "id": "assessment_scout_northstar",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "team.agent.scout",
+            "cause_command_id": null,
+            "visibility": "owner"
+          },
+          "event_003": {
+            "id": "event_003",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T07:15:00+07:00",
+            "updated_at": "2026-10-14T07:15:00+07:00",
+            "sequence": 3,
+            "occurred_at": "2026-10-14T07:15:00+07:00",
+            "kind": "assessment.completed",
+            "role_id": "operations",
+            "run_id": null,
+            "summary": "Two animations fit the sample effort allowance; no dates are reserved.",
+            "record_refs": [
+              {
+                "table": "assessments",
+                "id": "assessment_operations_northstar",
+                "version": 1
+              }
+            ],
+            "semantic_focus_target": "team.agent.operations",
+            "cause_command_id": null,
+            "visibility": "owner"
+          }
+        }
+      },
+      "ui_state": {
+        "route": "/app/team?agent=finance"
+      },
+      "assertions": [
+        "Retry creates attempt2 linked to failed attempt1",
+        "Failed attempt emits no success artifact"
+      ]
+    },
+    {
+      "id": "stale_offer",
+      "title": "New version needs review",
+      "description": "The approved/shared v1 is superseded by owner-edited v2. A buyer's old v1 tab cannot accept it; new version is not implicitly approved or shared.",
+      "sample_clock": "2026-10-16T09:00:00+07:00",
+      "base_fixture_id": "crewmori_sample_v1",
+      "replace_tables": [],
+      "upsert_records": {
+        "offers": {
+          "offer_northstar": {
+            "id": "offer_northstar",
+            "workspace_id": "workspace_alya",
+            "version": 3,
+            "audience": "owner",
+            "created_at": "2026-10-12T08:00:00+07:00",
+            "updated_at": "2026-10-12T08:00:00+07:00",
+            "client_id": "client_northstar",
+            "opportunity_id": "opportunity_northstar",
+            "current_version_id": "offer_northstar_v2",
+            "status": "draft",
+            "accepted_version_id": null,
+            "shared_version_id": "offer_northstar_v1"
+          }
+        },
+        "offer_versions": {
+          "offer_northstar_v1": {
+            "id": "offer_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-14T07:00:00+07:00",
+            "updated_at": "2026-10-14T07:00:00+07:00",
+            "offer_id": "offer_northstar",
+            "revision": 1,
+            "title": "Two hero launch animations",
+            "deliverables": [
+              {
+                "key": "animation_1",
+                "label": "Hero launch animation 1",
+                "quantity": 1
+              },
+              {
+                "key": "animation_2",
+                "label": "Hero launch animation 2",
+                "quantity": 1
+              }
+            ],
+            "price": {
+              "amount_minor": 45000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "estimated_effort_minutes": 720,
+            "terms": {
+              "delivery_business_days": 5,
+              "deposit_basis_points": 6000,
+              "reservation_hours": 48,
+              "start_basis": "next_business_day_after_confirmed_deposit_and_required_inputs",
+              "timezone": "Asia/Jakarta",
+              "workdays": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "holidays": [],
+              "start_local_time": "09:00",
+              "due_local_time": "17:00",
+              "required_input_keys": [
+                "brand_assets",
+                "launch_message"
+              ],
+              "acceptance_disclosure": "Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day five, counting that start day as day one. Late prerequisites require rescheduling."
+            },
+            "requirements_id": "requirements_northstar",
+            "requirements_version": 1,
+            "policy_version": 1,
+            "assessment_ids": [
+              "assessment_scout_northstar",
+              "assessment_operations_northstar",
+              "assessment_finance_northstar"
+            ],
+            "state": "superseded",
+            "buyer_note": "A focused pair of animations for your launch.",
+            "expires_at": "2026-10-23T17:00:00+07:00",
+            "predecessor_id": null,
+            "immutable_after_acceptance": false
+          },
+          "offer_northstar_v2": {
+            "id": "offer_northstar_v2",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:55:00+07:00",
+            "updated_at": "2026-10-16T08:55:00+07:00",
+            "offer_id": "offer_northstar",
+            "revision": 2,
+            "title": "Two hero launch animations — revised scope",
+            "deliverables": [
+              {
+                "key": "animation_1",
+                "label": "Hero launch animation 1",
+                "quantity": 1
+              },
+              {
+                "key": "animation_2",
+                "label": "Hero launch animation 2 with revised ending",
+                "quantity": 1
+              }
+            ],
+            "price": {
+              "amount_minor": 45000,
+              "currency": "USD",
+              "scale": 2
+            },
+            "estimated_effort_minutes": 720,
+            "terms": {
+              "delivery_business_days": 5,
+              "deposit_basis_points": 6000,
+              "reservation_hours": 48,
+              "start_basis": "next_business_day_after_confirmed_deposit_and_required_inputs",
+              "timezone": "Asia/Jakarta",
+              "workdays": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "holidays": [],
+              "start_local_time": "09:00",
+              "due_local_time": "17:00",
+              "required_input_keys": [
+                "brand_assets",
+                "launch_message"
+              ],
+              "acceptance_disclosure": "Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day five, counting that start day as day one. Late prerequisites require rescheduling."
+            },
+            "requirements_id": "requirements_northstar",
+            "requirements_version": 1,
+            "policy_version": 1,
+            "assessment_ids": [],
+            "state": "draft",
+            "buyer_note": "The ending of the second animation has been clarified.",
+            "expires_at": "2026-10-23T17:00:00+07:00",
+            "predecessor_id": "offer_northstar_v1",
+            "immutable_after_acceptance": false
+          }
+        },
+        "approvals": {
+          "approval_northstar_v1": {
+            "id": "approval_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "owner",
+            "created_at": "2026-10-16T08:35:00+07:00",
+            "updated_at": "2026-10-16T08:35:00+07:00",
+            "subject_ref": {
+              "table": "offer_versions",
+              "id": "offer_northstar_v1",
+              "version": 1
+            },
+            "action": "share_offer",
+            "approved_by": "owner_alya",
+            "destination_contact_id": "contact_emma",
+            "state": "invalidated",
+            "approved_at": "2026-10-16T08:35:00+07:00"
+          }
+        },
+        "share_records": {
+          "share_northstar_v1": {
+            "id": "share_northstar_v1",
+            "workspace_id": "workspace_alya",
+            "version": 1,
+            "audience": "buyer",
+            "created_at": "2026-10-16T08:40:00+07:00",
+            "updated_at": "2026-10-16T08:40:00+07:00",
+            "offer_id": "offer_northstar",
+            "offer_version_id": "offer_northstar_v1",
+            "approval_id": "approval_northstar_v1",
+            "contact_id": "contact_emma",
+            "state": "superseded",
+            "shared_at": "2026-10-16T08:40:00+07:00",
+            "connection_id": "gmail",
+            "command_id": "command_share_northstar_v1"
+          }
+        }
+      },
+      "ui_state": {
+        "route": "/buyer/engagement_northstar/offer",
+        "expected_offer_version_id": "offer_northstar_v1"
+      },
+      "assertions": [
+        "Old acceptance rejectsSTALE_VERSION",
+        "V2 requires fresh assessments, approval and sharing",
+        "No project or receipt"
+      ]
+    },
+    {
+      "id": "empty_filtered_list",
+      "title": "No matching opportunities",
+      "description": "A combined search/status filter produces zero results; the real sample records remain intact.",
+      "sample_clock": "2026-10-16T09:00:00+07:00",
+      "base_fixture_id": "crewmori_sample_v1",
+      "replace_tables": [],
+      "upsert_records": {},
+      "ui_state": {
+        "route": "/app/opportunities?q=ceramic&status=qualified&sort=updated_desc",
+        "query": "ceramic",
+        "filters": {
+          "status": "qualified"
+        },
+        "sort": "updated_desc"
+      },
+      "assertions": [
+        "No results is distinct from no records",
+        "Clear filters restores actual records"
+      ]
+    }
+  ]
+}

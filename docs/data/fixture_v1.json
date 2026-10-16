@@ -1,0 +1,1470 @@
+{
+  "schema_version": "1.0.0",
+  "fixture_id": "crewmori_sample_v1",
+  "sample_clock": "2026-10-16T09:00:00+07:00",
+  "tables": {
+    "workspaces": {
+      "workspace_alya": {
+        "id": "workspace_alya",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "name": "Alya Studio",
+        "owner_id": "owner_alya",
+        "timezone": "Asia/Jakarta",
+        "default_currency": "USD",
+        "reporting_currency": "IDR",
+        "locale": "en",
+        "sample": true
+      }
+    },
+    "owners": {
+      "owner_alya": {
+        "id": "owner_alya",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "display_name": "Alya",
+        "email": "alya@example.test",
+        "handle": "alya",
+        "profession": "Independent motion designer",
+        "locale": "en"
+      }
+    },
+    "profiles": {
+      "profile_alya": {
+        "id": "profile_alya",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "owner_id": "owner_alya",
+        "public_name": "Alya Studio",
+        "headline": "Thoughtful motion for product launches",
+        "biography": "I help small teams turn complex ideas into clear launch stories.",
+        "public_availability": "open_to_inquiries",
+        "published": true,
+        "location_label": "Jakarta, Indonesia",
+        "public_contact_email": "hello@alya.example",
+        "approved_service_ids": [
+          "service_motion",
+          "service_discovery"
+        ],
+        "approved_portfolio_ids": [
+          "portfolio_launch",
+          "portfolio_research"
+        ],
+        "public_revision": 1
+      }
+    },
+    "services": {
+      "service_motion": {
+        "id": "service_motion",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "public",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "profile_id": "profile_alya",
+        "slug": "launch-animation",
+        "title": "Product launch motion",
+        "description": "Short, purposeful launch animations shaped around your product and audience.",
+        "deliverables": [
+          "Agreed animation files",
+          "Delivery notes"
+        ],
+        "pricing_label": "Custom quote after a brief",
+        "published": true,
+        "category": "Motion design"
+      },
+      "service_discovery": {
+        "id": "service_discovery",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "public",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "profile_id": "profile_alya",
+        "slug": "discovery-and-summary",
+        "title": "Discovery and findings summary",
+        "description": "A focused discovery session followed by a clear, actionable written summary.",
+        "deliverables": [
+          "Discovery session",
+          "Findings summary"
+        ],
+        "pricing_label": "Custom quote after a brief",
+        "published": true,
+        "category": "Consulting"
+      }
+    },
+    "portfolio_items": {
+      "portfolio_launch": {
+        "id": "portfolio_launch",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "public",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "profile_id": "profile_alya",
+        "title": "Sample launch story",
+        "summary": "Synthetic portfolio example for the sample workspace.",
+        "asset_id": "attachment_portfolio",
+        "service_ids": [
+          "service_motion"
+        ],
+        "published": true,
+        "claim_status": "approved_sample"
+      },
+      "portfolio_research": {
+        "id": "portfolio_research",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "public",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "profile_id": "profile_alya",
+        "title": "Sample research synthesis",
+        "summary": "Synthetic sample cover illustrating a discovery-and-findings engagement; not a real client case study.",
+        "asset_id": "attachment_research",
+        "service_ids": [
+          "service_discovery"
+        ],
+        "published": true,
+        "claim_status": "approved_sample"
+      }
+    },
+    "policies": {
+      "policy_business": {
+        "id": "policy_business",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "deposit_basis_points": 6000,
+        "fee_basis_points": 200,
+        "fx_idr_per_usd": "15000",
+        "upfront_cost_assumption": {
+          "amount_minor": 3000000,
+          "currency": "IDR",
+          "scale": 0
+        },
+        "available_effort_minutes": 720,
+        "business_weekdays": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "holiday_dates": [],
+        "start_local_time": "09:00",
+        "due_local_time": "17:00",
+        "reservation_hours": 48,
+        "require_deposit": true,
+        "required_input_keys": [
+          "brand_assets",
+          "launch_message"
+        ],
+        "next_business_day_start": true,
+        "minimum_hourly_rate": null,
+        "sample_assumptions": true
+      }
+    },
+    "preferences": {
+      "preferences_alya": {
+        "id": "preferences_alya",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "owner_id": "owner_alya",
+        "locale": "en",
+        "timezone": "Asia/Jakarta",
+        "motion": "system",
+        "team_animation_paused": false,
+        "notification_email": false,
+        "notification_in_app": true,
+        "last_seen_event_sequence": 0
+      }
+    },
+    "connections": {
+      "gmail": {
+        "id": "gmail",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "label": "Gmail",
+        "state": "connected",
+        "mode": "sample",
+        "capabilities": [
+          "read_sample_messages",
+          "draft_message",
+          "simulate_send"
+        ],
+        "approved_capabilities": [
+          "read_sample_messages",
+          "draft_message",
+          "simulate_send"
+        ],
+        "account_label": "Sample Alya account",
+        "interrupted_command_id": null,
+        "error_code": null
+      },
+      "calendar": {
+        "id": "calendar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "label": "Calendar",
+        "state": "connected",
+        "mode": "sample",
+        "capabilities": [
+          "read_sample_events",
+          "draft_event",
+          "simulate_invite"
+        ],
+        "approved_capabilities": [
+          "read_sample_events",
+          "draft_event",
+          "simulate_invite"
+        ],
+        "account_label": "Sample Alya account",
+        "interrupted_command_id": null,
+        "error_code": null
+      },
+      "drive": {
+        "id": "drive",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "label": "Drive",
+        "state": "connected",
+        "mode": "sample",
+        "capabilities": [
+          "read_sample_files",
+          "attach_sample_reference"
+        ],
+        "approved_capabilities": [
+          "read_sample_files",
+          "attach_sample_reference"
+        ],
+        "account_label": "Sample Alya account",
+        "interrupted_command_id": null,
+        "error_code": null
+      }
+    },
+    "sources": {
+      "source_northstar_request": {
+        "id": "source_northstar_request",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "kind": "sample_message",
+        "label": "Emma's product launch request",
+        "connection_id": "gmail",
+        "locator": "sample://northstar/request/1",
+        "content": "We need four launch assets, have a $500 budget, and hope for delivery in five business days.",
+        "observed_at": "2026-10-12T08:30:00+07:00",
+        "factual_status": "synthetic_source_fact",
+        "attachment_ids": []
+      },
+      "source_lumen_request": {
+        "id": "source_lumen_request",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "kind": "manual_entry",
+        "label": "Lumen discovery request",
+        "connection_id": null,
+        "locator": "sample://lumen/request/1",
+        "content": "Could you run a discovery session and summarize the findings? Budget and timing are flexible; please ask what you need.",
+        "observed_at": "2026-10-13T10:00:00+07:00",
+        "factual_status": "synthetic_source_fact",
+        "attachment_ids": []
+      }
+    },
+    "clients": {
+      "client_northstar": {
+        "id": "client_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "name": "Northstar",
+        "contact_ids": [
+          "contact_emma"
+        ],
+        "status": "prospect",
+        "website": "https://northstar.example",
+        "profession_context": "Product launch",
+        "next_action": "Review the reduced-scope offer",
+        "private_note_ids": [
+          "note_northstar"
+        ]
+      },
+      "client_lumen": {
+        "id": "client_lumen",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "name": "Lumen Advisory",
+        "contact_ids": [
+          "contact_jules"
+        ],
+        "status": "prospect",
+        "website": "https://lumen.example",
+        "profession_context": "Consulting engagement",
+        "next_action": "Clarify the session's audience and desired decision",
+        "private_note_ids": []
+      }
+    },
+    "contacts": {
+      "contact_emma": {
+        "id": "contact_emma",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "buyer",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "client_id": "client_northstar",
+        "display_name": "Emma",
+        "email": "emma@northstar.example",
+        "role_label": "Project contact",
+        "locale": "en"
+      },
+      "contact_jules": {
+        "id": "contact_jules",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "buyer",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "client_id": "client_lumen",
+        "display_name": "Jules",
+        "email": "jules@lumen.example",
+        "role_label": "Project contact",
+        "locale": "en"
+      }
+    },
+    "opportunities": {
+      "opportunity_northstar": {
+        "id": "opportunity_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "client_id": "client_northstar",
+        "contact_id": "contact_emma",
+        "source_ids": [
+          "source_northstar_request"
+        ],
+        "requirements_id": "requirements_northstar",
+        "conversation_id": "conversation_northstar",
+        "title": "Product launch animations",
+        "status": "qualified",
+        "assigned_role": "sales",
+        "offer_id": "offer_northstar",
+        "acquisition_cash_cost": null,
+        "acquisition_minutes": null,
+        "unknowns": [
+          "Final launch copy and brand assets have not been supplied."
+        ]
+      },
+      "opportunity_lumen": {
+        "id": "opportunity_lumen",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "client_id": "client_lumen",
+        "contact_id": "contact_jules",
+        "source_ids": [
+          "source_lumen_request"
+        ],
+        "requirements_id": "requirements_lumen",
+        "conversation_id": "conversation_lumen",
+        "title": "Discovery workshop and findings",
+        "status": "needs_information",
+        "assigned_role": "sales",
+        "offer_id": "offer_lumen",
+        "acquisition_cash_cost": null,
+        "acquisition_minutes": null,
+        "unknowns": [
+          "Audience",
+          "Required decision",
+          "Budget",
+          "Preferred dates"
+        ]
+      }
+    },
+    "requirements": {
+      "requirements_northstar": {
+        "id": "requirements_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "buyer",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "opportunity_id": "opportunity_northstar",
+        "deliverables": [
+          "Four requested launch assets"
+        ],
+        "requested_asset_count": 4,
+        "budget": {
+          "amount_minor": 50000,
+          "currency": "USD",
+          "scale": 2
+        },
+        "delivery_business_days": 5,
+        "supplied_input_ids": [],
+        "missing_fields": [
+          "brand_assets",
+          "launch_message"
+        ],
+        "source_ids": [
+          "source_northstar_request"
+        ]
+      },
+      "requirements_lumen": {
+        "id": "requirements_lumen",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "buyer",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "opportunity_id": "opportunity_lumen",
+        "deliverables": [
+          "Discovery session",
+          "Findings summary"
+        ],
+        "requested_asset_count": null,
+        "budget": null,
+        "delivery_business_days": null,
+        "supplied_input_ids": [],
+        "missing_fields": [
+          "audience",
+          "desired_decision",
+          "budget",
+          "preferred_dates"
+        ],
+        "source_ids": [
+          "source_lumen_request"
+        ]
+      }
+    },
+    "engagements": {
+      "engagement_northstar": {
+        "id": "engagement_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "client_id": "client_northstar",
+        "contact_id": "contact_emma",
+        "opportunity_id": "opportunity_northstar",
+        "conversation_id": "conversation_northstar",
+        "offer_id": "offer_northstar",
+        "buyer_grant_id": "grant_northstar",
+        "project_id": null,
+        "stage": "offer_review"
+      },
+      "engagement_lumen": {
+        "id": "engagement_lumen",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "client_id": "client_lumen",
+        "contact_id": "contact_jules",
+        "opportunity_id": "opportunity_lumen",
+        "conversation_id": "conversation_lumen",
+        "offer_id": "offer_lumen",
+        "buyer_grant_id": "grant_lumen",
+        "project_id": null,
+        "stage": "clarification"
+      }
+    },
+    "conversations": {
+      "conversation_northstar": {
+        "id": "conversation_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "buyer",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "client_id": "client_northstar",
+        "buyer_contact_id": "contact_emma",
+        "status": "open",
+        "owner_review_requested": false,
+        "latest_message_id": "message_northstar_1",
+        "brief_requirements_id": "requirements_northstar"
+      },
+      "conversation_lumen": {
+        "id": "conversation_lumen",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "buyer",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "client_id": "client_lumen",
+        "buyer_contact_id": "contact_jules",
+        "status": "open",
+        "owner_review_requested": false,
+        "latest_message_id": "message_lumen_1",
+        "brief_requirements_id": "requirements_lumen"
+      }
+    },
+    "messages": {
+      "message_northstar_1": {
+        "id": "message_northstar_1",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "buyer",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "conversation_id": "conversation_northstar",
+        "sender_kind": "buyer",
+        "sender_id": "contact_emma",
+        "content": "We need four launch assets, have a $500 budget, and hope for delivery in five business days.",
+        "delivery_state": "sample_recorded",
+        "attachment_ids": [],
+        "shared_with_buyer": true,
+        "approved_content_version": null
+      },
+      "message_lumen_1": {
+        "id": "message_lumen_1",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "buyer",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "conversation_id": "conversation_lumen",
+        "sender_kind": "buyer",
+        "sender_id": "contact_jules",
+        "content": "Could you run a discovery session and summarize the findings? Budget and timing are flexible; please ask what you need.",
+        "delivery_state": "sample_recorded",
+        "attachment_ids": [],
+        "shared_with_buyer": true,
+        "approved_content_version": null
+      }
+    },
+    "assessments": {
+      "assessment_scout_northstar": {
+        "id": "assessment_scout_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "role_id": "scout",
+        "opportunity_id": "opportunity_northstar",
+        "requirements_version": 1,
+        "policy_version": 1,
+        "status": "current",
+        "summary": "The request fits launch-motion experience; the original scope needs narrowing.",
+        "factual_findings": [
+          "Four assets requested",
+          "$500 requested budget",
+          "Five business days requested"
+        ],
+        "assumptions": [
+          "Two hero animations can cover the highest-priority launch moments."
+        ],
+        "unknowns": [
+          "Brand assets and final launch copy"
+        ],
+        "proposed_effort_minutes": 720,
+        "source_ids": [
+          "source_northstar_request"
+        ],
+        "run_id": "run_scout_northstar"
+      },
+      "assessment_operations_northstar": {
+        "id": "assessment_operations_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "role_id": "operations",
+        "opportunity_id": "opportunity_northstar",
+        "requirements_version": 1,
+        "policy_version": 1,
+        "status": "current",
+        "summary": "Two animations fit the sample 12-hour capacity; dates remain unreserved.",
+        "factual_findings": [
+          "Sample available effort is 720 minutes"
+        ],
+        "assumptions": [
+          "Two animations require an estimated 720 minutes"
+        ],
+        "unknowns": [
+          "Actual input readiness date"
+        ],
+        "proposed_effort_minutes": 720,
+        "source_ids": [
+          "source_northstar_request"
+        ],
+        "run_id": "run_operations_northstar"
+      },
+      "assessment_finance_northstar": {
+        "id": "assessment_finance_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "role_id": "finance",
+        "opportunity_id": "opportunity_northstar",
+        "requirements_version": 1,
+        "policy_version": 1,
+        "status": "current",
+        "summary": "A 60% deposit is $270 gross; sample fee and FX imply IDR3,969,000 net.",
+        "factual_findings": [
+          "Proposed offer price is $450"
+        ],
+        "assumptions": [
+          "2% sample fee",
+          "15000 IDR per USD",
+          "IDR3000000 planned upfront cost"
+        ],
+        "unknowns": [
+          "Actual provider fee and FX quote",
+          "Actual acquisition cost"
+        ],
+        "proposed_effort_minutes": null,
+        "source_ids": [
+          "source_northstar_request"
+        ],
+        "run_id": "run_finance_northstar"
+      }
+    },
+    "offers": {
+      "offer_northstar": {
+        "id": "offer_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "client_id": "client_northstar",
+        "opportunity_id": "opportunity_northstar",
+        "current_version_id": "offer_northstar_v1",
+        "status": "awaiting_review",
+        "accepted_version_id": null,
+        "shared_version_id": null
+      },
+      "offer_lumen": {
+        "id": "offer_lumen",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "client_id": "client_lumen",
+        "opportunity_id": "opportunity_lumen",
+        "current_version_id": "offer_lumen_v1",
+        "status": "draft",
+        "accepted_version_id": null,
+        "shared_version_id": null
+      }
+    },
+    "offer_versions": {
+      "offer_northstar_v1": {
+        "id": "offer_northstar_v1",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-14T07:00:00+07:00",
+        "updated_at": "2026-10-14T07:00:00+07:00",
+        "offer_id": "offer_northstar",
+        "revision": 1,
+        "title": "Two hero launch animations",
+        "deliverables": [
+          {
+            "key": "animation_1",
+            "label": "Hero launch animation 1",
+            "quantity": 1
+          },
+          {
+            "key": "animation_2",
+            "label": "Hero launch animation 2",
+            "quantity": 1
+          }
+        ],
+        "price": {
+          "amount_minor": 45000,
+          "currency": "USD",
+          "scale": 2
+        },
+        "estimated_effort_minutes": 720,
+        "terms": {
+          "delivery_business_days": 5,
+          "deposit_basis_points": 6000,
+          "reservation_hours": 48,
+          "start_basis": "next_business_day_after_confirmed_deposit_and_required_inputs",
+          "timezone": "Asia/Jakarta",
+          "workdays": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "holidays": [],
+          "start_local_time": "09:00",
+          "due_local_time": "17:00",
+          "required_input_keys": [
+            "brand_assets",
+            "launch_message"
+          ],
+          "acceptance_disclosure": "Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day five, counting that start day as day one. Late prerequisites require rescheduling."
+        },
+        "requirements_id": "requirements_northstar",
+        "requirements_version": 1,
+        "policy_version": 1,
+        "assessment_ids": [
+          "assessment_scout_northstar",
+          "assessment_operations_northstar",
+          "assessment_finance_northstar"
+        ],
+        "state": "awaiting_review",
+        "buyer_note": "A focused pair of animations for your launch.",
+        "expires_at": "2026-10-23T17:00:00+07:00",
+        "predecessor_id": null,
+        "immutable_after_acceptance": false
+      },
+      "offer_lumen_v1": {
+        "id": "offer_lumen_v1",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "offer_id": "offer_lumen",
+        "revision": 1,
+        "title": "Discovery session and findings summary",
+        "deliverables": [
+          {
+            "key": "session",
+            "label": "Discovery session",
+            "quantity": 1
+          },
+          {
+            "key": "summary",
+            "label": "Written findings summary",
+            "quantity": 1
+          }
+        ],
+        "price": null,
+        "estimated_effort_minutes": null,
+        "terms": null,
+        "requirements_id": "requirements_lumen",
+        "requirements_version": 1,
+        "policy_version": 1,
+        "assessment_ids": [],
+        "state": "draft",
+        "buyer_note": "We will confirm scope, price and dates after clarifying your goals.",
+        "expires_at": null,
+        "predecessor_id": null,
+        "immutable_after_acceptance": false
+      }
+    },
+    "approvals": {},
+    "share_records": {},
+    "acceptances": {},
+    "buyer_grants": {
+      "grant_northstar": {
+        "id": "grant_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "buyer",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "engagement_id": "engagement_northstar",
+        "contact_id": "contact_emma",
+        "conversation_id": "conversation_northstar",
+        "offer_id": "offer_northstar",
+        "project_id": null,
+        "state": "active",
+        "expires_at": "2026-11-16T09:00:00+07:00",
+        "token_kind": "local_demo_navigation_only"
+      },
+      "grant_lumen": {
+        "id": "grant_lumen",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "buyer",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "engagement_id": "engagement_lumen",
+        "contact_id": "contact_jules",
+        "conversation_id": "conversation_lumen",
+        "offer_id": "offer_lumen",
+        "project_id": null,
+        "state": "active",
+        "expires_at": "2026-11-16T09:00:00+07:00",
+        "token_kind": "local_demo_navigation_only"
+      }
+    },
+    "projects": {},
+    "required_inputs": {},
+    "milestones": {},
+    "work_tasks": {},
+    "reservations": {},
+    "calendar_events": {},
+    "invoices": {},
+    "invoice_lines": {},
+    "payment_requests": {},
+    "receipts": {},
+    "allocations": {},
+    "finance_issues": {},
+    "expenses": {
+      "expense_software": {
+        "id": "expense_software",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "category": "Software",
+        "description": "Sample monthly design software",
+        "amount": {
+          "amount_minor": 375000,
+          "currency": "IDR",
+          "scale": 0
+        },
+        "expense_date": "2026-10-12",
+        "attachment_id": null,
+        "project_id": null,
+        "paid": true
+      },
+      "expense_internet": {
+        "id": "expense_internet",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "category": "Utilities",
+        "description": "Sample studio internet",
+        "amount": {
+          "amount_minor": 200000,
+          "currency": "IDR",
+          "scale": 0
+        },
+        "expense_date": "2026-10-13",
+        "attachment_id": null,
+        "project_id": null,
+        "paid": true
+      },
+      "expense_domain": {
+        "id": "expense_domain",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "category": "Website",
+        "description": "Sample domain renewal",
+        "amount": {
+          "amount_minor": 1200,
+          "currency": "USD",
+          "scale": 2
+        },
+        "expense_date": "2026-10-14",
+        "attachment_id": null,
+        "project_id": null,
+        "paid": true
+      }
+    },
+    "attachments": {
+      "attachment_portfolio": {
+        "id": "attachment_portfolio",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "public",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "name": "Sample launch story",
+        "media_type": "image/svg+xml",
+        "storage_kind": "bundled_asset",
+        "storage_locator": "assets/demo/portfolio-kinetic-launch.svg",
+        "byte_length": 878,
+        "availability": "available",
+        "source_id": null,
+        "shared_with_buyer": true
+      },
+      "attachment_research": {
+        "id": "attachment_research",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "public",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "name": "Sample research synthesis",
+        "media_type": "image/svg+xml",
+        "storage_kind": "bundled_asset",
+        "storage_locator": "assets/demo/portfolio-research-synthesis.svg",
+        "byte_length": 1335,
+        "availability": "available",
+        "source_id": null,
+        "shared_with_buyer": true
+      }
+    },
+    "private_notes": {
+      "note_northstar": {
+        "id": "note_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "client_id": "client_northstar",
+        "content": "Owner-only: discuss scope before offering additional work. Planned upfront cost is an assumption, not an incurred expense."
+      }
+    },
+    "promotions": {
+      "promotion_launch_service": {
+        "id": "promotion_launch_service",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "service_id": "service_motion",
+        "current_version_id": "promotion_launch_service_v1",
+        "status": "draft",
+        "published_version_id": null
+      }
+    },
+    "promotion_versions": {
+      "promotion_launch_service_v1": {
+        "id": "promotion_launch_service_v1",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "promotion_id": "promotion_launch_service",
+        "revision": 1,
+        "destination": "sample_professional_network",
+        "content": "Launching a product? I create focused motion stories that make complex ideas clear. Tell me what you are bringing into the world.",
+        "approved_version": null,
+        "public_claim_refs": [
+          {
+            "table": "services",
+            "id": "service_motion",
+            "version": 1
+          }
+        ],
+        "source_ids": [],
+        "state": "draft",
+        "publication_evidence_id": null
+      }
+    },
+    "agent_runs": {
+      "run_scout_northstar": {
+        "id": "run_scout_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "role_id": "scout",
+        "task_kind": "assess_opportunity",
+        "title": "Assess the launch request",
+        "status": "completed",
+        "attempt": 1,
+        "previous_attempt_id": null,
+        "input_refs": [
+          {
+            "table": "requirements",
+            "id": "requirements_northstar",
+            "version": 1
+          },
+          {
+            "table": "policies",
+            "id": "policy_business",
+            "version": 1
+          }
+        ],
+        "output_artifact_ids": [
+          "artifact_scout_northstar"
+        ],
+        "blocked_reason": null,
+        "error_code": null,
+        "progress_step": 3,
+        "progress_total": 3,
+        "control_version": 1,
+        "semantic_focus_target": "team.agent.scout",
+        "source_ids": [
+          "source_northstar_request"
+        ]
+      },
+      "run_operations_northstar": {
+        "id": "run_operations_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "role_id": "operations",
+        "task_kind": "assess_opportunity",
+        "title": "Check effort and timing",
+        "status": "completed",
+        "attempt": 1,
+        "previous_attempt_id": null,
+        "input_refs": [
+          {
+            "table": "requirements",
+            "id": "requirements_northstar",
+            "version": 1
+          },
+          {
+            "table": "policies",
+            "id": "policy_business",
+            "version": 1
+          }
+        ],
+        "output_artifact_ids": [
+          "artifact_operations_northstar"
+        ],
+        "blocked_reason": null,
+        "error_code": null,
+        "progress_step": 3,
+        "progress_total": 3,
+        "control_version": 1,
+        "semantic_focus_target": "team.agent.operations",
+        "source_ids": [
+          "source_northstar_request"
+        ]
+      },
+      "run_finance_northstar": {
+        "id": "run_finance_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "role_id": "finance",
+        "task_kind": "assess_opportunity",
+        "title": "Check deposit assumptions",
+        "status": "completed",
+        "attempt": 1,
+        "previous_attempt_id": null,
+        "input_refs": [
+          {
+            "table": "requirements",
+            "id": "requirements_northstar",
+            "version": 1
+          },
+          {
+            "table": "policies",
+            "id": "policy_business",
+            "version": 1
+          }
+        ],
+        "output_artifact_ids": [
+          "artifact_finance_northstar"
+        ],
+        "blocked_reason": null,
+        "error_code": null,
+        "progress_step": 3,
+        "progress_total": 3,
+        "control_version": 1,
+        "semantic_focus_target": "team.agent.finance",
+        "source_ids": [
+          "source_northstar_request"
+        ]
+      },
+      "run_sales_northstar": {
+        "id": "run_sales_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "role_id": "sales",
+        "task_kind": "draft_offer",
+        "title": "Prepare a focused offer",
+        "status": "waiting_approval",
+        "attempt": 1,
+        "previous_attempt_id": null,
+        "input_refs": [
+          {
+            "table": "requirements",
+            "id": "requirements_northstar",
+            "version": 1
+          },
+          {
+            "table": "policies",
+            "id": "policy_business",
+            "version": 1
+          }
+        ],
+        "output_artifact_ids": [
+          "artifact_offer_northstar"
+        ],
+        "blocked_reason": null,
+        "error_code": null,
+        "progress_step": 2,
+        "progress_total": 3,
+        "control_version": 1,
+        "semantic_focus_target": "team.agent.sales",
+        "source_ids": [
+          "source_northstar_request"
+        ]
+      }
+    },
+    "artifacts": {
+      "artifact_scout_northstar": {
+        "id": "artifact_scout_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "kind": "assessment",
+        "title": "Lead fit brief",
+        "creator_run_id": "run_scout_northstar",
+        "role_id": "scout",
+        "record_ref": {
+          "table": "assessments",
+          "id": "assessment_scout_northstar",
+          "version": 1
+        },
+        "input_refs": [
+          {
+            "table": "requirements",
+            "id": "requirements_northstar",
+            "version": 1
+          },
+          {
+            "table": "policies",
+            "id": "policy_business",
+            "version": 1
+          }
+        ],
+        "source_ids": [
+          "source_northstar_request"
+        ],
+        "status": "current"
+      },
+      "artifact_operations_northstar": {
+        "id": "artifact_operations_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "kind": "assessment",
+        "title": "Effort and timing check",
+        "creator_run_id": "run_operations_northstar",
+        "role_id": "operations",
+        "record_ref": {
+          "table": "assessments",
+          "id": "assessment_operations_northstar",
+          "version": 1
+        },
+        "input_refs": [
+          {
+            "table": "requirements",
+            "id": "requirements_northstar",
+            "version": 1
+          },
+          {
+            "table": "policies",
+            "id": "policy_business",
+            "version": 1
+          }
+        ],
+        "source_ids": [
+          "source_northstar_request"
+        ],
+        "status": "current"
+      },
+      "artifact_finance_northstar": {
+        "id": "artifact_finance_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "kind": "assessment",
+        "title": "Deposit calculation",
+        "creator_run_id": "run_finance_northstar",
+        "role_id": "finance",
+        "record_ref": {
+          "table": "assessments",
+          "id": "assessment_finance_northstar",
+          "version": 1
+        },
+        "input_refs": [
+          {
+            "table": "requirements",
+            "id": "requirements_northstar",
+            "version": 1
+          },
+          {
+            "table": "policies",
+            "id": "policy_business",
+            "version": 1
+          }
+        ],
+        "source_ids": [
+          "source_northstar_request"
+        ],
+        "status": "current"
+      },
+      "artifact_offer_northstar": {
+        "id": "artifact_offer_northstar",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "kind": "offer_draft",
+        "title": "Northstar offer draft",
+        "creator_run_id": "run_sales_northstar",
+        "role_id": "sales",
+        "record_ref": {
+          "table": "offer_versions",
+          "id": "offer_northstar_v1",
+          "version": 1
+        },
+        "input_refs": [
+          {
+            "table": "requirements",
+            "id": "requirements_northstar",
+            "version": 1
+          },
+          {
+            "table": "policies",
+            "id": "policy_business",
+            "version": 1
+          }
+        ],
+        "source_ids": [
+          "source_northstar_request"
+        ],
+        "status": "current"
+      }
+    },
+    "handoffs": {
+      "handoff_scout_sales": {
+        "id": "handoff_scout_sales",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "from_run_id": "run_scout_northstar",
+        "to_run_id": "run_sales_northstar",
+        "artifact_id": "artifact_scout_northstar",
+        "status": "consumed",
+        "input_version": 1
+      },
+      "handoff_operations_sales": {
+        "id": "handoff_operations_sales",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "from_run_id": "run_operations_northstar",
+        "to_run_id": "run_sales_northstar",
+        "artifact_id": "artifact_operations_northstar",
+        "status": "consumed",
+        "input_version": 1
+      },
+      "handoff_finance_sales": {
+        "id": "handoff_finance_sales",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "from_run_id": "run_finance_northstar",
+        "to_run_id": "run_sales_northstar",
+        "artifact_id": "artifact_finance_northstar",
+        "status": "consumed",
+        "input_version": 1
+      }
+    },
+    "events": {
+      "event_001": {
+        "id": "event_001",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-14T07:01:00+07:00",
+        "updated_at": "2026-10-14T07:01:00+07:00",
+        "sequence": 1,
+        "occurred_at": "2026-10-14T07:01:00+07:00",
+        "kind": "source.recorded",
+        "role_id": "scout",
+        "run_id": null,
+        "summary": "Northstar's sample request was recorded.",
+        "record_refs": [
+          {
+            "table": "opportunities",
+            "id": "opportunity_northstar",
+            "version": 1
+          }
+        ],
+        "semantic_focus_target": "team.agent.scout",
+        "cause_command_id": null,
+        "visibility": "owner"
+      },
+      "event_002": {
+        "id": "event_002",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-14T07:10:00+07:00",
+        "updated_at": "2026-10-14T07:10:00+07:00",
+        "sequence": 2,
+        "occurred_at": "2026-10-14T07:10:00+07:00",
+        "kind": "assessment.completed",
+        "role_id": "scout",
+        "run_id": null,
+        "summary": "The launch request fits; a narrower scope is recommended.",
+        "record_refs": [
+          {
+            "table": "assessments",
+            "id": "assessment_scout_northstar",
+            "version": 1
+          }
+        ],
+        "semantic_focus_target": "team.agent.scout",
+        "cause_command_id": null,
+        "visibility": "owner"
+      },
+      "event_003": {
+        "id": "event_003",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-14T07:15:00+07:00",
+        "updated_at": "2026-10-14T07:15:00+07:00",
+        "sequence": 3,
+        "occurred_at": "2026-10-14T07:15:00+07:00",
+        "kind": "assessment.completed",
+        "role_id": "operations",
+        "run_id": null,
+        "summary": "Two animations fit the sample effort allowance; no dates are reserved.",
+        "record_refs": [
+          {
+            "table": "assessments",
+            "id": "assessment_operations_northstar",
+            "version": 1
+          }
+        ],
+        "semantic_focus_target": "team.agent.operations",
+        "cause_command_id": null,
+        "visibility": "owner"
+      },
+      "event_004": {
+        "id": "event_004",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-14T07:16:00+07:00",
+        "updated_at": "2026-10-14T07:16:00+07:00",
+        "sequence": 4,
+        "occurred_at": "2026-10-14T07:16:00+07:00",
+        "kind": "assessment.completed",
+        "role_id": "finance",
+        "run_id": null,
+        "summary": "The sample 60% deposit calculation is ready.",
+        "record_refs": [
+          {
+            "table": "assessments",
+            "id": "assessment_finance_northstar",
+            "version": 1
+          }
+        ],
+        "semantic_focus_target": "team.agent.finance",
+        "cause_command_id": null,
+        "visibility": "owner"
+      },
+      "event_005": {
+        "id": "event_005",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-14T07:20:00+07:00",
+        "updated_at": "2026-10-14T07:20:00+07:00",
+        "sequence": 5,
+        "occurred_at": "2026-10-14T07:20:00+07:00",
+        "kind": "offer.review_requested",
+        "role_id": "sales",
+        "run_id": null,
+        "summary": "The two-animation offer is ready for Alya's review.",
+        "record_refs": [
+          {
+            "table": "offers",
+            "id": "offer_northstar",
+            "version": 1
+          },
+          {
+            "table": "offer_versions",
+            "id": "offer_northstar_v1",
+            "version": 1
+          }
+        ],
+        "semantic_focus_target": "team.agent.sales",
+        "cause_command_id": null,
+        "visibility": "owner"
+      }
+    },
+    "command_receipts": {},
+    "onboarding_sessions": {
+      "onboarding_alya": {
+        "id": "onboarding_alya",
+        "workspace_id": "workspace_alya",
+        "version": 1,
+        "audience": "owner",
+        "created_at": "2026-10-12T08:00:00+07:00",
+        "updated_at": "2026-10-12T08:00:00+07:00",
+        "owner_id": "owner_alya",
+        "state": "completed",
+        "current_step": "finish",
+        "completed_steps": [
+          "business",
+          "services",
+          "availability",
+          "preferences",
+          "connections"
+        ],
+        "draft": {},
+        "skipped_connection_ids": []
+      }
+    }
+  }
+}

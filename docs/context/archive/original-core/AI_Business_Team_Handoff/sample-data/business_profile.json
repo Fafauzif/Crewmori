@@ -1,0 +1,105 @@
+{
+  "fixture": {
+    "synthetic": true,
+    "version": 1,
+    "clock": "2026-10-16T08:00:00+07:00"
+  },
+  "workspaceId": "ws_demo_alya",
+  "owner": {
+    "id": "owner_demo_alya",
+    "name": "Alya Putri",
+    "profession": "Motion designer",
+    "country": "Indonesia",
+    "timezone": "Asia/Jakarta",
+    "ownerLanguage": "id",
+    "buyerLanguage": "en"
+  },
+  "profileVersion": 1,
+  "displayName": "Crewmori",
+  "nameProvisional": true,
+  "approvedCapabilities": [
+    {
+      "key": "launch_motion",
+      "claim": "Short product launch motion assets",
+      "factState": "owner_confirmed",
+      "evidenceRefs": [
+        {
+          "sourceId": "src_demo_luma",
+          "version": 1,
+          "chunkId": "chunk_demo_luma_1"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "src_demo_luma",
+      "title": "Luma launch loops",
+      "version": 1,
+      "visibility": "buyer_approved",
+      "text": "Synthetic sample: short geometric product-launch motion assets."
+    },
+    {
+      "id": "src_demo_orbit",
+      "title": "Orbit product teaser",
+      "version": 1,
+      "visibility": "buyer_approved",
+      "text": "Synthetic sample: a short product-teaser motion example."
+    }
+  ],
+  "commercialPolicy": {
+    "version": 1,
+    "allowedDepositBasisPoints": [
+      4000,
+      6000
+    ],
+    "minimumContributionBeforeAcquisitionIdrMinor": 1500000,
+    "ownerDeliveryHourValueIdrMinor": 150000,
+    "beneficiaryRef": "BENEFICIARY_SANDBOX_OWNER"
+  },
+  "capacityWindow": {
+    "id": "cap_demo_five_days",
+    "version": 1,
+    "startDate": "2026-10-19",
+    "endDate": "2026-10-23",
+    "timezone": "Asia/Jakarta",
+    "availableMinutes": 720,
+    "calendar": "Weekdays only; holidays excluded from this fixture"
+  },
+  "packages": [
+    {
+      "id": "pkg_demo_full",
+      "version": 1,
+      "assets": 4,
+      "price": {
+        "currency": "USD",
+        "amountMinor": 60000,
+        "scale": 2
+      },
+      "deliveryMinutes": 1080,
+      "durationBusinessDays": 10,
+      "upfrontExpense": {
+        "currency": "IDR",
+        "amountMinor": 3000000,
+        "scale": 0
+      }
+    },
+    {
+      "id": "pkg_demo_reduced",
+      "version": 1,
+      "assets": 2,
+      "price": {
+        "currency": "USD",
+        "amountMinor": 45000,
+        "scale": 2
+      },
+      "deliveryMinutes": 720,
+      "durationBusinessDays": 5,
+      "upfrontExpense": {
+        "currency": "IDR",
+        "amountMinor": 3000000,
+        "scale": 0
+      }
+    }
+  ]
+}

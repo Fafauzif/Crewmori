@@ -1,0 +1,183 @@
+{
+  "name": "Working Seam",
+  "approved_stage1_concept": "02",
+  "coordinate_system": "raw symbol units",
+  "raw_path": "M12 12H54Q60 12 64 16L88 40L72 56L50 34H12Q8 34 8 30V16Q8 12 12 12ZM88 88H46Q40 88 36 84L12 60L28 44L50 66H88Q92 66 92 70V84Q92 88 88 88Z",
+  "raw_bounds": [
+    8,
+    12,
+    92,
+    88
+  ],
+  "visible_symbol_width": 84.0,
+  "visible_symbol_height": 76.0,
+  "unit_x": 22.0,
+  "x_definition": "22 raw units: vertical thickness of either horizontal band (y12\u201334 or y66\u201388).",
+  "clear_space": "At least x measured from the visible artwork on all sides; supplied production SVG canvases include this space.",
+  "rotation_symmetry_degrees": 180,
+  "wordmark": {
+    "font": "DejaVu Serif Bold",
+    "version": "2.37",
+    "license": "Bitstream Vera Fonts License; DejaVu changes public domain",
+    "outlined": true,
+    "font_units_bounds": [
+      86.0,
+      -29.0,
+      10845.0,
+      1556.0
+    ],
+    "font_cap_height_H": 1493.0,
+    "scale": 0.027997320830542533,
+    "cap_height": 41.800000000000004,
+    "visible_width": 301.2231748158071,
+    "visible_height": 44.375753516409915,
+    "pair_adjust_font_units": {
+      "Cr": -22,
+      "re": -25,
+      "ew": -40,
+      "wm": -36,
+      "mo": -22,
+      "or": -10,
+      "ri": -30
+    },
+    "tracking_font_units": -12,
+    "note": "Exact Stage 1 wordmark outlines and spacing retained; placement and scale refined."
+  },
+  "horizontal": {
+    "viewBox": [
+      0,
+      0,
+      451.2231748158071,
+      120.0
+    ],
+    "symbol_bounds": [
+      22.0,
+      22.0,
+      106.0,
+      98.0
+    ],
+    "wordmark_bounds": [
+      128.0,
+      37.81212324179504,
+      429.2231748158071,
+      82.18787675820496
+    ],
+    "visible_artwork_width": 407.2231748158071,
+    "visible_artwork_height": 76.0,
+    "symbol_wordmark_gap": 22.0,
+    "cap_to_symbol_height": 0.55,
+    "wordmark_baseline_y": 81.37595445411922
+  },
+  "stacked": {
+    "viewBox": [
+      0,
+      0,
+      345.2231748158071,
+      186.37575351640993
+    ],
+    "symbol_bounds": [
+      130.61158740790356,
+      22.0,
+      214.61158740790356,
+      98.0
+    ],
+    "wordmark_bounds": [
+      22.0,
+      120.0,
+      323.2231748158071,
+      164.37575351640993
+    ],
+    "symbol_wordmark_vertical_gap": 22.0
+  },
+  "symbol": {
+    "viewBox": [
+      0,
+      0,
+      128,
+      128
+    ],
+    "artwork_bounds": [
+      22,
+      26,
+      106,
+      102
+    ]
+  },
+  "wordmark_only": {
+    "viewBox": [
+      0,
+      0,
+      345.2231748158071,
+      88.37575351640992
+    ],
+    "artwork_bounds": [
+      22.0,
+      22.0,
+      323.2231748158071,
+      66.37575351640992
+    ]
+  },
+  "favicon": {
+    "viewBox": [
+      0,
+      0,
+      100,
+      100
+    ],
+    "geometry_changed": false,
+    "exception": "Dedicated compact browser-favicon assets at all supplied 16\u201364 px slots are exempt from standard x clear space. 16 px is the minimum slot, not the only exception size. Standard logo and app-icon assets retain at least x.",
+    "transparent_symbol_bounds": [
+      8,
+      12,
+      92,
+      88
+    ],
+    "tile_symbol_bounds": [
+      15.56,
+      18.84,
+      84.44,
+      81.16
+    ],
+    "tile_corner_radius_percent": 18.75,
+    "exported_slot_sizes_px": [
+      16,
+      24,
+      32,
+      48,
+      64
+    ],
+    "minimum_slot_size_px": 16
+  },
+  "app_icon": {
+    "tile_size": 128,
+    "corner_radius": 24,
+    "symbol_bounds": [
+      22,
+      26,
+      106,
+      102
+    ],
+    "symbol_width_percent": 65.625,
+    "minimum_horizontal_padding": 22.0
+  },
+  "minimum_sizes": {
+    "horizontal_digital_canvas_width_px": 200,
+    "horizontal_print_canvas_width_mm": 45,
+    "stacked_digital_canvas_width_px": 160,
+    "stacked_print_canvas_width_mm": 35,
+    "wordmark_digital_canvas_width_px": 150,
+    "wordmark_print_canvas_width_mm": 30,
+    "symbol_standard_canvas_px": 24,
+    "symbol_standard_print_canvas_mm": 6,
+    "favicon_slot_px": 16,
+    "basis": "Digital sizes refer to the full exported canvas including clear space; print minima are conservative recommendations."
+  },
+  "colors": {
+    "forest": "#245C47",
+    "ivory": "#F5F3EC",
+    "black": "#000000",
+    "reversed_logo": "#FFFFFF",
+    "note": "Tile icons use warm ivory; reversed logo artwork uses pure white."
+  },
+  "local_verification_only": "No trademark clearance or worldwide uniqueness claim."
+}

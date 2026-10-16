@@ -1,0 +1,364 @@
+{
+  "snapshot_date": "2026-10-16",
+  "mode": "documentation-only curated snapshot; not a runnable installation",
+  "files": [
+    {
+      "repository": "https://github.com/Leonxlnx/taste-skill",
+      "commit": "f624f37a8c650b9cc550253104925efe4c8de246",
+      "upstream_path": "LICENSE",
+      "bundled_path": "vendor/taste/LICENSE",
+      "source_url": "https://github.com/Leonxlnx/taste-skill/blob/f624f37a8c650b9cc550253104925efe4c8de246/LICENSE",
+      "raw_url": "https://raw.githubusercontent.com/Leonxlnx/taste-skill/f624f37a8c650b9cc550253104925efe4c8de246/LICENSE",
+      "license": "MIT",
+      "status": "vendored_unchanged",
+      "bytes": 1065,
+      "sha256": "4575a543ab88dad12ccea7d97e563d0bce5b448b06072e65d3264497dad326df",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/Leonxlnx/taste-skill",
+      "commit": "f624f37a8c650b9cc550253104925efe4c8de246",
+      "upstream_path": "skills/minimalist-skill/SKILL.md",
+      "bundled_path": "vendor/taste/skills/minimalist-skill/SKILL.md",
+      "source_url": "https://github.com/Leonxlnx/taste-skill/blob/f624f37a8c650b9cc550253104925efe4c8de246/skills/minimalist-skill/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Leonxlnx/taste-skill/f624f37a8c650b9cc550253104925efe4c8de246/skills/minimalist-skill/SKILL.md",
+      "license": "MIT",
+      "status": "vendored_unchanged",
+      "bytes": 8212,
+      "sha256": "769ab38eed137bb22c7c09ee08ebb628e9acf3ad37f138d43f772e3af83933e4",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "6af45ac9a5eb8792f033d3242f52e99812fd91fa",
+      "upstream_path": "LICENSE",
+      "bundled_path": "vendor/impeccable/LICENSE",
+      "source_url": "https://github.com/pbakaus/impeccable/blob/6af45ac9a5eb8792f033d3242f52e99812fd91fa/LICENSE",
+      "raw_url": "https://raw.githubusercontent.com/pbakaus/impeccable/6af45ac9a5eb8792f033d3242f52e99812fd91fa/LICENSE",
+      "license": "Apache-2.0",
+      "status": "vendored_unchanged",
+      "bytes": 10766,
+      "sha256": "02bb8c3b4e70190e3986c0404ad2fd8d639b4f534252d82379cc1b502b6d1812",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "6af45ac9a5eb8792f033d3242f52e99812fd91fa",
+      "upstream_path": "NOTICE.md",
+      "bundled_path": "vendor/impeccable/NOTICE.md",
+      "source_url": "https://github.com/pbakaus/impeccable/blob/6af45ac9a5eb8792f033d3242f52e99812fd91fa/NOTICE.md",
+      "raw_url": "https://raw.githubusercontent.com/pbakaus/impeccable/6af45ac9a5eb8792f033d3242f52e99812fd91fa/NOTICE.md",
+      "license": "Apache-2.0",
+      "status": "vendored_unchanged",
+      "bytes": 503,
+      "sha256": "c60a093c2845fd9fb82f9c6f742ece31f379f8190b535309d32d66c45ccffdcb",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "6af45ac9a5eb8792f033d3242f52e99812fd91fa",
+      "upstream_path": ".agents/skills/impeccable/SKILL.md",
+      "bundled_path": "vendor/impeccable/SKILL.md",
+      "source_url": "https://github.com/pbakaus/impeccable/blob/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/pbakaus/impeccable/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/SKILL.md",
+      "license": "Apache-2.0",
+      "status": "vendored_unchanged",
+      "bytes": 11659,
+      "sha256": "5fb0d412928c03e62d2536adfd878ad6aad6f9ce343956aa4f7164da06da3459",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "6af45ac9a5eb8792f033d3242f52e99812fd91fa",
+      "upstream_path": ".agents/skills/impeccable/reference/operate.md",
+      "bundled_path": "vendor/impeccable/reference/operate.md",
+      "source_url": "https://github.com/pbakaus/impeccable/blob/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/operate.md",
+      "raw_url": "https://raw.githubusercontent.com/pbakaus/impeccable/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/operate.md",
+      "license": "Apache-2.0",
+      "status": "vendored_unchanged",
+      "bytes": 4145,
+      "sha256": "a9d2203acd45ca33a13d5c68b02b23ed512425ac15f0e8438318ed124b43729d",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "6af45ac9a5eb8792f033d3242f52e99812fd91fa",
+      "upstream_path": ".agents/skills/impeccable/reference/craft-floor.md",
+      "bundled_path": "vendor/impeccable/reference/craft-floor.md",
+      "source_url": "https://github.com/pbakaus/impeccable/blob/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/craft-floor.md",
+      "raw_url": "https://raw.githubusercontent.com/pbakaus/impeccable/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/craft-floor.md",
+      "license": "Apache-2.0",
+      "status": "vendored_unchanged",
+      "bytes": 5502,
+      "sha256": "52b523e92b76daff71be2ec8c732c374c670f8d03e1296388738e581479ec1bb",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "6af45ac9a5eb8792f033d3242f52e99812fd91fa",
+      "upstream_path": ".agents/skills/impeccable/reference/critique.md",
+      "bundled_path": "vendor/impeccable/reference/critique.md",
+      "source_url": "https://github.com/pbakaus/impeccable/blob/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/critique.md",
+      "raw_url": "https://raw.githubusercontent.com/pbakaus/impeccable/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/critique.md",
+      "license": "Apache-2.0",
+      "status": "vendored_unchanged",
+      "bytes": 48958,
+      "sha256": "c210c9506877c6c8d88880a337fddd95d4315daf70ed6bc631ee6520481f1a0c",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "6af45ac9a5eb8792f033d3242f52e99812fd91fa",
+      "upstream_path": ".agents/skills/impeccable/reference/audit.md",
+      "bundled_path": "vendor/impeccable/reference/audit.md",
+      "source_url": "https://github.com/pbakaus/impeccable/blob/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/audit.md",
+      "raw_url": "https://raw.githubusercontent.com/pbakaus/impeccable/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/audit.md",
+      "license": "Apache-2.0",
+      "status": "vendored_unchanged",
+      "bytes": 9250,
+      "sha256": "4b726d8f13ca1dbb82ca8179cbfefca8c53c13766fef4d7b8870f5d4324da2d6",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "6af45ac9a5eb8792f033d3242f52e99812fd91fa",
+      "upstream_path": ".agents/skills/impeccable/reference/distill.md",
+      "bundled_path": "vendor/impeccable/reference/distill.md",
+      "source_url": "https://github.com/pbakaus/impeccable/blob/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/distill.md",
+      "raw_url": "https://raw.githubusercontent.com/pbakaus/impeccable/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/distill.md",
+      "license": "Apache-2.0",
+      "status": "vendored_unchanged",
+      "bytes": 5648,
+      "sha256": "56ca75d680eb8b61ca3a298d18e895cd4a0dcc520c31d7938a4807ff8dcf18ea",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "6af45ac9a5eb8792f033d3242f52e99812fd91fa",
+      "upstream_path": ".agents/skills/impeccable/reference/harden.md",
+      "bundled_path": "vendor/impeccable/reference/harden.md",
+      "source_url": "https://github.com/pbakaus/impeccable/blob/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/harden.md",
+      "raw_url": "https://raw.githubusercontent.com/pbakaus/impeccable/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/harden.md",
+      "license": "Apache-2.0",
+      "status": "vendored_unchanged",
+      "bytes": 9305,
+      "sha256": "f69f1f0b3f97c194795ece67131b533e951130eeb8f202cf40e364b7a6badb7c",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "6af45ac9a5eb8792f033d3242f52e99812fd91fa",
+      "upstream_path": ".agents/skills/impeccable/reference/clarify.md",
+      "bundled_path": "vendor/impeccable/reference/clarify.md",
+      "source_url": "https://github.com/pbakaus/impeccable/blob/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/clarify.md",
+      "raw_url": "https://raw.githubusercontent.com/pbakaus/impeccable/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/clarify.md",
+      "license": "Apache-2.0",
+      "status": "vendored_unchanged",
+      "bytes": 4590,
+      "sha256": "173dd66abe65633910dcb04a51f40d6ff2a793f87088f022a02fc4cad24dd133",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "6af45ac9a5eb8792f033d3242f52e99812fd91fa",
+      "upstream_path": ".agents/skills/impeccable/reference/polish.md",
+      "bundled_path": "vendor/impeccable/reference/polish.md",
+      "source_url": "https://github.com/pbakaus/impeccable/blob/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/polish.md",
+      "raw_url": "https://raw.githubusercontent.com/pbakaus/impeccable/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/polish.md",
+      "license": "Apache-2.0",
+      "status": "vendored_unchanged",
+      "bytes": 6646,
+      "sha256": "81666fc7f783b4e3514db6554e713dc0479bd9cdedb06e93d15f8b579aae869a",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "6af45ac9a5eb8792f033d3242f52e99812fd91fa",
+      "upstream_path": ".agents/skills/impeccable/reference/layout.md",
+      "bundled_path": "vendor/impeccable/reference/layout.md",
+      "source_url": "https://github.com/pbakaus/impeccable/blob/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/layout.md",
+      "raw_url": "https://raw.githubusercontent.com/pbakaus/impeccable/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/layout.md",
+      "license": "Apache-2.0",
+      "status": "vendored_unchanged",
+      "bytes": 5161,
+      "sha256": "0bc7d7971b3edf2acd0580e847458dc6d84129d90715b452799ace3bed815c7c",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "6af45ac9a5eb8792f033d3242f52e99812fd91fa",
+      "upstream_path": ".agents/skills/impeccable/reference/animate.md",
+      "bundled_path": "vendor/impeccable/reference/animate.md",
+      "source_url": "https://github.com/pbakaus/impeccable/blob/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/animate.md",
+      "raw_url": "https://raw.githubusercontent.com/pbakaus/impeccable/6af45ac9a5eb8792f033d3242f52e99812fd91fa/.agents/skills/impeccable/reference/animate.md",
+      "license": "Apache-2.0",
+      "status": "vendored_unchanged",
+      "bytes": 5236,
+      "sha256": "d658c48ffbe0031e8e3b318996cad6ceafe29e40aa50d5bb25e4bf1d6839dc7c",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/vercel-labs/agent-skills",
+      "commit": "063bee94c3f4df8453406c830b0a7df0f2860278",
+      "upstream_path": "README.md",
+      "bundled_path": "vendor/vercel-agent-skills/README.md",
+      "source_url": "https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/README.md",
+      "raw_url": "https://raw.githubusercontent.com/vercel-labs/agent-skills/063bee94c3f4df8453406c830b0a7df0f2860278/README.md",
+      "license": "MIT (upstream README declaration and React/composition skill metadata)",
+      "status": "vendored_unchanged",
+      "bytes": 7838,
+      "sha256": "7c02f64b08fc6c4eef03c01d64f3e2ed478193ccfcbd14edba379abe23304651",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/vercel-labs/agent-skills",
+      "commit": "063bee94c3f4df8453406c830b0a7df0f2860278",
+      "upstream_path": "skills/web-design-guidelines/SKILL.md",
+      "bundled_path": "vendor/vercel-agent-skills/skills/web-design-guidelines/SKILL.md",
+      "source_url": "https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/skills/web-design-guidelines/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/vercel-labs/agent-skills/063bee94c3f4df8453406c830b0a7df0f2860278/skills/web-design-guidelines/SKILL.md",
+      "license": "MIT (upstream README declaration and React/composition skill metadata)",
+      "status": "vendored_unchanged",
+      "bytes": 1231,
+      "sha256": "f4647ca866a3accf763777f83e7682954f0187cd6bea7eea0399796652414e8f",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/vercel-labs/agent-skills",
+      "commit": "063bee94c3f4df8453406c830b0a7df0f2860278",
+      "upstream_path": "skills/react-best-practices/SKILL.md",
+      "bundled_path": "vendor/vercel-agent-skills/skills/react-best-practices/SKILL.md",
+      "source_url": "https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/skills/react-best-practices/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/vercel-labs/agent-skills/063bee94c3f4df8453406c830b0a7df0f2860278/skills/react-best-practices/SKILL.md",
+      "license": "MIT (upstream README declaration and React/composition skill metadata)",
+      "status": "vendored_unchanged",
+      "bytes": 7251,
+      "sha256": "71ed7794962fa6e803ee83030517b5b93a9f70fbfeb431ec4535c5480a8d8355",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/vercel-labs/agent-skills",
+      "commit": "063bee94c3f4df8453406c830b0a7df0f2860278",
+      "upstream_path": "skills/react-best-practices/AGENTS.md",
+      "bundled_path": "vendor/vercel-agent-skills/skills/react-best-practices/AGENTS.md",
+      "source_url": "https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/skills/react-best-practices/AGENTS.md",
+      "raw_url": "https://raw.githubusercontent.com/vercel-labs/agent-skills/063bee94c3f4df8453406c830b0a7df0f2860278/skills/react-best-practices/AGENTS.md",
+      "license": "MIT (upstream README declaration and React/composition skill metadata)",
+      "status": "vendored_unchanged",
+      "bytes": 108261,
+      "sha256": "fc93e7421177bbf869cce892bc60a6c83a4517d974bc3bf65c4e2c1e58a6ccf6",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/vercel-labs/agent-skills",
+      "commit": "063bee94c3f4df8453406c830b0a7df0f2860278",
+      "upstream_path": "skills/composition-patterns/SKILL.md",
+      "bundled_path": "vendor/vercel-agent-skills/skills/composition-patterns/SKILL.md",
+      "source_url": "https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/skills/composition-patterns/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/vercel-labs/agent-skills/063bee94c3f4df8453406c830b0a7df0f2860278/skills/composition-patterns/SKILL.md",
+      "license": "MIT (upstream README declaration and React/composition skill metadata)",
+      "status": "vendored_unchanged",
+      "bytes": 2886,
+      "sha256": "e38e0eaa609316b10423a9a138ed95e35099accd3f735585295c8a8f165c28a3",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/vercel-labs/agent-skills",
+      "commit": "063bee94c3f4df8453406c830b0a7df0f2860278",
+      "upstream_path": "skills/composition-patterns/AGENTS.md",
+      "bundled_path": "vendor/vercel-agent-skills/skills/composition-patterns/AGENTS.md",
+      "source_url": "https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/skills/composition-patterns/AGENTS.md",
+      "raw_url": "https://raw.githubusercontent.com/vercel-labs/agent-skills/063bee94c3f4df8453406c830b0a7df0f2860278/skills/composition-patterns/AGENTS.md",
+      "license": "MIT (upstream README declaration and React/composition skill metadata)",
+      "status": "vendored_unchanged",
+      "bytes": 22627,
+      "sha256": "89e3ddd58fcf99a53a50e25dfd21b8cde1be5f10b7df6bacd3dfa6796932f516",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/vercel-labs/web-interface-guidelines",
+      "commit": "434b7f91364665f2f733b310ec54809bf8f37937",
+      "upstream_path": "LICENSE",
+      "bundled_path": "vendor/vercel-web-interface/LICENSE",
+      "source_url": "https://github.com/vercel-labs/web-interface-guidelines/blob/434b7f91364665f2f733b310ec54809bf8f37937/LICENSE",
+      "raw_url": "https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/434b7f91364665f2f733b310ec54809bf8f37937/LICENSE",
+      "license": "MIT",
+      "status": "vendored_unchanged",
+      "bytes": 1068,
+      "sha256": "6cd1609c9c12233507cdd2ce0d32e9a721e3c27494951be06b90090deeeb7af2",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    },
+    {
+      "repository": "https://github.com/vercel-labs/web-interface-guidelines",
+      "commit": "434b7f91364665f2f733b310ec54809bf8f37937",
+      "upstream_path": "command.md",
+      "bundled_path": "vendor/vercel-web-interface/command.md",
+      "source_url": "https://github.com/vercel-labs/web-interface-guidelines/blob/434b7f91364665f2f733b310ec54809bf8f37937/command.md",
+      "raw_url": "https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/434b7f91364665f2f733b310ec54809bf8f37937/command.md",
+      "license": "MIT",
+      "status": "vendored_unchanged",
+      "bytes": 8055,
+      "sha256": "d246b026f4f29b5823a9cc857f9edf3d2507002e055e32040cadeaf3b38e0234",
+      "purpose": "documentation reference only; no installer or executable bundled"
+    }
+  ],
+  "excluded_dependencies": [
+    {
+      "source": "Impeccable",
+      "items": [
+        "CLI launcher/binary",
+        "auto-run hooks",
+        "live-browser scripts",
+        "native iOS/Android guidance",
+        "unselected command playbooks"
+      ],
+      "resolution": "Use CREWMORI_SKILL_ADAPTER.md and VERIFICATION_PLAYBOOK.md. Native/CLI-only branches are outside this web-only documentation snapshot. Preserve unchanged original text as provenance; do not attempt absent commands."
+    },
+    {
+      "source": "Vercel React/composition",
+      "items": [
+        "duplicate individual per-rule Markdown files"
+      ],
+      "resolution": "Full upstream compiled AGENTS.md guides contain the rules and examples. The matching SKILL.md overviews point to the compiled guide; read it instead of absent duplicate rules paths."
+    },
+    {
+      "source": "Vercel agent-skills",
+      "items": [
+        "repository root LICENSE file"
+      ],
+      "resolution": "No root LICENSE at pinned source (official GitHub Contents API returned 404). Original README MIT declaration and skill author/license metadata are preserved. LICENSE-MIT-TEXT.txt provides the standard MIT permission text without inventing an upstream copyright notice."
+    }
+  ],
+  "project_owned_documents": [
+    {
+      "path": "README.md",
+      "status": "original_project_adapter_or_guidance",
+      "sha256": "daf8a4127852b7d654c949755aabb1e13fcb386353ac571b6a20a87bae9e0a5a"
+    },
+    {
+      "path": "CREWMORI_SKILL_ADAPTER.md",
+      "status": "original_project_adapter_or_guidance",
+      "sha256": "aa386eb708264687f7d71142dfbee06f97e863115fd77f1656f08cb709359fc4"
+    },
+    {
+      "path": "VERIFICATION_PLAYBOOK.md",
+      "status": "original_project_adapter_or_guidance",
+      "sha256": "985300f4ea9ab781765ec4189384c147e301b4354b7f8ce6f57e55a154b249ed"
+    },
+    {
+      "path": "SOURCE_BOUNDARIES.md",
+      "status": "original_project_adapter_or_guidance",
+      "sha256": "94c4fedbb46a331be461911e16aa603d45bc2a1037b07757605bc1772149752b"
+    }
+  ],
+  "implementation_runtime_dependency": false,
+  "supplemental_files": [
+    {
+      "bundled_path": "vendor/vercel-agent-skills/LICENSE-MIT-TEXT.txt",
+      "status": "project_added_standard_license_body",
+      "source": "MIT standard permission text; upstream MIT declaration preserved separately; no fabricated upstream copyright notice",
+      "bytes": 1390,
+      "sha256": "e872ecdc37a84b08e507c2a6d6890b6eec32f85bf39bd1047a4509429a9b43fb"
+    }
+  ]
+}

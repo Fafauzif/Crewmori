@@ -1,0 +1,308 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Crewmori scenario overlays v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "application_policy",
+    "scenarios"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "application_policy": {
+      "type": "string"
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "sample_clock",
+          "base_fixture_id",
+          "replace_tables",
+          "upsert_records",
+          "ui_state",
+          "assertions"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "sample_clock": {
+            "const": "2026-10-16T09:00:00+07:00"
+          },
+          "base_fixture_id": {
+            "const": "crewmori_sample_v1"
+          },
+          "replace_tables": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "workspaces",
+                "owners",
+                "profiles",
+                "services",
+                "portfolio_items",
+                "policies",
+                "preferences",
+                "connections",
+                "sources",
+                "clients",
+                "contacts",
+                "opportunities",
+                "requirements",
+                "engagements",
+                "conversations",
+                "messages",
+                "assessments",
+                "offers",
+                "offer_versions",
+                "approvals",
+                "share_records",
+                "acceptances",
+                "buyer_grants",
+                "projects",
+                "required_inputs",
+                "milestones",
+                "work_tasks",
+                "reservations",
+                "calendar_events",
+                "invoices",
+                "invoice_lines",
+                "payment_requests",
+                "receipts",
+                "allocations",
+                "finance_issues",
+                "expenses",
+                "attachments",
+                "private_notes",
+                "promotions",
+                "promotion_versions",
+                "agent_runs",
+                "artifacts",
+                "handoffs",
+                "events",
+                "command_receipts",
+                "onboarding_sessions"
+              ]
+            }
+          },
+          "upsert_records": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "workspaces": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "owners": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "profiles": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "services": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "portfolio_items": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "policies": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "preferences": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "connections": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "sources": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "clients": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "contacts": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "opportunities": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "requirements": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "engagements": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "conversations": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "messages": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "assessments": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "offers": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "offer_versions": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "approvals": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "share_records": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "acceptances": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "buyer_grants": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "projects": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "required_inputs": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "milestones": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "work_tasks": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "reservations": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "calendar_events": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "invoices": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "invoice_lines": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "payment_requests": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "receipts": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "allocations": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "finance_issues": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "expenses": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "attachments": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "private_notes": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "promotions": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "promotion_versions": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "agent_runs": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "artifacts": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "handoffs": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "events": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "command_receipts": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "onboarding_sessions": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          },
+          "ui_state": {
+            "type": "object"
+          },
+          "assertions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

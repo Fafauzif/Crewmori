@@ -1,0 +1,26 @@
+[
+  {
+    "file": "portfolio-kinetic-launch.svg",
+    "source": "Original SVG sample cover authored for Crewmori implementation pack, 2026-10-16",
+    "purpose": "sample portfolio placeholder, no real client claim",
+    "sha256": "26102f82aa371ec95e32caeede69ba047cff18bbfea687cdad1dc8c26ee94301"
+  },
+  {
+    "file": "portfolio-research-synthesis.svg",
+    "source": "Original SVG sample cover authored for Crewmori implementation pack, 2026-10-16",
+    "purpose": "sample portfolio placeholder, no real client claim",
+    "sha256": "22dfc60a282dfc92aa7576538f47e7e71a1a202a64fecd987cd27436b55c2752"
+  },
+  {
+    "file": "portfolio-spatial-interface.svg",
+    "source": "Original SVG sample cover authored for Crewmori implementation pack, 2026-10-16",
+    "purpose": "sample portfolio placeholder, no real client claim",
+    "sha256": "d914111bc536ac8f94f6c07984219a7de07f414a912c67a43e89faf2b7c5f59c"
+  },
+  {
+    "file": "team-worldmap.svg",
+    "source": "User-approved Team Overview inline SVG index 0",
+    "purpose": "decorative map",
+    "sha256": "2eeb679bef3fe0c93193c117523c1b2b00173702d215e1fce3b8908e8ec7d6c1"
+  }
+]

@@ -1,0 +1,272 @@
+{
+  "status": "Final curated interaction references; anchors remain visual authority",
+  "reviewed_images": 79,
+  "selected_images": 24,
+  "contra_original_monolith": "Unavailable; six smaller replacement archives reviewed",
+  "items": [
+    {
+      "id": "SH-AI-02",
+      "archive": "Shopify Web Chatting with AI.zip",
+      "original_filename": "Shopify Web Chatting with AI 2.png",
+      "selected_file": "references/shopify-contra/SH-AI-02.png",
+      "purpose": "Context/attachment menu",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "0d29fb3d91d40666f649eae77c58edb6119c52fd90d9a131c15ac74183c47b81",
+      "width": 1920,
+      "height": 1204
+    },
+    {
+      "id": "SH-AI-03",
+      "archive": "Shopify Web Chatting with AI.zip",
+      "original_filename": "Shopify Web Chatting with AI 3.png",
+      "selected_file": "references/shopify-contra/SH-AI-03.png",
+      "purpose": "Named removable pre-submit attachments",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "8932a7f69b0f97aa3deeaae9c01bd4c01a22a8699857b735e32b0a1c29d7fe08",
+      "width": 1920,
+      "height": 1204
+    },
+    {
+      "id": "SH-AI-04",
+      "archive": "Shopify Web Chatting with AI.zip",
+      "original_filename": "Shopify Web Chatting with AI 4.png",
+      "selected_file": "references/shopify-contra/SH-AI-04.png",
+      "purpose": "Bounded clarification question",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "4ba057094810cdd141701b5e7f8dfe112a56b8aa9943ff115f2a5d64371d8ddb",
+      "width": 1920,
+      "height": 1204
+    },
+    {
+      "id": "SH-AI-06",
+      "archive": "Shopify Web Chatting with AI.zip",
+      "original_filename": "Shopify Web Chatting with AI 6.png",
+      "selected_file": "references/shopify-contra/SH-AI-06.png",
+      "purpose": "Compact answers leading to a linked artifact",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "703416a5252bbe96b34b756d6801ff2fee5d0af8840ec5b1161073bf4e54afd9",
+      "width": 1920,
+      "height": 1204
+    },
+    {
+      "id": "SH-DATE-02",
+      "archive": "Shopify Web Filtering channels by time.zip",
+      "original_filename": "Shopify Web Filtering channels by time 2.png",
+      "selected_file": "references/shopify-contra/SH-DATE-02.png",
+      "purpose": "Date-range draft with Cancel/Apply",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "a8a9a113eb2a729e1b528e4df6af6623443dffb0f2a1ad9966d7c4d6c4bce6cc",
+      "width": 1920,
+      "height": 1205
+    },
+    {
+      "id": "SH-DATE-03",
+      "archive": "Shopify Web Filtering channels by time.zip",
+      "original_filename": "Shopify Web Filtering channels by time 3.png",
+      "selected_file": "references/shopify-contra/SH-DATE-03.png",
+      "purpose": "Applied range label and returned context",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "5da94866be8e2a0c26035b14f08872665d5dd74d7b68a7a3b4544db234b99d9b",
+      "width": 1920,
+      "height": 1205
+    },
+    {
+      "id": "SH-METRIC-02",
+      "archive": "Shopify Web Updating metrics.zip",
+      "original_filename": "Shopify Web Updating metrics 2.png",
+      "selected_file": "references/shopify-contra/SH-METRIC-02.png",
+      "purpose": "Local amount breakdown and reversible preference feedback",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "704fc5acb072e5c0e6268572f4e018c5e442b3e74582873e978451e7966fe255",
+      "width": 1920,
+      "height": 1205
+    },
+    {
+      "id": "SH-PRODUCT-01",
+      "archive": "Shopify Web Products.zip",
+      "original_filename": "Shopify Web Products 1.png",
+      "selected_file": "references/shopify-contra/SH-PRODUCT-01.png",
+      "purpose": "First-use empty list with one main action",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "2b1ef02506e61230045f2405e42225e64ec7b87f4fd065e1faac72dbd001a5b6",
+      "width": 1920,
+      "height": 1204
+    },
+    {
+      "id": "SH-PRODUCT-02",
+      "archive": "Shopify Web Products.zip",
+      "original_filename": "Shopify Web Products 2.png",
+      "selected_file": "references/shopify-contra/SH-PRODUCT-02.png",
+      "purpose": "Readable populated list and quiet toolbar",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "70cbd47f7af4e7f7a0196d4976a2916772b5ad0f474b3037b6dc1421ee0d54e3",
+      "width": 1920,
+      "height": 1205
+    },
+    {
+      "id": "SH-PRODUCT-05",
+      "archive": "Shopify Web Products.zip",
+      "original_filename": "Shopify Web Products 5.png",
+      "selected_file": "references/shopify-contra/SH-PRODUCT-05.png",
+      "purpose": "Filtered no-results with clear reset",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "67f25835bfb90eabe6b4b1b13191f2380ac67c2c766a53237a2d56dc12f56b03",
+      "width": 1920,
+      "height": 1205
+    },
+    {
+      "id": "SH-DETAIL-01",
+      "archive": "Shopify Web Collection detail.zip",
+      "original_filename": "Shopify Web Collection detail 1.png",
+      "selected_file": "references/shopify-contra/SH-DETAIL-01.png",
+      "purpose": "Grouped editor and optional contextual metadata",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "c7c7665211bfce0df7db559cb7f1ac44f233665a06ea5622bc7eb10259bcada9",
+      "width": 1920,
+      "height": 1205
+    },
+    {
+      "id": "SH-CREATE-01",
+      "archive": "Shopify Web Creating an order.zip",
+      "original_filename": "Shopify Web Creating an order 1.png",
+      "selected_file": "references/shopify-contra/SH-CREATE-01.png",
+      "purpose": "Unsaved draft editor",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "e0a3aefa70dad34580831c24f54a0f62e9a22d8fd775884099ec303d73ae9d18",
+      "width": 1920,
+      "height": 1205
+    },
+    {
+      "id": "SH-CREATE-11",
+      "archive": "Shopify Web Creating an order.zip",
+      "original_filename": "Shopify Web Creating an order 11.png",
+      "selected_file": "references/shopify-contra/SH-CREATE-11.png",
+      "purpose": "Populated editor with derived summary",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "40cccf0a75cdc251ddf0cfbd09487ca085d57d5bbb000dcb5f4016f577c3f6c8",
+      "width": 1920,
+      "height": 1205
+    },
+    {
+      "id": "SH-CREATE-12",
+      "archive": "Shopify Web Creating an order.zip",
+      "original_filename": "Shopify Web Creating an order 12.png",
+      "selected_file": "references/shopify-contra/SH-CREATE-12.png",
+      "purpose": "Explicit amount/consequence confirmation",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "7e8f78ade0da8e59343a41b3e3abd9fac03fe91becd92e812186356f7c06d5ef",
+      "width": 1920,
+      "height": 1205
+    },
+    {
+      "id": "SH-CREATE-13",
+      "archive": "Shopify Web Creating an order.zip",
+      "original_filename": "Shopify Web Creating an order 13.png",
+      "selected_file": "references/shopify-contra/SH-CREATE-13.png",
+      "purpose": "Result record with separate payment and delivery states",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "71068c9db0c2c9a580695cfe2a127a918e677fd8fad1450060bd56a2a63781c1",
+      "width": 1920,
+      "height": 1205
+    },
+    {
+      "id": "SH-SELECT-01",
+      "archive": "Shopify Web Selecting orders.zip",
+      "original_filename": "Shopify Web Selecting orders 1.png",
+      "selected_file": "references/shopify-contra/SH-SELECT-01.png",
+      "purpose": "Selection count and contextual actions",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "ba17d95dd57b7d6cb9fdf40e15fcdbd371aec00e91639d0266966626d3a77049",
+      "width": 1920,
+      "height": 1205
+    },
+    {
+      "id": "SH-FULFILL-02",
+      "archive": "Shopify Web Marking orders as fulfilled.zip",
+      "original_filename": "Shopify Web Marking orders as fulfilled 2.png",
+      "selected_file": "references/shopify-contra/SH-FULFILL-02.png",
+      "purpose": "Count-aware bulk confirmation",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "4499ad9466e03736bdb1fdcafb4b49b66d6d22e38ff4b5aca364fdd4aa7fa908",
+      "width": 1920,
+      "height": 1205
+    },
+    {
+      "id": "SH-FULFILL-04",
+      "archive": "Shopify Web Marking orders as fulfilled.zip",
+      "original_filename": "Shopify Web Marking orders as fulfilled 4.png",
+      "selected_file": "references/shopify-contra/SH-FULFILL-04.png",
+      "purpose": "Updated row status plus feedback",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "315493fbfd45b0b71fa15fea54866f8ed4e739aaa6358ed09fdb230770bfccd7",
+      "width": 1920,
+      "height": 1205
+    },
+    {
+      "id": "CO-AI-03",
+      "archive": "Contra Web Chatting with AI.zip",
+      "original_filename": "Contra Web Chatting with AI 3.png",
+      "selected_file": "references/shopify-contra/CO-AI-03.png",
+      "purpose": "Attachment/error state with designed recovery",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "aa4438498b04fd356ef48c4805da22207ba2469d387c4f820ee7c44c75984aa0",
+      "width": 1920,
+      "height": 1200
+    },
+    {
+      "id": "CO-AI-04",
+      "archive": "Contra Web Chatting with AI.zip",
+      "original_filename": "Contra Web Chatting with AI 4.png",
+      "selected_file": "references/shopify-contra/CO-AI-04.png",
+      "purpose": "Short relevant suggestions and direct record link",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "29fbfe459c6777c22bcd862825d1d8e87d42b7b80bc28b1f3435a54e81e54714",
+      "width": 1920,
+      "height": 1200
+    },
+    {
+      "id": "CO-DASH-01",
+      "archive": "Contra Web Dashboard (freelancer).zip",
+      "original_filename": "Contra Web Dashboard (freelancer) 1.png",
+      "selected_file": "references/shopify-contra/CO-DASH-01.png",
+      "purpose": "Short first-use checklist and clear action priorities",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "ce38d2152d318a6125cd39d5866a298d0765d7efab1fba1bb297a620a7e661d8",
+      "width": 1920,
+      "height": 1200
+    },
+    {
+      "id": "CO-AVAIL-01",
+      "archive": "Contra Web Updating profile availability.zip",
+      "original_filename": "Contra Web Updating profile availability 1.png",
+      "selected_file": "references/shopify-contra/CO-AVAIL-01.png",
+      "purpose": "Focused public-availability editor",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "1c03de2482a867e36aea3131e5baee5603d1de99d135560969a2cb58dcaf6516",
+      "width": 1920,
+      "height": 1200
+    },
+    {
+      "id": "CO-AVAIL-02",
+      "archive": "Contra Web Updating profile availability.zip",
+      "original_filename": "Contra Web Updating profile availability 2.png",
+      "selected_file": "references/shopify-contra/CO-AVAIL-02.png",
+      "purpose": "Saved availability badge and feedback",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "5cbd452a4d6e9cf84bd1a807ca5aa6553b741662798de7e91502028e613d5273",
+      "width": 1920,
+      "height": 1200
+    },
+    {
+      "id": "CO-JOB-02",
+      "archive": "Contra Web Jobs.zip",
+      "original_filename": "Contra Web Jobs 2.png",
+      "selected_file": "references/shopify-contra/CO-JOB-02.png",
+      "purpose": "Opportunity reason, caveat, and explicit next actions",
+      "authority": "Interaction pattern only; approved Crewmori anchors and reconciled brand win",
+      "sha256": "440f27c8b0f2c65456acd14d12d9705a372b6e4eee961f98c8d8061df559ea51",
+      "width": 1920,
+      "height": 1200
+    }
+  ]
+}

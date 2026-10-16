@@ -1,0 +1,7 @@
+<svg fill="none" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="finance-title" width="72" height="72">
+<title id="finance-title">Finance</title><circle cx="36" cy="36" fill="#B6D9C6" r="24" stroke="#202A25" stroke-width="2.5" />
+<circle cx="29" cy="30" fill="#202A25" r="2.8" />
+<circle cx="43" cy="30" fill="#202A25" r="2.8" />
+<rect fill="#FFFFFF" height="15" rx="2" stroke="#202A25" stroke-width="2" width="14" x="29" y="38" />
+<line stroke="#202A25" stroke-width="2" x1="32" x2="40" y1="43" y2="43" />
+</svg>

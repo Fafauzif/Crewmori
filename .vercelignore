@@ -1,0 +1,12 @@
+# Copy to .vercelignore at the implemented repository root for Vercel CLI uploads.
+# Keep these materials in Git/source handoff; they are not app runtime assets.
+docs/
+references/
+skills/
+context/
+research/
+*.zip
+node_modules/
+.git/
+.next/
+# Do not exclude src/, public/, package.json, lockfile or framework configuration.

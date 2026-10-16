@@ -1,0 +1,85 @@
+[
+  {
+    "file": "scout.svg",
+    "source": "User upload stitch_prompt_execution_runner.zip / crewmori_team_overview_global_studio/code.html",
+    "sourceSvgIndexZeroBased": 2,
+    "sourceSha256": "6c50fe5d4b5a6497759577dfb54ab2fdea2bf7e476f97990da20cea9c9464a2a",
+    "transformations": [
+      "Removed Tailwind-only class",
+      "Added SVG namespace, intrinsic dimensions, accessible title",
+      "Preserved paths, viewBox, proportions, brand role colors"
+    ],
+    "sha256": "d9182b7e67149b5a3b7fae6668494e2271bacdc8c7a8111373f94ac6f11bcd27"
+  },
+  {
+    "file": "operations.svg",
+    "source": "User upload stitch_prompt_execution_runner.zip / crewmori_team_overview_global_studio/code.html",
+    "sourceSvgIndexZeroBased": 3,
+    "sourceSha256": "6c50fe5d4b5a6497759577dfb54ab2fdea2bf7e476f97990da20cea9c9464a2a",
+    "transformations": [
+      "Removed Tailwind-only class",
+      "Added SVG namespace, intrinsic dimensions, accessible title",
+      "Preserved paths, viewBox, proportions, brand role colors"
+    ],
+    "sha256": "3c285e416dbc3a6e4dfb7a4befca83635fa93acca18bbd5c5567d094195e340c"
+  },
+  {
+    "file": "finance.svg",
+    "source": "User upload stitch_prompt_execution_runner.zip / crewmori_team_overview_global_studio/code.html",
+    "sourceSvgIndexZeroBased": 4,
+    "sourceSha256": "6c50fe5d4b5a6497759577dfb54ab2fdea2bf7e476f97990da20cea9c9464a2a",
+    "transformations": [
+      "Removed Tailwind-only class",
+      "Added SVG namespace, intrinsic dimensions, accessible title",
+      "Preserved paths, viewBox, proportions, brand role colors"
+    ],
+    "sha256": "f4df41bfa88135cca83fa1cda882edcc0810d0e30615fea14df1a8114a3dab0e"
+  },
+  {
+    "file": "promoter.svg",
+    "source": "User upload stitch_prompt_execution_runner.zip / crewmori_team_overview_global_studio/code.html",
+    "sourceSvgIndexZeroBased": 5,
+    "sourceSha256": "6c50fe5d4b5a6497759577dfb54ab2fdea2bf7e476f97990da20cea9c9464a2a",
+    "transformations": [
+      "Removed Tailwind-only class",
+      "Added SVG namespace, intrinsic dimensions, accessible title",
+      "Preserved paths, viewBox, proportions, brand role colors"
+    ],
+    "sha256": "b5572d37cbac45f4c156b724ddd947165a2e38070339b2a923e7419ca8514f28"
+  },
+  {
+    "file": "sales.svg",
+    "source": "User upload stitch_prompt_execution_runner.zip / crewmori_team_overview_global_studio/code.html",
+    "sourceSvgIndexZeroBased": 6,
+    "sourceSha256": "6c50fe5d4b5a6497759577dfb54ab2fdea2bf7e476f97990da20cea9c9464a2a",
+    "transformations": [
+      "Removed Tailwind-only class",
+      "Added SVG namespace, intrinsic dimensions, accessible title",
+      "Preserved paths, viewBox, proportions, brand role colors"
+    ],
+    "sha256": "0583c32d03286c52850b136b2153c4bcfe4cfadd9cb82d8635eab99ada9fb0fb"
+  },
+  {
+    "file": "account-manager.svg",
+    "source": "User upload stitch_prompt_execution_runner.zip / crewmori_team_overview_global_studio/code.html",
+    "sourceSvgIndexZeroBased": 7,
+    "sourceSha256": "6c50fe5d4b5a6497759577dfb54ab2fdea2bf7e476f97990da20cea9c9464a2a",
+    "transformations": [
+      "Removed Tailwind-only class",
+      "Added SVG namespace, intrinsic dimensions, accessible title",
+      "Preserved paths, viewBox, proportions, brand role colors"
+    ],
+    "sha256": "22f53f665d4091b8c6ef431643f54bfe261b3f918539a4d5802c440a5f131bd1"
+  },
+  {
+    "file": "scout-hero.svg",
+    "source": "User upload stitch_prompt_execution_runner.zip / crewmori_magazine_editorial_warmth_desktop/code.html",
+    "sourceSvgIndexZeroBased": 0,
+    "transformations": [
+      "Removed Tailwind-only class",
+      "Added namespace, dimensions and title",
+      "Preserved illustrated pencil/lens/hat artwork and subtle accent colors"
+    ],
+    "sha256": "32cdc2c76c69f21a264c4cb7461204e29eefe85c255f4b1cd9e3bcc90d4c9fd9"
+  }
+]

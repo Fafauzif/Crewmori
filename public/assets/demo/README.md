@@ -1,0 +1,8 @@
+# Local demo visual assets
+
+- `team-worldmap.svg` is extracted from the approved Team Overview HTML's first inline SVG. It preserves the muted coordinate grid and abstract continent paths. The root Tailwind class was removed and an SVG namespace added. This backdrop is decorative, not evidence of live geography or tracking.
+- `portfolio-kinetic-launch.svg`, `portfolio-spatial-interface.svg` and `portfolio-research-synthesis.svg` are original simple vector sample covers authored for this pack. They use the approved palette and do not contain client logos or third-party artwork. They are **sample portfolio placeholders**, not evidence of actual paid work. Keep the sample-workspace/public-demo disclosure and appropriate captions. The third cover helps illustrate profession-neutral service records.
+
+Use local paths in the eventual app; no remote Stitch image URLs are required. These are still images, not actual video reels or case-study deliverables. Opening a portfolio sample must show an actual sample artifact/details panel; do not label a static SVG as video playback. If the implementation adds a short motion preview, it must genuinely animate local artwork and expose pause/reduced-motion controls.
+
+`provenance.json` records sources and hashes. The voice/transcript demonstration described in the product scope is a separate implemented behavior and is not supplied by these portfolio files. The implementation run may generate a local short audio sample through available tooling, or use a clearly labeled browser speech-synthesis sample with transcript and feature detection; it must disclose any unavailable audio instead of showing a fake playing indicator.

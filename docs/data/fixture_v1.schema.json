@@ -1,0 +1,4533 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://crewmori.example/spec/fixture-v1.schema.json",
+  "title": "Crewmori normalized sample store v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "fixture_id",
+    "sample_clock",
+    "tables"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "fixture_id": {
+      "const": "crewmori_sample_v1"
+    },
+    "sample_clock": {
+      "type": "string"
+    },
+    "tables": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workspaces",
+        "owners",
+        "profiles",
+        "services",
+        "portfolio_items",
+        "policies",
+        "preferences",
+        "connections",
+        "sources",
+        "clients",
+        "contacts",
+        "opportunities",
+        "requirements",
+        "engagements",
+        "conversations",
+        "messages",
+        "assessments",
+        "offers",
+        "offer_versions",
+        "approvals",
+        "share_records",
+        "acceptances",
+        "buyer_grants",
+        "projects",
+        "required_inputs",
+        "milestones",
+        "work_tasks",
+        "reservations",
+        "calendar_events",
+        "invoices",
+        "invoice_lines",
+        "payment_requests",
+        "receipts",
+        "allocations",
+        "finance_issues",
+        "expenses",
+        "attachments",
+        "private_notes",
+        "promotions",
+        "promotion_versions",
+        "agent_runs",
+        "artifacts",
+        "handoffs",
+        "events",
+        "command_receipts",
+        "onboarding_sessions"
+      ],
+      "properties": {
+        "workspaces": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/workspaces"
+          }
+        },
+        "owners": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/owners"
+          }
+        },
+        "profiles": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/profiles"
+          }
+        },
+        "services": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/services"
+          }
+        },
+        "portfolio_items": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/portfolio_items"
+          }
+        },
+        "policies": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/policies"
+          }
+        },
+        "preferences": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/preferences"
+          }
+        },
+        "connections": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/connections"
+          }
+        },
+        "sources": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/sources"
+          }
+        },
+        "clients": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/clients"
+          }
+        },
+        "contacts": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/contacts"
+          }
+        },
+        "opportunities": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/opportunities"
+          }
+        },
+        "requirements": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/requirements"
+          }
+        },
+        "engagements": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/engagements"
+          }
+        },
+        "conversations": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/conversations"
+          }
+        },
+        "messages": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/messages"
+          }
+        },
+        "assessments": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/assessments"
+          }
+        },
+        "offers": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/offers"
+          }
+        },
+        "offer_versions": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/offer_versions"
+          }
+        },
+        "approvals": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/approvals"
+          }
+        },
+        "share_records": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/share_records"
+          }
+        },
+        "acceptances": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/acceptances"
+          }
+        },
+        "buyer_grants": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/buyer_grants"
+          }
+        },
+        "projects": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/projects"
+          }
+        },
+        "required_inputs": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/required_inputs"
+          }
+        },
+        "milestones": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/milestones"
+          }
+        },
+        "work_tasks": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/work_tasks"
+          }
+        },
+        "reservations": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/reservations"
+          }
+        },
+        "calendar_events": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/calendar_events"
+          }
+        },
+        "invoices": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/invoices"
+          }
+        },
+        "invoice_lines": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/invoice_lines"
+          }
+        },
+        "payment_requests": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/payment_requests"
+          }
+        },
+        "receipts": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/receipts"
+          }
+        },
+        "allocations": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/allocations"
+          }
+        },
+        "finance_issues": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/finance_issues"
+          }
+        },
+        "expenses": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/expenses"
+          }
+        },
+        "attachments": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/attachments"
+          }
+        },
+        "private_notes": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/private_notes"
+          }
+        },
+        "promotions": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/promotions"
+          }
+        },
+        "promotion_versions": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/promotion_versions"
+          }
+        },
+        "agent_runs": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/agent_runs"
+          }
+        },
+        "artifacts": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/artifacts"
+          }
+        },
+        "handoffs": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/handoffs"
+          }
+        },
+        "events": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/events"
+          }
+        },
+        "command_receipts": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/command_receipts"
+          }
+        },
+        "onboarding_sessions": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/onboarding_sessions"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "workspaces": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "default_currency": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "locale": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "owner_id": {
+          "type": "string"
+        },
+        "reporting_currency": {
+          "type": "string"
+        },
+        "sample": {
+          "type": "boolean"
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "created_at",
+        "default_currency",
+        "id",
+        "locale",
+        "name",
+        "owner_id",
+        "reporting_currency",
+        "sample",
+        "timezone",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "owners": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "handle": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "locale": {
+          "type": "string"
+        },
+        "profession": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "created_at",
+        "display_name",
+        "email",
+        "handle",
+        "id",
+        "locale",
+        "profession",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "profiles": {
+      "type": "object",
+      "properties": {
+        "approved_portfolio_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "approved_service_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "biography": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "headline": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "location_label": {
+          "type": "string"
+        },
+        "owner_id": {
+          "type": "string"
+        },
+        "public_availability": {
+          "type": "string"
+        },
+        "public_contact_email": {
+          "type": "string"
+        },
+        "public_name": {
+          "type": "string"
+        },
+        "public_revision": {
+          "type": "integer"
+        },
+        "published": {
+          "type": "boolean"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "approved_portfolio_ids",
+        "approved_service_ids",
+        "audience",
+        "biography",
+        "created_at",
+        "headline",
+        "id",
+        "location_label",
+        "owner_id",
+        "public_availability",
+        "public_contact_email",
+        "public_name",
+        "public_revision",
+        "published",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "services": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "category": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "deliverables": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "pricing_label": {
+          "type": "string"
+        },
+        "profile_id": {
+          "type": "string"
+        },
+        "published": {
+          "type": "boolean"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "category",
+        "created_at",
+        "deliverables",
+        "description",
+        "id",
+        "pricing_label",
+        "profile_id",
+        "published",
+        "slug",
+        "title",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "portfolio_items": {
+      "type": "object",
+      "properties": {
+        "asset_id": {
+          "type": "string"
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "claim_status": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "profile_id": {
+          "type": "string"
+        },
+        "published": {
+          "type": "boolean"
+        },
+        "service_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summary": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "asset_id",
+        "audience",
+        "claim_status",
+        "created_at",
+        "id",
+        "profile_id",
+        "published",
+        "service_ids",
+        "summary",
+        "title",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "policies": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "available_effort_minutes": {
+          "type": "integer"
+        },
+        "business_weekdays": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "deposit_basis_points": {
+          "type": "integer"
+        },
+        "due_local_time": {
+          "type": "string"
+        },
+        "fee_basis_points": {
+          "type": "integer"
+        },
+        "fx_idr_per_usd": {
+          "type": "string"
+        },
+        "holiday_dates": {
+          "type": "array",
+          "items": {}
+        },
+        "id": {
+          "type": "string"
+        },
+        "minimum_hourly_rate": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "next_business_day_start": {
+          "type": "boolean"
+        },
+        "require_deposit": {
+          "type": "boolean"
+        },
+        "required_input_keys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reservation_hours": {
+          "type": "integer"
+        },
+        "sample_assumptions": {
+          "type": "boolean"
+        },
+        "start_local_time": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "upfront_cost_assumption": {
+          "type": "object",
+          "properties": {
+            "amount_minor": {
+              "type": "integer"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "scale": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "amount_minor",
+            "currency",
+            "scale"
+          ],
+          "additionalProperties": false
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "available_effort_minutes",
+        "business_weekdays",
+        "created_at",
+        "deposit_basis_points",
+        "due_local_time",
+        "fee_basis_points",
+        "fx_idr_per_usd",
+        "holiday_dates",
+        "id",
+        "minimum_hourly_rate",
+        "next_business_day_start",
+        "require_deposit",
+        "required_input_keys",
+        "reservation_hours",
+        "sample_assumptions",
+        "start_local_time",
+        "updated_at",
+        "upfront_cost_assumption",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "preferences": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "last_seen_event_sequence": {
+          "type": "integer"
+        },
+        "locale": {
+          "type": "string"
+        },
+        "motion": {
+          "type": "string"
+        },
+        "notification_email": {
+          "type": "boolean"
+        },
+        "notification_in_app": {
+          "type": "boolean"
+        },
+        "owner_id": {
+          "type": "string"
+        },
+        "team_animation_paused": {
+          "type": "boolean"
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "created_at",
+        "id",
+        "last_seen_event_sequence",
+        "locale",
+        "motion",
+        "notification_email",
+        "notification_in_app",
+        "owner_id",
+        "team_animation_paused",
+        "timezone",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "connections": {
+      "type": "object",
+      "properties": {
+        "account_label": {
+          "type": "string"
+        },
+        "approved_capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "error_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "interrupted_command_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "sample"
+          ]
+        },
+        "state": {
+          "enum": [
+            "not_connected",
+            "connecting",
+            "connected",
+            "limited_permissions",
+            "reconnect_required",
+            "error",
+            "disconnected"
+          ]
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "account_label",
+        "approved_capabilities",
+        "audience",
+        "capabilities",
+        "created_at",
+        "error_code",
+        "id",
+        "interrupted_command_id",
+        "label",
+        "mode",
+        "state",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "sources": {
+      "type": "object",
+      "properties": {
+        "attachment_ids": {
+          "type": "array",
+          "items": {}
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "connection_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "content": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "factual_status": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "locator": {
+          "type": "string"
+        },
+        "observed_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "attachment_ids",
+        "audience",
+        "connection_id",
+        "content",
+        "created_at",
+        "factual_status",
+        "id",
+        "kind",
+        "label",
+        "locator",
+        "observed_at",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "clients": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "contact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "next_action": {
+          "type": "string"
+        },
+        "private_note_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "profession_context": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "website": {
+          "type": "string"
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "contact_ids",
+        "created_at",
+        "id",
+        "name",
+        "next_action",
+        "private_note_ids",
+        "profession_context",
+        "status",
+        "updated_at",
+        "version",
+        "website",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "contacts": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "client_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "locale": {
+          "type": "string"
+        },
+        "role_label": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "client_id",
+        "created_at",
+        "display_name",
+        "email",
+        "id",
+        "locale",
+        "role_label",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "opportunities": {
+      "type": "object",
+      "properties": {
+        "acquisition_cash_cost": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "acquisition_minutes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "assigned_role": {
+          "type": "string"
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "client_id": {
+          "type": "string"
+        },
+        "contact_id": {
+          "type": "string"
+        },
+        "conversation_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "offer_id": {
+          "type": "string"
+        },
+        "requirements_id": {
+          "type": "string"
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "unknowns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "acquisition_cash_cost",
+        "acquisition_minutes",
+        "assigned_role",
+        "audience",
+        "client_id",
+        "contact_id",
+        "conversation_id",
+        "created_at",
+        "id",
+        "offer_id",
+        "requirements_id",
+        "source_ids",
+        "status",
+        "title",
+        "unknowns",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "requirements": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "budget": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "amount_minor": {
+              "type": "integer"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "scale": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "amount_minor",
+            "currency",
+            "scale"
+          ],
+          "additionalProperties": false
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "deliverables": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "delivery_business_days": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "missing_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "opportunity_id": {
+          "type": "string"
+        },
+        "requested_asset_count": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "supplied_input_ids": {
+          "type": "array",
+          "items": {}
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "budget",
+        "created_at",
+        "deliverables",
+        "delivery_business_days",
+        "id",
+        "missing_fields",
+        "opportunity_id",
+        "requested_asset_count",
+        "source_ids",
+        "supplied_input_ids",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "engagements": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "buyer_grant_id": {
+          "type": "string"
+        },
+        "client_id": {
+          "type": "string"
+        },
+        "contact_id": {
+          "type": "string"
+        },
+        "conversation_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "offer_id": {
+          "type": "string"
+        },
+        "opportunity_id": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "stage": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "buyer_grant_id",
+        "client_id",
+        "contact_id",
+        "conversation_id",
+        "created_at",
+        "id",
+        "offer_id",
+        "opportunity_id",
+        "project_id",
+        "stage",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "conversations": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "brief_requirements_id": {
+          "type": "string"
+        },
+        "buyer_contact_id": {
+          "type": "string"
+        },
+        "client_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "latest_message_id": {
+          "type": "string"
+        },
+        "owner_review_requested": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "brief_requirements_id",
+        "buyer_contact_id",
+        "client_id",
+        "created_at",
+        "id",
+        "latest_message_id",
+        "owner_review_requested",
+        "status",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "messages": {
+      "type": "object",
+      "properties": {
+        "approved_content_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "attachment_ids": {
+          "type": "array",
+          "items": {}
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "content": {
+          "type": "string"
+        },
+        "conversation_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "delivery_state": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "sender_id": {
+          "type": "string"
+        },
+        "sender_kind": {
+          "type": "string"
+        },
+        "shared_with_buyer": {
+          "type": "boolean"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "approved_content_version",
+        "attachment_ids",
+        "audience",
+        "content",
+        "conversation_id",
+        "created_at",
+        "delivery_state",
+        "id",
+        "sender_id",
+        "sender_kind",
+        "shared_with_buyer",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "assessments": {
+      "type": "object",
+      "properties": {
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "factual_findings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "id": {
+          "type": "string"
+        },
+        "opportunity_id": {
+          "type": "string"
+        },
+        "policy_version": {
+          "type": "integer"
+        },
+        "proposed_effort_minutes": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "requirements_version": {
+          "type": "integer"
+        },
+        "role_id": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "unknowns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "assumptions",
+        "audience",
+        "created_at",
+        "factual_findings",
+        "id",
+        "opportunity_id",
+        "policy_version",
+        "proposed_effort_minutes",
+        "requirements_version",
+        "role_id",
+        "run_id",
+        "source_ids",
+        "status",
+        "summary",
+        "unknowns",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "offers": {
+      "type": "object",
+      "properties": {
+        "accepted_version_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "client_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "current_version_id": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "opportunity_id": {
+          "type": "string"
+        },
+        "shared_version_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "enum": [
+            "draft",
+            "awaiting_review",
+            "approved",
+            "shared",
+            "change_requested",
+            "accepted",
+            "withdrawn",
+            "superseded",
+            "expired"
+          ]
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "accepted_version_id",
+        "audience",
+        "client_id",
+        "created_at",
+        "current_version_id",
+        "id",
+        "opportunity_id",
+        "shared_version_id",
+        "status",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "offer_versions": {
+      "type": "object",
+      "properties": {
+        "assessment_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "buyer_note": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "deliverables": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "quantity": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "key",
+              "label",
+              "quantity"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "estimated_effort_minutes": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "expires_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "immutable_after_acceptance": {
+          "type": "boolean"
+        },
+        "offer_id": {
+          "type": "string"
+        },
+        "policy_version": {
+          "type": "integer"
+        },
+        "predecessor_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "price": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "amount_minor": {
+              "type": "integer"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "scale": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "amount_minor",
+            "currency",
+            "scale"
+          ],
+          "additionalProperties": false
+        },
+        "requirements_id": {
+          "type": "string"
+        },
+        "requirements_version": {
+          "type": "integer"
+        },
+        "revision": {
+          "type": "integer"
+        },
+        "state": {
+          "enum": [
+            "draft",
+            "awaiting_review",
+            "approved",
+            "shared",
+            "change_requested",
+            "accepted",
+            "withdrawn",
+            "superseded",
+            "expired"
+          ]
+        },
+        "terms": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "acceptance_disclosure": {
+              "type": "string"
+            },
+            "delivery_business_days": {
+              "type": "integer"
+            },
+            "deposit_basis_points": {
+              "type": "integer"
+            },
+            "due_local_time": {
+              "type": "string"
+            },
+            "holidays": {
+              "type": "array",
+              "items": {}
+            },
+            "required_input_keys": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "reservation_hours": {
+              "type": "integer"
+            },
+            "start_basis": {
+              "type": "string"
+            },
+            "start_local_time": {
+              "type": "string"
+            },
+            "timezone": {
+              "type": "string"
+            },
+            "workdays": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          },
+          "required": [
+            "acceptance_disclosure",
+            "delivery_business_days",
+            "deposit_basis_points",
+            "due_local_time",
+            "holidays",
+            "required_input_keys",
+            "reservation_hours",
+            "start_basis",
+            "start_local_time",
+            "timezone",
+            "workdays"
+          ],
+          "additionalProperties": false
+        },
+        "title": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "assessment_ids",
+        "audience",
+        "buyer_note",
+        "created_at",
+        "deliverables",
+        "estimated_effort_minutes",
+        "expires_at",
+        "id",
+        "immutable_after_acceptance",
+        "offer_id",
+        "policy_version",
+        "predecessor_id",
+        "price",
+        "requirements_id",
+        "requirements_version",
+        "revision",
+        "state",
+        "terms",
+        "title",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "approvals": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "approved_at": {
+          "type": "string"
+        },
+        "approved_by": {
+          "type": "string"
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "destination_contact_id": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "subject_ref": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "table": {
+              "type": "string"
+            },
+            "version": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "table",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "action",
+        "approved_at",
+        "approved_by",
+        "audience",
+        "created_at",
+        "destination_contact_id",
+        "id",
+        "state",
+        "subject_ref",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "share_records": {
+      "type": "object",
+      "properties": {
+        "approval_id": {
+          "type": "string"
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "command_id": {
+          "type": "string"
+        },
+        "connection_id": {
+          "type": "string"
+        },
+        "contact_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "offer_id": {
+          "type": "string"
+        },
+        "offer_version_id": {
+          "type": "string"
+        },
+        "shared_at": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "approval_id",
+        "audience",
+        "command_id",
+        "connection_id",
+        "contact_id",
+        "created_at",
+        "id",
+        "offer_id",
+        "offer_version_id",
+        "shared_at",
+        "state",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "acceptances": {
+      "type": "object",
+      "properties": {
+        "accepted_at": {
+          "type": "string"
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "command_id": {
+          "type": "string"
+        },
+        "contact_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "offer_id": {
+          "type": "string"
+        },
+        "offer_version_id": {
+          "type": "string"
+        },
+        "price_snapshot": {
+          "type": "object",
+          "properties": {
+            "amount_minor": {
+              "type": "integer"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "scale": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "amount_minor",
+            "currency",
+            "scale"
+          ],
+          "additionalProperties": false
+        },
+        "share_id": {
+          "type": "string"
+        },
+        "terms_snapshot": {
+          "type": "object",
+          "properties": {
+            "acceptance_disclosure": {
+              "type": "string"
+            },
+            "delivery_business_days": {
+              "type": "integer"
+            },
+            "deposit_basis_points": {
+              "type": "integer"
+            },
+            "due_local_time": {
+              "type": "string"
+            },
+            "holidays": {
+              "type": "array",
+              "items": {}
+            },
+            "required_input_keys": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "reservation_hours": {
+              "type": "integer"
+            },
+            "start_basis": {
+              "type": "string"
+            },
+            "start_local_time": {
+              "type": "string"
+            },
+            "timezone": {
+              "type": "string"
+            },
+            "workdays": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          },
+          "required": [
+            "acceptance_disclosure",
+            "delivery_business_days",
+            "deposit_basis_points",
+            "due_local_time",
+            "holidays",
+            "required_input_keys",
+            "reservation_hours",
+            "start_basis",
+            "start_local_time",
+            "timezone",
+            "workdays"
+          ],
+          "additionalProperties": false
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "accepted_at",
+        "audience",
+        "command_id",
+        "contact_id",
+        "created_at",
+        "id",
+        "offer_id",
+        "offer_version_id",
+        "price_snapshot",
+        "share_id",
+        "terms_snapshot",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "buyer_grants": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "contact_id": {
+          "type": "string"
+        },
+        "conversation_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "engagement_id": {
+          "type": "string"
+        },
+        "expires_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "offer_id": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "type": "string"
+        },
+        "token_kind": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "contact_id",
+        "conversation_id",
+        "created_at",
+        "engagement_id",
+        "expires_at",
+        "id",
+        "offer_id",
+        "project_id",
+        "state",
+        "token_kind",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "projects": {
+      "type": "object",
+      "properties": {
+        "acceptance_id": {
+          "type": "string"
+        },
+        "accepted_version_id": {
+          "type": "string"
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "client_id": {
+          "type": "string"
+        },
+        "committed_due_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "committed_start_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "deposit_state": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "inputs_state": {
+          "type": "string"
+        },
+        "milestone_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "offer_id": {
+          "type": "string"
+        },
+        "opportunity_id": {
+          "type": "string"
+        },
+        "professional_delivery_state": {
+          "enum": [
+            "not_started",
+            "in_progress",
+            "owner_reported_delivered",
+            "buyer_accepted"
+          ]
+        },
+        "required_input_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reservation_id": {
+          "type": "string"
+        },
+        "shared_attachment_ids": {
+          "type": "array",
+          "items": {}
+        },
+        "state": {
+          "enum": [
+            "awaiting_prerequisites",
+            "ready_to_start",
+            "active",
+            "blocked",
+            "needs_rescheduling",
+            "delivered",
+            "completed",
+            "cancelled",
+            "archived"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "work_task_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "acceptance_id",
+        "accepted_version_id",
+        "audience",
+        "client_id",
+        "committed_due_at",
+        "committed_start_at",
+        "created_at",
+        "deposit_state",
+        "id",
+        "inputs_state",
+        "milestone_ids",
+        "offer_id",
+        "opportunity_id",
+        "professional_delivery_state",
+        "required_input_ids",
+        "reservation_id",
+        "shared_attachment_ids",
+        "state",
+        "title",
+        "updated_at",
+        "version",
+        "work_task_ids",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "required_inputs": {
+      "type": "object",
+      "properties": {
+        "answer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "attachment_ids": {
+          "type": "array",
+          "items": {}
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "provided_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "state": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "answer",
+        "attachment_ids",
+        "audience",
+        "created_at",
+        "id",
+        "key",
+        "label",
+        "project_id",
+        "provided_at",
+        "required",
+        "state",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "milestones": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "due_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "shared_with_buyer": {
+          "type": "boolean"
+        },
+        "state": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "created_at",
+        "due_at",
+        "id",
+        "project_id",
+        "shared_with_buyer",
+        "state",
+        "title",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "work_tasks": {
+      "type": "object",
+      "properties": {
+        "assignee_id": {
+          "type": "string"
+        },
+        "assignee_kind": {
+          "type": "string"
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "due_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "assignee_id",
+        "assignee_kind",
+        "audience",
+        "created_at",
+        "due_at",
+        "id",
+        "notes",
+        "project_id",
+        "state",
+        "title",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "reservations": {
+      "type": "object",
+      "properties": {
+        "acceptance_id": {
+          "type": "string"
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "committed_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "due_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "effort_minutes": {
+          "type": "integer"
+        },
+        "expires_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "start_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "enum": [
+            "proposed",
+            "provisional",
+            "committed",
+            "released",
+            "expired"
+          ]
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "acceptance_id",
+        "audience",
+        "committed_at",
+        "created_at",
+        "due_at",
+        "effort_minutes",
+        "expires_at",
+        "id",
+        "project_id",
+        "start_at",
+        "state",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "calendar_events": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "connection_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "ends_at": {
+          "type": "string"
+        },
+        "external_invitation_state": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "shared_with_buyer": {
+          "type": "boolean"
+        },
+        "starts_at": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "connection_id",
+        "created_at",
+        "ends_at",
+        "external_invitation_state",
+        "id",
+        "kind",
+        "project_id",
+        "shared_with_buyer",
+        "starts_at",
+        "state",
+        "timezone",
+        "title",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "invoices": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "authorized_by_acceptance_id": {
+          "type": "string"
+        },
+        "client_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "due_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "issued_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kind": {
+          "type": "string"
+        },
+        "line_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "number": {
+          "type": "string"
+        },
+        "offer_version_id": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "draft",
+            "issued",
+            "partially_paid",
+            "paid",
+            "void"
+          ]
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "void_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "authorized_by_acceptance_id",
+        "client_id",
+        "created_at",
+        "currency",
+        "due_at",
+        "id",
+        "issued_at",
+        "kind",
+        "line_ids",
+        "number",
+        "offer_version_id",
+        "project_id",
+        "state",
+        "updated_at",
+        "version",
+        "void_reason",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "invoice_lines": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "invoice_id": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer"
+        },
+        "tax_basis_points": {
+          "type": "integer"
+        },
+        "unit_amount": {
+          "type": "object",
+          "properties": {
+            "amount_minor": {
+              "type": "integer"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "scale": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "amount_minor",
+            "currency",
+            "scale"
+          ],
+          "additionalProperties": false
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "created_at",
+        "description",
+        "id",
+        "invoice_id",
+        "quantity",
+        "tax_basis_points",
+        "unit_amount",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "payment_requests": {
+      "type": "object",
+      "properties": {
+        "attempt": {
+          "type": "integer"
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "expected": {
+          "type": "object",
+          "properties": {
+            "amount_minor": {
+              "type": "integer"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "scale": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "amount_minor",
+            "currency",
+            "scale"
+          ],
+          "additionalProperties": false
+        },
+        "expires_at": {
+          "type": "string"
+        },
+        "external_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "invoice_id": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "created",
+            "pending",
+            "confirmed",
+            "failed",
+            "cancelled",
+            "unknown"
+          ]
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "attempt",
+        "audience",
+        "created_at",
+        "expected",
+        "expires_at",
+        "external_reference",
+        "id",
+        "invoice_id",
+        "mode",
+        "state",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "receipts": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "evidence_source_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fee": {
+          "type": "object",
+          "properties": {
+            "amount_minor": {
+              "type": "integer"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "scale": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "amount_minor",
+            "currency",
+            "scale"
+          ],
+          "additionalProperties": false
+        },
+        "gross": {
+          "type": "object",
+          "properties": {
+            "amount_minor": {
+              "type": "integer"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "scale": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "amount_minor",
+            "currency",
+            "scale"
+          ],
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string"
+        },
+        "net": {
+          "type": "object",
+          "properties": {
+            "amount_minor": {
+              "type": "integer"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "scale": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "amount_minor",
+            "currency",
+            "scale"
+          ],
+          "additionalProperties": false
+        },
+        "observation_state": {
+          "type": "string"
+        },
+        "payment_request_id": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "provider_event_id": {
+          "type": "string"
+        },
+        "received_at": {
+          "type": "string"
+        },
+        "reconciliation_state": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "created_at",
+        "evidence_source_id",
+        "fee",
+        "gross",
+        "id",
+        "net",
+        "observation_state",
+        "payment_request_id",
+        "provider",
+        "provider_event_id",
+        "received_at",
+        "reconciliation_state",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "allocations": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "object",
+          "properties": {
+            "amount_minor": {
+              "type": "integer"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "scale": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "amount_minor",
+            "currency",
+            "scale"
+          ],
+          "additionalProperties": false
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "invoice_id": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "receipt_id": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "amount",
+        "audience",
+        "created_at",
+        "id",
+        "invoice_id",
+        "reason",
+        "receipt_id",
+        "state",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "finance_issues": {
+      "type": "object",
+      "properties": {
+        "assigned_role": {
+          "type": "string"
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "invoice_id": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "receipt_id": {
+          "type": "string"
+        },
+        "resolution": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resolution_evidence_ids": {
+          "type": "array",
+          "items": {}
+        },
+        "state": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "assigned_role",
+        "audience",
+        "created_at",
+        "id",
+        "invoice_id",
+        "kind",
+        "receipt_id",
+        "resolution",
+        "resolution_evidence_ids",
+        "state",
+        "summary",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "expenses": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "object",
+          "properties": {
+            "amount_minor": {
+              "type": "integer"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "scale": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "amount_minor",
+            "currency",
+            "scale"
+          ],
+          "additionalProperties": false
+        },
+        "attachment_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "category": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "expense_date": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "paid": {
+          "type": "boolean"
+        },
+        "project_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "amount",
+        "attachment_id",
+        "audience",
+        "category",
+        "created_at",
+        "description",
+        "expense_date",
+        "id",
+        "paid",
+        "project_id",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "attachments": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "availability": {
+          "type": "string"
+        },
+        "byte_length": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "media_type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "shared_with_buyer": {
+          "type": "boolean"
+        },
+        "source_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "storage_kind": {
+          "type": "string"
+        },
+        "storage_locator": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "availability",
+        "byte_length",
+        "created_at",
+        "id",
+        "media_type",
+        "name",
+        "shared_with_buyer",
+        "source_id",
+        "storage_kind",
+        "storage_locator",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "private_notes": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "client_id": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "client_id",
+        "content",
+        "created_at",
+        "id",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "promotions": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "current_version_id": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "published_version_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "service_id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "created_at",
+        "current_version_id",
+        "id",
+        "published_version_id",
+        "service_id",
+        "status",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "promotion_versions": {
+      "type": "object",
+      "properties": {
+        "approved_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "content": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "destination": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "promotion_id": {
+          "type": "string"
+        },
+        "public_claim_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "table": {
+                "type": "string"
+              },
+              "version": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "table",
+              "version"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "publication_evidence_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "revision": {
+          "type": "integer"
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {}
+        },
+        "state": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "approved_version",
+        "audience",
+        "content",
+        "created_at",
+        "destination",
+        "id",
+        "promotion_id",
+        "public_claim_refs",
+        "publication_evidence_id",
+        "revision",
+        "source_ids",
+        "state",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "agent_runs": {
+      "type": "object",
+      "properties": {
+        "attempt": {
+          "type": "integer"
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "blocked_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "control_version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "error_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "input_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "table": {
+                "type": "string"
+              },
+              "version": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "table",
+              "version"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "output_artifact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "previous_attempt_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "progress_step": {
+          "type": "integer"
+        },
+        "progress_total": {
+          "type": "integer"
+        },
+        "role_id": {
+          "enum": [
+            "scout",
+            "promoter",
+            "sales",
+            "account_manager",
+            "operations",
+            "finance"
+          ]
+        },
+        "semantic_focus_target": {
+          "type": "string"
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "running",
+            "waiting_input",
+            "waiting_approval",
+            "paused",
+            "blocked",
+            "completed",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "task_kind": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "attempt",
+        "audience",
+        "blocked_reason",
+        "control_version",
+        "created_at",
+        "error_code",
+        "id",
+        "input_refs",
+        "output_artifact_ids",
+        "previous_attempt_id",
+        "progress_step",
+        "progress_total",
+        "role_id",
+        "semantic_focus_target",
+        "source_ids",
+        "status",
+        "task_kind",
+        "title",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "creator_run_id": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "input_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "table": {
+                "type": "string"
+              },
+              "version": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "table",
+              "version"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "kind": {
+          "type": "string"
+        },
+        "record_ref": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "table": {
+              "type": "string"
+            },
+            "version": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "table",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "role_id": {
+          "type": "string"
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "created_at",
+        "creator_run_id",
+        "id",
+        "input_refs",
+        "kind",
+        "record_ref",
+        "role_id",
+        "source_ids",
+        "status",
+        "title",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "handoffs": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {
+          "type": "string"
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "from_run_id": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "input_version": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "string"
+        },
+        "to_run_id": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "audience",
+        "created_at",
+        "from_run_id",
+        "id",
+        "input_version",
+        "status",
+        "to_run_id",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "events": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "cause_command_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "occurred_at": {
+          "type": "string"
+        },
+        "record_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "table": {
+                "type": "string"
+              },
+              "version": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "table",
+              "version"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "role_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "run_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "semantic_focus_target": {
+          "type": "string"
+        },
+        "sequence": {
+          "type": "integer"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "visibility": {
+          "type": "string"
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "cause_command_id",
+        "created_at",
+        "id",
+        "kind",
+        "occurred_at",
+        "record_refs",
+        "role_id",
+        "run_id",
+        "semantic_focus_target",
+        "sequence",
+        "summary",
+        "updated_at",
+        "version",
+        "visibility",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    },
+    "command_receipts": {
+      "type": "object",
+      "required": [
+        "id",
+        "workspace_id",
+        "version",
+        "audience",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "onboarding_sessions": {
+      "type": "object",
+      "properties": {
+        "audience": {
+          "enum": [
+            "owner",
+            "buyer",
+            "public"
+          ]
+        },
+        "completed_steps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "current_step": {
+          "type": "string"
+        },
+        "draft": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "business": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "displayName": {
+                  "type": "string"
+                },
+                "profession": {
+                  "type": "string"
+                },
+                "timezone": {
+                  "type": "string"
+                },
+                "locale": {
+                  "enum": [
+                    "en",
+                    "id"
+                  ]
+                },
+                "handle": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                }
+              }
+            },
+            "services": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "slug": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "deliverables": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "pricing": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "portfolio": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "sourceId": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "draft",
+                      "approved_sample",
+                      "published"
+                    ]
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "summary": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "schedule": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "weekdays": {
+                  "type": "array",
+                  "items": {
+                    "enum": [
+                      0,
+                      1,
+                      2,
+                      3,
+                      4,
+                      5,
+                      6
+                    ]
+                  }
+                },
+                "intervals": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "weekday": {
+                        "enum": [
+                          0,
+                          1,
+                          2,
+                          3,
+                          4,
+                          5,
+                          6
+                        ]
+                      },
+                      "start": {
+                        "type": "string"
+                      },
+                      "end": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "unavailableDates": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "availableEffortMinutes": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            },
+            "intake": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "status": {
+                  "enum": [
+                    "open_to_inquiries",
+                    "limited",
+                    "unavailable"
+                  ]
+                },
+                "availableFrom": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            },
+            "commercialDefaults": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "currency": {
+                  "enum": [
+                    "USD",
+                    "IDR"
+                  ]
+                },
+                "depositBasisPoints": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "deliveryBusinessDays": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "reservationHours": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "preferences": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "locale": {
+                  "enum": [
+                    "en",
+                    "id"
+                  ]
+                },
+                "motion": {
+                  "enum": [
+                    "system",
+                    "reduced",
+                    "full"
+                  ]
+                },
+                "focusMode": {
+                  "type": "boolean"
+                },
+                "recapEnabled": {
+                  "type": "boolean"
+                },
+                "notificationInApp": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "connections": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "gmail": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "calendar": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "drive": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "lastStep": {
+              "enum": [
+                "business",
+                "services",
+                "availability",
+                "preferences",
+                "connections",
+                "finish"
+              ]
+            }
+          }
+        },
+        "id": {
+          "type": "string"
+        },
+        "owner_id": {
+          "type": "string"
+        },
+        "skipped_connection_ids": {
+          "type": "array",
+          "items": {}
+        },
+        "state": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace_id": {
+          "const": "workspace_alya"
+        }
+      },
+      "required": [
+        "audience",
+        "completed_steps",
+        "created_at",
+        "current_step",
+        "draft",
+        "id",
+        "owner_id",
+        "skipped_connection_ids",
+        "state",
+        "updated_at",
+        "version",
+        "workspace_id"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

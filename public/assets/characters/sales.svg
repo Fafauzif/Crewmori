@@ -1,0 +1,6 @@
+<svg fill="none" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="sales-title" width="72" height="72">
+<title id="sales-title">Sales</title><rect fill="#B9D8EC" height="44" rx="14" stroke="#202A25" stroke-width="2.5" width="32" x="20" y="14" />
+<circle cx="29" cy="32" fill="#202A25" r="2.8" />
+<circle cx="43" cy="32" fill="#202A25" r="2.8" />
+<path d="M22 36 C18 36 16 42 22 46" stroke="#202A25" stroke-width="2" />
+</svg>

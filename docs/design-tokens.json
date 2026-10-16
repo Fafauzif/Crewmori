@@ -1,0 +1,460 @@
+{
+  "name": "Crewmori active product overlay",
+  "version": "1.0.0",
+  "date": "2026-10-16",
+  "status": "Implementation contract; no frontend authored in this pack run",
+  "sourcePrecedence": {
+    "behavior": "spec/DECISIONS.md and flow/data contracts",
+    "composition": "first two approved Stitch screens",
+    "paletteAndLogo": "unchanged supplied Working Seam brand package",
+    "productOverrides": [
+      "Newsreader and Inter replace kit DejaVu application families",
+      "24px major panels replace kit 12px generic cards",
+      "Home/Team/Opportunities/Work/Money replace illustrative kit navigation",
+      "Global Studio desktop map replaces simple brand application-study grid"
+    ]
+  },
+  "color": {
+    "brand": {
+      "primary": "#245C47",
+      "onPrimary": "#FFFFFF"
+    },
+    "interaction": {
+      "primary": {
+        "defaultBg": "#245C47",
+        "hoverBg": "#1B4B39",
+        "pressedBg": "#153F30",
+        "label": "#FFFFFF",
+        "disabledBg": "#D9DED3",
+        "disabledText": "#566159"
+      },
+      "selectedBg": "#E5EFE7"
+    },
+    "background": {
+      "canvas": "#F5F3EC",
+      "surface": "#FFFEFA",
+      "selected": "#E5EFE7"
+    },
+    "text": {
+      "primary": "#202A25",
+      "secondary": "#566159",
+      "onDark": "#FFFFFF"
+    },
+    "border": {
+      "decorative": "#D9DED3",
+      "control": "#566159"
+    },
+    "agentIdentity": {
+      "scout": {
+        "name": "Scout",
+        "tint": "#F2C983",
+        "label": "#202A25"
+      },
+      "promoter": {
+        "name": "Promoter",
+        "tint": "#EFAF9B",
+        "label": "#202A25"
+      },
+      "sales": {
+        "name": "Sales",
+        "tint": "#B9D8EC",
+        "label": "#202A25"
+      },
+      "accountManager": {
+        "name": "Account Manager",
+        "tint": "#D3C6E7",
+        "label": "#202A25"
+      },
+      "operations": {
+        "name": "Operations",
+        "tint": "#C6D4B5",
+        "label": "#202A25"
+      },
+      "finance": {
+        "name": "Finance",
+        "tint": "#B6D9C6",
+        "label": "#202A25"
+      }
+    },
+    "status": {
+      "success": {
+        "foreground": "#1E6848",
+        "background": "#EDF5EF"
+      },
+      "warning": {
+        "foreground": "#80520B",
+        "background": "#FFF1D6"
+      },
+      "error": {
+        "foreground": "#9B3431",
+        "background": "#FBE8E4"
+      },
+      "info": {
+        "foreground": "#255F82",
+        "background": "#E9F2F8"
+      }
+    }
+  },
+  "font": {
+    "display": {
+      "family": "Newsreader",
+      "fallback": [
+        "Georgia",
+        "Times New Roman",
+        "serif"
+      ],
+      "weightRange": [
+        200,
+        800
+      ],
+      "opticalSizeRange": [
+        6,
+        72
+      ],
+      "defaultWeight": 400,
+      "fontOpticalSizing": "auto",
+      "normalFile": "assets/fonts/Newsreader-Roman-VF.ttf",
+      "italicFile": "assets/fonts/Newsreader-Italic-VF.ttf",
+      "license": "assets/fonts/Newsreader-OFL.txt"
+    },
+    "ui": {
+      "family": "Inter",
+      "fallback": [
+        "Arial",
+        "system-ui",
+        "sans-serif"
+      ],
+      "weightRange": [
+        100,
+        900
+      ],
+      "opticalSizeRange": [
+        14,
+        32
+      ],
+      "defaultWeight": 400,
+      "fontOpticalSizing": "auto",
+      "normalFile": "assets/fonts/Inter-Roman-VF.ttf",
+      "italicFile": "assets/fonts/Inter-Italic-VF.ttf",
+      "license": "assets/fonts/Inter-OFL.txt"
+    },
+    "logo": {
+      "source": "Supplied outlined DejaVu Serif Bold artwork",
+      "runtimeFontDependency": false,
+      "retypeForbidden": true
+    }
+  },
+  "typeScale": {
+    "editorialTitle": {
+      "family": "display",
+      "weight": 400,
+      "desktop": [
+        44,
+        52
+      ],
+      "compact": [
+        32,
+        40
+      ]
+    },
+    "featureTitle": {
+      "family": "display",
+      "weight": 400,
+      "desktop": [
+        32,
+        40
+      ],
+      "compact": [
+        28,
+        36
+      ]
+    },
+    "sectionTitle": {
+      "family": "display",
+      "weight": 400,
+      "desktop": [
+        26,
+        34
+      ],
+      "compact": [
+        24,
+        32
+      ]
+    },
+    "intro": {
+      "family": "display",
+      "style": "italic",
+      "weight": 400,
+      "desktop": [
+        20,
+        30
+      ],
+      "compact": [
+        18,
+        28
+      ]
+    },
+    "functionalHeading": {
+      "family": "ui",
+      "weight": 600,
+      "desktop": [
+        18,
+        26
+      ],
+      "compact": [
+        18,
+        26
+      ]
+    },
+    "body": {
+      "family": "ui",
+      "weight": 400,
+      "desktop": [
+        16,
+        24
+      ],
+      "compact": [
+        16,
+        24
+      ]
+    },
+    "compactRow": {
+      "family": "ui",
+      "weight": 400,
+      "desktop": [
+        14,
+        20
+      ],
+      "compact": [
+        14,
+        20
+      ]
+    },
+    "metadata": {
+      "family": "ui",
+      "weight": 400,
+      "desktop": [
+        12,
+        16
+      ],
+      "compact": [
+        12,
+        16
+      ]
+    },
+    "nonessentialEyebrow": {
+      "family": "ui",
+      "weight": 600,
+      "desktop": [
+        11,
+        16
+      ],
+      "compact": [
+        11,
+        16
+      ],
+      "essentialContentAllowed": false
+    }
+  },
+  "spacingPx": [
+    4,
+    8,
+    12,
+    16,
+    24,
+    32,
+    48,
+    64
+  ],
+  "radiusPx": {
+    "majorPanel": 24,
+    "nestedPanel": 16,
+    "dataSurface": 16,
+    "drawer": 24,
+    "button": 12,
+    "field": 12,
+    "chip": 999
+  },
+  "elevation": {
+    "card": "none",
+    "overlay": "0 8px 24px rgba(32,42,37,0.10)"
+  },
+  "layout": {
+    "sidebarWidthPx": 224,
+    "headerHeightPx": 72,
+    "desktopMinWidthPx": 1280,
+    "desktopWorkspacePaddingPx": 32,
+    "tabletWorkspacePaddingPx": 24,
+    "mobileWorkspacePaddingPx": 16,
+    "mobileMaxWidthPx": 768,
+    "contextRailCollapseMaxWidthPx": 1024,
+    "teamMapMinViewportPx": 1280,
+    "teamMapHeightPx": 600,
+    "contentMaxWidthPx": 1440,
+    "formMaxWidthPx": 760,
+    "artifactGrid": "minmax(0, 2fr) minmax(280px, 1fr)",
+    "contentGapPx": 24,
+    "sectionGapPx": 32,
+    "majorPanelPaddingDesktopPx": 32,
+    "majorPanelPaddingCompactPx": 24,
+    "bottomNavHeightPx": 64,
+    "bottomSafeAreaRequired": true,
+    "logoRowPaddingHorizontalPx": 12,
+    "primaryLogoCanvasWidthPx": 200,
+    "primaryNavigation": [
+      "Home",
+      "Team",
+      "Opportunities",
+      "Work",
+      "Money"
+    ],
+    "mobilePrimaryNavigation": [
+      "Home",
+      "Team",
+      "Opportunities",
+      "Work",
+      "Money"
+    ],
+    "secondaryNavigation": [
+      "Connections",
+      "Settings"
+    ],
+    "minimumInteractiveTargetPx": 44,
+    "minimumFieldHeightPx": 44
+  },
+  "team": {
+    "sourceMap": "assets/demo/team-worldmap.svg",
+    "mobileColumns": 2,
+    "maximumConcurrentCursors": 2,
+    "coordinatesPercent": {
+      "inbound": [
+        17,
+        20
+      ],
+      "scout": [
+        50,
+        43
+      ],
+      "operations": [
+        70,
+        45
+      ],
+      "finance": [
+        88,
+        60
+      ],
+      "promoter": [
+        52,
+        67
+      ],
+      "sales": [
+        30,
+        60
+      ],
+      "account_manager": [
+        77,
+        70
+      ],
+      "owner": [
+        55,
+        84
+      ]
+    },
+    "coordinatesAreStartingRecipe": true,
+    "collisionFreeLabelsRequired": true,
+    "roles": {
+      "scout": {
+        "asset": "assets/characters/scout.svg",
+        "heroAsset": "assets/characters/scout-hero.svg"
+      },
+      "promoter": {
+        "asset": "assets/characters/promoter.svg"
+      },
+      "sales": {
+        "asset": "assets/characters/sales.svg"
+      },
+      "account_manager": {
+        "asset": "assets/characters/account-manager.svg"
+      },
+      "operations": {
+        "asset": "assets/characters/operations.svg"
+      },
+      "finance": {
+        "asset": "assets/characters/finance.svg"
+      }
+    }
+  },
+  "focus": {
+    "widthPx": 2,
+    "offsetPx": 2,
+    "onLight": "#245C47",
+    "onForest": "#FFFFFF",
+    "mustRemainUnclipped": true
+  },
+  "motion": {
+    "fastMs": 160,
+    "standardMs": 200,
+    "slowMs": 240,
+    "cursorTravelMs": [
+      600,
+      900
+    ],
+    "easing": "cubic-bezier(.2,0,0,1)",
+    "trigger": "Acknowledged persisted local demo event; no random activity",
+    "maximumConcurrentCursors": 2,
+    "reducedMotion": "No cursor travel, looping expression or animated paths; static labels/outputs/state remain",
+    "replay": "Restore current state without duplicate business effects/celebrations"
+  },
+  "densityBudget": {
+    "homePrimaryDecisions": 1,
+    "homeConciseUpdatesMax": 3,
+    "listFilterRows": 1,
+    "detailDefaultSectionsRange": [
+      3,
+      5
+    ],
+    "dominantActionPerDecisionGroup": 1,
+    "permanentAgentCommentaryRails": false,
+    "numericConfidenceScores": false
+  },
+  "contrast": {
+    "normalTextMinimum": 4.5,
+    "requiredBoundaryAndFocusMinimum": 3,
+    "planningVerifiedSolidPairs": {
+      "inkOnCanvas": 13.326114,
+      "mutedOnCanvas": 5.820005,
+      "whiteOnForest": 7.786838,
+      "forestOnSelected": 6.612178,
+      "decorativeBorderOnSurface": 1.356574,
+      "controlBorderOnSurface": 6.403174
+    },
+    "decorativeBorderCannotDefineInputs": true,
+    "whiteTextOnAgentTintsForbidden": true,
+    "wholeAppComplianceClaim": false
+  },
+  "requiredViewportChecksPx": [
+    1440,
+    1280,
+    1024,
+    390
+  ],
+  "logo": {
+    "useSuppliedArtwork": true,
+    "primaryMinimumCanvasWidthPx": 200,
+    "stackedMinimumCanvasWidthPx": 160,
+    "wordmarkMinimumCanvasWidthPx": 150,
+    "standardSymbolMinimumCanvasPx": 24,
+    "browserFaviconMinimumSlotPx": 16,
+    "browserFaviconExceptionSlotsPx": [
+      16,
+      24,
+      32,
+      48,
+      64
+    ],
+    "normalClearSpaceRawUnits": 22,
+    "suppliedCanvasIncludesClearSpace": true,
+    "allowRoleRecolor": false,
+    "allowLogoBandAnimation": false
+  }
+}

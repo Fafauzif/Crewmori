@@ -1,0 +1,39 @@
+{
+  "original_filename": "AI_Business_Team_Complete_Handoff.zip",
+  "original_bytes": 107246926,
+  "original_sha256": "98ca29226e7e8c326a44b98860783da68a79eca64bc9211200c8262ec8ec61c8",
+  "chunk_bytes": 20971520,
+  "reason": "Lossless preservation in individual files small enough for ordinary GitHub/browser source handoff; excluded from runtime deployment",
+  "parts": [
+    {
+      "path": "parts/original-context.part01",
+      "bytes": 20971520,
+      "sha256": "296827af1bf0ad124e1ec0d7a0fe9509b7ac771a27727bd50dde933f95c4faf1"
+    },
+    {
+      "path": "parts/original-context.part02",
+      "bytes": 20971520,
+      "sha256": "36e8311a69bed993f1e38aa094e6a5d68bb1c238d8a5937392ed1b30379852ac"
+    },
+    {
+      "path": "parts/original-context.part03",
+      "bytes": 20971520,
+      "sha256": "a70adad8972b145447b3c8a32dae6c3b8ad1814cd925ae3a5ebd53db9c7c4441"
+    },
+    {
+      "path": "parts/original-context.part04",
+      "bytes": 20971520,
+      "sha256": "78b5025eafb31057abac3d1214bba514f40bae6a4eea97069a0db6057e543ebc"
+    },
+    {
+      "path": "parts/original-context.part05",
+      "bytes": 20971520,
+      "sha256": "fb2433698402cb537754988ed3cfcb05fafe594aa149e77eba47cbfef43489e2"
+    },
+    {
+      "path": "parts/original-context.part06",
+      "bytes": 2389326,
+      "sha256": "2933eeb1dce689efc887e880596b10215a14a5f15579e753d0b026d804c4d41e"
+    }
+  ]
+}

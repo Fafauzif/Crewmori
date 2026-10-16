@@ -1,0 +1,293 @@
+{
+  "package": "AI Business Team Complete Developer Handoff",
+  "version": "1.0",
+  "createdAt": "2026-10-16T00:46:46.370004+00:00",
+  "buildTarget": "Full application specification; no application implementation or executed product tests included.",
+  "workingName": {
+    "value": "Crewmori",
+    "selected": false,
+    "historical": "Principal"
+  },
+  "masterContextVersion": "3.0",
+  "masterResearchSnapshot": "2026-10-15, Asia/Jakarta; packaging did not refresh every external source.",
+  "manifestExcludesSelf": true,
+  "fixturePolicy": "All sample-data inputs/outcomes are fictional development and evaluation fixtures, not observed customers or provider quotes.",
+  "sourceAliases": [
+    {
+      "suppliedFilename": "FINTECHATHON_2026_INTERNATIONAL_MASTER_CONTEXT.md",
+      "archivePath": "reference/FinTechathon_Master_v1.md"
+    },
+    {
+      "suppliedFilename": "Principal_PRD.md",
+      "archivePath": "reference/Principal_PRD_v0_2.md"
+    },
+    {
+      "suppliedFilename": "AI_Business_Team_Technical_Plan.md",
+      "archivePath": "reference/AI_Business_Team_Technical_Plan.md"
+    },
+    {
+      "suppliedFilename": "Principal_Idea_Context(1).md",
+      "archivePath": "reference/Principal_Idea_Context_v1.md"
+    },
+    {
+      "suppliedFilename": "WhatsApp Image 2026-10-15 at 9.02.56 PM.jpeg",
+      "archivePath": "reference/Clearwork_Earlier_Concept.jpeg"
+    },
+    {
+      "suppliedFilename": "Financial_Experiences_Research.xlsx",
+      "archivePath": "research/original/Financial_Experiences_Research.xlsx"
+    },
+    {
+      "suppliedFilename": "Research_Corpus_Cleaned.xlsx",
+      "archivePath": "research/original/Research_Corpus_Cleaned.xlsx"
+    },
+    {
+      "suppliedFilename": "Google_Play_Reviews_Cleaned (1).xlsx",
+      "archivePath": "research/original/Google_Play_Reviews_Cleaned.xlsx"
+    }
+  ],
+  "packagingChecks": {
+    "markdown_transport": {
+      "result": "passed",
+      "local_file_links": 39,
+      "balanced_fences": true
+    },
+    "json_parse": {
+      "result": "passed",
+      "files": 8
+    },
+    "activity_shape": {
+      "result": "passed",
+      "events": 8,
+      "roles": 6,
+      "negative_controls": 4,
+      "method": "Recursive check of every assertion keyword used by the included schema; no application behavior tested."
+    },
+    "requirement_identifiers": {
+      "result": "passed",
+      "requirements": 20,
+      "acceptance_checks": 12
+    },
+    "fixture_finance": {
+      "result": "passed",
+      "decimal_calculations": true,
+      "tri_state_routes": 3,
+      "synthetic_only": true
+    },
+    "source_preservation": {
+      "result": "passed",
+      "source_copies": 8,
+      "stitch_files": 7,
+      "updated_master_matches": true
+    },
+    "master_context": {
+      "result": "passed",
+      "version": "3.0",
+      "preserved_event_persona_sections": 10,
+      "historical_awards": 26,
+      "expanded_engineering_sections": 21,
+      "latest_full_app_decisions": true
+    },
+    "research_containers": {
+      "result": "passed",
+      "xlsx_crc_checked": 3
+    }
+  },
+  "files": [
+    {
+      "path": "00_START_HERE.md",
+      "bytes": 6381,
+      "sha256": "87ada97cd2de884e9f063fab5f3b18ad5b7506af60fadb91866e6f194dd6d9cc"
+    },
+    {
+      "path": "01_PRD.md",
+      "bytes": 18555,
+      "sha256": "32b9ab5e960a2467949486008c13423112b418bbeb451d24fb81fcb5dfd7cce4"
+    },
+    {
+      "path": "02_SYSTEM_ARCHITECTURE.md",
+      "bytes": 16529,
+      "sha256": "055e0849a510f511936995536c25a9a0b048f9f13ed5b580b8aad383c32a3b0b"
+    },
+    {
+      "path": "03_API_AND_DATA_CONTRACTS.md",
+      "bytes": 14396,
+      "sha256": "1982a4de21cc68cb7e3d555a8b06ad4efc47a7197b83501438ce9410b15860b7"
+    },
+    {
+      "path": "04_INTEGRATIONS.md",
+      "bytes": 14085,
+      "sha256": "0163184aa4a0fc11a2380d458639d7f30aa9921643014314c22ea6843a82d007"
+    },
+    {
+      "path": "05_IMPLEMENTATION_PLAN.md",
+      "bytes": 11222,
+      "sha256": "0109b38b875a75ce9d458428e0fb070f61fb45294f8341fddcd2fd443d1d8897"
+    },
+    {
+      "path": "06_DESIGN_AND_INTERACTIONS.md",
+      "bytes": 11432,
+      "sha256": "043a29eef9a4130a64475cf3304439f6bc7aee31317e773fa7106366237e5ce4"
+    },
+    {
+      "path": "07_EVIDENCE_AND_DECISIONS.md",
+      "bytes": 8615,
+      "sha256": "097e1dbdd8da6ad71a47823be443c7271658aed5d69804c7a4ca862fa5742780"
+    },
+    {
+      "path": "08_VERIFICATION_AND_RELEASE.md",
+      "bytes": 11144,
+      "sha256": "efcfa1b4c7e59138bb1124cb927ae253fc9cfdbd614f2f5bc77b976e1225a642"
+    },
+    {
+      "path": "AI_START_PROMPT.md",
+      "bytes": 3896,
+      "sha256": "4f9748c4846065570234f6b15727def6b91d9adea63cf876a5d1f7c9fa18f612"
+    },
+    {
+      "path": "BUILD_STATUS.md",
+      "bytes": 2551,
+      "sha256": "27122acba6f44df800b1553a2307cd9fcb8a91cf0bfafa244c53bfe76afb41f1"
+    },
+    {
+      "path": "context/FINTECHATHON_2026_INTERNATIONAL_MASTER_CONTEXT.md",
+      "bytes": 244202,
+      "sha256": "5c95e9145aff935ae47c17a213bfd3bbaca3b77864a3e2fe21eaa4e43ad0fc83"
+    },
+    {
+      "path": "context/IDEA_CONTEXT.md",
+      "bytes": 47757,
+      "sha256": "bd1ea431293cb36555d05f413be3f8f79c75aa5012d015b3990be7195aa20a22"
+    },
+    {
+      "path": "contracts/activity-event.schema.json",
+      "bytes": 1959,
+      "sha256": "dfe68851f809683f2e25567a5367efa76a231f8771fac6bbf729367cf29e644f"
+    },
+    {
+      "path": "design/stitch/00_README.md",
+      "bytes": 3145,
+      "sha256": "b339ac747204f72a1bae4535bbf74cc195010dc371fb03a8fd9a44734a7474e8"
+    },
+    {
+      "path": "design/stitch/01_MASTER_PROMPT.md",
+      "bytes": 6725,
+      "sha256": "6e5ca7ecb2ef26f351cf1307032a907e917db8f9d708559c94756678247f5c2a"
+    },
+    {
+      "path": "design/stitch/02_SCREENS.md",
+      "bytes": 6960,
+      "sha256": "3513ecde3be2106e87a2e7c4dc7350fc50c7b1ff917f995206069a2d03bd0861"
+    },
+    {
+      "path": "design/stitch/03_AGENTS_AND_INTERACTIONS.md",
+      "bytes": 4691,
+      "sha256": "12f24d589ae385c9de14110e2936b7f1567bb695c7790b8be4d74128bb2d8f86"
+    },
+    {
+      "path": "design/stitch/04_DEMO_DATA.json",
+      "bytes": 7309,
+      "sha256": "1551d3fbafa05394488a00234d04a151023d0d32d00165b254fdc5096f613290"
+    },
+    {
+      "path": "design/stitch/05_REFINEMENT_PROMPTS.md",
+      "bytes": 3852,
+      "sha256": "07a251e2f14fe099e2a4fd0e8be923c3af4c2dcb2482e2154aee91d2f9667825"
+    },
+    {
+      "path": "design/stitch/DESIGN.md",
+      "bytes": 5849,
+      "sha256": "fd875bb7b029654dae62c5496644fe0aefa0cb135f4a3960802dc02bb5e04b41"
+    },
+    {
+      "path": "reference/AI_Business_Team_Technical_Plan.md",
+      "bytes": 72617,
+      "sha256": "6d410a9188729045924a254c9f20e922aa7e8827b34ab4fc2aedfb613ba4b55f"
+    },
+    {
+      "path": "reference/Clearwork_Earlier_Concept.jpeg",
+      "bytes": 236108,
+      "sha256": "c306b2dc2ccabe643a91abbbed6d8a59d81edfe4cc5bc7d0ec5866ed2c6db2ef"
+    },
+    {
+      "path": "reference/FinTechathon_Master_v1.md",
+      "bytes": 116143,
+      "sha256": "2603f302e3cef91ce430908c4f8fe4dff382344d6a018eba461bb64fa4686ec2"
+    },
+    {
+      "path": "reference/FinTechathon_Master_v2.md",
+      "bytes": 166028,
+      "sha256": "ee3a7932ae2d5b57b76a2e28604ab084adbd89ea6cef5d5f5508173a8ee6cde7"
+    },
+    {
+      "path": "reference/Principal_Idea_Context_v1.md",
+      "bytes": 46810,
+      "sha256": "ba3920b1c191894e4b1d970c3aef3f70e9343270207f9030987736b7c58b8a75"
+    },
+    {
+      "path": "reference/Principal_PRD_v0_2.md",
+      "bytes": 52287,
+      "sha256": "b365c63073256568352fd5fde7717bb3ca68ec23c3b4af6e4d2c6e77fd212b21"
+    },
+    {
+      "path": "reference/README.md",
+      "bytes": 1378,
+      "sha256": "99b7b8b25cfa11be5d7e5d0309c22bb1949d1e0fddff73e7b98e78c6c59d584e"
+    },
+    {
+      "path": "research/README.md",
+      "bytes": 1840,
+      "sha256": "a0bf23272a8fc9fecb658859a5aa2a713876036105d28bb335ea384baa16620e"
+    },
+    {
+      "path": "research/original/Financial_Experiences_Research.xlsx",
+      "bytes": 14028778,
+      "sha256": "37400b785d22dde26464ec5d9e66f95ad6e5ff03f8b091eb50a9b139eb63ca7d"
+    },
+    {
+      "path": "research/original/Google_Play_Reviews_Cleaned.xlsx",
+      "bytes": 36406686,
+      "sha256": "0d58f8a3fb96c0c9efe210f8fe2ecc2b1e4e2d05924adbc0d8332cc8abcd7f0c"
+    },
+    {
+      "path": "research/original/Research_Corpus_Cleaned.xlsx",
+      "bytes": 56211325,
+      "sha256": "90be021b5b875a5c364fe0c878fc1cda7f892473c3783f1e091aa69ea7795252"
+    },
+    {
+      "path": "sample-data/README.md",
+      "bytes": 2429,
+      "sha256": "48f4f0907e1b69f4293a45583d00a4f28bf03aa32861107fbf4fef10cabd6591"
+    },
+    {
+      "path": "sample-data/activity_events.json",
+      "bytes": 3715,
+      "sha256": "96a770c1a841f197c39146a696676d6d6e291b4d136d20add9e7c8459c16adab"
+    },
+    {
+      "path": "sample-data/business_profile.json",
+      "bytes": 2487,
+      "sha256": "24d2405ea204177cd72309bfa881d99071870ca2152fcdd93998833304425219"
+    },
+    {
+      "path": "sample-data/conversation.json",
+      "bytes": 1470,
+      "sha256": "0eece10fc8ead2805c81ade7cde3b8527510f3f10d716a37cd8a2372b104b752"
+    },
+    {
+      "path": "sample-data/offer_fixture.json",
+      "bytes": 3957,
+      "sha256": "9fd2795ec421efb0867c8b1bdf8a1a6184889c800784839ec440e97a36b2c386"
+    },
+    {
+      "path": "sample-data/opportunity.json",
+      "bytes": 1573,
+      "sha256": "0de4c7fa293e97240407915651f2da92db45196ce5e530b973e8e11fdbf093b7"
+    },
+    {
+      "path": "sample-data/payment_events.json",
+      "bytes": 8261,
+      "sha256": "146872102c3c32eab48cbe16b64c4b36bf6e3788cd0fa5ffb4381180cedc3dd7"
+    }
+  ]
+}

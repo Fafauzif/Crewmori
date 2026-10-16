@@ -1,0 +1,224 @@
+{
+  "meta": {
+    "product": "Principal",
+    "purpose": "Frontend visual exploration",
+    "fictional": true,
+    "label": "Prototype · Sample data",
+    "payments": "Sandbox",
+    "external_connections_required": false,
+    "note": "All people, organizations, requests, portfolio items, activity, prices, fees and FX are fictional fixtures."
+  },
+  "owner": {
+    "name": "Alya Putri",
+    "profession": "Motion designer",
+    "country": "Indonesia",
+    "owner_language": "Indonesian",
+    "buyer_language": "English",
+    "greeting": "Good evening, Alya.",
+    "goal": "Find my next US motion design client",
+    "available_hours_next_five_business_days": 12
+  },
+  "agents": [
+    {
+      "id": "scout",
+      "role": "Scout",
+      "tint": "#F2C983",
+      "state": "Working",
+      "task": "Assessing Northstar’s request",
+      "artifact": "opportunity_northstar"
+    },
+    {
+      "id": "promoter",
+      "role": "Promoter",
+      "tint": "#EFAF9B",
+      "state": "Working",
+      "task": "Preparing the community post",
+      "artifact": "campaign_creative_founders"
+    },
+    {
+      "id": "sales",
+      "role": "Sales",
+      "tint": "#B9D8EC",
+      "state": "Waiting",
+      "task": "Ready for buyer questions",
+      "artifact": "conversation_northstar"
+    },
+    {
+      "id": "account_manager",
+      "role": "Account Manager",
+      "tint": "#D3C6E7",
+      "state": "Draft ready",
+      "task": "Preparing the client follow-up",
+      "artifact": "followup_northstar"
+    },
+    {
+      "id": "operations",
+      "role": "Operations",
+      "tint": "#C6D4B5",
+      "state": "Checked",
+      "task": "Reviewing capacity and buyer inputs",
+      "artifact": "capacity_northstar"
+    },
+    {
+      "id": "finance",
+      "role": "Finance",
+      "tint": "#B6D9C6",
+      "state": "Review needed",
+      "task": "Checking scope and deposit",
+      "artifact": "offer_northstar"
+    }
+  ],
+  "client": {
+    "id": "northstar",
+    "company": "Northstar Studio",
+    "contact": "Emma Reed",
+    "country": "United States",
+    "email": "emma@northstar.example.invalid",
+    "relationship_status": "Prospect",
+    "request": {
+      "assets": 4,
+      "deadline_business_days": 5,
+      "budget_usd": 500,
+      "source": "Imported request · Sample",
+      "text": "We need four short launch animations within five business days. Our budget is USD 500. Can you help?"
+    }
+  },
+  "portfolio": [
+    {
+      "id": "luma",
+      "title": "Luma launch loops",
+      "label": "Sample portfolio",
+      "description": "Geometric product-launch motion examples",
+      "thumbnail_direction": "Original abstract peach-and-green geometric still; sample portfolio art, not a real client logo"
+    },
+    {
+      "id": "orbit",
+      "title": "Orbit product teaser",
+      "label": "Sample portfolio",
+      "description": "Short product-teaser motion example",
+      "thumbnail_direction": "Original blue-and-ivory geometric still; sample portfolio art, not a real client logo"
+    }
+  ],
+  "campaign": {
+    "id": "campaign_creative_founders",
+    "community": "Creative Founders",
+    "source_label": "Fictional community rules",
+    "rules": [
+      "Relevant service introductions belong in the weekly promotion thread.",
+      "No repeated unsolicited direct messages."
+    ],
+    "post_status": "Draft ready",
+    "publication_mode": "Owner-assisted",
+    "text": "Hi everyone, I’m Alya, a motion designer creating short launch animations for small teams. I have sample product loops and teaser work to share. If you’re planning a launch, tell me about your assets, timing and budget. My AI representative can help clarify the brief before I review it.",
+    "cta": "Review post",
+    "attributed_link": "https://alya.example.invalid/?campaign=creative-founders"
+  },
+  "acquisition": {
+    "label": "Fictional sample estimates",
+    "research_cash_cost_usd": 6,
+    "owner_selling_time_minutes": 30,
+    "note": "These fields are illustrative. The financial package calculation below reports contribution before acquisition; it does not include these costs."
+  },
+  "conversation": {
+    "disclosure": "You are speaking with Alya’s AI representative. Alya reviews commercial commitments.",
+    "mode": "Simulated browser voice",
+    "turns": [
+      {
+        "speaker": "AI representative",
+        "text": "I can help clarify your brief and prepare options for Alya to review."
+      },
+      {
+        "speaker": "Emma",
+        "text": "We need four launch animations within five business days. Our budget is USD 500."
+      },
+      {
+        "speaker": "AI representative",
+        "text": "I’ll check the available scope and timing. Would two launch assets be useful if the four-asset package cannot fit?"
+      }
+    ],
+    "owner_recap_id": "Permintaan awal Emma: empat aset animasi, tenggat lima hari kerja, anggaran USD 500. Paket penuh memerlukan 18 jam; waktu tersedia 12 jam. Tim menyiapkan opsi dua aset seharga USD 450 untuk ditinjau. Belum ada persetujuan pembeli."
+  },
+  "packages": {
+    "full": {
+      "price_usd": 600,
+      "assets": 4,
+      "hours": 18,
+      "business_days": 10,
+      "required_upfront_expense_idr": 3000000
+    },
+    "reduced": {
+      "price_usd": 450,
+      "assets": 2,
+      "hours": 12,
+      "business_days": 5,
+      "required_upfront_expense_idr": 3000000
+    }
+  },
+  "financial_fixture": {
+    "label": "Fictional fees and FX · Sandbox",
+    "recipient_fee_rate": 0.02,
+    "fx_idr_per_usd": 15000,
+    "owner_delivery_hour_value_idr": 150000,
+    "contribution_before_acquisition_idr": 1815000,
+    "deposit_options": [
+      {
+        "percent": 40,
+        "gross_usd": 180,
+        "fee_usd": 3.6,
+        "net_usd": 176.4,
+        "net_idr": 2646000,
+        "funding_gap_idr": 354000,
+        "funding_status": "Gap remains"
+      },
+      {
+        "percent": 60,
+        "gross_usd": 270,
+        "fee_usd": 5.4,
+        "net_usd": 264.6,
+        "net_idr": 3969000,
+        "funding_gap_idr": 0,
+        "funding_status": "Covers stated expense"
+      }
+    ],
+    "remaining_gross_invoice_usd_after_60_percent_deposit": 180,
+    "invoice_total_usd": 450,
+    "note": "Deposit is customer prepayment, not completed delivery or earned project profit."
+  },
+  "offer_states": [
+    "Draft",
+    "Awaiting owner approval",
+    "Awaiting buyer acceptance",
+    "Sandbox payment pending",
+    "Receipt checked",
+    "Review required"
+  ],
+  "client_next_action": {
+    "status": "Draft",
+    "owner_agent": "Account Manager",
+    "title": "Confirm reduced scope with Emma",
+    "onboarding_text": "Once the offer is accepted, please share your logo files, brand colors and launch date.",
+    "later_relationship_suggestion": "After delivery, ask whether monthly launch assets would be useful."
+  },
+  "ui_events": [
+    {
+      "agent": "Scout",
+      "result": "Relevant motion-design examples found",
+      "status": "Working"
+    },
+    {
+      "agent": "Operations",
+      "result": "Checked 12 available hours",
+      "status": "Checked"
+    },
+    {
+      "agent": "Finance",
+      "result": "Full package exceeds the buyer’s budget",
+      "status": "Review needed"
+    },
+    {
+      "agent": "Account Manager",
+      "result": "Prepared a client-input checklist",
+      "status": "Draft ready"
+    }
+  ]
+}

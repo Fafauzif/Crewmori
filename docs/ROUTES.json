@@ -1,0 +1,299 @@
+{
+  "schema_version": 1,
+  "primary_nav": [
+    "Home",
+    "Team",
+    "Opportunities",
+    "Work",
+    "Money"
+  ],
+  "base_demo_routes": {
+    "owner": "/app/home",
+    "profile": "/u/alya",
+    "service": "/u/alya/services/launch-animation",
+    "conversation": "/inquiry/engagement_northstar",
+    "buyer_offer": "/buyer/engagement_northstar/offer",
+    "buyer_portal": "/buyer/engagement_northstar"
+  },
+  "routes": [
+    {
+      "id": "public.entry",
+      "path": "/",
+      "actor": "public",
+      "nav_owner": null,
+      "job": "Understand Crewmori and enter demo/account or sample freelancer page",
+      "required": true
+    },
+    {
+      "id": "auth.sign_in",
+      "path": "/auth/sign-in",
+      "actor": "public",
+      "nav_owner": null,
+      "job": "Simulated account sign in",
+      "required": true
+    },
+    {
+      "id": "auth.sign_up",
+      "path": "/auth/sign-up",
+      "actor": "public",
+      "nav_owner": null,
+      "job": "Simulated account sign up",
+      "required": true
+    },
+    {
+      "id": "auth.recover",
+      "path": "/auth/recover",
+      "actor": "public",
+      "nav_owner": null,
+      "job": "Simulated account recover",
+      "required": true
+    },
+    {
+      "id": "auth.reset",
+      "path": "/auth/reset",
+      "actor": "public",
+      "nav_owner": null,
+      "job": "Simulated account reset",
+      "required": true
+    },
+    {
+      "id": "setup.onboarding",
+      "path": "/onboarding",
+      "actor": "owner",
+      "nav_owner": null,
+      "job": "Resumable initial workspace setup",
+      "required": true
+    },
+    {
+      "id": "owner.home",
+      "path": "/app/home",
+      "actor": "owner",
+      "nav_owner": "Home",
+      "job": "Owner brief and next decision",
+      "required": true
+    },
+    {
+      "id": "owner.team",
+      "path": "/app/team",
+      "actor": "owner",
+      "nav_owner": "Team",
+      "job": "Global Studio six-agent coordination",
+      "required": true
+    },
+    {
+      "id": "owner.team_activity",
+      "path": "/app/team/activity",
+      "actor": "owner",
+      "nav_owner": "Team",
+      "job": "Filter and inspect saved events",
+      "required": true
+    },
+    {
+      "id": "owner.opportunities",
+      "path": "/app/opportunities",
+      "actor": "owner",
+      "nav_owner": "Opportunities",
+      "job": "Assess prospective work",
+      "required": true
+    },
+    {
+      "id": "owner.opportunity_detail",
+      "path": "/app/opportunities/[id]",
+      "actor": "owner",
+      "nav_owner": "Opportunities",
+      "job": "Request facts, evidence and assessment",
+      "required": true
+    },
+    {
+      "id": "owner.offers",
+      "path": "/app/offers",
+      "actor": "owner",
+      "nav_owner": "Opportunities",
+      "job": "Search and track offers",
+      "required": true
+    },
+    {
+      "id": "owner.offer_detail",
+      "path": "/app/offers/[id]",
+      "actor": "owner",
+      "nav_owner": "Opportunities",
+      "job": "Version, approve and share exact terms",
+      "required": true
+    },
+    {
+      "id": "owner.promotion",
+      "path": "/app/promotion",
+      "actor": "owner",
+      "nav_owner": "Opportunities",
+      "job": "Draft, approve and simulate promotion",
+      "required": true
+    },
+    {
+      "id": "owner.projects",
+      "path": "/app/projects",
+      "actor": "owner",
+      "nav_owner": "Work",
+      "job": "Active work and next steps",
+      "required": true
+    },
+    {
+      "id": "owner.project_detail",
+      "path": "/app/projects/[id]",
+      "actor": "owner",
+      "nav_owner": "Work",
+      "job": "Tasks, milestones, files and inputs",
+      "required": true
+    },
+    {
+      "id": "owner.clients",
+      "path": "/app/clients",
+      "actor": "owner",
+      "nav_owner": "Work",
+      "job": "Client directory",
+      "required": true
+    },
+    {
+      "id": "owner.client_detail",
+      "path": "/app/clients/[id]",
+      "actor": "owner",
+      "nav_owner": "Work",
+      "job": "Client context, private notes and shared communication",
+      "required": true
+    },
+    {
+      "id": "owner.calendar",
+      "path": "/app/calendar",
+      "actor": "owner",
+      "nav_owner": "Work",
+      "job": "Proposed and confirmed commitments",
+      "required": true
+    },
+    {
+      "id": "owner.invoices",
+      "path": "/app/money/invoices",
+      "actor": "owner",
+      "nav_owner": "Money",
+      "job": "Invoices and owed amounts",
+      "required": true
+    },
+    {
+      "id": "owner.invoice_detail",
+      "path": "/app/money/invoices/[id]",
+      "actor": "owner",
+      "nav_owner": "Money",
+      "job": "Invoice edit/issue/send/download",
+      "required": true
+    },
+    {
+      "id": "owner.payments",
+      "path": "/app/money/payments",
+      "actor": "owner",
+      "nav_owner": "Money",
+      "job": "Observed receipt and match state",
+      "required": true
+    },
+    {
+      "id": "owner.payment_detail",
+      "path": "/app/money/payments/[id]",
+      "actor": "owner",
+      "nav_owner": "Money",
+      "job": "Evidence and issue recovery",
+      "required": true
+    },
+    {
+      "id": "owner.expenses",
+      "path": "/app/money/expenses",
+      "actor": "owner",
+      "nav_owner": "Money",
+      "job": "Expenses, receipts and exports",
+      "required": true
+    },
+    {
+      "id": "owner.connections",
+      "path": "/app/connections",
+      "actor": "owner",
+      "nav_owner": "Connections",
+      "job": "Sample tool capability and recovery",
+      "required": true
+    },
+    {
+      "id": "settings.profile",
+      "path": "/app/settings/profile",
+      "actor": "owner",
+      "nav_owner": "Settings",
+      "job": "Edit profile",
+      "required": true
+    },
+    {
+      "id": "settings.rules",
+      "path": "/app/settings/rules",
+      "actor": "owner",
+      "nav_owner": "Settings",
+      "job": "Edit rules",
+      "required": true
+    },
+    {
+      "id": "settings.preferences",
+      "path": "/app/settings/preferences",
+      "actor": "owner",
+      "nav_owner": "Settings",
+      "job": "Edit preferences",
+      "required": true
+    },
+    {
+      "id": "settings.knowledge",
+      "path": "/app/settings/knowledge",
+      "actor": "owner",
+      "nav_owner": "Settings",
+      "job": "Edit knowledge",
+      "required": true
+    },
+    {
+      "id": "public.profile",
+      "path": "/u/[handle]",
+      "actor": "public",
+      "nav_owner": null,
+      "job": "Approved freelancer profile, portfolio and availability",
+      "required": true
+    },
+    {
+      "id": "public.service",
+      "path": "/u/[handle]/services/[slug]",
+      "actor": "public",
+      "nav_owner": null,
+      "job": "Approved service scope and inquiry entry",
+      "required": true
+    },
+    {
+      "id": "buyer.conversation",
+      "path": "/inquiry/[id]",
+      "actor": "buyer",
+      "nav_owner": null,
+      "job": "Disclosed AI representative, requirements and sample voice playback",
+      "required": true
+    },
+    {
+      "id": "buyer.offer",
+      "path": "/buyer/[id]/offer",
+      "actor": "buyer",
+      "nav_owner": null,
+      "job": "Review exact shared offer, request change or accept",
+      "required": true
+    },
+    {
+      "id": "buyer.portal",
+      "path": "/buyer/[id]",
+      "actor": "buyer",
+      "nav_owner": null,
+      "job": "Payment prerequisites, inputs, files, milestones and messages",
+      "required": true
+    }
+  ],
+  "global_states": [
+    "not_found",
+    "route_error",
+    "invalid_buyer_link",
+    "session_expired_demo",
+    "incompatible_local_data"
+  ]
+}

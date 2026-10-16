@@ -1,0 +1,558 @@
+CREWMORI — STITCH AUDIT AND MASTER PROMPT PACK PLAN
+Version 0.1 | 16 October 2026 | Discussion draft
+
+STATUS AND SCOPE
+
+This is an audit and planning record, not the final master prompt, final ZIP, or a frontend implementation. It records what to preserve, what to fix, what to specify, and what still needs the founder's decision. Proposed defaults below are proposals, not settled commercial policies.
+
+Reviewed input: stitch_prompt_execution_runner.zip
+SHA-256: f1116c33dc9fd1411d95a9a7ca0a67bcfa2bb04005fa4ed9871e16a5469ec929
+Contents: 16 screen PNGs, 16 independent HTML files, and one DESIGN.md, within 51 ZIP entries.
+
+Method: screenshot inspection, HTML/CSS/JavaScript inspection, design-file comparison, and two independent source/interaction audit passes. No browser runtime tests, production build, or real integration tests were performed. Statements about inert or misleading controls are based on the handlers and state model visible in source; this is not a complete runtime defect list.
+
+1. THE PRODUCT DIRECTION TO KEEP
+
+Crewmori should feel like a helpful business team for a freelancer: friendly, competent, calm, and easy to return to. It should make the next decision obvious and let the owner inspect the reasoning when useful.
+
+The distinctive visual and emotional direction is already present in the first two approved screens:
+
+A. crewmori_magazine_editorial_warmth_desktop — Home
+B. crewmori_team_overview_global_studio — Team overview
+
+These are the primary visual anchors. Later generated screens are useful for discovering possible content and workflows, but should not have equal authority over style, information density, or layout.
+
+Preserve from the anchors:
+- Warm ivory/offwhite page and panel surfaces, restrained borders, ample breathing room, rounded cards, and forest-green primary actions.
+- Newsreader editorial headings with readable Inter body text; retain utility typography only where it earns its place.
+- Soft peach, butter, sage/mint, lilac, and sky accents used consistently for teammate identity and meaningful states.
+- The illustrated specialist characters, including Scout with the lens. They are part of the product's identity, not disposable decoration.
+- Home as a readable owner briefing: an important decision, a short account of what moved forward, and clear next actions.
+- Team as the main visual moment: the muted map, stable teammate positions, visible handoffs, and an owner studio receiving useful outputs.
+- Human coworker language: “Found two projects that fit this brief” or “Your offer is ready to review.”
+
+Preserve appearance without preserving mistakes. The approved screens still contain invented or inconsistent sample claims, placeholder interactions, and motion that needs behavioral rules.
+
+2. WHAT WENT WRONG
+
+2.1 The export contains competing design authorities
+
+The two anchors import Newsreader and use an editorial heading system. All 14 subsequent screens omit Newsreader and revert to Manrope headings. The bundled quiet_workbench/DESIGN.md also describes Manrope headings and an older shell, rather than the newly approved editorial identity.
+
+That is a concrete source of drift: a model following the written design file can reasonably produce something different from the approved screenshots. The future pack must replace this ambiguity with one corrected design contract and an explicit precedence order.
+
+Other shell differences in source include sidebars of 212px, 224px, and 256px, and headers of 64px, 68px, and 72px. The approved Home uses warm colors such as #F7F5EE and #FAF8F3 and 24px panel corners; later screens fall back to a different canvas and denser components. These values are evidence to reconcile, not a final token specification.
+
+2.2 Internal detail became the default interface
+
+Later pages repeatedly show agent commentary, capacity diagnostics, financial analysis, trust scores, evidence trails, pipeline health, and several competing action groups at once. This makes the owner interpret the system before doing the task.
+
+The solution is progressive disclosure: keep the task's decision in the main view, expose supporting evidence on request, and put the complete agent execution trail in Team. Complexity may exist in the system without appearing in every screen.
+
+2.3 The product's personality was replaced with generic dashboard conventions
+
+The anchors contain 18 and 14 inline SVG elements respectively, including character and interface artwork. Many later pages use generic Material Symbols or initials instead of the specialist characters. Merely adding cream backgrounds and rounded panels later would not restore the identity; typography, composition, illustration, copy, and density must stay coherent together.
+
+2.4 Screens were generated as separate documents rather than one application
+
+The archive has no shared application shell, router, package manifest, normalized fixtures, or cross-screen state store. A static scan counts 238 button elements and 165 href="#" uses across the 16 HTML files. These are affordances to audit, not proof that every one is broken. There are also 15 external raster-image references, plus CDN Tailwind and externally loaded fonts/icons.
+
+The future frontend needs shared components and a single state model. Copying these files into routes would preserve the inconsistency and misleading interactions.
+
+2.5 More specified content was treated as more visible content
+
+The earlier all-screens scope encouraged elaborate standalone artboards. The new pack needs to distinguish “the implementation must support this” from “show this by default.” A long specification should produce a simpler experience, not a longer page.
+
+3. PRIORITY FIXES
+
+P0 — resolve before the final implementation prompt is sealed:
+- Establish one visual authority and retire the conflicting old DESIGN.md as normative guidance.
+- Agree the product boundary, route ownership, and actual build scope.
+- Define one canonical entity/state model and explicit sample scenarios.
+- Separate drafting, approving, sending, buyer acceptance, payment confirmation, and capacity reservation.
+- Decide which actions are local simulations and which, if any, use real services.
+- Define the complete observable behavior of every visible enabled control.
+- Remove unsubstantiated financial guarantees, official verification claims, and unexplained scores.
+
+P1 — encode as mandatory implementation requirements:
+- Rebuild later screens with the anchor typography, spacing, palette, mascots, and common shell.
+- Reduce default density and move specialist/evidence details into optional panels.
+- Provide actual navigation, editable state, validation, saved results, recovery, and working downloads where offered.
+- Synchronize the same records across Home, Team, Opportunities, Work, and Money.
+- Add keyboard behavior, app-owned dialogs, focus management, contrast, and reduced motion.
+- Replace inconsistent hard-coded dates/currencies/totals with derived values.
+
+P2 — polish after the core experience works:
+- Refine motion timing, character gestures, handoff choreography, and empty states.
+- Tune narrow desktop layouts, typography at different widths, and long-content behavior.
+- Add only the secondary views that genuinely help the agreed demo.
+
+4. SCREEN-BY-SCREEN DISPOSITION
+
+Folder names below identify the supplied evidence. “Recompose” means retain useful business intent and content, then design within the approved system. It does not mean preserve the current layout.
+
+Home — crewmori_magazine_editorial_warmth_desktop
+Preserve: editorial welcome, warm panels, character presence, owner review card, short activity summaries.
+Fix: incorrect or unexplained figures; ambiguous “locked” claims; placeholder alerts; recurring cursor behavior; duplicated approval semantics. Make the primary action open the canonical offer record. Home should summarize records, not create its own versions of them.
+
+Team overview — crewmori_team_overview_global_studio
+Preserve: global studio composition, six illustrated teammates, restrained map, handoff links, owner studio, review/output region.
+Fix: contradictory hourly-rate claim, jargon, action semantics, repeated copy, ambiguous “live” status, and unsupported escrow claims in hidden content. Define what every teammate, beacon, artifact, review action, focus toggle, and catch-up action opens or changes. Team must remain useful with animation paused.
+
+Team activity — crewmori_t01_team_activity
+Recompose: chronological readable activity, filters by teammate/status, links to source and resulting artifacts.
+Hide until requested: full event payloads, detailed execution diagnostics, repeated commercial calculations.
+Unify: Activity is a view under Team, sharing task/event records with the overview. It is not another owner inbox with separate approval state. Source contains no application JavaScript for its apparent controls.
+
+Leads — crewmori_o01_leads
+Recompose: compact leads list with client/request, a short reason it may fit, state, and one next action.
+Hide until requested: portfolio matching evidence, capacity math, qualification rules, supporting source excerpts.
+Remove or justify: 94% match, 96% signal, and 91.8% budget-fit metrics. A short factual explanation is preferable to an invented confidence score. Lead-conversion charts and persistent Scout advisory rails are not necessary to review a lead.
+
+Opportunity detail — crewmori_o02_opportunity_detail
+Recompose: original request, relevant work samples, what the team suggests, any genuinely blocking unknown, and the next action.
+Hide until requested: full source, assessment reasoning, commercial assumptions, capacity breakdown.
+Fix: scope/effort inconsistencies, invented technical requirements, conflicting hourly math, and “Approve & Send” ambiguity. Drafting an offer must produce a real shared offer record.
+
+Offer review — crewmori_o04_offer_review
+Recompose: deliverables, price, delivery basis, deposit, client-visible message, Edit, and the agreed approval/send controls.
+Hide until requested: fee/FX assumptions, alternate options, internal effort estimates, evidence, and version history.
+Fix: top says capacity unreserved while another section says partition locked; timeout-based approval only changes the label; editing must invalidate approval of the previous version. The owner must know whether a click approves a draft, sends it, or does both under a deliberate policy.
+
+Projects — crewmori_w01_projects
+Recompose: active projects with next task, due date, client/input blocker, and simple state. A real list/board switch may be useful if both are worth maintaining.
+Remove from the default: revenue-protection commentary, render/GPU activity, pipeline diagnostics, and repeated team feeds.
+Fix: current Board/List handler changes styling without switching a shared representation.
+
+Project workspace — crewmori_w02_project_workspace
+Recompose: brief, milestones, tasks, files/links, latest client communication, and next action.
+Hide until requested: fuller activity and commercial details.
+Remove unless explicitly wanted: After Effects/easing/render telemetry, repo mechanics, infrastructure controls, and invented production automation. Crewmori coordinates freelance business work; it has not been established as the tool that performs every creative deliverable.
+
+Clients — crewmori_w03_clients
+Recompose: simple directory, search, relevant filters, last interaction, linked projects, and next action.
+Hide until requested: relationship history and supporting evidence.
+Fix: filters currently change classes rather than reliably deriving displayed records. There must be one client entity across the app.
+
+Client workspace — crewmori_w04_client_workspace
+Recompose: client summary and contact details, active work, offers, invoices, and communication links.
+Hide until requested: full history and richer relationship notes.
+Fix: tabs, edits, send, and discard currently lack an application state model. Private studio notes must not leak into buyer-visible content.
+
+Calendar — crewmori_w05_calendar
+Recompose: real derived dates, deadline/event list, and a deliberate month/week/agenda policy based on the eventual scope.
+Distinguish: proposed work, reserved work, confirmed meetings, due dates, and reminders.
+Fix: apparent calendar controls have no app JavaScript; weekday labels contradict dates. For example, 20 October 2026 is Tuesday, 24 October is Saturday, 28 October is Wednesday, and 30 October is Friday. Define timezone, business days, and what starts a delivery countdown.
+
+Invoices — crewmori_m01_invoices
+Recompose: plain summary of money owed/received and a compact invoice list with customer, amount, due date, state, and next action.
+Hide until requested: reconciliation details and fee/FX assumptions.
+Remove or qualify: official/live rate claims, yield/treasury language, and dashboards that do not support an immediate freelancer task.
+
+Invoice detail — crewmori_m02_invoice_detail
+Recompose: buyer-safe invoice, line items, status, delivery/payment instructions, and useful actions such as download or follow-up.
+Hide until requested: owner-only fee and cash-flow detail.
+Fix: draft invoice content simultaneously claims an advance was received; guaranteed 72-hour FX lock is unsupported. An invoice marked draft must not silently behave as a paid invoice.
+
+Payments — crewmori_m03_payments
+Recompose: transaction list with amount, source, related invoice, status, and an issue action only when relevant.
+Hide until requested: transaction details and matching evidence.
+Fix: “Inspect issue” calls a nonexistent inspectRow function while inspectIssue is defined elsewhere. Search and status filters need one combined predicate; current handlers can overwrite each other's row visibility.
+
+Payment issue — crewmori_m04_payment_detail_issue
+Recompose: expected vs received, short explanation of the issue, recommended options, and the actual consequence of each option.
+Hide until requested: provider/source evidence and internal accounting rationale.
+Fix: settlement/expense/support outcomes currently claim success via UI text without recording the underlying change. Remove unexplained 98.4% confidence and the stray teammate identity “Kaito.” Do not imply that the prototype moved or recovered real funds.
+
+Expenses — crewmori_m05_expenses
+Recompose: modest summary, useful expense list, Add expense, receipt attachment, and export if the export actually exists.
+Hide until requested: categories, allocation details, provider records, and policy settings.
+Fix: Save Record closes a modal without a committed record; download/export feedback does not create a file. Displayed expense rows total IDR 5,684,850 while the stated footer total is IDR 6,059,850. The page also assumes receipt of the Northstar deposit and labels a fixture FX rate as official.
+
+5. VISUAL AND DENSITY RULES TO WRITE INTO THE FUTURE PACK
+
+One shared shell: sidebar, header, content grid, account area, tool shortcuts, focus mode, notification access, page gutters, and overlay behavior must be owned by shared components.
+
+One typographic hierarchy: editorial serif titles at a restrained number of levels, readable body text, quiet metadata. Avoid tiny serif text everywhere, oversized all-caps labels, and a new font hierarchy on each route.
+
+One set of spacing, color, radius, border, and elevation tokens: extract and reconcile from the anchors, then map into runtime CSS/theme once. No independent hard-coded page palettes. The old DESIGN.md must be marked superseded and replaced in the final pack, rather than left beside a contradictory new document.
+
+One clear job per view: say what the owner came to decide or do. Establish one dominant action for the current state. Secondary actions remain discoverable but do not compete equally.
+
+Three layers of information:
+1. Immediate: decision, next action, essential state, essential amount/date.
+2. Supporting: expanded detail or a contextual drawer after the owner asks.
+3. Complete trace: Team activity, sources, record/version history, and task inspector.
+
+Soft guidance for a calm first view: a brief introduction, the main task/list, and only a few relevant updates. Do not turn this into a rigid “three cards everywhere” template. Money still needs usable rows; a full form still needs enough space.
+
+Team owns the choreography. Other routes can show a small teammate attribution and an “Inspect” link. They should not all inherit an always-open agent-analysis column.
+
+Copy should describe outcomes in ordinary language. Replace phrases such as “calibrated financial escrow gates,” “capacity defense,” “velocity protection,” and “receiving calibrated handoff” with clear statements about the user's work.
+
+Friendly language is welcome, but precise status wins: “I drafted a follow-up. Review it?” is honest; “Sorted!” is not adequate when a payment is still unmatched.
+
+6. MOTION SHOULD EXPRESS REAL STATE
+
+The wow factor can become dynamic later, provided its behavior is specified now.
+
+Proposed motion vocabulary:
+- Idle: subtle breathing/blink/occasional gesture; most of the canvas remains still.
+- Working: one restrained activity cue on the actual active teammate/task.
+- Handoff: a short path animation between the source and destination for a real event.
+- Waiting for owner: a steady badge and clear action, not constant bouncing.
+- Complete: one brief confirmation, then settle into a completed state.
+- Blocked/disconnected: readable state and recovery action, without decorative panic.
+
+Cursor activity must stay inside its own visualization, never obscure labels, chase the real pointer, move controls, or intercept clicks. It should not suggest a teammate is working when no task exists. Avoid replaying every historic event indefinitely.
+
+Catch me up should produce a bounded recap of actual sample events since the chosen point. Focus mode should have one documented effect across the app. Pause/reduced-motion states must retain all information and actions. Narrow layouts can transform the map into a coherent ordered view; they must not shrink it to unreadable dots.
+
+Exact motion durations, paths, repeat limits, and focus behavior remain to be designed. The next builder should not invent unrelated cursor loops per screen.
+
+7. INFORMATION ARCHITECTURE — CURRENT BASELINE, STILL TO REFINE
+
+Primary navigation remains Home / Team / Opportunities / Work / Money.
+
+Home: a summary of what needs attention and what changed. It owns no separate offer, invoice, or task state.
+Team: teammate overview, task execution, activity, artifacts, source inspection, and permitted pause/retry controls.
+Opportunities: prospective work, lead assessment, offer drafting/review/history, and promotion if included.
+Work: accepted projects, tasks, milestones, clients, and calendar.
+Money: invoices, payments, expenses, and their issue flows.
+Connections: existing-tool setup and state; available through a secondary sidebar area/settings entry as agreed.
+Settings: business profile, working rules, preferences, and knowledge/sources.
+
+MECE applies to record ownership, not to eliminating useful links. An offer may appear on Home and Team while its canonical detail and mutation live in Opportunities. A project can link its invoice, but Money owns that invoice's lifecycle. Calendar shows derived commitments and events; it must not maintain another conflicting project deadline.
+
+Decide whether each required view is a route, local tab, drawer, dialog, or disclosure. Do not interpret every interaction as a new full page.
+
+Possible deep-linkable route groups, to validate later:
+/home
+/team and /team/activity, with task/teammate inspectors
+/opportunities and /opportunities/:id
+/opportunities/offers/:id, with edit/review states
+/work/projects and /work/projects/:id
+/work/clients and /work/clients/:id
+/work/calendar
+/money/invoices and /money/invoices/:id
+/money/payments and payment issue detail
+/money/expenses
+/connections
+/settings with agreed sections
+Buyer/public/setup routes only if included in the agreed build scope.
+
+8. MISSING COVERAGE IN THE EXPORT
+
+The earlier screen inventory had 28 named screens including the two anchors. This archive contains 16. Missing named items are:
+- Offers list (O03), Edit offer (O05), Promotion (O06).
+- Connections and connection detail (C01/C02).
+- Business profile, rules, preferences, knowledge/sources (S01–S04).
+- First-time setup (U01).
+- Buyer service/conversation and buyer offer journey (B01/B02).
+
+This is a coverage gap, not a recommendation to generate 12 equally elaborate artboards. Some should be tabs, forms, or overlays; some may be outside the first version entirely.
+
+Also unspecified or only partially represented: notifications, global search/delegation, task creation/detail, source preview, message review, file preview/download, approval history, failure/retry states, first-use empty states, no-results, disconnect/reconnect, and resettable demo scenarios.
+
+The final pack needs an explicit included/excluded matrix. A complete small scope is more useful than an unspecified large one.
+
+9. CANONICAL DATA AND STATE PROBLEMS
+
+The Northstar story is promising because it connects the whole app, but it has drifted across screens.
+
+The source story currently suggests:
+- Original request: four assets, $500 budget, five business days.
+- Proposed reduced offer: two assets, $450, estimated 12 hours, five business days.
+- Proposed deposit: 60% of gross total = $270.
+- Approved Team screen's initial state: awaiting owner review; no deposit received; no capacity reserved.
+
+Conflicting evidence:
+- Opportunity detail uses nine hours / $50 per hour while Team uses 12 hours and Activity uses an 8.5-hour + 3.5-hour split.
+- Team says $450 / 12 hours protects a $75/hour floor. That arithmetic yields $37.50/hour; the floor claim needs correction or a real different definition.
+- Home and offer detail sometimes claim locked capacity before approval/reservation.
+- Draft invoice and expense content claim receipt of the $270 advance while the anchor offer remains awaiting review.
+- FX assumptions differ between 15,000 and 15,536 IDR/USD.
+- Client geography/contact details and teammate identity change across files.
+- Dates mix 2024, 2025, quarter/week labels, and October 2026.
+
+Some screens could deliberately illustrate later demo stages. That is acceptable only if scenarios explicitly say so and transitions connect them. They cannot all be treated as one default snapshot.
+
+Proposed model principle:
+- Stable IDs for owner, client, opportunity, offer, project, task, invoice, payment, expense, connection, artifact, approval, and activity event.
+- Shared records; display values derived from them.
+- Versioned offers; approval applies to a particular version.
+- Stage-specific fixture variants with clear initial conditions.
+- Date-only values separate from timestamps; timezone and business calendar explicit.
+- Money in integer minor units, with currency and rounding policy.
+- Expected payment separate from confirmed transaction; gross, fee, and net separate.
+- Buyer-visible projections separate from internal economics, capacity notes, and private sources.
+- Sample provider outcomes clearly separated from actual connection/transaction state.
+
+Illustrative arithmetic from the current sample, not a product promise:
+At a sample 2% fee and 15,000 IDR/USD:
+60% deposit: $270 gross - $5.40 fee = $264.60 net = IDR 3,969,000.
+40% deposit: $180 gross - $3.60 fee = $176.40 net = IDR 2,646,000.
+Against IDR 3,000,000 cost, the latter is short by IDR 354,000.
+After a $270 gross deposit on a $450 invoice, gross balance is $180. Do not subtract net receipt from gross invoice total.
+
+Any fee/FX calculation must state whether it is a sample estimate, when it is assumed, and which cost it includes. Do not invent escrow, guaranteed exchange rates, protected capital, verified identity, or official central-bank rates to make the UI seem capable.
+
+10. USER FLOW SPECIFICATION — REQUIRED FORMAT
+
+The founder specifically wants detailed AI-readable flows. This is essential. A list of pages and a few happy-path arrows is insufficient.
+
+Each flow should include:
+flow_id; goal; priority; actor/audience; entry points; owning route; record IDs; fixture variant; preconditions; permissions; initial state; policy/source references; ordered steps; alternate paths; exit/back behavior; persistence; cross-screen effects; success criteria; prohibited side effects; test cases.
+
+Each step should include:
+- Stable control ID and exact visible label/location.
+- Trigger: pointer, keyboard, route load, task event, or simulated provider callback.
+- Relevant state before the action and enabled/disabled conditions.
+- Inputs and validation, including where errors appear.
+- Pending feedback and duplicate-click behavior.
+- Exact mutation: record, old state, new state, affected fields/version.
+- Visible result: content, feedback, focus destination, navigation, and scroll behavior.
+- Related-record and related-screen updates.
+- Failure, timeout, stale-version, disconnected, and retry behavior as applicable.
+- Cancel/close behavior and preservation of drafts.
+- Refresh, Back/Forward, direct-link, repeated-run, and reset behavior.
+- Observable acceptance assertion and things that must not happen.
+
+Keep a control registry linking every visible enabled control to its flow step, and every required flow step to a visible result/test. No decorative working-looking controls with no result. If a capability is out of scope, remove the action or label the limitation honestly.
+
+Core state families to specify once, then reference:
+loading; ready; empty; no results; validation error; submitting; success; recoverable failure; disconnected; stale/conflict; cancelled; and permission/unavailable where relevant.
+
+The final flow format may be YAML/JSON plus concise Markdown explanation. It must remain machine-readable and avoid repeating the same policy in contradictory prose files.
+
+The global Ask/Delegate input needs its own contract. For a frontend-only prototype, enumerate supported sample intents, what typed inputs may change, deterministic outcomes, interrupt/cancel behavior, and a useful response for unsupported requests. A text box must not imply unrestricted live AI capability if it only recognizes a few demo requests. Likewise, background activity should come from the shared sample event/task model, rather than random reassuring messages unrelated to records.
+
+11. WORKED FLOW DRAFT — NORTHSTAR OFFER
+
+This is a specification example for discussion, not approval of the proposed business lifecycle.
+
+FLOW: offer.review_approve_send_accept
+Actor: freelancer owner, then sample buyer.
+Record: offer_northstar_001, version 1.
+Initial fixture: awaiting_owner_review; two sample deliverables; currency: USD, amount_minor: 45000 ($450.00); proposed deposit 60%; five business days with countdown trigger still undecided; 12-hour internal estimate; no payment; no reservation.
+
+Entry:
+Home Review offer, Team Review offer, and Offers detail all open the same offer ID and version. Return preserves the source context and relevant list state.
+
+Review:
+Owner sees the client-visible scope, price, delivery basis, deposit, and message. Internal assessment is optional and clearly owner-only. Source evidence opens without losing the offer.
+
+Edit:
+Edit opens the agreed editor with the current version. Cancel restores the unchanged saved version. Save validates scope, amount, deposit, and delivery fields. Invalid inputs remain visible and editable. Successful save creates a new draft version and clears approval for the superseded version. No message is sent.
+
+Approve:
+Approval must check the version being reviewed. Success records owner_approved and approved_version. A stale version blocks with a refresh/review option. This step alone does not send terms, record buyer acceptance, collect money, or reserve time under this draft proposal.
+
+Send:
+A separate Send offer action previews buyer-safe content and destination. Cancel leaves the approved record unchanged. In sample mode, send updates the canonical record to sent/awaiting_buyer_acceptance and logs a sample message. Duplicate clicks create one message/event. If the necessary connection is unavailable, preserve the draft and offer the agreed recovery or sample-only path. No real email is implied.
+
+Buyer acceptance, if buyer scope is included:
+Only the current shared, non-expired offer version can be accepted. Acceptance creates the project once, provisionally in Awaiting deposit, and a request with currency: USD, amount_minor: 27000 ($270.00). The exact creation/reservation rule still needs the founder's decision. Private pricing rationale and studio capacity never appear in buyer content.
+
+Sample payment:
+A deliberate demo event changes expected payment to confirmed, records gross 27,000 / fee 540 / net 26,460 USD minor units under the illustrative 2% fixture, and leaves 18,000 gross due. It does not claim to process real funds. Replaying confirmation must not create a second receipt.
+
+After payment:
+Project onboarding/start, calendar reservation, and deadline calculation follow the eventual agreed rule about acceptance, deposit, and required client inputs. This rule is unresolved and must not be guessed by the builder.
+
+Cross-screen effects:
+Home removes or updates the decision card; Team logs the completed review/send and shows the next actual task; Opportunities shows the current offer version/state; Work shows the accepted project only at the agreed point; Money shows the correct expected/confirmed amounts; Calendar shows only the appropriate proposed/reserved/confirmed commitment. Refresh preserves committed sample state.
+
+Negative assertions:
+Opening an offer does not approve it. Approval does not imply buyer acceptance. A sent offer is not a paid invoice. Expected deposit is not received money. Editing does not retain stale approval. Retrying does not duplicate records. Owner-only facts do not leak into buyer projections.
+
+12. OTHER FLOW FAMILIES TO WRITE AFTER SCOPE IS AGREED
+
+Owner entry and setup: enter sample workspace, resume/reset, business profile, role/working preferences, required connections.
+Home: open review item, inspect update, dismiss/archive where applicable, open source, ask/delegate, see notifications.
+Team: inspect teammate/task/artifact, catch up, filter activity, view evidence, approve a permitted step, pause/resume/cancel/retry if supported.
+Opportunities: search/filter, add or import a sample lead, inspect evidence, qualify/decline, request missing facts, draft/edit/version/approve/send offer, withdraw/expire if included, promotion draft/review/publish simulation if included.
+Work: project lifecycle, create/edit/complete/reopen task, milestone change, blocked client input, file/link actions, client updates/messages, calendar navigation and event/deadline editing rules.
+Money: invoice draft/edit/send/download, expected/confirmed/partial/failed payment, matching and issue resolution, expense add/edit/receipt/export, consistent derived totals.
+Connections: connect simulation, capability explanation, connected/disconnected/error/reconnect, source availability, revoked permission, return to interrupted flow.
+Settings: profile/rules/preferences/sources, save/cancel/unsaved changes, delete/archive where explicitly included.
+Buyer/public: only the agreed journey; clear role boundary and safe content projection.
+Global: navigation, breadcrumbs, Back/Forward, direct links, search/filter reset, dialogs/drawers, notifications, sample-state persistence, failure recovery, missing route, demo reset.
+
+Do not add whole modules simply because this checklist mentions them. Every included family gets explicit boundaries; excluded families get a clear entry in the scope matrix.
+
+13. INPUTS NEEDED BEFORE THE FINAL PACK
+
+Highest priority product decisions:
+1. Exact audience and main job: creative specialists, a broader freelancer market, or another initial segment? What should a first-time demo prove within a few minutes?
+2. “Entire frontend” boundary: owner workspace only, or also public profile/service page, buyer conversation/offer acceptance, setup, and authentication surfaces?
+3. Simulation freedom: guided sample sequence versus editable records, persistent state, and several predictable simulated task outcomes.
+4. Existing-tool boundary: which useful review/edit actions happen in Crewmori, and which open Gmail/Calendar/Drive or another tool? Which tools are essential to the story?
+5. Agent authority: draft-only, owner approval before sending/changing commitments, or bounded autonomous actions? Specify separately for messages, calendar, offers, money, and deletion.
+6. Commercial lifecycle: when acceptance creates a project; when capacity is reserved; when five business days begin; what happens if deposit or required inputs are missing.
+7. Friend's intended stack, integration interfaces, and any existing repository conventions. If undecided, propose a sensible React/TypeScript stack later; do not hard-code it as already chosen.
+
+Design and reference inputs:
+- Upcoming Shopify and Contra Mobbin screens, preferably grouped by app/flow and tagged with what the founder likes or dislikes.
+- One or two favorite examples per important pattern after indexing, plus anti-examples. The full collection can remain available without making all references equal authority.
+- Final logo/brand files when ready; until then retain an honest provisional wordmark.
+- Whether the six existing characters, names, and role boundaries are final. Extract existing vector artwork where suitable instead of replacing it with emoji or generic icons.
+- Desktop reference widths and the required narrow/mobile fallback. Desktop is primary in the current request; mobile completeness remains a scope decision.
+- Font/asset sources suitable for inclusion, including files or stable permitted sources for currently external assets.
+
+Content/data inputs:
+- Canonical sample owner/client names, geography, timezone, currency, dates, studio capacity, and portfolio assets.
+- Which current Northstar terms and assumptions are intentional versus generated filler.
+- Teammate roles and tone examples, including what to avoid.
+- Needed demo scenarios: populated workspace, first use, active task, waiting for approval, disconnected tool, failed action, and completed journey.
+- Required downloadable artifacts and their actual expected contents.
+
+Operational inputs:
+- Is the next chat expected to build a source ZIP only, or also create a repository/deploy? Current stated output is a GitHub/Vercel-ready source ZIP; no deployment credentials are necessary for that.
+- Any repository/framework constraints from the developer, package-manager preference, supported browsers, and must-pass checks.
+- Which features must be fully interactive in the first delivery and which may be explicitly excluded.
+
+Most of these can be settled over the upcoming discussion. The next reply need not answer the entire checklist.
+
+14. HOW TO USE HUNDREDS OF MOBBIN REFERENCES WITHOUT LOSING DIRECTION
+
+Index before synthesis. Assign each image a reference ID, source product, screen/flow type, relevant pattern, and founder preference if known. Preserve original files and filenames in an archive, while creating a concise manifest.
+
+Separate visual identity from interaction inspiration:
+- The two Crewmori anchors control the visual identity.
+- Shopify/Contra can inform navigation, task hierarchy, forms, review patterns, empty states, record detail, and disclosure.
+- Do not combine entire dashboards, import unrelated commerce features, or gradually rebrand Crewmori to whichever screenshot appears last.
+
+Curate a small set per flow with explicit instructions: “Borrow this clear offer review hierarchy; keep Crewmori's type, color, spacing, and characters.” Record the rejected aspects too. If a reference conflicts with an anchor or current decision, say which principle wins.
+
+Create a coverage map so gaps are visible: offer editing, project overview, client detail, calendar, invoice review, connections, settings, first use, recovery, and buyer acceptance as applicable. Hundreds of screenshots do not replace an explicit flow contract.
+
+15. PROPOSED CONTENTS OF THE FINAL MASTER PACK
+
+The pack should be a concise entry point plus detailed indexed specifications, not one enormous undifferentiated prompt.
+
+00_START_HERE.txt
+Exact task, intended result, scope boundaries, reading order, source precedence, execution stages, and definition of done. Tell the next model to implement and verify, not stop at a plan. Explain what to do if time/context/tool constraints interrupt the run.
+
+01_PRODUCT_AND_SCOPE.md
+Audience, product purpose, core demonstration, owned capabilities, excluded capabilities, route inventory, role boundaries, and a record of confirmed business decisions.
+
+02_DESIGN.md
+Corrected anchor-derived visual system; tokens and runtime mapping; typography; shell; component recipes; density and copy rules; characters; motion; responsive transformations; anti-references. Mark the old design file as historical evidence only.
+
+03_UX_CONTRACT.md
+Canonical navigation, controls, forms, tables, drawers/dialogs, validation, feedback, focus, save/cancel/back, persistence, search/filter, and recovery conventions. Link business rules rather than duplicating them.
+
+04_FLOWS/
+Machine-readable flow specifications grouped by domain, plus a control registry and route/flow coverage matrix. Include all alternate states actually required by scope.
+
+05_DATA/
+Entity definitions, stable IDs, normalized fixtures, scenario manifest, lifecycle transitions, derived-value rules, owner/buyer projections, and deterministic sample events. One source of truth for names/amounts/dates.
+
+06_BACKEND_HANDOFF/
+Frontend service interfaces and mock adapter contracts for the developer: inputs, outputs, loading/error cases, event shapes, idempotency expectations, and assumptions needing later server enforcement. Avoid coupling presentation to mock timers and arbitrary component state.
+
+07_REFERENCES/
+The two anchors prominently named and indexed, extracted character/vector assets where appropriate, curated Mobbin references, full reference catalog, and explicit instructions for what to borrow. Keep legacy Stitch pages marked content/anti-reference rather than normative layouts.
+
+08_ACCEPTANCE/
+Per-flow acceptance assertions, visual comparison rubric, accessibility/keyboard checks, state matrix, canonical arithmetic/date cases, and production-build requirements. Include checks that catch this audit's specific failures.
+
+09_EXECUTION_AND_DELIVERY.md
+Single-session build order, allowed agent delegation, shared file ownership, internal checkpoint artifacts, test commands, self-review loop, source ZIP inclusion/exclusion, GitHub/Vercel README requirements, and honest final reporting format.
+
+DECISIONS_AND_OPEN_ITEMS.md
+Each decision, status, source, affected files/flows, and remaining question. Before the final pack is sealed, resolve choices that would force the builder to invent product behavior. Keep discarded assumptions clearly superseded.
+
+Avoid repeating full instructions in multiple files. A map of authoritative owners is stronger than the same policy stated ten ways.
+
+16. DRAFT WORK PLAN FOR THIS COLLABORATION
+
+Stage 1 — Audit and baseline (this pass)
+Record the actual source/screens, name the anchors, catalog drift, list failures, and separate confirmed intent from generated filler.
+Output: this interim audit and a short question set.
+
+Stage 2 — Product and scope decisions
+Agree audience, owner/buyer boundary, agent authority, simulation level, integration boundary, commercial lifecycle, and build constraints. Consolidate the screen list into routes/tabs/overlays. Identify the one core demo story and supporting scenarios.
+Output: scope matrix, route ownership, decision log, and canonical story.
+
+Stage 3 — Reference intake and visual contract
+Index Shopify/Contra references, curate useful patterns, extract the anchor system and characters, and reconcile the shared shell. Write density/copy/motion rules and representative screen recipes.
+Output: corrected design contract, reference map, and approved simplification rules.
+
+Stage 4 — Interaction and data specification
+Write every included user flow, alternate/recovery paths, control registry, state machines, normalized data, mock services, and cross-screen invariants. Walk through the core journey step by step and check for dead ends.
+Output: the detailed AI-readable interaction specification the user requested.
+
+Stage 5 — Assemble and review the master pack
+Write the entry prompt and execution contract. Check contradictions, missing assets, undefined controls, inaccessible interactions, scope creep, fixture math, and route coverage. Only then create the final ZIP for the new chat.
+Output: reviewable master prompt ZIP, with a short entry instruction.
+
+17. HOW THE FUTURE BUILD SHOULD PROCEED
+
+Aim for one complete build session with internal milestones rather than a single undifferentiated generation. A prompt cannot guarantee that a model/session has unlimited time, context, or tool access; the pack can reduce uncertainty and make continuation precise if a hard limit occurs.
+
+Proposed internal sequence:
+1. Read the pack, resolve its declared source precedence, inventory assets, and create a route/flow implementation checklist.
+2. Establish the project, runtime tokens, shared shell, UI primitives, data layer, and mock adapters.
+3. Implement Home and Team first and compare them directly with the approved anchors. This is an internal quality gate, not an extra founder approval interruption.
+4. Build Opportunities, Work, Money, Connections, Settings, and any included buyer/setup routes using the same primitives and canonical data.
+5. Connect every visible control and complete the agreed core flow plus recovery scenarios. Audit cross-screen state and refresh/deep-link behavior.
+6. Run appropriate type, lint, build, interaction, accessibility, and visual checks. Fix failures and repeat only the affected checks.
+7. Package clean source for GitHub/Vercel and report actual verification and any remaining limitations.
+
+If agents are used, delegate independent domains or audits while one owner controls tokens, shell, shared primitives, schema, and cross-domain transitions. Parallel generation must not recreate the current 16 competing design systems.
+
+Checkpoint/status files should record completed routes, unresolved defects, and exact next steps during the same goal. They are a recovery mechanism if the environment stops, not a substitute for completing the requested frontend.
+
+18. FUTURE SOURCE ZIP — DELIVERY REQUIREMENTS
+
+The later frontend ZIP should contain a single installable project root with source, public/local assets, package manifest, lockfile, configuration, README, and any non-secret environment example needed for the agreed stack.
+
+README should explain local install/run/build, demo state/reset, sample versus real capabilities, integration extension points, GitHub import, and the appropriate Vercel deployment settings for the selected framework. Deep-link refresh must work in the deployment configuration.
+
+Exclude node_modules, build caches, secrets, temporary screenshots, and unused reference bulk from the deployable source ZIP. Keep the prompt/reference pack distinct from the application source deliverable.
+
+The frontend should run without the friend's backend if the agreed scope is a local simulation. Mock services should be replaceable without redesigning views. Persistent sample state needs a version/reset policy. No fake provider logo or successful toast may stand in for an actual supported integration.
+
+“Ready to deploy” must be supported by an actual production build and documented configuration. Do not claim a live Vercel deployment or real integrations unless they were actually created and checked.
+
+19. ACCEPTANCE CHECKS THE NEXT PACK MUST INCLUDE
+
+Visual:
+- Home and Team retain the approved identity, hierarchy, character system, and warm palette.
+- Every other route visibly belongs to the same product and uses the shared shell/tokens.
+- No page gains an unrequested technical dashboard or permanent agent-analysis rail.
+- Empty, long-content, narrow-layout, and reduced-motion states remain readable and useful.
+
+Interaction:
+- Every enabled visible action has its specified result; all navigation has a real target.
+- Save changes data; cancel preserves the agreed prior state; drafts survive applicable failures.
+- Filters and search combine correctly; reset clears the right state; Back restores context.
+- Offer versioning and approval/send separation work; retries do not create duplicate messages/projects/payments.
+- Downloads create usable files with the agreed content.
+- Connections and simulated events are honestly represented.
+
+Data:
+- Same IDs, names, amounts, dates, and states across routes.
+- Gross/fee/net/balance arithmetic is derived and consistent.
+- Calendar weekdays/timezones/business-day rules are correct.
+- No received deposit in an awaiting-review default fixture.
+- No invented confidence score, escrow guarantee, official FX claim, or hidden buyer leak.
+
+Accessibility and quality:
+- Native button/link semantics, visible focus, accessible names, keyboard-operable menus/tabs/forms/overlays.
+- Dialogs manage focus and closing correctly; errors are textual and preserve user input.
+- Motion respects user preferences and does not interfere with work.
+- Production build and relevant checks pass; browser verification covers the core flows and representative failure/empty states.
+- Final report says what was actually tested and distinguishes source inspection from runtime evidence.
+
+20. QUESTIONS TO START THE NEXT DISCUSSION
+
+1. What should “entire frontend” include: owner workspace only, or also the public freelancer page, buyer offer/acceptance journey, onboarding, and sign-in surfaces?
+2. Who should the first version primarily serve: creative freelancers, or freelancers across professions? The current motion-design story can remain sample content either way.
+3. How open should the prototype be: a polished guided demo, or an editable app with persistent clients/projects/offers and predictable simulated agent outcomes? Recommended direction: editable records with a few carefully designed demo journeys.
+4. Where should agents stop for approval, and how much happens inside connected tools? For example, should they draft a client email for review, send within agreed rules, or open Gmail for the owner to finish?
+5. Has the developer chosen the frontend stack or integration contracts? If undecided, agree a suitable React/TypeScript approach before sealing the pack.
+
+After these, work through the commercial timing rules, required tool connections, buyer scope details, and visual reference intake. The current audit preserves the first two screens as the style authority; it does not approve the subsequent generated complexity.

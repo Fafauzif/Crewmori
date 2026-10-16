@@ -1,0 +1,141 @@
+{
+  "fixture": {
+    "synthetic": true,
+    "version": 1,
+    "clock": "2026-10-16T08:00:00+07:00",
+    "ratesAreFictional": true
+  },
+  "workspaceId": "ws_demo_alya",
+  "engagementId": "eng_demo_northstar",
+  "requirementsVersion": 1,
+  "invoiceId": "inv_demo_northstar",
+  "offerVersionId": "offer_demo_reduced_v1",
+  "requestId": "payreq_demo_60",
+  "beneficiaryRef": "BENEFICIARY_SANDBOX_OWNER",
+  "inputs": {
+    "fullPriceUsdMinor": 60000,
+    "reducedPriceUsdMinor": 45000,
+    "buyerBudgetUsdMinor": 50000,
+    "fullMinutes": 1080,
+    "reducedMinutes": 720,
+    "availableMinutes": 720,
+    "requestedBusinessDays": 5,
+    "fullBusinessDays": 10,
+    "reducedBusinessDays": 5,
+    "upfrontExpenseIdrMinor": 3000000,
+    "ownerHourValueIdrMinor": 150000,
+    "recipientFeeBasisPoints": 200,
+    "fxIdrPerUsd": "15000",
+    "minimumContributionBeforeAcquisitionIdrMinor": 1500000,
+    "acquisitionCashUsdMinor": null,
+    "ownerSellingMinutes": null
+  },
+  "expected": {
+    "fullPackageFeasible": false,
+    "reducedPackageFeasible": true,
+    "totalNetProjectUsdMinor": 44100,
+    "totalNetProjectIdrMinor": 6615000,
+    "ownerDeliveryTimeValueIdrMinor": 1800000,
+    "contributionBeforeAcquisitionIdrMinor": 1815000,
+    "contributionAfterAcquisitionIdrMinor": null,
+    "invoiceGrossUsdMinor": 45000,
+    "remainingGrossUsdMinorAfter60Percent": 18000
+  },
+  "deposits": [
+    {
+      "basisPoints": 4000,
+      "grossUsdMinor": 18000,
+      "feeUsdMinor": 360,
+      "netUsdMinor": 17640,
+      "netIdrMinor": 2646000,
+      "upfrontGapIdrMinor": 354000
+    },
+    {
+      "basisPoints": 6000,
+      "grossUsdMinor": 27000,
+      "feeUsdMinor": 540,
+      "netUsdMinor": 26460,
+      "netIdrMinor": 3969000,
+      "upfrontGapIdrMinor": 0
+    }
+  ],
+  "optionalSyntheticAcquisitionExtension": {
+    "enabledByDefault": false,
+    "cashUsdMinor": 600,
+    "sellingMinutes": 30,
+    "sellingHourValueIdrMinor": 150000,
+    "expectedCostIdrMinor": 165000,
+    "expectedContributionAfterAcquisitionIdrMinor": 1650000
+  },
+  "routeAssessments": [
+    {
+      "id": "route_demo_ok",
+      "workspaceId": "ws_demo_alya",
+      "status": "satisfied",
+      "prerequisites": [
+        {
+          "key": "sandbox_rail_match",
+          "status": "satisfied",
+          "factState": "owner_confirmed",
+          "evidenceRefs": [],
+          "reason": "Both sides use the configured fictional sandbox rail."
+        }
+      ],
+      "inputVersions": [
+        {
+          "type": "requirements",
+          "id": "eng_demo_northstar",
+          "version": 1
+        }
+      ],
+      "checkedAt": "2026-10-16T08:00:00+07:00",
+      "expiresAt": "2026-10-16T09:00:00+07:00"
+    },
+    {
+      "id": "route_demo_unknown",
+      "status": "unknown",
+      "workspaceId": "ws_demo_alya",
+      "prerequisites": [
+        {
+          "key": "payer_funding_method",
+          "status": "unknown",
+          "factState": "unknown",
+          "evidenceRefs": [],
+          "reason": "Required payer funding method missing; request must not dispatch."
+        }
+      ],
+      "inputVersions": [
+        {
+          "type": "requirements",
+          "id": "eng_demo_northstar",
+          "version": 1
+        }
+      ],
+      "checkedAt": "2026-10-16T08:00:00+07:00",
+      "expiresAt": "2026-10-16T09:00:00+07:00"
+    },
+    {
+      "id": "route_demo_blocked",
+      "status": "blocked",
+      "workspaceId": "ws_demo_alya",
+      "prerequisites": [
+        {
+          "key": "transfer_type_match",
+          "status": "blocked",
+          "factState": "owner_confirmed",
+          "evidenceRefs": [],
+          "reason": "Configured transfer types incompatible; request must not dispatch."
+        }
+      ],
+      "inputVersions": [
+        {
+          "type": "requirements",
+          "id": "eng_demo_northstar",
+          "version": 1
+        }
+      ],
+      "checkedAt": "2026-10-16T08:00:00+07:00",
+      "expiresAt": "2026-10-16T09:00:00+07:00"
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+[
+  {
+    "eventId": "activity_demo_1",
+    "workspaceId": "ws_demo_alya",
+    "sequence": 1,
+    "taskId": "task_demo_scout",
+    "runId": "run_demo_scout",
+    "role": "scout",
+    "type": "run.started",
+    "occurredAt": "2026-10-16T08:00:01+07:00",
+    "focus": {
+      "recordType": "opportunity",
+      "recordId": "opp_demo_northstar",
+      "anchor": "opportunity.portfolio_match"
+    },
+    "publicSummary": "Scout is assessing the imported request."
+  },
+  {
+    "eventId": "activity_demo_2",
+    "workspaceId": "ws_demo_alya",
+    "sequence": 2,
+    "taskId": "task_demo_promoter",
+    "runId": "run_demo_promoter",
+    "role": "promoter",
+    "type": "run.started",
+    "occurredAt": "2026-10-16T08:00:02+07:00",
+    "focus": {
+      "recordType": "campaign",
+      "recordId": "campaign_demo_creative",
+      "anchor": "promotion.body"
+    },
+    "publicSummary": "Promoter is preparing the community draft."
+  },
+  {
+    "eventId": "activity_demo_3",
+    "workspaceId": "ws_demo_alya",
+    "sequence": 3,
+    "taskId": "task_demo_scout",
+    "runId": "run_demo_scout",
+    "role": "scout",
+    "type": "evidence.retrieved",
+    "occurredAt": "2026-10-16T08:00:03+07:00",
+    "focus": {
+      "recordType": "source",
+      "recordId": "src_demo_luma",
+      "anchor": "source.excerpt"
+    },
+    "publicSummary": "Relevant portfolio evidence retrieved."
+  },
+  {
+    "eventId": "activity_demo_4",
+    "workspaceId": "ws_demo_alya",
+    "sequence": 4,
+    "taskId": "task_demo_promoter",
+    "runId": "run_demo_promoter",
+    "role": "promoter",
+    "type": "artifact.saved",
+    "occurredAt": "2026-10-16T08:00:04+07:00",
+    "focus": {
+      "recordType": "campaign",
+      "recordId": "campaign_demo_creative",
+      "anchor": "promotion.body"
+    },
+    "publicSummary": "Promotion draft saved for review."
+  },
+  {
+    "eventId": "activity_demo_5",
+    "workspaceId": "ws_demo_alya",
+    "sequence": 5,
+    "taskId": "task_demo_sales",
+    "runId": "run_demo_sales",
+    "role": "sales",
+    "type": "artifact.saved",
+    "occurredAt": "2026-10-16T08:00:05+07:00",
+    "focus": {
+      "recordType": "conversation",
+      "recordId": "conversation_demo_northstar",
+      "anchor": "conversation.requirements"
+    },
+    "publicSummary": "Buyer requirements and owner brief saved."
+  },
+  {
+    "eventId": "activity_demo_6",
+    "workspaceId": "ws_demo_alya",
+    "sequence": 6,
+    "taskId": "task_demo_operations",
+    "runId": "run_demo_operations",
+    "role": "operations",
+    "type": "artifact.saved",
+    "occurredAt": "2026-10-16T08:00:06+07:00",
+    "focus": {
+      "recordType": "capacity",
+      "recordId": "cap_demo_five_days",
+      "anchor": "capacity.available_hours"
+    },
+    "publicSummary": "Twelve available hours checked."
+  },
+  {
+    "eventId": "activity_demo_7",
+    "workspaceId": "ws_demo_alya",
+    "sequence": 7,
+    "taskId": "task_demo_finance",
+    "runId": "run_demo_finance",
+    "role": "finance",
+    "type": "review.required",
+    "occurredAt": "2026-10-16T08:00:07+07:00",
+    "focus": {
+      "recordType": "offer",
+      "recordId": "offer_demo_reduced_v1",
+      "anchor": "offer.deposit"
+    },
+    "publicSummary": "Sixty-percent deposit option needs owner review."
+  },
+  {
+    "eventId": "activity_demo_8",
+    "workspaceId": "ws_demo_alya",
+    "sequence": 8,
+    "taskId": "task_demo_account_manager",
+    "runId": "run_demo_account_manager",
+    "role": "account_manager",
+    "type": "artifact.saved",
+    "occurredAt": "2026-10-16T08:00:08+07:00",
+    "focus": {
+      "recordType": "engagement",
+      "recordId": "eng_demo_northstar",
+      "anchor": "client.next_action"
+    },
+    "publicSummary": "Client-input checklist draft saved."
+  }
+]

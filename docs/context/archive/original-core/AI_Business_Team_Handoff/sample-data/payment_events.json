@@ -1,0 +1,268 @@
+{
+  "fixture": {
+    "synthetic": true,
+    "normalizedApplicationEvents": true,
+    "signatures": "Generate locally with the configured sandbox test secret; no real signature supplied.",
+    "scenarioIsolation": "Reset the accepted USD 450 invoice and provisional 30-minute reservation before each case. Replay duplicate_delivery and duplicate_receipt_new_event after payment_success in the same state.",
+    "reservationExpiresAt": "2026-10-16T08:30:00+07:00",
+    "reconciliationPolicy": "P0 exact requested installment, currency and beneficiary match; non-exact receipts persist unapplied/review-required."
+  },
+  "cases": [
+    {
+      "caseId": "payment_success",
+      "eventId": "evt_demo_payment_1",
+      "type": "payment.succeeded",
+      "receipt": {
+        "receiptId": "receipt_demo_60",
+        "provider": "internal_sandbox",
+        "providerReceiptId": "native_receipt_demo_60",
+        "requestId": "payreq_demo_60",
+        "invoiceId": "inv_demo_northstar",
+        "beneficiaryRef": "BENEFICIARY_SANDBOX_OWNER",
+        "gross": {
+          "currency": "USD",
+          "amountMinor": 27000,
+          "scale": 2
+        },
+        "fee": {
+          "currency": "USD",
+          "amountMinor": 540,
+          "scale": 2
+        },
+        "net": {
+          "currency": "USD",
+          "amountMinor": 26460,
+          "scale": 2
+        },
+        "settlement": {
+          "currency": "IDR",
+          "amountMinor": 3969000,
+          "scale": 0
+        },
+        "fxIdrPerUsd": "15000",
+        "occurredAt": "2026-10-16T08:20:00+07:00"
+      },
+      "expected": "Allocate USD 270 gross once; outstanding USD 180; commit still-valid capacity."
+    },
+    {
+      "caseId": "duplicate_delivery",
+      "eventId": "evt_demo_payment_1",
+      "type": "payment.succeeded",
+      "receipt": {
+        "receiptId": "receipt_demo_60",
+        "provider": "internal_sandbox",
+        "providerReceiptId": "native_receipt_demo_60",
+        "requestId": "payreq_demo_60",
+        "invoiceId": "inv_demo_northstar",
+        "beneficiaryRef": "BENEFICIARY_SANDBOX_OWNER",
+        "gross": {
+          "currency": "USD",
+          "amountMinor": 27000,
+          "scale": 2
+        },
+        "fee": {
+          "currency": "USD",
+          "amountMinor": 540,
+          "scale": 2
+        },
+        "net": {
+          "currency": "USD",
+          "amountMinor": 26460,
+          "scale": 2
+        },
+        "settlement": {
+          "currency": "IDR",
+          "amountMinor": 3969000,
+          "scale": 0
+        },
+        "fxIdrPerUsd": "15000",
+        "occurredAt": "2026-10-16T08:20:00+07:00"
+      },
+      "expected": "Replay same delivery; no new invoice credit."
+    },
+    {
+      "caseId": "duplicate_receipt_new_event",
+      "eventId": "evt_demo_payment_2",
+      "type": "payment.succeeded",
+      "receipt": {
+        "receiptId": "receipt_demo_60",
+        "provider": "internal_sandbox",
+        "providerReceiptId": "native_receipt_demo_60",
+        "requestId": "payreq_demo_60",
+        "invoiceId": "inv_demo_northstar",
+        "beneficiaryRef": "BENEFICIARY_SANDBOX_OWNER",
+        "gross": {
+          "currency": "USD",
+          "amountMinor": 27000,
+          "scale": 2
+        },
+        "fee": {
+          "currency": "USD",
+          "amountMinor": 540,
+          "scale": 2
+        },
+        "net": {
+          "currency": "USD",
+          "amountMinor": 26460,
+          "scale": 2
+        },
+        "settlement": {
+          "currency": "IDR",
+          "amountMinor": 3969000,
+          "scale": 0
+        },
+        "fxIdrPerUsd": "15000",
+        "occurredAt": "2026-10-16T08:20:00+07:00"
+      },
+      "expected": "New delivery ID for same native receipt; no duplicate credit."
+    },
+    {
+      "caseId": "partial_payment",
+      "eventId": "evt_demo_partial",
+      "type": "payment.succeeded",
+      "expected": "Persist receipt and mark review-required/unapplied under P0 exact-match policy.",
+      "receipt": {
+        "receiptId": "receipt_demo_partial_payment",
+        "provider": "internal_sandbox",
+        "providerReceiptId": "native_partial_payment",
+        "requestId": "payreq_demo_60",
+        "invoiceId": "inv_demo_northstar",
+        "beneficiaryRef": "BENEFICIARY_SANDBOX_OWNER",
+        "gross": {
+          "currency": "USD",
+          "amountMinor": 10000,
+          "scale": 2
+        },
+        "fee": {
+          "currency": "USD",
+          "amountMinor": 200,
+          "scale": 2
+        },
+        "net": {
+          "currency": "USD",
+          "amountMinor": 9800,
+          "scale": 2
+        },
+        "settlement": {
+          "currency": "IDR",
+          "amountMinor": 1470000,
+          "scale": 0
+        },
+        "fxIdrPerUsd": "15000",
+        "occurredAt": "2026-10-16T08:20:00+07:00"
+      }
+    },
+    {
+      "caseId": "wrong_currency",
+      "eventId": "evt_demo_wrong_ccy",
+      "type": "payment.succeeded",
+      "expected": "Persist verified provider facts, reject automatic invoice match, keep review-required.",
+      "receipt": {
+        "receiptId": "receipt_demo_wrong_currency",
+        "provider": "internal_sandbox",
+        "providerReceiptId": "native_wrong_currency",
+        "requestId": "payreq_demo_60",
+        "invoiceId": "inv_demo_northstar",
+        "beneficiaryRef": "BENEFICIARY_SANDBOX_OWNER",
+        "gross": {
+          "currency": "EUR",
+          "amountMinor": 27000,
+          "scale": 2
+        },
+        "fee": {
+          "currency": "EUR",
+          "amountMinor": 540,
+          "scale": 2
+        },
+        "net": {
+          "currency": "EUR",
+          "amountMinor": 26460,
+          "scale": 2
+        },
+        "occurredAt": "2026-10-16T08:20:00+07:00"
+      }
+    },
+    {
+      "caseId": "late_payment",
+      "eventId": "evt_demo_late",
+      "type": "payment.succeeded",
+      "expected": "Persist cash and reconcile appropriately; do not restore capacity or delivery promise automatically.",
+      "preconditions": {
+        "reservationState": "expired",
+        "availableCapacityAlreadyReallocated": true
+      },
+      "receipt": {
+        "receiptId": "receipt_demo_late_payment",
+        "provider": "internal_sandbox",
+        "providerReceiptId": "native_late_payment",
+        "requestId": "payreq_demo_60",
+        "invoiceId": "inv_demo_northstar",
+        "beneficiaryRef": "BENEFICIARY_SANDBOX_OWNER",
+        "gross": {
+          "currency": "USD",
+          "amountMinor": 27000,
+          "scale": 2
+        },
+        "fee": {
+          "currency": "USD",
+          "amountMinor": 540,
+          "scale": 2
+        },
+        "net": {
+          "currency": "USD",
+          "amountMinor": 26460,
+          "scale": 2
+        },
+        "settlement": {
+          "currency": "IDR",
+          "amountMinor": 3969000,
+          "scale": 0
+        },
+        "fxIdrPerUsd": "15000",
+        "occurredAt": "2026-10-16T10:00:00+07:00"
+      }
+    },
+    {
+      "caseId": "excess_payment",
+      "eventId": "evt_demo_excess",
+      "type": "payment.succeeded",
+      "receipt": {
+        "receiptId": "receipt_demo_excess",
+        "provider": "internal_sandbox",
+        "providerReceiptId": "native_excess",
+        "requestId": "payreq_demo_60",
+        "invoiceId": "inv_demo_northstar",
+        "beneficiaryRef": "BENEFICIARY_SANDBOX_OWNER",
+        "gross": {
+          "currency": "USD",
+          "amountMinor": 30000,
+          "scale": 2
+        },
+        "fee": {
+          "currency": "USD",
+          "amountMinor": 600,
+          "scale": 2
+        },
+        "net": {
+          "currency": "USD",
+          "amountMinor": 29400,
+          "scale": 2
+        },
+        "settlement": {
+          "currency": "IDR",
+          "amountMinor": 4410000,
+          "scale": 0
+        },
+        "fxIdrPerUsd": "15000",
+        "occurredAt": "2026-10-16T08:20:00+07:00"
+      },
+      "expected": "Persist all USD 300 gross cash; keep unapplied/review-required under the P0 exact-installment policy. Do not lose or double-allocate the excess."
+    },
+    {
+      "caseId": "submission_timeout",
+      "eventId": "evt_demo_timeout",
+      "type": "payment.request_unknown",
+      "expected": "Query the original provider reference before another create attempt."
+    }
+  ]
+}

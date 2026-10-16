@@ -1,0 +1,1611 @@
+{
+  "format": 1,
+  "file_count_excluding_inventory": 321,
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 75,
+      "sha256": "72e0d9d8131c19939e500e0fe16a02727c5e3f944e67dec9fb600e9f4ed10941"
+    },
+    {
+      "path": ".vercelignore",
+      "bytes": 323,
+      "sha256": "14030702144aec7ff3257898f29d040b1d1369a1c1a27d24608e78770065ba4c"
+    },
+    {
+      "path": "DESIGN.md",
+      "bytes": 28001,
+      "sha256": "6e2f352b47712997488f66e432515d835b0e44c494f009199146fe3adc149968"
+    },
+    {
+      "path": "README.md",
+      "bytes": 11612,
+      "sha256": "a06ef5ecee354e6fca01ae034dc8cb698ebca53eab7aed45c49efe2d6cd4a1c7"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "bytes": 895,
+      "sha256": "9fe2cc3d378748f68ed7ebb4ab737f7a30fec2af5d517feb14b6d2c7fa735c37"
+    },
+    {
+      "path": "UX-CONTRACT.md",
+      "bytes": 12300,
+      "sha256": "95f6583d59012b15d9a4c98ee2f0dd513e858b816f1f1463e4930b94e275a22a"
+    },
+    {
+      "path": "docs/ACQUISITION_IMPLEMENTATION.md",
+      "bytes": 5885,
+      "sha256": "03f77e92b95fabdffeb1be4b94db6e0aed97f924a1f18402d3d6dd27ba947881"
+    },
+    {
+      "path": "docs/BUILD_STATUS.md",
+      "bytes": 8294,
+      "sha256": "bbf870c8c30685bcb447d90f67bb7d4c02631bfe42db57b51dc98c64b9e16fcd"
+    },
+    {
+      "path": "docs/CONTROL_IMPLEMENTATION_MAP.json",
+      "bytes": 1186593,
+      "sha256": "73cdfb033993c3e7becf0ff6661af998fc94402ee07628561c774cfbbc1855fc"
+    },
+    {
+      "path": "docs/CONTROL_REGISTRY.json",
+      "bytes": 428951,
+      "sha256": "ff08eeb9ede7cfe1758a72d8a72894f12ad666d587a967d8a041e95c6ebe2499"
+    },
+    {
+      "path": "docs/COVERAGE_MATRIX.md",
+      "bytes": 5677,
+      "sha256": "60dc6855b3e0fcb7b6603f18c41f09ef9e8ec2773fbaaf2df751a2a8119b9353"
+    },
+    {
+      "path": "docs/Crewmori_Developer_Functionality.md",
+      "bytes": 33636,
+      "sha256": "f1a12848357f3b0867aadd7a63218afc2146cb5d2fa5802ab55a491dfaa67970"
+    },
+    {
+      "path": "docs/DECISIONS.md",
+      "bytes": 9926,
+      "sha256": "bb3dd97fdd2562165f704e2807c0a736790a05df7c269c7cfc1fe88fa776cafb"
+    },
+    {
+      "path": "docs/DESIGN.md",
+      "bytes": 28001,
+      "sha256": "6e2f352b47712997488f66e432515d835b0e44c494f009199146fe3adc149968"
+    },
+    {
+      "path": "docs/DEVELOPER_FUNCTIONALITY.md",
+      "bytes": 33636,
+      "sha256": "f1a12848357f3b0867aadd7a63218afc2146cb5d2fa5802ab55a491dfaa67970"
+    },
+    {
+      "path": "docs/FLOW_FORMAT.md",
+      "bytes": 3051,
+      "sha256": "fd2a6926217c49e026398879c48d2d141dfbd607cedab3e38450c3b8c14759ae"
+    },
+    {
+      "path": "docs/FLOW_INDEX.json",
+      "bytes": 25490,
+      "sha256": "628988ceb580cdc2e674efbb5acb04937d010f8b9d87a5bc3e8686d4603ba014"
+    },
+    {
+      "path": "docs/FLOW_INDEX.md",
+      "bytes": 9793,
+      "sha256": "8d44a6f759e46b29b04f9a5bfa47d0cc370ace75c7a119b705610a49cd0ab94d"
+    },
+    {
+      "path": "docs/MASTER_AI_CONTEXT.md",
+      "bytes": 24283,
+      "sha256": "7a4302800ac7158f3c47860d433afdd28223362b2d1f84c802b43aabba622577"
+    },
+    {
+      "path": "docs/MASTER_CONTEXT.md",
+      "bytes": 24283,
+      "sha256": "7a4302800ac7158f3c47860d433afdd28223362b2d1f84c802b43aabba622577"
+    },
+    {
+      "path": "docs/PRODUCT.md",
+      "bytes": 5918,
+      "sha256": "6e43f5c95065064f298c8d0bda14107c43dce08324ea8aca1592a8c0547a8e5b"
+    },
+    {
+      "path": "docs/ROUTES.json",
+      "bytes": 7508,
+      "sha256": "342413926d301a262f975799a63676feac5dc5255df3809b828f3e5682e8703f"
+    },
+    {
+      "path": "docs/TRACEABILITY.md",
+      "bytes": 8471,
+      "sha256": "7fa7b75907014af04baa6129b15993c80cb8d3bd4d504ae72e4443c28af9a5d4"
+    },
+    {
+      "path": "docs/UX_CONTRACT.md",
+      "bytes": 12300,
+      "sha256": "95f6583d59012b15d9a4c98ee2f0dd513e858b816f1f1463e4930b94e275a22a"
+    },
+    {
+      "path": "docs/VERIFICATION.md",
+      "bytes": 8659,
+      "sha256": "b340609b1970e0d5ff87e43d3acbf9b296350a797a604331d7f7b29270b5b43d"
+    },
+    {
+      "path": "docs/acceptance/00_START_HERE.md",
+      "bytes": 7863,
+      "sha256": "90b33d02653f11a3f66a46dd783b56b2dff2bf64a1ceaefc4d9b06ebe0a9fa61"
+    },
+    {
+      "path": "docs/acceptance/ACCEPTANCE.md",
+      "bytes": 7277,
+      "sha256": "993d7c7aac50bc280020b0f62675a37eab9bd657b774a48603f0479a58b320ae"
+    },
+    {
+      "path": "docs/acceptance/IMPLEMENTATION_REVIEW_LOOP.md",
+      "bytes": 11233,
+      "sha256": "31a95bc7b482f33e9b4b24ce4e3fa6fe3d24a9694376c29862a8aee283aa762e"
+    },
+    {
+      "path": "docs/acceptance/PACK_VALIDATION.json",
+      "bytes": 475,
+      "sha256": "fe12c6a822dd8e9cce4fb70e39947e09a44481cff1e08bc7325532b82df94086"
+    },
+    {
+      "path": "docs/acceptance/PACK_VERIFICATION.md",
+      "bytes": 3434,
+      "sha256": "d92e5d3bf91d1a27cfcd49cacb960779a0e10e14285d513759b37697b3d47d23"
+    },
+    {
+      "path": "docs/acceptance/build_indexes.py",
+      "bytes": 2587,
+      "sha256": "854a9533c0633d3fe5f99f311aef7735b0066613babbc4e9ec5ed2b15469c6f5"
+    },
+    {
+      "path": "docs/acceptance/read_spec.py",
+      "bytes": 2103,
+      "sha256": "ba840199cc243b19b7d773e865d6ebc3c6c889bb644d835caa279ac59e976e52"
+    },
+    {
+      "path": "docs/acceptance/validate_pack.py",
+      "bytes": 9237,
+      "sha256": "56cbbda7f6f2fe2fb3610deba4d6494fe3abfca2e0136d3c42442f0aab262ddf"
+    },
+    {
+      "path": "docs/brand/ACTIVE_OVERLAY.md",
+      "bytes": 872,
+      "sha256": "558a87e738232da1d9b64c6ba326b1a255b0538ac137e6748db0124fe69dd14d"
+    },
+    {
+      "path": "docs/brand/original/BRAND.md",
+      "bytes": 13978,
+      "sha256": "adfd678c4522ad0df73aab9dac364d58a8803f8c98daf546daee5cbc22781eb3"
+    },
+    {
+      "path": "docs/brand/original/MANIFEST.json",
+      "bytes": 12909,
+      "sha256": "bf21b9cd0f4fb5185e14402599cf54bbaa342805df677b044b649e45c81c25bd"
+    },
+    {
+      "path": "docs/brand/original/README.md",
+      "bytes": 4967,
+      "sha256": "c462607c397b30afb8d6a51b3ad6e8bf6c4e7d742592d89e0c4323754b74ed73"
+    },
+    {
+      "path": "docs/brand/original/assets/README.md",
+      "bytes": 3521,
+      "sha256": "4f64f72557206dbba0860034d1ccda9de33b4d8e7188fad32a688fded7d6661e"
+    },
+    {
+      "path": "docs/brand/original/assets/app-icon/crewmori-app-icon-1024.png",
+      "bytes": 22421,
+      "sha256": "4224d56e4430fb7db50a2db73333b3478de406860de9341772546978318eaa46"
+    },
+    {
+      "path": "docs/brand/original/assets/app-icon/crewmori-app-icon-128.png",
+      "bytes": 2260,
+      "sha256": "c39511386371a76ec68b18cdf7067828e1677bf115be0a2e2e534911cf194b49"
+    },
+    {
+      "path": "docs/brand/original/assets/app-icon/crewmori-app-icon-192.png",
+      "bytes": 3350,
+      "sha256": "26c4da868d61249532f591dc95c761222fa199b2826a42b8d174a734dc404c42"
+    },
+    {
+      "path": "docs/brand/original/assets/app-icon/crewmori-app-icon-512.png",
+      "bytes": 10092,
+      "sha256": "f745f2f7e725f4039cc0ad25e25579799a359118a886ff7fb81d048c56d05658"
+    },
+    {
+      "path": "docs/brand/original/assets/app-icon/crewmori-app-icon.svg",
+      "bytes": 549,
+      "sha256": "d17f249b0ef8330a0c418743db33d689b2d7895dae26a5c1ca0d33eeb3e6bd94"
+    },
+    {
+      "path": "docs/brand/original/assets/asset-index.json",
+      "bytes": 2340,
+      "sha256": "16df123b77fad18e4a86a82c5d6984a3a8e09609fc9ab727d08214b14e9de127"
+    },
+    {
+      "path": "docs/brand/original/assets/favicon/crewmori-favicon-16-transparent.png",
+      "bytes": 429,
+      "sha256": "972382547e79cf320b3adafd0d0be2e1cf689b9f2e21ea0078f27d81dd22af24"
+    },
+    {
+      "path": "docs/brand/original/assets/favicon/crewmori-favicon-16.png",
+      "bytes": 497,
+      "sha256": "c2c8bd90c056cb4733323f1b56f93d3875c0e39991362ebad6b60f3fea778150"
+    },
+    {
+      "path": "docs/brand/original/assets/favicon/crewmori-favicon-24-transparent.png",
+      "bytes": 593,
+      "sha256": "a5568ddc2c541b8161222850b1ba7625c30bf09f5f0eeddd6c9ef3254304c68f"
+    },
+    {
+      "path": "docs/brand/original/assets/favicon/crewmori-favicon-24.png",
+      "bytes": 736,
+      "sha256": "70c16d57c367b523450b0ac29d82e7aa8a84be5841495a8cb594cfbf7d7f517b"
+    },
+    {
+      "path": "docs/brand/original/assets/favicon/crewmori-favicon-32-transparent.png",
+      "bytes": 695,
+      "sha256": "3e25527e75c94c89de799be8c204889089e4f0a8f67e40f194de2590e6a45970"
+    },
+    {
+      "path": "docs/brand/original/assets/favicon/crewmori-favicon-32.png",
+      "bytes": 824,
+      "sha256": "bb709da516bb051b726211474e5b809ff744e0797d915160a943813b8d6aba8d"
+    },
+    {
+      "path": "docs/brand/original/assets/favicon/crewmori-favicon-48-transparent.png",
+      "bytes": 1014,
+      "sha256": "5f385e2636237696fe243e6a3ebba59250f10cf18876eaa40a387ee695c591a2"
+    },
+    {
+      "path": "docs/brand/original/assets/favicon/crewmori-favicon-48.png",
+      "bytes": 1236,
+      "sha256": "92321d9941dfb855367ff80c37845e4c7136b8c38c8c56f2176830da38f93eb8"
+    },
+    {
+      "path": "docs/brand/original/assets/favicon/crewmori-favicon-64-transparent.png",
+      "bytes": 1143,
+      "sha256": "9ad987724c6a7abd7a3786d698bcc6b3a8044d17cb0ead1a36f94ab41817ca19"
+    },
+    {
+      "path": "docs/brand/original/assets/favicon/crewmori-favicon-64.png",
+      "bytes": 1474,
+      "sha256": "61e032b853472799664a51116b5dbae0276f3c1fe8f6459228c0cb6d7bd6ba48"
+    },
+    {
+      "path": "docs/brand/original/assets/favicon/crewmori-favicon.svg",
+      "bytes": 560,
+      "sha256": "bb44ed102d2e3bb04ff0499cc67c464dfc44f7bcfa83a1a12ba6782e2a6351e1"
+    },
+    {
+      "path": "docs/brand/original/assets/favicon/favicon.ico",
+      "bytes": 4853,
+      "sha256": "c78d27b92f6dd87e187aba99b4855a8334bd087db160b8d17b931c7cf2767316"
+    },
+    {
+      "path": "docs/brand/original/assets/fonts/DejaVuSans-Bold.ttf",
+      "bytes": 708920,
+      "sha256": "5c1247acef7f2b8522a31742c76d6adcb5569bacc0be7ceaa4dc39dd252ce895"
+    },
+    {
+      "path": "docs/brand/original/assets/fonts/DejaVuSans.ttf",
+      "bytes": 759720,
+      "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280"
+    },
+    {
+      "path": "docs/brand/original/assets/fonts/DejaVuSerif-Bold.ttf",
+      "bytes": 356668,
+      "sha256": "847b33e13925f19ff87e4d934d6b3cf7cac35ce16424f6f670e40c2f377cf2df"
+    },
+    {
+      "path": "docs/brand/original/assets/fonts/DejaVuSerif.ttf",
+      "bytes": 380660,
+      "sha256": "8f2c103bfa3fd5de71f1b92b18f21906b5a26871fb7e19a9a4c9af539c3cc7ab"
+    },
+    {
+      "path": "docs/brand/original/assets/fonts/LICENSE-DejaVu.txt",
+      "bytes": 2452,
+      "sha256": "6f57fb3cc4e1d62de5ce0ee6444e6ca45eb8a35aaf0bf70a694f9cc133c5881d"
+    },
+    {
+      "path": "docs/brand/original/assets/geometry.json",
+      "bytes": 4364,
+      "sha256": "18826d9ab5a2dd54c3c86bcb5d5db45c7fcab6e9401c604a616459a2c53407a0"
+    },
+    {
+      "path": "docs/brand/original/assets/horizontal/crewmori-horizontal-black.png",
+      "bytes": 54876,
+      "sha256": "4cbd4197a265fb2ac395b5281eec5a1e95efd68946dc148a7567ab388fa01c5c"
+    },
+    {
+      "path": "docs/brand/original/assets/horizontal/crewmori-horizontal-black.svg",
+      "bytes": 2974,
+      "sha256": "5eea61e644c26a079bb05d2f0ba2b1a672ea99bdd7fe7d2265c391c5a41ae841"
+    },
+    {
+      "path": "docs/brand/original/assets/horizontal/crewmori-horizontal-green.png",
+      "bytes": 73794,
+      "sha256": "fd1f24b709349fd8698b349e6cecde53874f71e16085675c01db99ef5a98bfd1"
+    },
+    {
+      "path": "docs/brand/original/assets/horizontal/crewmori-horizontal-green.svg",
+      "bytes": 2974,
+      "sha256": "dd7db2b0420429f98535d8ed3f4dd89abe33c3fa82937960358eecc13b922ecf"
+    },
+    {
+      "path": "docs/brand/original/assets/horizontal/crewmori-horizontal-white.png",
+      "bytes": 60690,
+      "sha256": "0c3e6ba4746646beb8357754829e0f473f9f25d566cb2a58eb6c32bac105e6fe"
+    },
+    {
+      "path": "docs/brand/original/assets/horizontal/crewmori-horizontal-white.svg",
+      "bytes": 2974,
+      "sha256": "273675d2b742e087f83ef5bd7e09decebee70f07cc713f3df9d037191da12fda"
+    },
+    {
+      "path": "docs/brand/original/assets/illustration-studies/README.md",
+      "bytes": 1297,
+      "sha256": "3b31a086e41d46af62e720e74b13a8be31520bc84c97dc03dd9c939b27218fed"
+    },
+    {
+      "path": "docs/brand/original/assets/illustration-studies/six-coworkers-direction-study.png",
+      "bytes": 869056,
+      "sha256": "2f08c3afa6a51cfd8a410bf702cb8925b1a57a0b55d3a3f19683fe7ff424c709"
+    },
+    {
+      "path": "docs/brand/original/assets/primary/crewmori-primary-black.png",
+      "bytes": 54876,
+      "sha256": "4cbd4197a265fb2ac395b5281eec5a1e95efd68946dc148a7567ab388fa01c5c"
+    },
+    {
+      "path": "docs/brand/original/assets/primary/crewmori-primary-black.svg",
+      "bytes": 2974,
+      "sha256": "5eea61e644c26a079bb05d2f0ba2b1a672ea99bdd7fe7d2265c391c5a41ae841"
+    },
+    {
+      "path": "docs/brand/original/assets/primary/crewmori-primary-green.png",
+      "bytes": 73794,
+      "sha256": "fd1f24b709349fd8698b349e6cecde53874f71e16085675c01db99ef5a98bfd1"
+    },
+    {
+      "path": "docs/brand/original/assets/primary/crewmori-primary-green.svg",
+      "bytes": 2974,
+      "sha256": "dd7db2b0420429f98535d8ed3f4dd89abe33c3fa82937960358eecc13b922ecf"
+    },
+    {
+      "path": "docs/brand/original/assets/primary/crewmori-primary-white.png",
+      "bytes": 60690,
+      "sha256": "0c3e6ba4746646beb8357754829e0f473f9f25d566cb2a58eb6c32bac105e6fe"
+    },
+    {
+      "path": "docs/brand/original/assets/primary/crewmori-primary-white.svg",
+      "bytes": 2974,
+      "sha256": "273675d2b742e087f83ef5bd7e09decebee70f07cc713f3df9d037191da12fda"
+    },
+    {
+      "path": "docs/brand/original/assets/stacked/crewmori-stacked-black.png",
+      "bytes": 43062,
+      "sha256": "d4b7255adabe5c9c50f4e0fadc8ca18592de4ad2649e3149f6b2cfc86c303160"
+    },
+    {
+      "path": "docs/brand/original/assets/stacked/crewmori-stacked-black.svg",
+      "bytes": 2996,
+      "sha256": "7b875dd61a6d2bdb95fed44b097249c26c935b0576bbb41220e93614c159ff44"
+    },
+    {
+      "path": "docs/brand/original/assets/stacked/crewmori-stacked-green.png",
+      "bytes": 58518,
+      "sha256": "eacd5bf4c34ff66ef510867a6f4cbbc54e1df11e388de41ee9897a6e715d73cf"
+    },
+    {
+      "path": "docs/brand/original/assets/stacked/crewmori-stacked-green.svg",
+      "bytes": 2996,
+      "sha256": "9691cd66a52e84f2a557350f2b2c1c3283ca69b69eaf26312c71a5ed4f8441bb"
+    },
+    {
+      "path": "docs/brand/original/assets/stacked/crewmori-stacked-white.png",
+      "bytes": 47891,
+      "sha256": "7cb42e26d24e7cb848b6dfc6b31cd0b9b325044b072b16dd79d994380b81d5e3"
+    },
+    {
+      "path": "docs/brand/original/assets/stacked/crewmori-stacked-white.svg",
+      "bytes": 2996,
+      "sha256": "a78009076085717aef491bac51d87bf61847dd51e2ce64d37225cb57045087d6"
+    },
+    {
+      "path": "docs/brand/original/assets/symbol/crewmori-symbol-black.png",
+      "bytes": 10583,
+      "sha256": "8694addd12151ab7f3814a86d69b383fde35cef3816d3e3e7238ecdae3a1c89b"
+    },
+    {
+      "path": "docs/brand/original/assets/symbol/crewmori-symbol-black.svg",
+      "bytes": 504,
+      "sha256": "dee4e316034e4ac25692d710e8bc110eeb7a4041262dfdc9295cf49fe5385850"
+    },
+    {
+      "path": "docs/brand/original/assets/symbol/crewmori-symbol-favicon.svg",
+      "bytes": 453,
+      "sha256": "da7f65638c0c079947b0d1df50d876892be59008a6a87336a55b171eef007e5c"
+    },
+    {
+      "path": "docs/brand/original/assets/symbol/crewmori-symbol-green.png",
+      "bytes": 11481,
+      "sha256": "fce82767587ef5f50cd6c523c260cab2c43a20c26c36b6e589545ec56203a896"
+    },
+    {
+      "path": "docs/brand/original/assets/symbol/crewmori-symbol-green.svg",
+      "bytes": 504,
+      "sha256": "ff7fb0a0b01a1b7d7e994ba4f64a4a8ab6c8ad6a073428865fc06975cb2cb693"
+    },
+    {
+      "path": "docs/brand/original/assets/symbol/crewmori-symbol-raw.svg",
+      "bytes": 503,
+      "sha256": "02286457adfecc269fb6ca04d742868ecddb99a964e181bb4113e00bf79c758e"
+    },
+    {
+      "path": "docs/brand/original/assets/symbol/crewmori-symbol-white.png",
+      "bytes": 10878,
+      "sha256": "d18978f0006e2bd348d26fb189b2729a66ab324a76700d61725317e2ac7b7a15"
+    },
+    {
+      "path": "docs/brand/original/assets/symbol/crewmori-symbol-white.svg",
+      "bytes": 504,
+      "sha256": "0c73294d6d20fc5e7802a1da65d5ce6e5cd8437818eb3a0c7852643cbee81f8d"
+    },
+    {
+      "path": "docs/brand/original/assets/wordmark/crewmori-wordmark-black.png",
+      "bytes": 46787,
+      "sha256": "c58cb28a3f7fe8dc04190fad1c125c2acdc8b21be01ff719575652a71fedcc34"
+    },
+    {
+      "path": "docs/brand/original/assets/wordmark/crewmori-wordmark-black.svg",
+      "bytes": 2783,
+      "sha256": "e2be72ed8d7c04ec067f8c2aa1ea8dbbda4e656eddd6748fe24196385b31f2be"
+    },
+    {
+      "path": "docs/brand/original/assets/wordmark/crewmori-wordmark-green.png",
+      "bytes": 65470,
+      "sha256": "d70723848b68ebd63aa79b13df88cd49d6ec3156530d83c1992de909ddd8ce6b"
+    },
+    {
+      "path": "docs/brand/original/assets/wordmark/crewmori-wordmark-green.svg",
+      "bytes": 2783,
+      "sha256": "84f214fa8a944454f0974555d77817a4b97204857f2af5ca2b2d75ff53a474e6"
+    },
+    {
+      "path": "docs/brand/original/assets/wordmark/crewmori-wordmark-white.png",
+      "bytes": 52770,
+      "sha256": "b0de9046396e2e481f3ce9af14d3a3e6ac6f2d2903066eb35e3b3a610e02de81"
+    },
+    {
+      "path": "docs/brand/original/assets/wordmark/crewmori-wordmark-white.svg",
+      "bytes": 2783,
+      "sha256": "bd184cf3bec64ccee0c3865e1bd4235e6375c20469920eda37c75c044508fb2a"
+    },
+    {
+      "path": "docs/brand/original/guide/Crewmori_Brand_Guidelines.pdf",
+      "bytes": 1209463,
+      "sha256": "e925c03ebc37287bf5cf8d5da3bf3ed51445f827b2a9c9e5fefccc0936f54eed"
+    },
+    {
+      "path": "docs/brand/original/guide/Crewmori_Brand_Guidelines.pptx",
+      "bytes": 7440646,
+      "sha256": "ac2d6beaa27e7a06d048aeb1cb59f1377610c4f5513b3f87fb09b3dbafa821ca"
+    },
+    {
+      "path": "docs/brand/original/guide/Founder_Supplied_Guidelines.pdf",
+      "bytes": 1234598,
+      "sha256": "2c16028a541f05a44c7f69e44a3e928e8f9ac5ed25fcc17974e1de06aaa6c2ec"
+    },
+    {
+      "path": "docs/brand/original/guide/Founder_Supplied_Guidelines.pptx",
+      "bytes": 7440646,
+      "sha256": "ac2d6beaa27e7a06d048aeb1cb59f1377610c4f5513b3f87fb09b3dbafa821ca"
+    },
+    {
+      "path": "docs/brand/original/references/Crewmori_Stage1_Logo_Concepts.zip",
+      "bytes": 2391031,
+      "sha256": "a1652bc111a7314bc3347ed72a1bf2a6bedd098ae13ff9be48a05b7d562aec4c"
+    },
+    {
+      "path": "docs/brand/original/references/Reference_Brand_Guideline.pdf",
+      "bytes": 3970670,
+      "sha256": "794bba541776f8d8c6e1894a02d879b52915ec0428839c7902e641e284547c88"
+    },
+    {
+      "path": "docs/brand/original/source/build_assets.py",
+      "bytes": 16751,
+      "sha256": "8d105dc452bf06ccae078549476f857e5bba94759fd658838f721a2282655682"
+    },
+    {
+      "path": "docs/brand/original/source/build_guidelines.mjs",
+      "bytes": 38497,
+      "sha256": "1d47f2e66eafbd9ba417a9955348c953127f36f432d4646fcb14334ac4b5fee5"
+    },
+    {
+      "path": "docs/brand/original/source/build_tokens.py",
+      "bytes": 31801,
+      "sha256": "89fef5840cbce7650b60399b260d8fb7582f94413d9761c9789adc1f93968ccb"
+    },
+    {
+      "path": "docs/brand/original/source/finish_pdf.py",
+      "bytes": 1302,
+      "sha256": "31486034b469365bde2ac2f886e969ea4dccc483d0ffaa453c9951623a6d7deb"
+    },
+    {
+      "path": "docs/brand/original/source/requirements.txt",
+      "bytes": 62,
+      "sha256": "a6027c37ae28f31868c2009e95b3832b9807e01f728d5580060848b20eff6943"
+    },
+    {
+      "path": "docs/brand/original/source/slide-index.json",
+      "bytes": 2537,
+      "sha256": "4eb7d0a65e7221b2aba643a68f43b6fbe61981f63cffdea18aa4845bb329e788"
+    },
+    {
+      "path": "docs/brand/original/tokens/contrast-report.json",
+      "bytes": 26444,
+      "sha256": "c1b2ce928ad04b0246515dd328c34efe699d436fb31bdde6429e8bcaf52541a5"
+    },
+    {
+      "path": "docs/brand/original/tokens/crewmori-tokens.css",
+      "bytes": 5717,
+      "sha256": "2755441ec0fea9602e47abda67abf189c1c6e5469500c07a9159515bb44946a5"
+    },
+    {
+      "path": "docs/brand/original/tokens/crewmori-tokens.json",
+      "bytes": 9424,
+      "sha256": "7889397e5d0bd0a3d376287f42408b822ceafa432a4ec7527f1e9b870cdc8f2d"
+    },
+    {
+      "path": "docs/context/ORIGINAL_PLANNING_MASTER.md",
+      "bytes": 10746,
+      "sha256": "a160805b9e5ab588aa1599ee8b9e07fadd441849052dd9547d099920e0b22065"
+    },
+    {
+      "path": "docs/context/archive/ORIGINAL_ARCHIVE_MANIFEST.json",
+      "bytes": 1384,
+      "sha256": "df4fce40d8e8ef235c75097c769075bd4ba1905acbb711abccabad78aded7e86"
+    },
+    {
+      "path": "docs/context/archive/README.md",
+      "bytes": 1980,
+      "sha256": "c1921dcefd870b0f313ecf8450bab598232e2e73c75b5fe3c329a0c32635777b"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/00_START_HERE.md",
+      "bytes": 6381,
+      "sha256": "87ada97cd2de884e9f063fab5f3b18ad5b7506af60fadb91866e6f194dd6d9cc"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/01_PRD.md",
+      "bytes": 18555,
+      "sha256": "32b9ab5e960a2467949486008c13423112b418bbeb451d24fb81fcb5dfd7cce4"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/02_SYSTEM_ARCHITECTURE.md",
+      "bytes": 16529,
+      "sha256": "055e0849a510f511936995536c25a9a0b048f9f13ed5b580b8aad383c32a3b0b"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/03_API_AND_DATA_CONTRACTS.md",
+      "bytes": 14396,
+      "sha256": "1982a4de21cc68cb7e3d555a8b06ad4efc47a7197b83501438ce9410b15860b7"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/04_INTEGRATIONS.md",
+      "bytes": 14085,
+      "sha256": "0163184aa4a0fc11a2380d458639d7f30aa9921643014314c22ea6843a82d007"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/05_IMPLEMENTATION_PLAN.md",
+      "bytes": 11222,
+      "sha256": "0109b38b875a75ce9d458428e0fb070f61fb45294f8341fddcd2fd443d1d8897"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/06_DESIGN_AND_INTERACTIONS.md",
+      "bytes": 11432,
+      "sha256": "043a29eef9a4130a64475cf3304439f6bc7aee31317e773fa7106366237e5ce4"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/07_EVIDENCE_AND_DECISIONS.md",
+      "bytes": 8615,
+      "sha256": "097e1dbdd8da6ad71a47823be443c7271658aed5d69804c7a4ca862fa5742780"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/08_VERIFICATION_AND_RELEASE.md",
+      "bytes": 11144,
+      "sha256": "efcfa1b4c7e59138bb1124cb927ae253fc9cfdbd614f2f5bc77b976e1225a642"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/AI_START_PROMPT.md",
+      "bytes": 3896,
+      "sha256": "4f9748c4846065570234f6b15727def6b91d9adea63cf876a5d1f7c9fa18f612"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/BUILD_STATUS.md",
+      "bytes": 2551,
+      "sha256": "27122acba6f44df800b1553a2307cd9fcb8a91cf0bfafa244c53bfe76afb41f1"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/PACKAGE_MANIFEST.json",
+      "bytes": 9564,
+      "sha256": "3a237fcbdedf4f56ca9f0637916bef746e8d0ae8aa7e74740f815e76a3df4a59"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/context/FINTECHATHON_2026_INTERNATIONAL_MASTER_CONTEXT.md",
+      "bytes": 244202,
+      "sha256": "5c95e9145aff935ae47c17a213bfd3bbaca3b77864a3e2fe21eaa4e43ad0fc83"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/context/IDEA_CONTEXT.md",
+      "bytes": 47757,
+      "sha256": "bd1ea431293cb36555d05f413be3f8f79c75aa5012d015b3990be7195aa20a22"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/contracts/activity-event.schema.json",
+      "bytes": 1959,
+      "sha256": "dfe68851f809683f2e25567a5367efa76a231f8771fac6bbf729367cf29e644f"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/design/stitch/00_README.md",
+      "bytes": 3145,
+      "sha256": "b339ac747204f72a1bae4535bbf74cc195010dc371fb03a8fd9a44734a7474e8"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/design/stitch/01_MASTER_PROMPT.md",
+      "bytes": 6725,
+      "sha256": "6e5ca7ecb2ef26f351cf1307032a907e917db8f9d708559c94756678247f5c2a"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/design/stitch/02_SCREENS.md",
+      "bytes": 6960,
+      "sha256": "3513ecde3be2106e87a2e7c4dc7350fc50c7b1ff917f995206069a2d03bd0861"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/design/stitch/03_AGENTS_AND_INTERACTIONS.md",
+      "bytes": 4691,
+      "sha256": "12f24d589ae385c9de14110e2936b7f1567bb695c7790b8be4d74128bb2d8f86"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/design/stitch/04_DEMO_DATA.json",
+      "bytes": 7309,
+      "sha256": "1551d3fbafa05394488a00234d04a151023d0d32d00165b254fdc5096f613290"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/design/stitch/05_REFINEMENT_PROMPTS.md",
+      "bytes": 3852,
+      "sha256": "07a251e2f14fe099e2a4fd0e8be923c3af4c2dcb2482e2154aee91d2f9667825"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/design/stitch/DESIGN.md",
+      "bytes": 5849,
+      "sha256": "fd875bb7b029654dae62c5496644fe0aefa0cb135f4a3960802dc02bb5e04b41"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/reference/AI_Business_Team_Technical_Plan.md",
+      "bytes": 72617,
+      "sha256": "6d410a9188729045924a254c9f20e922aa7e8827b34ab4fc2aedfb613ba4b55f"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/reference/Clearwork_Earlier_Concept.jpeg",
+      "bytes": 236108,
+      "sha256": "c306b2dc2ccabe643a91abbbed6d8a59d81edfe4cc5bc7d0ec5866ed2c6db2ef"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/reference/FinTechathon_Master_v1.md",
+      "bytes": 116143,
+      "sha256": "2603f302e3cef91ce430908c4f8fe4dff382344d6a018eba461bb64fa4686ec2"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/reference/FinTechathon_Master_v2.md",
+      "bytes": 166028,
+      "sha256": "ee3a7932ae2d5b57b76a2e28604ab084adbd89ea6cef5d5f5508173a8ee6cde7"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/reference/Principal_Idea_Context_v1.md",
+      "bytes": 46810,
+      "sha256": "ba3920b1c191894e4b1d970c3aef3f70e9343270207f9030987736b7c58b8a75"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/reference/Principal_PRD_v0_2.md",
+      "bytes": 52287,
+      "sha256": "b365c63073256568352fd5fde7717bb3ca68ec23c3b4af6e4d2c6e77fd212b21"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/reference/README.md",
+      "bytes": 1378,
+      "sha256": "99b7b8b25cfa11be5d7e5d0309c22bb1949d1e0fddff73e7b98e78c6c59d584e"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/research/README.md",
+      "bytes": 1840,
+      "sha256": "a0bf23272a8fc9fecb658859a5aa2a713876036105d28bb335ea384baa16620e"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/sample-data/README.md",
+      "bytes": 2429,
+      "sha256": "48f4f0907e1b69f4293a45583d00a4f28bf03aa32861107fbf4fef10cabd6591"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/sample-data/activity_events.json",
+      "bytes": 3715,
+      "sha256": "96a770c1a841f197c39146a696676d6d6e291b4d136d20add9e7c8459c16adab"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/sample-data/business_profile.json",
+      "bytes": 2487,
+      "sha256": "24d2405ea204177cd72309bfa881d99071870ca2152fcdd93998833304425219"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/sample-data/conversation.json",
+      "bytes": 1470,
+      "sha256": "0eece10fc8ead2805c81ade7cde3b8527510f3f10d716a37cd8a2372b104b752"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/sample-data/offer_fixture.json",
+      "bytes": 3957,
+      "sha256": "9fd2795ec421efb0867c8b1bdf8a1a6184889c800784839ec440e97a36b2c386"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/sample-data/opportunity.json",
+      "bytes": 1573,
+      "sha256": "0de4c7fa293e97240407915651f2da92db45196ce5e530b973e8e11fdbf093b7"
+    },
+    {
+      "path": "docs/context/archive/original-core/AI_Business_Team_Handoff/sample-data/payment_events.json",
+      "bytes": 8261,
+      "sha256": "146872102c3c32eab48cbe16b64c4b36bf6e3788cd0fa5ffb4381180cedc3dd7"
+    },
+    {
+      "path": "docs/context/archive/parts/original-context.part01",
+      "bytes": 20971520,
+      "sha256": "296827af1bf0ad124e1ec0d7a0fe9509b7ac771a27727bd50dde933f95c4faf1"
+    },
+    {
+      "path": "docs/context/archive/parts/original-context.part02",
+      "bytes": 20971520,
+      "sha256": "36e8311a69bed993f1e38aa094e6a5d68bb1c238d8a5937392ed1b30379852ac"
+    },
+    {
+      "path": "docs/context/archive/parts/original-context.part03",
+      "bytes": 20971520,
+      "sha256": "a70adad8972b145447b3c8a32dae6c3b8ad1814cd925ae3a5ebd53db9c7c4441"
+    },
+    {
+      "path": "docs/context/archive/parts/original-context.part04",
+      "bytes": 20971520,
+      "sha256": "78b5025eafb31057abac3d1214bba514f40bae6a4eea97069a0db6057e543ebc"
+    },
+    {
+      "path": "docs/context/archive/parts/original-context.part05",
+      "bytes": 20971520,
+      "sha256": "fb2433698402cb537754988ed3cfcb05fafe594aa149e77eba47cbfef43489e2"
+    },
+    {
+      "path": "docs/context/archive/parts/original-context.part06",
+      "bytes": 2389326,
+      "sha256": "2933eeb1dce689efc887e880596b10215a14a5f15579e753d0b026d804c4d41e"
+    },
+    {
+      "path": "docs/context/archive/restore_original.py",
+      "bytes": 1448,
+      "sha256": "de90445509d8834c3fcf35cb5ca6e31da6bde499564253f078ff96c4e7df791e"
+    },
+    {
+      "path": "docs/context/research/BRAND_RECONCILIATION.md",
+      "bytes": 13847,
+      "sha256": "8fd503f32870897cb074b63e9313e6de3291676839c7d8bddaaa57272332d8f9"
+    },
+    {
+      "path": "docs/context/research/STITCH_AUDIT_HISTORICAL.txt",
+      "bytes": 47265,
+      "sha256": "9d8258bc93fe7394e7e3eb8e1a8de1e18d7872b738f424aab148715c81c87ce8"
+    },
+    {
+      "path": "docs/contracts/AUDIENCE_PROJECTIONS.md",
+      "bytes": 4926,
+      "sha256": "b828069e42e1513ae4c8f1c3c37df8827dd53be10bb4fc7c8b1ad689c4bca772"
+    },
+    {
+      "path": "docs/contracts/EDITOR_AND_RUNTIME_EXTENSIONS.md",
+      "bytes": 5158,
+      "sha256": "7b0d9ae618e3f7f341a0bd4aecdf451295c6af6a61416c4ac44b6cb1de077664"
+    },
+    {
+      "path": "docs/contracts/README.md",
+      "bytes": 1211,
+      "sha256": "595a7d534b174f8d19af27bddb788299f3cf46e300e40d8c24ee99daec8375eb"
+    },
+    {
+      "path": "docs/contracts/SERVICE_AND_EVENT_CONTRACTS.md",
+      "bytes": 11448,
+      "sha256": "c67bb62ff211beb2b026ef4eb6ff3abb4f834da95ff48a7ed4893203d0ccdef5"
+    },
+    {
+      "path": "docs/contracts/TRANSITIONS_AND_POLICIES.md",
+      "bytes": 11075,
+      "sha256": "3f35f66ea3377ffca61cba44c4d66c9d2eb9d023ebaf0b3d9e94e2fe43a8f8bc"
+    },
+    {
+      "path": "docs/contracts/domain-contracts.ts",
+      "bytes": 10206,
+      "sha256": "a7e40bf160b5134da621a98b4bf378777c77b02f98a7e5df47212769e5ff9dd6"
+    },
+    {
+      "path": "docs/data/ENTITY_DICTIONARY.md",
+      "bytes": 8606,
+      "sha256": "59ab0e50e00366c9569a689adbb3c279ef3a9fb8c15be809a773b4ede46ac0ef"
+    },
+    {
+      "path": "docs/data/README.md",
+      "bytes": 6061,
+      "sha256": "a55ff9a83b9a9ddca6b1c07d9451136b8a20ba00627c07863c94686171cd0429"
+    },
+    {
+      "path": "docs/data/SOURCE_FACTS_AND_ASSUMPTIONS.md",
+      "bytes": 3957,
+      "sha256": "8f3de95e6602aac3c7881c081e33814670d1a2f992e50defb81d7c6248f23917"
+    },
+    {
+      "path": "docs/data/build_fixtures.py",
+      "bytes": 49316,
+      "sha256": "ca9dbc4e5ab20a7727b4051bff9c26f840e81a4170dd84dfe96233e3927a0fba"
+    },
+    {
+      "path": "docs/data/fixture_v1.json",
+      "bytes": 47451,
+      "sha256": "bea4d3da6ec2ca0edb75868b94b13b0db9bf01f0de48b5202bbc9ab7a6c1dc36"
+    },
+    {
+      "path": "docs/data/fixture_v1.schema.json",
+      "bytes": 98014,
+      "sha256": "4d5975e6cdae24cb3b801adc87b5fba76ca2464a5cf0c68c2bf5395a47219678"
+    },
+    {
+      "path": "docs/data/scenarios_v1.json",
+      "bytes": 150167,
+      "sha256": "2b55d979fe83e8c1a830f4c1c9b97f40d1f86fc9fe9baba77753d5ed5730c1b2"
+    },
+    {
+      "path": "docs/data/scenarios_v1.schema.json",
+      "bytes": 8976,
+      "sha256": "ea6ea97d12b17d0a4f9687b7d86c0a72f9a89e2af1b3c8a1dabdc73ebc1a9f45"
+    },
+    {
+      "path": "docs/data/verify_fixtures.py",
+      "bytes": 13636,
+      "sha256": "4e39078feec410c314c45501b8ff6c047144534f95136806d7ec642568ce115a"
+    },
+    {
+      "path": "docs/design-tokens.json",
+      "bytes": 9871,
+      "sha256": "f03d5c9988411b086c78a24b8d88744b31a9ad4eda6aa72325a95f2f8b6bda26"
+    },
+    {
+      "path": "docs/flows/acquisition-buyer.json",
+      "bytes": 367119,
+      "sha256": "3d95cfb14ba3708a526c107777e115e4c2ee18eca05347f22075a3418d8453a1"
+    },
+    {
+      "path": "docs/flows/foundation-team-settings.json",
+      "bytes": 210114,
+      "sha256": "bfca60476536bab96e51d50b6c0d3a6aeb37e00988ef3308b6d09fda7fa97d0a"
+    },
+    {
+      "path": "docs/flows/work-money.json",
+      "bytes": 251174,
+      "sha256": "5a65b86d3d675951fdf27402a9245ead158159474b91a2867181ce98b7bafbbc"
+    },
+    {
+      "path": "eslint.config.mjs",
+      "bytes": 432,
+      "sha256": "8f95c5957688bfa6f22b5e761d7110bad22a0387873e802353f8d498415402e9"
+    },
+    {
+      "path": "next-env.d.ts",
+      "bytes": 247,
+      "sha256": "7b550dda9686c16f36a17bf9051d5dbf31e98555b30d114ac49fc49a1e712651"
+    },
+    {
+      "path": "next.config.ts",
+      "bytes": 160,
+      "sha256": "5125b034fe7f85c8b4c93524094517a2bceeab33c2da8d70e9cd2b8bb72cb8a7"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 237180,
+      "sha256": "d77de250b56620dccccb8525d626c273c9130445880c4b976f104ceacadac6c9"
+    },
+    {
+      "path": "package.json",
+      "bytes": 780,
+      "sha256": "d80c38a16dfc0875b5e6435cf0823d2b64e0f626111ec08c9341006f7dc7f44e"
+    },
+    {
+      "path": "premium-ui.json",
+      "bytes": 313,
+      "sha256": "1a94e33b8f46bc4f2c4a4d5f9bfca8af28b891a4a6bb7185047859b6314f93c7"
+    },
+    {
+      "path": "public/assets/brand/crewmori-favicon.svg",
+      "bytes": 560,
+      "sha256": "bb44ed102d2e3bb04ff0499cc67c464dfc44f7bcfa83a1a12ba6782e2a6351e1"
+    },
+    {
+      "path": "public/assets/brand/crewmori-horizontal-black.svg",
+      "bytes": 2974,
+      "sha256": "5eea61e644c26a079bb05d2f0ba2b1a672ea99bdd7fe7d2265c391c5a41ae841"
+    },
+    {
+      "path": "public/assets/brand/crewmori-horizontal-green.svg",
+      "bytes": 2974,
+      "sha256": "dd7db2b0420429f98535d8ed3f4dd89abe33c3fa82937960358eecc13b922ecf"
+    },
+    {
+      "path": "public/assets/brand/crewmori-horizontal-white.svg",
+      "bytes": 2974,
+      "sha256": "273675d2b742e087f83ef5bd7e09decebee70f07cc713f3df9d037191da12fda"
+    },
+    {
+      "path": "public/assets/brand/crewmori-primary-black.svg",
+      "bytes": 2974,
+      "sha256": "5eea61e644c26a079bb05d2f0ba2b1a672ea99bdd7fe7d2265c391c5a41ae841"
+    },
+    {
+      "path": "public/assets/brand/crewmori-primary-green.svg",
+      "bytes": 2974,
+      "sha256": "dd7db2b0420429f98535d8ed3f4dd89abe33c3fa82937960358eecc13b922ecf"
+    },
+    {
+      "path": "public/assets/brand/crewmori-primary-white.svg",
+      "bytes": 2974,
+      "sha256": "273675d2b742e087f83ef5bd7e09decebee70f07cc713f3df9d037191da12fda"
+    },
+    {
+      "path": "public/assets/brand/crewmori-symbol-black.svg",
+      "bytes": 504,
+      "sha256": "dee4e316034e4ac25692d710e8bc110eeb7a4041262dfdc9295cf49fe5385850"
+    },
+    {
+      "path": "public/assets/brand/crewmori-symbol-favicon.svg",
+      "bytes": 453,
+      "sha256": "da7f65638c0c079947b0d1df50d876892be59008a6a87336a55b171eef007e5c"
+    },
+    {
+      "path": "public/assets/brand/crewmori-symbol-green.svg",
+      "bytes": 504,
+      "sha256": "ff7fb0a0b01a1b7d7e994ba4f64a4a8ab6c8ad6a073428865fc06975cb2cb693"
+    },
+    {
+      "path": "public/assets/brand/crewmori-symbol-raw.svg",
+      "bytes": 503,
+      "sha256": "02286457adfecc269fb6ca04d742868ecddb99a964e181bb4113e00bf79c758e"
+    },
+    {
+      "path": "public/assets/brand/crewmori-symbol-white.svg",
+      "bytes": 504,
+      "sha256": "0c73294d6d20fc5e7802a1da65d5ce6e5cd8437818eb3a0c7852643cbee81f8d"
+    },
+    {
+      "path": "public/assets/brand/crewmori-wordmark-black.svg",
+      "bytes": 2783,
+      "sha256": "e2be72ed8d7c04ec067f8c2aa1ea8dbbda4e656eddd6748fe24196385b31f2be"
+    },
+    {
+      "path": "public/assets/brand/crewmori-wordmark-green.svg",
+      "bytes": 2783,
+      "sha256": "84f214fa8a944454f0974555d77817a4b97204857f2af5ca2b2d75ff53a474e6"
+    },
+    {
+      "path": "public/assets/brand/crewmori-wordmark-white.svg",
+      "bytes": 2783,
+      "sha256": "bd184cf3bec64ccee0c3865e1bd4235e6375c20469920eda37c75c044508fb2a"
+    },
+    {
+      "path": "public/assets/brand/favicon.ico",
+      "bytes": 4853,
+      "sha256": "c78d27b92f6dd87e187aba99b4855a8334bd087db160b8d17b931c7cf2767316"
+    },
+    {
+      "path": "public/assets/characters/README.md",
+      "bytes": 2187,
+      "sha256": "6d1b5b8ae5626e6498e787ce9f689f8ed56de184b4ce12484a6b92d8bf451afc"
+    },
+    {
+      "path": "public/assets/characters/account-manager.svg",
+      "bytes": 519,
+      "sha256": "22f53f665d4091b8c6ef431643f54bfe261b3f918539a4d5802c440a5f131bd1"
+    },
+    {
+      "path": "public/assets/characters/finance.svg",
+      "bytes": 549,
+      "sha256": "f4df41bfa88135cca83fa1cda882edcc0810d0e30615fea14df1a8114a3dab0e"
+    },
+    {
+      "path": "public/assets/characters/operations.svg",
+      "bytes": 632,
+      "sha256": "3c285e416dbc3a6e4dfb7a4befca83635fa93acca18bbd5c5567d094195e340c"
+    },
+    {
+      "path": "public/assets/characters/promoter.svg",
+      "bytes": 503,
+      "sha256": "b5572d37cbac45f4c156b724ddd947165a2e38070339b2a923e7419ca8514f28"
+    },
+    {
+      "path": "public/assets/characters/provenance.json",
+      "bytes": 3809,
+      "sha256": "24c4c399a9d61166a2a517e25e55cf9aad00274e1afc3cb86d1521b2dfb677a9"
+    },
+    {
+      "path": "public/assets/characters/sales.svg",
+      "bytes": 459,
+      "sha256": "0583c32d03286c52850b136b2153c4bcfe4cfadd9cb82d8635eab99ada9fb0fb"
+    },
+    {
+      "path": "public/assets/characters/scout-hero.svg",
+      "bytes": 1629,
+      "sha256": "32cdc2c76c69f21a264c4cb7461204e29eefe85c255f4b1cd9e3bcc90d4c9fd9"
+    },
+    {
+      "path": "public/assets/characters/scout.svg",
+      "bytes": 611,
+      "sha256": "d9182b7e67149b5a3b7fae6668494e2271bacdc8c7a8111373f94ac6f11bcd27"
+    },
+    {
+      "path": "public/assets/demo/README.md",
+      "bytes": 1681,
+      "sha256": "41af7f7c8028d09f57fea9285973aace2d456922d49a0d57bb1bdc27abf7db7a"
+    },
+    {
+      "path": "public/assets/demo/portfolio-kinetic-launch.svg",
+      "bytes": 878,
+      "sha256": "26102f82aa371ec95e32caeede69ba047cff18bbfea687cdad1dc8c26ee94301"
+    },
+    {
+      "path": "public/assets/demo/portfolio-research-synthesis.svg",
+      "bytes": 1335,
+      "sha256": "22dfc60a282dfc92aa7576538f47e7e71a1a202a64fecd987cd27436b55c2752"
+    },
+    {
+      "path": "public/assets/demo/portfolio-spatial-interface.svg",
+      "bytes": 1344,
+      "sha256": "d914111bc536ac8f94f6c07984219a7de07f414a912c67a43e89faf2b7c5f59c"
+    },
+    {
+      "path": "public/assets/demo/provenance.json",
+      "bytes": 1130,
+      "sha256": "37649329b02a0e9972312b12e39104854962693c02dfee2a2ec1a34707bcc444"
+    },
+    {
+      "path": "public/assets/demo/team-worldmap.svg",
+      "bytes": 1401,
+      "sha256": "2eeb679bef3fe0c93193c117523c1b2b00173702d215e1fce3b8908e8ec7d6c1"
+    },
+    {
+      "path": "public/assets/fonts/Inter-Italic-VF.ttf",
+      "bytes": 906596,
+      "sha256": "acd98e64795781b2058f07b18475e0ecee2a0fe2b42a49e2f9e37d0d6bf66ce6"
+    },
+    {
+      "path": "public/assets/fonts/Inter-OFL.txt",
+      "bytes": 4377,
+      "sha256": "5b9321a4298cfeb6b34354164a1c3afc3db114569984c502b9b35d988fd58c57"
+    },
+    {
+      "path": "public/assets/fonts/Inter-Roman-VF.ttf",
+      "bytes": 876576,
+      "sha256": "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031"
+    },
+    {
+      "path": "public/assets/fonts/Newsreader-Italic-VF.ttf",
+      "bytes": 495684,
+      "sha256": "796668611f80b64d5adf182fde3b6f29ed83b4e7cbec7b96937e84ac01364792"
+    },
+    {
+      "path": "public/assets/fonts/Newsreader-OFL.txt",
+      "bytes": 4394,
+      "sha256": "fdfad38143ec470553cae82a1e45320bdd1b9ec70415d37bd0171051d8a4ded8"
+    },
+    {
+      "path": "public/assets/fonts/Newsreader-Roman-VF.ttf",
+      "bytes": 451664,
+      "sha256": "8a08d13f8a6c0d51be379a60af84f945f65369a67e509ee3c3bdcc421254d7c1"
+    },
+    {
+      "path": "public/assets/fonts/README.md",
+      "bytes": 1897,
+      "sha256": "b9bedb2a6fb35b16f99ff8696e36fa29cc458822842956e4871622cdb257cde7"
+    },
+    {
+      "path": "public/assets/fonts/provenance.json",
+      "bytes": 1841,
+      "sha256": "6db009fe0f60fb44f1c578794454d33173d56724ec50f2446cd68e95c5596c66"
+    },
+    {
+      "path": "references/README.md",
+      "bytes": 2845,
+      "sha256": "9d804344001b8a861dc8467e3b150245f87aa303500dd3919989b28f132c2271"
+    },
+    {
+      "path": "references/REFERENCE_MANIFEST.json",
+      "bytes": 12588,
+      "sha256": "b082e1075b6bf7846cf6ed2549ec635648cfec92ea773c509a73305c42fbcb23"
+    },
+    {
+      "path": "references/anchors/01_HOME.png",
+      "bytes": 798037,
+      "sha256": "d751d7654013282c19a606652da5558e0cb2f86220a241e139e0b81c1e70ac23"
+    },
+    {
+      "path": "references/anchors/01_HOME_reference.html",
+      "bytes": 47008,
+      "sha256": "57a268d7bb56719f83b7f311bcde8af4cbafe25acb78a40dc5c329eb9bc5d113"
+    },
+    {
+      "path": "references/anchors/02_TEAM.png",
+      "bytes": 689148,
+      "sha256": "fdee2eb626b2397f04e9e45983196771e8462e2f539afe5e94608f18fc1ae695"
+    },
+    {
+      "path": "references/anchors/02_TEAM_reference.html",
+      "bytes": 52778,
+      "sha256": "6c50fe5d4b5a6497759577dfb54ab2fdea2bf7e476f97990da20cea9c9464a2a"
+    },
+    {
+      "path": "references/shopify-contra/CO-AI-03.png",
+      "bytes": 800581,
+      "sha256": "aa4438498b04fd356ef48c4805da22207ba2469d387c4f820ee7c44c75984aa0"
+    },
+    {
+      "path": "references/shopify-contra/CO-AI-04.png",
+      "bytes": 882890,
+      "sha256": "29fbfe459c6777c22bcd862825d1d8e87d42b7b80bc28b1f3435a54e81e54714"
+    },
+    {
+      "path": "references/shopify-contra/CO-AVAIL-01.png",
+      "bytes": 813586,
+      "sha256": "1c03de2482a867e36aea3131e5baee5603d1de99d135560969a2cb58dcaf6516"
+    },
+    {
+      "path": "references/shopify-contra/CO-AVAIL-02.png",
+      "bytes": 909148,
+      "sha256": "5cbd452a4d6e9cf84bd1a807ca5aa6553b741662798de7e91502028e613d5273"
+    },
+    {
+      "path": "references/shopify-contra/CO-DASH-01.png",
+      "bytes": 699224,
+      "sha256": "ce38d2152d318a6125cd39d5866a298d0765d7efab1fba1bb297a620a7e661d8"
+    },
+    {
+      "path": "references/shopify-contra/CO-JOB-02.png",
+      "bytes": 744994,
+      "sha256": "440f27c8b0f2c65456acd14d12d9705a372b6e4eee961f98c8d8061df559ea51"
+    },
+    {
+      "path": "references/shopify-contra/SH-AI-02.png",
+      "bytes": 709092,
+      "sha256": "0d29fb3d91d40666f649eae77c58edb6119c52fd90d9a131c15ac74183c47b81"
+    },
+    {
+      "path": "references/shopify-contra/SH-AI-03.png",
+      "bytes": 629441,
+      "sha256": "8932a7f69b0f97aa3deeaae9c01bd4c01a22a8699857b735e32b0a1c29d7fe08"
+    },
+    {
+      "path": "references/shopify-contra/SH-AI-04.png",
+      "bytes": 622443,
+      "sha256": "4ba057094810cdd141701b5e7f8dfe112a56b8aa9943ff115f2a5d64371d8ddb"
+    },
+    {
+      "path": "references/shopify-contra/SH-AI-06.png",
+      "bytes": 649865,
+      "sha256": "703416a5252bbe96b34b756d6801ff2fee5d0af8840ec5b1161073bf4e54afd9"
+    },
+    {
+      "path": "references/shopify-contra/SH-CREATE-01.png",
+      "bytes": 296565,
+      "sha256": "e0a3aefa70dad34580831c24f54a0f62e9a22d8fd775884099ec303d73ae9d18"
+    },
+    {
+      "path": "references/shopify-contra/SH-CREATE-11.png",
+      "bytes": 413797,
+      "sha256": "40cccf0a75cdc251ddf0cfbd09487ca085d57d5bbb000dcb5f4016f577c3f6c8"
+    },
+    {
+      "path": "references/shopify-contra/SH-CREATE-12.png",
+      "bytes": 424614,
+      "sha256": "7e8f78ade0da8e59343a41b3e3abd9fac03fe91becd92e812186356f7c06d5ef"
+    },
+    {
+      "path": "references/shopify-contra/SH-CREATE-13.png",
+      "bytes": 489484,
+      "sha256": "71068c9db0c2c9a580695cfe2a127a918e677fd8fad1450060bd56a2a63781c1"
+    },
+    {
+      "path": "references/shopify-contra/SH-DATE-02.png",
+      "bytes": 783505,
+      "sha256": "a8a9a113eb2a729e1b528e4df6af6623443dffb0f2a1ad9966d7c4d6c4bce6cc"
+    },
+    {
+      "path": "references/shopify-contra/SH-DATE-03.png",
+      "bytes": 709662,
+      "sha256": "5da94866be8e2a0c26035b14f08872665d5dd74d7b68a7a3b4544db234b99d9b"
+    },
+    {
+      "path": "references/shopify-contra/SH-DETAIL-01.png",
+      "bytes": 772492,
+      "sha256": "c7c7665211bfce0df7db559cb7f1ac44f233665a06ea5622bc7eb10259bcada9"
+    },
+    {
+      "path": "references/shopify-contra/SH-FULFILL-02.png",
+      "bytes": 395916,
+      "sha256": "4499ad9466e03736bdb1fdcafb4b49b66d6d22e38ff4b5aca364fdd4aa7fa908"
+    },
+    {
+      "path": "references/shopify-contra/SH-FULFILL-04.png",
+      "bytes": 429471,
+      "sha256": "315493fbfd45b0b71fa15fea54866f8ed4e739aaa6358ed09fdb230770bfccd7"
+    },
+    {
+      "path": "references/shopify-contra/SH-METRIC-02.png",
+      "bytes": 757094,
+      "sha256": "704fc5acb072e5c0e6268572f4e018c5e442b3e74582873e978451e7966fe255"
+    },
+    {
+      "path": "references/shopify-contra/SH-PRODUCT-01.png",
+      "bytes": 274668,
+      "sha256": "2b1ef02506e61230045f2405e42225e64ec7b87f4fd065e1faac72dbd001a5b6"
+    },
+    {
+      "path": "references/shopify-contra/SH-PRODUCT-02.png",
+      "bytes": 376998,
+      "sha256": "70cbd47f7af4e7f7a0196d4976a2916772b5ad0f474b3037b6dc1421ee0d54e3"
+    },
+    {
+      "path": "references/shopify-contra/SH-PRODUCT-05.png",
+      "bytes": 217455,
+      "sha256": "67f25835bfb90eabe6b4b1b13191f2380ac67c2c766a53237a2d56dc12f56b03"
+    },
+    {
+      "path": "references/shopify-contra/SH-SELECT-01.png",
+      "bytes": 435527,
+      "sha256": "ba17d95dd57b7d6cb9fdf40e15fcdbd371aec00e91639d0266966626d3a77049"
+    },
+    {
+      "path": "scripts/dev.mjs",
+      "bytes": 488,
+      "sha256": "f6bfa520740a509940fb4edcb3d4ecd20148f28c9afbcd9ab7a56c65a38d62e1"
+    },
+    {
+      "path": "skills/CREWMORI_SKILL_ADAPTER.md",
+      "bytes": 6924,
+      "sha256": "aa386eb708264687f7d71142dfbee06f97e863115fd77f1656f08cb709359fc4"
+    },
+    {
+      "path": "skills/README.md",
+      "bytes": 4884,
+      "sha256": "daf8a4127852b7d654c949755aabb1e13fcb386353ac571b6a20a87bae9e0a5a"
+    },
+    {
+      "path": "skills/SOURCES.json",
+      "bytes": 21791,
+      "sha256": "a7059c95e84eeb80b648cfc90c3d988b5ff6c724d9814e6fbde6cc7efe8538d4"
+    },
+    {
+      "path": "skills/SOURCE_BOUNDARIES.md",
+      "bytes": 3970,
+      "sha256": "94c4fedbb46a331be461911e16aa603d45bc2a1037b07757605bc1772149752b"
+    },
+    {
+      "path": "skills/VERIFICATION_PLAYBOOK.md",
+      "bytes": 7038,
+      "sha256": "985300f4ea9ab781765ec4189384c147e301b4354b7f8ce6f57e55a154b249ed"
+    },
+    {
+      "path": "skills/vendor/impeccable/LICENSE",
+      "bytes": 10766,
+      "sha256": "02bb8c3b4e70190e3986c0404ad2fd8d639b4f534252d82379cc1b502b6d1812"
+    },
+    {
+      "path": "skills/vendor/impeccable/NOTICE.md",
+      "bytes": 503,
+      "sha256": "c60a093c2845fd9fb82f9c6f742ece31f379f8190b535309d32d66c45ccffdcb"
+    },
+    {
+      "path": "skills/vendor/impeccable/SKILL.md",
+      "bytes": 11659,
+      "sha256": "5fb0d412928c03e62d2536adfd878ad6aad6f9ce343956aa4f7164da06da3459"
+    },
+    {
+      "path": "skills/vendor/impeccable/reference/animate.md",
+      "bytes": 5236,
+      "sha256": "d658c48ffbe0031e8e3b318996cad6ceafe29e40aa50d5bb25e4bf1d6839dc7c"
+    },
+    {
+      "path": "skills/vendor/impeccable/reference/audit.md",
+      "bytes": 9250,
+      "sha256": "4b726d8f13ca1dbb82ca8179cbfefca8c53c13766fef4d7b8870f5d4324da2d6"
+    },
+    {
+      "path": "skills/vendor/impeccable/reference/clarify.md",
+      "bytes": 4590,
+      "sha256": "173dd66abe65633910dcb04a51f40d6ff2a793f87088f022a02fc4cad24dd133"
+    },
+    {
+      "path": "skills/vendor/impeccable/reference/craft-floor.md",
+      "bytes": 5502,
+      "sha256": "52b523e92b76daff71be2ec8c732c374c670f8d03e1296388738e581479ec1bb"
+    },
+    {
+      "path": "skills/vendor/impeccable/reference/critique.md",
+      "bytes": 48958,
+      "sha256": "c210c9506877c6c8d88880a337fddd95d4315daf70ed6bc631ee6520481f1a0c"
+    },
+    {
+      "path": "skills/vendor/impeccable/reference/distill.md",
+      "bytes": 5648,
+      "sha256": "56ca75d680eb8b61ca3a298d18e895cd4a0dcc520c31d7938a4807ff8dcf18ea"
+    },
+    {
+      "path": "skills/vendor/impeccable/reference/harden.md",
+      "bytes": 9305,
+      "sha256": "f69f1f0b3f97c194795ece67131b533e951130eeb8f202cf40e364b7a6badb7c"
+    },
+    {
+      "path": "skills/vendor/impeccable/reference/layout.md",
+      "bytes": 5161,
+      "sha256": "0bc7d7971b3edf2acd0580e847458dc6d84129d90715b452799ace3bed815c7c"
+    },
+    {
+      "path": "skills/vendor/impeccable/reference/operate.md",
+      "bytes": 4145,
+      "sha256": "a9d2203acd45ca33a13d5c68b02b23ed512425ac15f0e8438318ed124b43729d"
+    },
+    {
+      "path": "skills/vendor/impeccable/reference/polish.md",
+      "bytes": 6646,
+      "sha256": "81666fc7f783b4e3514db6554e713dc0479bd9cdedb06e93d15f8b579aae869a"
+    },
+    {
+      "path": "skills/vendor/taste/LICENSE",
+      "bytes": 1065,
+      "sha256": "4575a543ab88dad12ccea7d97e563d0bce5b448b06072e65d3264497dad326df"
+    },
+    {
+      "path": "skills/vendor/taste/skills/minimalist-skill/SKILL.md",
+      "bytes": 8212,
+      "sha256": "769ab38eed137bb22c7c09ee08ebb628e9acf3ad37f138d43f772e3af83933e4"
+    },
+    {
+      "path": "skills/vendor/vercel-agent-skills/LICENSE-MIT-TEXT.txt",
+      "bytes": 1390,
+      "sha256": "e872ecdc37a84b08e507c2a6d6890b6eec32f85bf39bd1047a4509429a9b43fb"
+    },
+    {
+      "path": "skills/vendor/vercel-agent-skills/README.md",
+      "bytes": 7838,
+      "sha256": "7c02f64b08fc6c4eef03c01d64f3e2ed478193ccfcbd14edba379abe23304651"
+    },
+    {
+      "path": "skills/vendor/vercel-agent-skills/skills/composition-patterns/AGENTS.md",
+      "bytes": 22627,
+      "sha256": "89e3ddd58fcf99a53a50e25dfd21b8cde1be5f10b7df6bacd3dfa6796932f516"
+    },
+    {
+      "path": "skills/vendor/vercel-agent-skills/skills/composition-patterns/SKILL.md",
+      "bytes": 2886,
+      "sha256": "e38e0eaa609316b10423a9a138ed95e35099accd3f735585295c8a8f165c28a3"
+    },
+    {
+      "path": "skills/vendor/vercel-agent-skills/skills/react-best-practices/AGENTS.md",
+      "bytes": 108261,
+      "sha256": "fc93e7421177bbf869cce892bc60a6c83a4517d974bc3bf65c4e2c1e58a6ccf6"
+    },
+    {
+      "path": "skills/vendor/vercel-agent-skills/skills/react-best-practices/SKILL.md",
+      "bytes": 7251,
+      "sha256": "71ed7794962fa6e803ee83030517b5b93a9f70fbfeb431ec4535c5480a8d8355"
+    },
+    {
+      "path": "skills/vendor/vercel-agent-skills/skills/web-design-guidelines/SKILL.md",
+      "bytes": 1231,
+      "sha256": "f4647ca866a3accf763777f83e7682954f0187cd6bea7eea0399796652414e8f"
+    },
+    {
+      "path": "skills/vendor/vercel-web-interface/LICENSE",
+      "bytes": 1068,
+      "sha256": "6cd1609c9c12233507cdd2ce0d32e9a721e3c27494951be06b90090deeeb7af2"
+    },
+    {
+      "path": "skills/vendor/vercel-web-interface/command.md",
+      "bytes": 8055,
+      "sha256": "d246b026f4f29b5823a9cc857f9edf3d2507002e055e32040cadeaf3b38e0234"
+    },
+    {
+      "path": "src/app/[[...slug]]/page.tsx",
+      "bytes": 231,
+      "sha256": "19ac0b91b95b5660439a549b914ed7ffc7fc91f5d48a76bc8c8fc4bd7cac6349"
+    },
+    {
+      "path": "src/app/error.tsx",
+      "bytes": 480,
+      "sha256": "19a5a55d79d755227c7f36b2aa04b68afdd793a4b812afd0063b8377739444dc"
+    },
+    {
+      "path": "src/app/globals.css",
+      "bytes": 32268,
+      "sha256": "9837c69ffab352018cb86e2da86951446bdf069da18c73dffc3db8ec357d0a00"
+    },
+    {
+      "path": "src/app/layout.tsx",
+      "bytes": 621,
+      "sha256": "1db229b68f6d631ff40b45527e8e83b9054ba3b153742e283909a17f7c4832ac"
+    },
+    {
+      "path": "src/components/application.tsx",
+      "bytes": 3114,
+      "sha256": "51a2a03f86ab2a2d86520c383a8e2a98d96a5fe8e9e06ab932a41563e2a3013e"
+    },
+    {
+      "path": "src/components/shell.tsx",
+      "bytes": 32853,
+      "sha256": "45105d5dbb198e0d3bafb4b0484e85a0e2c005dfb4903ebb1003c80f8244143d"
+    },
+    {
+      "path": "src/components/ui.tsx",
+      "bytes": 11976,
+      "sha256": "d5eb6fbbf118ba81e3b194f70b68b14854f326d44d5489b49d7728b1247eee44"
+    },
+    {
+      "path": "src/lib/downloads.ts",
+      "bytes": 8494,
+      "sha256": "4b97234a4d39a828b6e90aa35bfb1d88f599669e4d87d5376bd5f8793f54de82"
+    },
+    {
+      "path": "src/lib/engine.ts",
+      "bytes": 173568,
+      "sha256": "44f3f73fcfde9f4d0e5c277175e6de6ec635f11371c8784c0a62232d1e49613e"
+    },
+    {
+      "path": "src/lib/fixture.json",
+      "bytes": 47451,
+      "sha256": "bea4d3da6ec2ca0edb75868b94b13b0db9bf01f0de48b5202bbc9ab7a6c1dc36"
+    },
+    {
+      "path": "src/lib/i18n.ts",
+      "bytes": 30487,
+      "sha256": "884acf5be950f7b15f2d480ed35f942e601f5efeafb159c070fafd04d09a0b3a"
+    },
+    {
+      "path": "src/lib/local-crypto.ts",
+      "bytes": 4291,
+      "sha256": "2241a760984198bc2100ada69a7f7070ee8c646acb761dfbf250fe5613afec60"
+    },
+    {
+      "path": "src/lib/projections.ts",
+      "bytes": 18015,
+      "sha256": "60ba4b92c5367e4fa9c42f5592dcbb6b50120b54d7ad240163f6df62bab9910b"
+    },
+    {
+      "path": "src/lib/scenarios.json",
+      "bytes": 150167,
+      "sha256": "2b55d979fe83e8c1a830f4c1c9b97f40d1f86fc9fe9baba77753d5ed5730c1b2"
+    },
+    {
+      "path": "src/lib/spec-contracts.ts",
+      "bytes": 10206,
+      "sha256": "a7e40bf160b5134da621a98b4bf378777c77b02f98a7e5df47212769e5ff9dd6"
+    },
+    {
+      "path": "src/lib/store.tsx",
+      "bytes": 5885,
+      "sha256": "e3aba7c0cc82142f5efc556229018bf0dd85cc7ee5062a15d7ea158d4c434df5"
+    },
+    {
+      "path": "src/lib/types.ts",
+      "bytes": 1685,
+      "sha256": "f2a08a58c9962e3f282e5654fee081457b60d386bb8984e3944dca7c4efe1dc1"
+    },
+    {
+      "path": "src/views/acquisition.css",
+      "bytes": 6852,
+      "sha256": "d4a5174e6f29c6531ca11c0663c3c0ee780f85385ebcb79b19b66eaf1fff066a"
+    },
+    {
+      "path": "src/views/acquisition.tsx",
+      "bytes": 104342,
+      "sha256": "76ee59ab230522fd23a9f133e64e9802da05107979c5d1aab30086cd60039775"
+    },
+    {
+      "path": "src/views/home-team.tsx",
+      "bytes": 49852,
+      "sha256": "5f9daf3d5e61a6da025d35dd1a33df55e2b464ef28704f5c9506adebd71390ae"
+    },
+    {
+      "path": "src/views/money.css",
+      "bytes": 7161,
+      "sha256": "ecbc141fda026360b9ff6e5be56aaaed34ffa226aa13ebe7d6c8028ce8376792"
+    },
+    {
+      "path": "src/views/money.tsx",
+      "bytes": 119360,
+      "sha256": "0ff580800713e021ca56562801d46d54978cd0f16830b719c1d20efce3048a23"
+    },
+    {
+      "path": "src/views/public.css",
+      "bytes": 18326,
+      "sha256": "1915d28e4b6a1246cd1bdb3fca2d79dcd2b1feb255b43205641604d6d8cfb69a"
+    },
+    {
+      "path": "src/views/public.tsx",
+      "bytes": 122574,
+      "sha256": "837dbae71ce993e52aa8a51d0693da292e67e9f2cdd8fa96a604a1c1a91e0ce5"
+    },
+    {
+      "path": "src/views/settings.css",
+      "bytes": 7335,
+      "sha256": "4f782b456be142ba6c2d015c6096f91d39b86e447da9d43839ddecfd7fdb27d1"
+    },
+    {
+      "path": "src/views/settings.tsx",
+      "bytes": 89427,
+      "sha256": "d7e167749ccbb80889e85676d60570ab9e435db6fb0611e981b09972923a094a"
+    },
+    {
+      "path": "src/views/work.css",
+      "bytes": 8331,
+      "sha256": "01b6fef417a39759e2188121b9a20dcb795bc7614aca32f50b9b374fdde87ffe"
+    },
+    {
+      "path": "src/views/work.tsx",
+      "bytes": 131252,
+      "sha256": "67eceba0354788e18e2a10158e92a5f916e62bc11530563b18e070440de5bd26"
+    },
+    {
+      "path": "tests/acquisition.test.ts",
+      "bytes": 16360,
+      "sha256": "51339d95f2ee84e89aa4f52e5c9c37d4c8ff816e31919416969bd8711100133f"
+    },
+    {
+      "path": "tests/engine.test.ts",
+      "bytes": 35990,
+      "sha256": "e2203b8b2d8cdc30617f2200d14c939dcfaf074fe018855c102f642fa662202c"
+    },
+    {
+      "path": "tests/home-team.test.ts",
+      "bytes": 5445,
+      "sha256": "5660d7ca9ceab706ef3c48db1a23db482658007dc311a4114ea83d02990b8c25"
+    },
+    {
+      "path": "tests/local-crypto.test.ts",
+      "bytes": 1978,
+      "sha256": "65ad0cb56c484ca1ca67add16bc13580282062517b64eafb9ad08af2a4100f28"
+    },
+    {
+      "path": "tests/money-downloads.test.ts",
+      "bytes": 6284,
+      "sha256": "0d4fab48864382d1ad79d48d2b616813653de14cdf746d9b80ca4d504d2a72db"
+    },
+    {
+      "path": "tests/money-workflows.test.ts",
+      "bytes": 7633,
+      "sha256": "bd1e5deb0460b7fb05a9f056fe3cb44976799e087a029015ee754d76ef1ebe48"
+    },
+    {
+      "path": "tests/public.test.ts",
+      "bytes": 7259,
+      "sha256": "5a420f80d60a7f4be62d8fd0e2b20f1dc3957a7b9f911f3056726e8e427bc0d2"
+    },
+    {
+      "path": "tests/review.test.ts",
+      "bytes": 11165,
+      "sha256": "895cc5dfe60fb31467a8c535009ab8379b9ef6f2d2f5ba1a0b4a2e1b320db190"
+    },
+    {
+      "path": "tsconfig.json",
+      "bytes": 686,
+      "sha256": "5b774b5ec529da2a2e41a7c2ef8a8bcad4640544d378522981d69c5e9f3aa7b0"
+    }
+  ]
+}

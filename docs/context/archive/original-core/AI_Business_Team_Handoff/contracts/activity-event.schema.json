@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/contracts/activity-event.schema.json",
+  "title": "AI Business Team Activity Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "eventId",
+    "workspaceId",
+    "sequence",
+    "taskId",
+    "runId",
+    "role",
+    "type",
+    "occurredAt",
+    "publicSummary"
+  ],
+  "properties": {
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workspaceId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taskId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "publicSummary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "role": {
+      "enum": [
+        "scout",
+        "promoter",
+        "sales",
+        "account_manager",
+        "operations",
+        "finance"
+      ]
+    },
+    "type": {
+      "enum": [
+        "run.started",
+        "evidence.retrieved",
+        "tool.started",
+        "tool.completed",
+        "artifact.saved",
+        "handoff.created",
+        "review.required",
+        "run.blocked",
+        "run.paused",
+        "run.cancelled",
+        "run.redirected",
+        "run.finished"
+      ]
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "focus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recordType",
+        "recordId"
+      ],
+      "properties": {
+        "recordType": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recordId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifactId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "anchor": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

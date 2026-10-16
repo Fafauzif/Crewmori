@@ -1,0 +1,26 @@
+<svg preserveAspectRatio="xMidYMid slice" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+
+<path d="M50 150 H1150 M50 300 H1150 M50 450 H1150" stroke="#DDD6C7" stroke-dasharray="2,6" stroke-width="1" />
+<path d="M250 50 V550 M600 50 V550 M950 50 V550" stroke="#DDD6C7" stroke-dasharray="2,6" stroke-width="1" />
+
+
+<path d="M120 110 Q190 90 270 120 T320 220 T240 290 T180 230 T130 170 Z" fill="#E8E4D5" opacity="0.8" />
+
+<path d="M270 330 Q330 360 320 440 T260 520 T230 420 Z" fill="#E8E4D5" opacity="0.7" />
+
+<path d="M540 120 Q620 100 660 150 T620 230 T540 200 Z" fill="#E8E4D5" opacity="0.8" />
+
+<path d="M550 250 Q640 260 670 340 T610 470 T540 370 Z" fill="#E8E4D5" opacity="0.75" />
+
+<path d="M680 120 Q840 80 960 160 T980 290 T820 280 T700 230 Z" fill="#E8E4D5" opacity="0.8" />
+
+<path d="M840 340 Q880 340 910 360 T860 390 Z" fill="#B6D9C6" opacity="0.65" />
+<path d="M910 410 Q1000 400 1010 480 T920 500 T880 450 Z" fill="#E8E4D5" opacity="0.75" />
+
+<g fill="#D3CCA7" opacity="0.5">
+<circle cx="210" cy="180" r="2.5" /><circle cx="230" cy="170" r="2" /><circle cx="250" cy="190" r="2.5" />
+<circle cx="580" cy="170" r="2" /><circle cx="600" cy="190" r="2.5" /><circle cx="630" cy="160" r="2" />
+<circle cx="780" cy="180" r="2.5" /><circle cx="830" cy="210" r="2.5" /><circle cx="870" cy="180" r="2" />
+<circle cx="875" cy="365" fill="#245C47" r="3" />
+</g>
+</svg>

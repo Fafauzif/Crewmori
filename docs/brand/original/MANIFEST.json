@@ -1,0 +1,378 @@
+{
+  "name": "Crewmori Complete Brand Package",
+  "version": "1.0.0",
+  "selectedConcept": "02 Working Seam",
+  "guidePages": 40,
+  "files": [
+    {
+      "path": "BRAND.md",
+      "bytes": 13978,
+      "sha256": "adfd678c4522ad0df73aab9dac364d58a8803f8c98daf546daee5cbc22781eb3"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4967,
+      "sha256": "c462607c397b30afb8d6a51b3ad6e8bf6c4e7d742592d89e0c4323754b74ed73"
+    },
+    {
+      "path": "assets/README.md",
+      "bytes": 3521,
+      "sha256": "4f64f72557206dbba0860034d1ccda9de33b4d8e7188fad32a688fded7d6661e"
+    },
+    {
+      "path": "assets/app-icon/crewmori-app-icon-1024.png",
+      "bytes": 22421,
+      "sha256": "4224d56e4430fb7db50a2db73333b3478de406860de9341772546978318eaa46"
+    },
+    {
+      "path": "assets/app-icon/crewmori-app-icon-128.png",
+      "bytes": 2260,
+      "sha256": "c39511386371a76ec68b18cdf7067828e1677bf115be0a2e2e534911cf194b49"
+    },
+    {
+      "path": "assets/app-icon/crewmori-app-icon-192.png",
+      "bytes": 3350,
+      "sha256": "26c4da868d61249532f591dc95c761222fa199b2826a42b8d174a734dc404c42"
+    },
+    {
+      "path": "assets/app-icon/crewmori-app-icon-512.png",
+      "bytes": 10092,
+      "sha256": "f745f2f7e725f4039cc0ad25e25579799a359118a886ff7fb81d048c56d05658"
+    },
+    {
+      "path": "assets/app-icon/crewmori-app-icon.svg",
+      "bytes": 549,
+      "sha256": "d17f249b0ef8330a0c418743db33d689b2d7895dae26a5c1ca0d33eeb3e6bd94"
+    },
+    {
+      "path": "assets/asset-index.json",
+      "bytes": 2340,
+      "sha256": "16df123b77fad18e4a86a82c5d6984a3a8e09609fc9ab727d08214b14e9de127"
+    },
+    {
+      "path": "assets/favicon/crewmori-favicon-16-transparent.png",
+      "bytes": 429,
+      "sha256": "972382547e79cf320b3adafd0d0be2e1cf689b9f2e21ea0078f27d81dd22af24"
+    },
+    {
+      "path": "assets/favicon/crewmori-favicon-16.png",
+      "bytes": 497,
+      "sha256": "c2c8bd90c056cb4733323f1b56f93d3875c0e39991362ebad6b60f3fea778150"
+    },
+    {
+      "path": "assets/favicon/crewmori-favicon-24-transparent.png",
+      "bytes": 593,
+      "sha256": "a5568ddc2c541b8161222850b1ba7625c30bf09f5f0eeddd6c9ef3254304c68f"
+    },
+    {
+      "path": "assets/favicon/crewmori-favicon-24.png",
+      "bytes": 736,
+      "sha256": "70c16d57c367b523450b0ac29d82e7aa8a84be5841495a8cb594cfbf7d7f517b"
+    },
+    {
+      "path": "assets/favicon/crewmori-favicon-32-transparent.png",
+      "bytes": 695,
+      "sha256": "3e25527e75c94c89de799be8c204889089e4f0a8f67e40f194de2590e6a45970"
+    },
+    {
+      "path": "assets/favicon/crewmori-favicon-32.png",
+      "bytes": 824,
+      "sha256": "bb709da516bb051b726211474e5b809ff744e0797d915160a943813b8d6aba8d"
+    },
+    {
+      "path": "assets/favicon/crewmori-favicon-48-transparent.png",
+      "bytes": 1014,
+      "sha256": "5f385e2636237696fe243e6a3ebba59250f10cf18876eaa40a387ee695c591a2"
+    },
+    {
+      "path": "assets/favicon/crewmori-favicon-48.png",
+      "bytes": 1236,
+      "sha256": "92321d9941dfb855367ff80c37845e4c7136b8c38c8c56f2176830da38f93eb8"
+    },
+    {
+      "path": "assets/favicon/crewmori-favicon-64-transparent.png",
+      "bytes": 1143,
+      "sha256": "9ad987724c6a7abd7a3786d698bcc6b3a8044d17cb0ead1a36f94ab41817ca19"
+    },
+    {
+      "path": "assets/favicon/crewmori-favicon-64.png",
+      "bytes": 1474,
+      "sha256": "61e032b853472799664a51116b5dbae0276f3c1fe8f6459228c0cb6d7bd6ba48"
+    },
+    {
+      "path": "assets/favicon/crewmori-favicon.svg",
+      "bytes": 560,
+      "sha256": "bb44ed102d2e3bb04ff0499cc67c464dfc44f7bcfa83a1a12ba6782e2a6351e1"
+    },
+    {
+      "path": "assets/favicon/favicon.ico",
+      "bytes": 4853,
+      "sha256": "c78d27b92f6dd87e187aba99b4855a8334bd087db160b8d17b931c7cf2767316"
+    },
+    {
+      "path": "assets/fonts/DejaVuSans-Bold.ttf",
+      "bytes": 708920,
+      "sha256": "5c1247acef7f2b8522a31742c76d6adcb5569bacc0be7ceaa4dc39dd252ce895"
+    },
+    {
+      "path": "assets/fonts/DejaVuSans.ttf",
+      "bytes": 759720,
+      "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280"
+    },
+    {
+      "path": "assets/fonts/DejaVuSerif-Bold.ttf",
+      "bytes": 356668,
+      "sha256": "847b33e13925f19ff87e4d934d6b3cf7cac35ce16424f6f670e40c2f377cf2df"
+    },
+    {
+      "path": "assets/fonts/DejaVuSerif.ttf",
+      "bytes": 380660,
+      "sha256": "8f2c103bfa3fd5de71f1b92b18f21906b5a26871fb7e19a9a4c9af539c3cc7ab"
+    },
+    {
+      "path": "assets/fonts/LICENSE-DejaVu.txt",
+      "bytes": 2452,
+      "sha256": "6f57fb3cc4e1d62de5ce0ee6444e6ca45eb8a35aaf0bf70a694f9cc133c5881d"
+    },
+    {
+      "path": "assets/geometry.json",
+      "bytes": 4364,
+      "sha256": "18826d9ab5a2dd54c3c86bcb5d5db45c7fcab6e9401c604a616459a2c53407a0"
+    },
+    {
+      "path": "assets/horizontal/crewmori-horizontal-black.png",
+      "bytes": 54876,
+      "sha256": "4cbd4197a265fb2ac395b5281eec5a1e95efd68946dc148a7567ab388fa01c5c"
+    },
+    {
+      "path": "assets/horizontal/crewmori-horizontal-black.svg",
+      "bytes": 2974,
+      "sha256": "5eea61e644c26a079bb05d2f0ba2b1a672ea99bdd7fe7d2265c391c5a41ae841"
+    },
+    {
+      "path": "assets/horizontal/crewmori-horizontal-green.png",
+      "bytes": 73794,
+      "sha256": "fd1f24b709349fd8698b349e6cecde53874f71e16085675c01db99ef5a98bfd1"
+    },
+    {
+      "path": "assets/horizontal/crewmori-horizontal-green.svg",
+      "bytes": 2974,
+      "sha256": "dd7db2b0420429f98535d8ed3f4dd89abe33c3fa82937960358eecc13b922ecf"
+    },
+    {
+      "path": "assets/horizontal/crewmori-horizontal-white.png",
+      "bytes": 60690,
+      "sha256": "0c3e6ba4746646beb8357754829e0f473f9f25d566cb2a58eb6c32bac105e6fe"
+    },
+    {
+      "path": "assets/horizontal/crewmori-horizontal-white.svg",
+      "bytes": 2974,
+      "sha256": "273675d2b742e087f83ef5bd7e09decebee70f07cc713f3df9d037191da12fda"
+    },
+    {
+      "path": "assets/illustration-studies/README.md",
+      "bytes": 1297,
+      "sha256": "3b31a086e41d46af62e720e74b13a8be31520bc84c97dc03dd9c939b27218fed"
+    },
+    {
+      "path": "assets/illustration-studies/six-coworkers-direction-study.png",
+      "bytes": 869056,
+      "sha256": "2f08c3afa6a51cfd8a410bf702cb8925b1a57a0b55d3a3f19683fe7ff424c709"
+    },
+    {
+      "path": "assets/primary/crewmori-primary-black.png",
+      "bytes": 54876,
+      "sha256": "4cbd4197a265fb2ac395b5281eec5a1e95efd68946dc148a7567ab388fa01c5c"
+    },
+    {
+      "path": "assets/primary/crewmori-primary-black.svg",
+      "bytes": 2974,
+      "sha256": "5eea61e644c26a079bb05d2f0ba2b1a672ea99bdd7fe7d2265c391c5a41ae841"
+    },
+    {
+      "path": "assets/primary/crewmori-primary-green.png",
+      "bytes": 73794,
+      "sha256": "fd1f24b709349fd8698b349e6cecde53874f71e16085675c01db99ef5a98bfd1"
+    },
+    {
+      "path": "assets/primary/crewmori-primary-green.svg",
+      "bytes": 2974,
+      "sha256": "dd7db2b0420429f98535d8ed3f4dd89abe33c3fa82937960358eecc13b922ecf"
+    },
+    {
+      "path": "assets/primary/crewmori-primary-white.png",
+      "bytes": 60690,
+      "sha256": "0c3e6ba4746646beb8357754829e0f473f9f25d566cb2a58eb6c32bac105e6fe"
+    },
+    {
+      "path": "assets/primary/crewmori-primary-white.svg",
+      "bytes": 2974,
+      "sha256": "273675d2b742e087f83ef5bd7e09decebee70f07cc713f3df9d037191da12fda"
+    },
+    {
+      "path": "assets/stacked/crewmori-stacked-black.png",
+      "bytes": 43062,
+      "sha256": "d4b7255adabe5c9c50f4e0fadc8ca18592de4ad2649e3149f6b2cfc86c303160"
+    },
+    {
+      "path": "assets/stacked/crewmori-stacked-black.svg",
+      "bytes": 2996,
+      "sha256": "7b875dd61a6d2bdb95fed44b097249c26c935b0576bbb41220e93614c159ff44"
+    },
+    {
+      "path": "assets/stacked/crewmori-stacked-green.png",
+      "bytes": 58518,
+      "sha256": "eacd5bf4c34ff66ef510867a6f4cbbc54e1df11e388de41ee9897a6e715d73cf"
+    },
+    {
+      "path": "assets/stacked/crewmori-stacked-green.svg",
+      "bytes": 2996,
+      "sha256": "9691cd66a52e84f2a557350f2b2c1c3283ca69b69eaf26312c71a5ed4f8441bb"
+    },
+    {
+      "path": "assets/stacked/crewmori-stacked-white.png",
+      "bytes": 47891,
+      "sha256": "7cb42e26d24e7cb848b6dfc6b31cd0b9b325044b072b16dd79d994380b81d5e3"
+    },
+    {
+      "path": "assets/stacked/crewmori-stacked-white.svg",
+      "bytes": 2996,
+      "sha256": "a78009076085717aef491bac51d87bf61847dd51e2ce64d37225cb57045087d6"
+    },
+    {
+      "path": "assets/symbol/crewmori-symbol-black.png",
+      "bytes": 10583,
+      "sha256": "8694addd12151ab7f3814a86d69b383fde35cef3816d3e3e7238ecdae3a1c89b"
+    },
+    {
+      "path": "assets/symbol/crewmori-symbol-black.svg",
+      "bytes": 504,
+      "sha256": "dee4e316034e4ac25692d710e8bc110eeb7a4041262dfdc9295cf49fe5385850"
+    },
+    {
+      "path": "assets/symbol/crewmori-symbol-favicon.svg",
+      "bytes": 453,
+      "sha256": "da7f65638c0c079947b0d1df50d876892be59008a6a87336a55b171eef007e5c"
+    },
+    {
+      "path": "assets/symbol/crewmori-symbol-green.png",
+      "bytes": 11481,
+      "sha256": "fce82767587ef5f50cd6c523c260cab2c43a20c26c36b6e589545ec56203a896"
+    },
+    {
+      "path": "assets/symbol/crewmori-symbol-green.svg",
+      "bytes": 504,
+      "sha256": "ff7fb0a0b01a1b7d7e994ba4f64a4a8ab6c8ad6a073428865fc06975cb2cb693"
+    },
+    {
+      "path": "assets/symbol/crewmori-symbol-raw.svg",
+      "bytes": 503,
+      "sha256": "02286457adfecc269fb6ca04d742868ecddb99a964e181bb4113e00bf79c758e"
+    },
+    {
+      "path": "assets/symbol/crewmori-symbol-white.png",
+      "bytes": 10878,
+      "sha256": "d18978f0006e2bd348d26fb189b2729a66ab324a76700d61725317e2ac7b7a15"
+    },
+    {
+      "path": "assets/symbol/crewmori-symbol-white.svg",
+      "bytes": 504,
+      "sha256": "0c73294d6d20fc5e7802a1da65d5ce6e5cd8437818eb3a0c7852643cbee81f8d"
+    },
+    {
+      "path": "assets/wordmark/crewmori-wordmark-black.png",
+      "bytes": 46787,
+      "sha256": "c58cb28a3f7fe8dc04190fad1c125c2acdc8b21be01ff719575652a71fedcc34"
+    },
+    {
+      "path": "assets/wordmark/crewmori-wordmark-black.svg",
+      "bytes": 2783,
+      "sha256": "e2be72ed8d7c04ec067f8c2aa1ea8dbbda4e656eddd6748fe24196385b31f2be"
+    },
+    {
+      "path": "assets/wordmark/crewmori-wordmark-green.png",
+      "bytes": 65470,
+      "sha256": "d70723848b68ebd63aa79b13df88cd49d6ec3156530d83c1992de909ddd8ce6b"
+    },
+    {
+      "path": "assets/wordmark/crewmori-wordmark-green.svg",
+      "bytes": 2783,
+      "sha256": "84f214fa8a944454f0974555d77817a4b97204857f2af5ca2b2d75ff53a474e6"
+    },
+    {
+      "path": "assets/wordmark/crewmori-wordmark-white.png",
+      "bytes": 52770,
+      "sha256": "b0de9046396e2e481f3ce9af14d3a3e6ac6f2d2903066eb35e3b3a610e02de81"
+    },
+    {
+      "path": "assets/wordmark/crewmori-wordmark-white.svg",
+      "bytes": 2783,
+      "sha256": "bd184cf3bec64ccee0c3865e1bd4235e6375c20469920eda37c75c044508fb2a"
+    },
+    {
+      "path": "guide/Crewmori_Brand_Guidelines.pdf",
+      "bytes": 1209463,
+      "sha256": "e925c03ebc37287bf5cf8d5da3bf3ed51445f827b2a9c9e5fefccc0936f54eed"
+    },
+    {
+      "path": "guide/Crewmori_Brand_Guidelines.pptx",
+      "bytes": 7440646,
+      "sha256": "ac2d6beaa27e7a06d048aeb1cb59f1377610c4f5513b3f87fb09b3dbafa821ca"
+    },
+    {
+      "path": "references/Crewmori_Stage1_Logo_Concepts.zip",
+      "bytes": 2391031,
+      "sha256": "a1652bc111a7314bc3347ed72a1bf2a6bedd098ae13ff9be48a05b7d562aec4c"
+    },
+    {
+      "path": "references/Reference_Brand_Guideline.pdf",
+      "bytes": 3970670,
+      "sha256": "794bba541776f8d8c6e1894a02d879b52915ec0428839c7902e641e284547c88"
+    },
+    {
+      "path": "source/build_assets.py",
+      "bytes": 16751,
+      "sha256": "8d105dc452bf06ccae078549476f857e5bba94759fd658838f721a2282655682"
+    },
+    {
+      "path": "source/build_guidelines.mjs",
+      "bytes": 38497,
+      "sha256": "1d47f2e66eafbd9ba417a9955348c953127f36f432d4646fcb14334ac4b5fee5"
+    },
+    {
+      "path": "source/build_tokens.py",
+      "bytes": 31801,
+      "sha256": "89fef5840cbce7650b60399b260d8fb7582f94413d9761c9789adc1f93968ccb"
+    },
+    {
+      "path": "source/finish_pdf.py",
+      "bytes": 1302,
+      "sha256": "31486034b469365bde2ac2f886e969ea4dccc483d0ffaa453c9951623a6d7deb"
+    },
+    {
+      "path": "source/requirements.txt",
+      "bytes": 62,
+      "sha256": "a6027c37ae28f31868c2009e95b3832b9807e01f728d5580060848b20eff6943"
+    },
+    {
+      "path": "source/slide-index.json",
+      "bytes": 2537,
+      "sha256": "4eb7d0a65e7221b2aba643a68f43b6fbe61981f63cffdea18aa4845bb329e788"
+    },
+    {
+      "path": "tokens/contrast-report.json",
+      "bytes": 26444,
+      "sha256": "c1b2ce928ad04b0246515dd328c34efe699d436fb31bdde6429e8bcaf52541a5"
+    },
+    {
+      "path": "tokens/crewmori-tokens.css",
+      "bytes": 5717,
+      "sha256": "2755441ec0fea9602e47abda67abf189c1c6e5469500c07a9159515bb44946a5"
+    },
+    {
+      "path": "tokens/crewmori-tokens.json",
+      "bytes": 9424,
+      "sha256": "7889397e5d0bd0a3d376287f42408b822ceafa432a4ec7527f1e9b870cdc8f2d"
+    }
+  ]
+}

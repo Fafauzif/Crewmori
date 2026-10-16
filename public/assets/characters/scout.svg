@@ -1,0 +1,7 @@
+<svg fill="none" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="scout-title" width="72" height="72">
+<title id="scout-title">Scout</title><path d="M18 36C18 22 26 12 40 12C52 12 56 22 56 36C56 50 48 60 34 60C20 60 18 48 18 36Z" fill="#F2C983" stroke="#202A25" stroke-width="2.5" />
+<circle cx="29" cy="31" fill="#202A25" r="3" />
+<circle cx="43" cy="31" fill="#FFFFFF" fill-opacity="0.4" r="8" stroke="#202A25" stroke-width="2.5" />
+<circle cx="43" cy="31" fill="#202A25" r="3.2" />
+<path d="M49 37L57 45" stroke="#202A25" stroke-linecap="round" stroke-width="2.5" />
+</svg>

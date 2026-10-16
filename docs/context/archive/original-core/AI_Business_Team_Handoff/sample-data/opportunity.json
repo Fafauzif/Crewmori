@@ -1,0 +1,49 @@
+{
+  "fixture": {
+    "synthetic": true,
+    "version": 1
+  },
+  "id": "opp_demo_northstar",
+  "workspaceId": "ws_demo_alya",
+  "version": 1,
+  "source": {
+    "mode": "demo",
+    "importMethod": "pasted_text",
+    "sourceId": "src_demo_request",
+    "nativeId": "request_demo_northstar",
+    "publishedAt": "2026-10-16T07:00:00+07:00",
+    "fetchedAt": "2026-10-16T08:00:00+07:00",
+    "accessBasis": "Synthetic fixture, no external source access"
+  },
+  "buyer": {
+    "id": "buyer_demo_emma",
+    "name": "Emma Reed",
+    "company": "Northstar Studio",
+    "country": "United States",
+    "timezone": "America/New_York",
+    "email": "emma@northstar.example.invalid"
+  },
+  "request": {
+    "text": "We need four short launch animations within five business days. Our budget is USD 500. Can you help?",
+    "assets": 4,
+    "deadlineBusinessDays": 5,
+    "budget": {
+      "currency": "USD",
+      "amountMinor": 50000,
+      "scale": 2
+    },
+    "factState": "source_reported"
+  },
+  "campaign": {
+    "id": "campaign_demo_creative",
+    "community": "Creative Founders",
+    "rules": [
+      "Relevant service introductions belong in the weekly promotion thread.",
+      "No repeated unsolicited direct messages."
+    ],
+    "publicationState": "draft",
+    "contentVersion": 1,
+    "attributedUrl": "https://alya.example.invalid/?campaign=campaign_demo_creative",
+    "copy": "I am Alya, a motion designer preparing short launch assets for small teams. Tell me your scope, timing and budget; my AI representative can help clarify the brief before I review it."
+  }
+}

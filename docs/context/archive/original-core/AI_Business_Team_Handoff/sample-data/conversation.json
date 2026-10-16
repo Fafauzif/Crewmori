@@ -1,0 +1,46 @@
+{
+  "fixture": {
+    "synthetic": true,
+    "version": 1
+  },
+  "id": "conversation_demo_northstar",
+  "workspaceId": "ws_demo_alya",
+  "engagementId": "eng_demo_northstar",
+  "buyerId": "buyer_demo_emma",
+  "requirementsVersion": 1,
+  "disclosure": "You are speaking with Alya’s AI representative. Alya reviews commercial commitments.",
+  "messages": [
+    {
+      "id": "msg_demo_1",
+      "speaker": "sales",
+      "language": "en",
+      "isFinal": true,
+      "text": "I can help clarify your brief and prepare options for Alya to review."
+    },
+    {
+      "id": "msg_demo_2",
+      "speaker": "buyer",
+      "language": "en",
+      "isFinal": true,
+      "text": "We need four launch animations within five business days. Our budget is USD 500."
+    },
+    {
+      "id": "msg_demo_3",
+      "speaker": "sales",
+      "language": "en",
+      "isFinal": true,
+      "text": "I will check scope and timing. Would two assets be useful if the full package cannot fit?"
+    }
+  ],
+  "ownerBrief": {
+    "visibility": "owner_private",
+    "language": "id",
+    "text": "Permintaan awal: empat aset animasi, lima hari kerja, anggaran USD 500. Waktu tersedia 12 jam. Tim menyiapkan opsi dua aset USD 450 untuk ditinjau. Belum ada persetujuan pembeli."
+  },
+  "nextAction": {
+    "role": "account_manager",
+    "status": "draft",
+    "title": "Confirm reduced scope with Emma",
+    "text": "After acceptance, request logo files, brand colors and the launch date."
+  }
+}

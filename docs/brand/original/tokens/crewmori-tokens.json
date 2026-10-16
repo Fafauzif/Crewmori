@@ -1,0 +1,385 @@
+{
+  "name": "Crewmori",
+  "version": "1.0.0",
+  "selectedConcept": "02 Working Seam",
+  "status": "Final package tokens; authoritative logo measurements mirror assets/geometry.json.",
+  "color": {
+    "brand": {
+      "primary": "#245C47",
+      "onPrimary": "#FFFFFF"
+    },
+    "interaction": {
+      "primary": {
+        "defaultBg": "#245C47",
+        "hoverBg": "#1B4B39",
+        "pressedBg": "#153F30",
+        "label": "#FFFFFF",
+        "disabledBg": "#D9DED3",
+        "disabledText": "#566159"
+      },
+      "selectedBg": "#E5EFE7"
+    },
+    "background": {
+      "canvas": "#F5F3EC",
+      "surface": "#FFFEFA",
+      "selected": "#E5EFE7"
+    },
+    "text": {
+      "primary": "#202A25",
+      "secondary": "#566159",
+      "onDark": "#FFFFFF"
+    },
+    "border": {
+      "decorative": "#D9DED3",
+      "control": "#566159"
+    },
+    "agentIdentity": {
+      "scout": {
+        "name": "Scout",
+        "tint": "#F2C983",
+        "label": "#202A25"
+      },
+      "promoter": {
+        "name": "Promoter",
+        "tint": "#EFAF9B",
+        "label": "#202A25"
+      },
+      "sales": {
+        "name": "Sales",
+        "tint": "#B9D8EC",
+        "label": "#202A25"
+      },
+      "accountManager": {
+        "name": "Account Manager",
+        "tint": "#D3C6E7",
+        "label": "#202A25"
+      },
+      "operations": {
+        "name": "Operations",
+        "tint": "#C6D4B5",
+        "label": "#202A25"
+      },
+      "finance": {
+        "name": "Finance",
+        "tint": "#B6D9C6",
+        "label": "#202A25"
+      }
+    },
+    "status": {
+      "success": {
+        "foreground": "#1E6848",
+        "background": "#EDF5EF"
+      },
+      "warning": {
+        "foreground": "#80520B",
+        "background": "#FFF1D6"
+      },
+      "error": {
+        "foreground": "#9B3431",
+        "background": "#FBE8E4"
+      },
+      "info": {
+        "foreground": "#255F82",
+        "background": "#E9F2F8"
+      }
+    }
+  },
+  "typography": {
+    "displayFamily": [
+      "DejaVu Serif",
+      "Georgia",
+      "Times New Roman",
+      "serif"
+    ],
+    "uiFamily": [
+      "DejaVu Sans",
+      "Arial",
+      "system-ui",
+      "sans-serif"
+    ],
+    "fontLicense": "Bitstream Vera font license; DejaVu changes are in the public domain. Preserve the accompanying font license notice when distributing the fonts.",
+    "logoWordmark": {
+      "source": "DejaVu Serif Bold",
+      "version": "2.37",
+      "construction": "Outlined paths",
+      "runtimeFontDependency": false
+    },
+    "applicationFontDependency": "Install or self-host the licensed DejaVu fonts; defined fallback stacks apply when they are unavailable.",
+    "scale": {
+      "h1": {
+        "family": "display",
+        "sizePx": 44,
+        "lineHeightPx": 52,
+        "weight": 400
+      },
+      "h2": {
+        "family": "display",
+        "sizePx": 32,
+        "lineHeightPx": 40,
+        "weight": 400
+      },
+      "h3": {
+        "family": "ui",
+        "sizePx": 24,
+        "lineHeightPx": 32,
+        "weight": 700
+      },
+      "body": {
+        "family": "ui",
+        "sizePx": 16,
+        "lineHeightPx": 24,
+        "weight": 400
+      },
+      "small": {
+        "family": "ui",
+        "sizePx": 14,
+        "lineHeightPx": 20,
+        "weight": 400
+      },
+      "metadata": {
+        "family": "ui",
+        "sizePx": 12,
+        "lineHeightPx": 16,
+        "weight": 400
+      }
+    },
+    "responsiveOverrides": {
+      "maxWidthPx": 768,
+      "h1": {
+        "family": "display",
+        "sizePx": 32,
+        "lineHeightPx": 40,
+        "weight": 400
+      }
+    },
+    "amounts": {
+      "fontVariantNumeric": "tabular-nums",
+      "alignment": "right"
+    }
+  },
+  "spacePx": [
+    4,
+    8,
+    12,
+    16,
+    24,
+    32,
+    48,
+    64
+  ],
+  "radiusPx": {
+    "button": 8,
+    "field": 8,
+    "card": 12,
+    "drawer": 16
+  },
+  "elevation": {
+    "default": "none",
+    "overlay": "0 8px 24px rgba(32, 42, 37, 0.10)"
+  },
+  "layout": {
+    "desktopMinWidthPx": 1280,
+    "sidebarWidthPx": 224,
+    "headerHeightPx": 72,
+    "desktopContentGrid": "2fr 1fr",
+    "contentGutterPx": 24,
+    "desktopWorkspacePaddingPx": 32,
+    "compactWorkspacePaddingPx": 24,
+    "mobileWorkspacePaddingPx": 16,
+    "contextRailCollapseMaxWidthPx": 1024,
+    "singleColumnMaxWidthPx": 768,
+    "bottomNavigationMaxWidthPx": 768,
+    "compactMobileReferenceWidthPx": 390,
+    "bottomNavigationHeightPx": 64,
+    "safeAreaInsetRequired": true,
+    "minimumInteractiveTargetPx": 44,
+    "minimumFieldHeightPx": 44
+  },
+  "motion": {
+    "durationFastMs": 160,
+    "durationStandardMs": 200,
+    "durationSlowMs": 240,
+    "easing": "cubic-bezier(0.2, 0, 0, 1)",
+    "maximumConcurrentCursors": 2,
+    "trigger": "Persisted task, artifact, handoff, or acknowledged state events only",
+    "reducedMotion": "No travel, looping expression, or cursor animation; retain static labeled focus and state changes."
+  },
+  "focus": {
+    "widthPx": 2,
+    "offsetPx": 2,
+    "onLight": "#245C47",
+    "onDark": "#FFFFFF"
+  },
+  "logoMeasurements": {
+    "status": "Final; use supplied artwork rather than reconstructing from token values.",
+    "source": "../assets/geometry.json",
+    "coordinateSystem": "raw symbol units",
+    "rawPath": "M12 12H54Q60 12 64 16L88 40L72 56L50 34H12Q8 34 8 30V16Q8 12 12 12ZM88 88H46Q40 88 36 84L12 60L28 44L50 66H88Q92 66 92 70V84Q92 88 88 88Z",
+    "rawBounds": [
+      8,
+      12,
+      92,
+      88
+    ],
+    "visibleWidth": 84.0,
+    "visibleHeight": 76.0,
+    "unitX": 22.0,
+    "xDefinition": "22 raw units: vertical thickness of either horizontal band (y12\u201334 or y66\u201388).",
+    "clearSpace": {
+      "minimumRawUnits": 22.0,
+      "measuredFrom": "Visible artwork on all sides",
+      "includedInProductionSvgCanvases": true
+    },
+    "horizontalGap": 22.0,
+    "stackedGap": 22.0,
+    "wordmarkCapHeight": 41.800000000000004,
+    "wordmarkCapToSymbolHeight": 0.55,
+    "horizontal": {
+      "viewBox": [
+        0,
+        0,
+        451.2231748158071,
+        120.0
+      ],
+      "symbol_bounds": [
+        22.0,
+        22.0,
+        106.0,
+        98.0
+      ],
+      "wordmark_bounds": [
+        128.0,
+        37.81212324179504,
+        429.2231748158071,
+        82.18787675820496
+      ],
+      "visible_artwork_width": 407.2231748158071,
+      "visible_artwork_height": 76.0,
+      "symbol_wordmark_gap": 22.0,
+      "cap_to_symbol_height": 0.55,
+      "wordmark_baseline_y": 81.37595445411922
+    },
+    "stacked": {
+      "viewBox": [
+        0,
+        0,
+        345.2231748158071,
+        186.37575351640993
+      ],
+      "symbol_bounds": [
+        130.61158740790356,
+        22.0,
+        214.61158740790356,
+        98.0
+      ],
+      "wordmark_bounds": [
+        22.0,
+        120.0,
+        323.2231748158071,
+        164.37575351640993
+      ],
+      "symbol_wordmark_vertical_gap": 22.0
+    },
+    "wordmarkOnly": {
+      "viewBox": [
+        0,
+        0,
+        345.2231748158071,
+        88.37575351640992
+      ],
+      "artwork_bounds": [
+        22.0,
+        22.0,
+        323.2231748158071,
+        66.37575351640992
+      ]
+    },
+    "symbol": {
+      "viewBox": [
+        0,
+        0,
+        128,
+        128
+      ],
+      "artwork_bounds": [
+        22,
+        26,
+        106,
+        102
+      ]
+    },
+    "appIcon": {
+      "tile_size": 128,
+      "corner_radius": 24,
+      "symbol_bounds": [
+        22,
+        26,
+        106,
+        102
+      ],
+      "symbol_width_percent": 65.625,
+      "minimum_horizontal_padding": 22.0
+    },
+    "favicon": {
+      "viewBox": [
+        0,
+        0,
+        100,
+        100
+      ],
+      "geometry_changed": false,
+      "exception": "Dedicated compact browser-favicon assets at all supplied 16\u201364 px slots are exempt from standard x clear space. 16 px is the minimum slot, not the only exception size. Standard logo and app-icon assets retain at least x.",
+      "transparent_symbol_bounds": [
+        8,
+        12,
+        92,
+        88
+      ],
+      "tile_symbol_bounds": [
+        15.56,
+        18.84,
+        84.44,
+        81.16
+      ],
+      "tile_corner_radius_percent": 18.75,
+      "exported_slot_sizes_px": [
+        16,
+        24,
+        32,
+        48,
+        64
+      ],
+      "minimum_slot_size_px": 16
+    },
+    "browserFaviconUsage": {
+      "minimumSlotPx": 16,
+      "suppliedSlotsPx": [
+        16,
+        24,
+        32,
+        48,
+        64
+      ],
+      "canvas": "Dedicated compact browser favicon canvas at every supplied slot size",
+      "pathChanged": false,
+      "clearSpaceException": "Normal x clear space is waived only for these dedicated browser favicon assets, at all supplied sizes; it is not waived for application navigation or print."
+    },
+    "minimumSizes": {
+      "horizontal_digital_canvas_width_px": 200,
+      "horizontal_print_canvas_width_mm": 45,
+      "stacked_digital_canvas_width_px": 160,
+      "stacked_print_canvas_width_mm": 35,
+      "wordmark_digital_canvas_width_px": 150,
+      "wordmark_print_canvas_width_mm": 30,
+      "symbol_standard_canvas_px": 24,
+      "symbol_standard_print_canvas_mm": 6,
+      "favicon_slot_px": 16,
+      "basis": "Digital sizes refer to the full exported canvas including clear space; print minima are conservative recommendations."
+    }
+  },
+  "contrast": {
+    "report": "contrast-report.json",
+    "normalTextTarget": 4.5,
+    "requiredUiBoundaryAndFocusTarget": 3
+  }
+}

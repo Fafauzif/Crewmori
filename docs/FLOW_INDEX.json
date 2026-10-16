@@ -1,0 +1,797 @@
+{
+  "schema_version": 1,
+  "flows": [
+    {
+      "id": "acq.public-entry",
+      "title": "Public entry, freelancer profile and service inquiry",
+      "route": "/ ; /u/[handle] ; /u/[handle]/services/[slug]",
+      "actor": "public visitor",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 14,
+      "step_count": 14
+    },
+    {
+      "id": "buyer.conversation",
+      "title": "Buyer text qualification and brief",
+      "route": "/inquiry/[id]",
+      "actor": "buyer",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 11,
+      "step_count": 11
+    },
+    {
+      "id": "buyer.sample-voice",
+      "title": "Sample voice playback from stored transcript",
+      "route": "/inquiry/[id]",
+      "actor": "buyer",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 6,
+      "step_count": 6
+    },
+    {
+      "id": "acq.lead-list",
+      "title": "Leads list, combined search and navigation",
+      "route": "/app/opportunities",
+      "actor": "owner",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 8,
+      "step_count": 8
+    },
+    {
+      "id": "acq.lead-edit",
+      "title": "Add, import or edit a lead/request",
+      "route": "/app/opportunities ; /app/opportunities/[id]",
+      "actor": "owner",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 7,
+      "step_count": 7
+    },
+    {
+      "id": "acq.lead-source",
+      "title": "Inspect and refresh source evidence",
+      "route": "/app/opportunities/[id]?panel=source",
+      "actor": "owner",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 5,
+      "step_count": 5
+    },
+    {
+      "id": "acq.lead-assessment",
+      "title": "Assess, qualify, decline or restore a lead",
+      "route": "/app/opportunities/[id]",
+      "actor": "owner and Scout",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 10,
+      "step_count": 10
+    },
+    {
+      "id": "acq.offer-list",
+      "title": "Offers list and canonical entry points",
+      "route": "/app/offers",
+      "actor": "owner",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 6,
+      "step_count": 6
+    },
+    {
+      "id": "acq.offer-edit",
+      "title": "Create/edit/version an offer draft",
+      "route": "/app/offers/[id]?edit=1",
+      "actor": "owner or Sales draft",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 10,
+      "step_count": 10
+    },
+    {
+      "id": "acq.offer-detail",
+      "title": "Offer detail, version history and comparison",
+      "route": "/app/offers/[id]",
+      "actor": "owner",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 7,
+      "step_count": 7
+    },
+    {
+      "id": "acq.offer-approval",
+      "title": "Exact-version owner approval and return for revision",
+      "route": "/app/offers/[id]",
+      "actor": "owner",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 6,
+      "step_count": 6
+    },
+    {
+      "id": "acq.offer-share",
+      "title": "Buyer-safe preview and deliberate sample share",
+      "route": "/app/offers/[id]",
+      "actor": "owner",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 6,
+      "step_count": 6
+    },
+    {
+      "id": "acq.offer-withdraw-expire",
+      "title": "Withdraw, expire and supersede unaccepted offers",
+      "route": "/app/offers/[id]",
+      "actor": "owner / sample clock event",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 5,
+      "step_count": 5
+    },
+    {
+      "id": "acq.offer-amendment",
+      "title": "Prepare and accept an amendment without rewriting history",
+      "route": "/app/offers/[id] ; /buyer/[id]/offer",
+      "actor": "owner and scoped buyer",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 6,
+      "step_count": 6
+    },
+    {
+      "id": "acq.promotion-draft",
+      "title": "Promotion list, draft creation and editing",
+      "route": "/app/promotion",
+      "actor": "owner and Promoter",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 11,
+      "step_count": 11
+    },
+    {
+      "id": "acq.promotion-approval",
+      "title": "Review and approve exact promotional content/destination",
+      "route": "/app/promotion?draft=[id]",
+      "actor": "owner",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 5,
+      "step_count": 5
+    },
+    {
+      "id": "acq.promotion-publication",
+      "title": "Copy and simulate confirmed publication with evidence",
+      "route": "/app/promotion?draft=[id]",
+      "actor": "owner",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 7,
+      "step_count": 7
+    },
+    {
+      "id": "buyer.offer-review",
+      "title": "Buyer-safe review of exact shared terms",
+      "route": "/buyer/[id]/offer",
+      "actor": "buyer",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 6,
+      "step_count": 6
+    },
+    {
+      "id": "buyer.offer-change",
+      "title": "Request changes before acceptance or request an amendment",
+      "route": "/buyer/[id]/offer",
+      "actor": "buyer",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 3,
+      "step_count": 3
+    },
+    {
+      "id": "buyer.offer-accept",
+      "title": "Explicit idempotent buyer acceptance and linked records",
+      "route": "/buyer/[id]/offer",
+      "actor": "buyer",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 4,
+      "step_count": 4
+    },
+    {
+      "id": "buyer.invalid-link",
+      "title": "Invalid, expired, withdrawn and superseded buyer links",
+      "route": "/buyer/[id]/offer ; /buyer/[id] ; /inquiry/[id]",
+      "actor": "buyer or public visitor",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 4,
+      "step_count": 4
+    },
+    {
+      "id": "buyer.project-portal",
+      "title": "Accepted buyer portal and continuing navigation",
+      "route": "/buyer/[id]",
+      "actor": "buyer",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 8,
+      "step_count": 8
+    },
+    {
+      "id": "buyer.deposit-request",
+      "title": "Issue approved deposit request and show instructions",
+      "route": "/buyer/[id]?tab=payment",
+      "actor": "buyer / authorized deposit command",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 5,
+      "step_count": 5
+    },
+    {
+      "id": "buyer.payment-simulation",
+      "title": "Deliberate sample receipt events and reconciliation",
+      "route": "/buyer/[id]?tab=payment",
+      "actor": "sample reviewer via quiet Sample controls",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 5,
+      "step_count": 5
+    },
+    {
+      "id": "buyer.required-inputs",
+      "title": "Submit and revise required client inputs",
+      "route": "/buyer/[id]?tab=inputs",
+      "actor": "buyer",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 6,
+      "step_count": 6
+    },
+    {
+      "id": "buyer.project-messages",
+      "title": "Scoped project messages and safe attachments",
+      "route": "/buyer/[id]?tab=messages",
+      "actor": "buyer",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 6,
+      "step_count": 6
+    },
+    {
+      "id": "buyer.project-files",
+      "title": "Shared file/link list and real download behavior",
+      "route": "/buyer/[id]?tab=files",
+      "actor": "buyer",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 8,
+      "step_count": 8
+    },
+    {
+      "id": "buyer.delivery-review",
+      "title": "Review reported delivery, accept or request revisions",
+      "route": "/buyer/[id]",
+      "actor": "buyer",
+      "source": "spec/flows/acquisition-buyer.json",
+      "control_count": 6,
+      "step_count": 6
+    },
+    {
+      "id": "foundation.public_entry",
+      "title": "Public product entry and audience-safe navigation",
+      "route": "/",
+      "actor": "visitor",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 7,
+      "step_count": 2
+    },
+    {
+      "id": "foundation.auth_sign_in",
+      "title": "Simulated sign-in and protected-route return",
+      "route": "/auth/sign-in",
+      "actor": "visitor",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 7,
+      "step_count": 1
+    },
+    {
+      "id": "foundation.auth_sign_up",
+      "title": "Simulated sign-up and new-owner setup",
+      "route": "/auth/sign-up",
+      "actor": "visitor",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 7,
+      "step_count": 1
+    },
+    {
+      "id": "foundation.auth_recover",
+      "title": "Simulated recovery request and local reset preview",
+      "route": "/auth/recover",
+      "actor": "visitor",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 5,
+      "step_count": 2
+    },
+    {
+      "id": "foundation.auth_reset",
+      "title": "Simulated reset with invalid, expired, and completed states",
+      "route": "/auth/reset",
+      "actor": "visitor",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 5,
+      "step_count": 1
+    },
+    {
+      "id": "foundation.session_demo",
+      "title": "Demo entry, session continuation, and sign-out",
+      "route": "/auth/sign-in",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 5,
+      "step_count": 2
+    },
+    {
+      "id": "foundation.onboarding_basics",
+      "title": "Resumable business basics setup",
+      "route": "/onboarding",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 7,
+      "step_count": 3
+    },
+    {
+      "id": "foundation.onboarding_services",
+      "title": "Services and portfolio setup with optional sample evidence",
+      "route": "/onboarding",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 10,
+      "step_count": 3
+    },
+    {
+      "id": "foundation.onboarding_availability",
+      "title": "Availability, capacity, and business preferences setup",
+      "route": "/onboarding",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 6,
+      "step_count": 1
+    },
+    {
+      "id": "foundation.onboarding_finish",
+      "title": "Optional sample tools and setup completion",
+      "route": "/onboarding",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 5,
+      "step_count": 2
+    },
+    {
+      "id": "foundation.home_brief",
+      "title": "Home briefing, priority review, and useful updates",
+      "route": "/app/home",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 9,
+      "step_count": 1
+    },
+    {
+      "id": "foundation.navigation_search",
+      "title": "Global navigation, contextual subnavigation, and search",
+      "route": "/app/home",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 15,
+      "step_count": 1
+    },
+    {
+      "id": "foundation.delegate_compose",
+      "title": "Global task request, context attachments, and intent dispatch",
+      "route": "/app/home",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 11,
+      "step_count": 3
+    },
+    {
+      "id": "foundation.delegate_clarification",
+      "title": "Bounded clarification and manual-draft fallback",
+      "route": "/app/team",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 7,
+      "step_count": 5
+    },
+    {
+      "id": "foundation.delegate_output",
+      "title": "Task execution, result artifacts, and record continuation",
+      "route": "/app/team",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 7,
+      "step_count": 1
+    },
+    {
+      "id": "foundation.notifications",
+      "title": "Notification center, unread counts, and action links",
+      "route": "/app/home",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 8,
+      "step_count": 3
+    },
+    {
+      "id": "foundation.scenarios",
+      "title": "Deliberate sample scenarios, schema recovery, clock advance, and reset",
+      "route": "/app/home",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 9,
+      "step_count": 4
+    },
+    {
+      "id": "team.overview",
+      "title": "Global Studio map, teammate selection, handoffs, and list alternative",
+      "route": "/app/team",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 9,
+      "step_count": 4
+    },
+    {
+      "id": "team.inspector",
+      "title": "Agent, task, artifact, and source inspection",
+      "route": "/app/team",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 11,
+      "step_count": 1
+    },
+    {
+      "id": "team.activity",
+      "title": "Activity search, date filters, pagination, and evidence trail",
+      "route": "/app/team/activity",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 15,
+      "step_count": 2
+    },
+    {
+      "id": "team.recap_focus",
+      "title": "Catch-me-up recap and calm presentation controls",
+      "route": "/app/team",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 9,
+      "step_count": 7
+    },
+    {
+      "id": "team.task_controls",
+      "title": "Execution pause, resume, cancel, and retry with durable outputs",
+      "route": "/app/team",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 7,
+      "step_count": 5
+    },
+    {
+      "id": "settings.connections",
+      "title": "Connection directory, sample setup, and explicit reconnect",
+      "route": "/app/connections",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 9,
+      "step_count": 3
+    },
+    {
+      "id": "settings.connection_capabilities",
+      "title": "Connection capability review, usage evidence, and disconnect",
+      "route": "/app/connections",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 9,
+      "step_count": 4
+    },
+    {
+      "id": "settings.profile_public_services",
+      "title": "Business profile, service editing, and exact public snapshot publication",
+      "route": "/app/settings/profile",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 13,
+      "step_count": 3
+    },
+    {
+      "id": "settings.availability_defaults",
+      "title": "Public intake availability, working capacity, and new-draft defaults",
+      "route": "/app/settings/profile",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 10,
+      "step_count": 2
+    },
+    {
+      "id": "settings.rules",
+      "title": "Plain-language team operating and approval rules",
+      "route": "/app/settings/rules",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 9,
+      "step_count": 2
+    },
+    {
+      "id": "settings.preferences",
+      "title": "Locale, display timezone, notifications, focus, and motion preferences",
+      "route": "/app/settings/preferences",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 10,
+      "step_count": 2
+    },
+    {
+      "id": "settings.knowledge",
+      "title": "Knowledge/source upload, processing, replacement, audience, and archive",
+      "route": "/app/settings/knowledge",
+      "actor": "owner",
+      "source": "spec/flows/foundation-team-settings.json",
+      "control_count": 15,
+      "step_count": 4
+    },
+    {
+      "id": "work.projects.list",
+      "title": "Find and select accepted projects",
+      "route": "/app/projects",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 11,
+      "step_count": 3
+    },
+    {
+      "id": "work.project.create_edit",
+      "title": "Create and edit project facts",
+      "route": "/app/projects?new=1 or /app/projects/[id]?edit=overview",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 9,
+      "step_count": 1
+    },
+    {
+      "id": "work.project.detail",
+      "title": "Inspect project and shared sections",
+      "route": "/app/projects/[id]",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 11,
+      "step_count": 3
+    },
+    {
+      "id": "work.project.lifecycle",
+      "title": "Explicitly complete or cancel a project without rewriting delivery or money history",
+      "route": "/app/projects/[id]",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 13,
+      "step_count": 8
+    },
+    {
+      "id": "work.task.create_edit",
+      "title": "Create and edit project tasks",
+      "route": "/app/projects/[id]?tab=tasks&task=[taskId or new]",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 10,
+      "step_count": 1
+    },
+    {
+      "id": "work.task.transitions",
+      "title": "Complete, reopen, archive and bulk-select tasks",
+      "route": "/app/projects/[id]?tab=tasks",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 8,
+      "step_count": 4
+    },
+    {
+      "id": "work.milestone.edit",
+      "title": "Plan milestones and handle commitment changes",
+      "route": "/app/projects/[id]?tab=tasks&milestone=[id or new]",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 8,
+      "step_count": 1
+    },
+    {
+      "id": "work.delivery.report",
+      "title": "Report professional delivery with buyer-safe evidence",
+      "route": "/app/projects/[id]?action=deliver",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 7,
+      "step_count": 3
+    },
+    {
+      "id": "work.files.manage",
+      "title": "Upload, inspect, download and archive project files",
+      "route": "/app/projects/[id]?tab=files",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 10,
+      "step_count": 2
+    },
+    {
+      "id": "work.inputs.review",
+      "title": "Request and verify client inputs",
+      "route": "/app/projects/[id]?inputs=1",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 8,
+      "step_count": 6
+    },
+    {
+      "id": "work.clients.list",
+      "title": "Find clients and preserve directory context",
+      "route": "/app/clients",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 8,
+      "step_count": 3
+    },
+    {
+      "id": "work.client.create_edit",
+      "title": "Create/edit contact and private notes",
+      "route": "/app/clients?new=1 or /app/clients/[id]?edit=1",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 9,
+      "step_count": 1
+    },
+    {
+      "id": "work.client.workspace",
+      "title": "Inspect relationship and archive safely",
+      "route": "/app/clients/[id]",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 10,
+      "step_count": 1
+    },
+    {
+      "id": "work.client.communication",
+      "title": "Draft, review and simulate client messages",
+      "route": "/app/clients/[id]?tab=messages&draft=[id]",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 11,
+      "step_count": 5
+    },
+    {
+      "id": "work.calendar.browse",
+      "title": "Navigate work calendar and agenda",
+      "route": "/app/calendar",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 12,
+      "step_count": 6
+    },
+    {
+      "id": "work.calendar.edit",
+      "title": "Edit internal time blocks and prepare invitations",
+      "route": "/app/calendar?event=[id or new]",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 12,
+      "step_count": 3
+    },
+    {
+      "id": "work.calendar.reservation",
+      "title": "Inspect reservation expiry and resolve rescheduling",
+      "route": "/app/calendar?reservation=[id]",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 8,
+      "step_count": 4
+    },
+    {
+      "id": "money.invoices.list",
+      "title": "Find invoices and inspect outstanding amounts",
+      "route": "/app/money/invoices",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 10,
+      "step_count": 3
+    },
+    {
+      "id": "money.invoice.create_edit",
+      "title": "Draft/edit invoice line items",
+      "route": "/app/money/invoices?new=1 or /app/money/invoices/[id]?edit=1",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 14,
+      "step_count": 4
+    },
+    {
+      "id": "money.invoice.issue",
+      "title": "Review and issue exact invoice snapshot",
+      "route": "/app/money/invoices/[id]?review=1",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 5,
+      "step_count": 4
+    },
+    {
+      "id": "money.invoice.send",
+      "title": "Review destination and simulate invoice dispatch",
+      "route": "/app/money/invoices/[id]?send=1",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 7,
+      "step_count": 3
+    },
+    {
+      "id": "money.invoice.download",
+      "title": "Generate buyer-safe invoice PDF and data export",
+      "route": "/app/money/invoices/[id]",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 4,
+      "step_count": 1
+    },
+    {
+      "id": "money.invoice.void",
+      "title": "Void unpaid invoice with preserved history",
+      "route": "/app/money/invoices/[id]?action=void",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 6,
+      "step_count": 3
+    },
+    {
+      "id": "money.payments.list",
+      "title": "Inspect expected requests and actual receipts",
+      "route": "/app/money/payments",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 9,
+      "step_count": 3
+    },
+    {
+      "id": "money.payment.detail",
+      "title": "Inspect payment evidence and unknown outcome",
+      "route": "/app/money/payments/[id]",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 8,
+      "step_count": 5
+    },
+    {
+      "id": "money.payment.match",
+      "title": "Allocate confirmed receipt with exact amounts",
+      "route": "/app/money/payments/[id]?match=1",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 6,
+      "step_count": 2
+    },
+    {
+      "id": "money.payment.issue",
+      "title": "Resolve partial, wrong-currency, duplicate and unknown issues honestly",
+      "route": "/app/money/payments/[id]?issue=1",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 12,
+      "step_count": 3
+    },
+    {
+      "id": "money.expenses.list_archive",
+      "title": "Browse and archive expense records",
+      "route": "/app/money/expenses",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 11,
+      "step_count": 4
+    },
+    {
+      "id": "money.expense.create_edit",
+      "title": "Record expense and preserve corrections",
+      "route": "/app/money/expenses?expense=[id or new]",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 14,
+      "step_count": 3
+    },
+    {
+      "id": "money.expense.receipt",
+      "title": "Attach, replace and download actual receipt files",
+      "route": "/app/money/expenses?expense=[id]&receipt=1",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 9,
+      "step_count": 2
+    },
+    {
+      "id": "money.expenses.export",
+      "title": "Export useful CSV and receipt ZIP with exact scope",
+      "route": "/app/money/expenses?export=1",
+      "actor": "freelancer_owner",
+      "source": "spec/flows/work-money.json",
+      "control_count": 7,
+      "step_count": 2
+    }
+  ]
+}

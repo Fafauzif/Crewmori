@@ -1,0 +1,122 @@
+[
+  {
+    "svg": "horizontal/crewmori-horizontal-green.svg",
+    "png": "horizontal/crewmori-horizontal-green.png",
+    "png_size": [
+      3600,
+      958
+    ]
+  },
+  {
+    "svg": "primary/crewmori-primary-green.svg",
+    "png": "primary/crewmori-primary-green.png",
+    "png_size": [
+      3600,
+      958
+    ]
+  },
+  {
+    "svg": "stacked/crewmori-stacked-green.svg",
+    "png": "stacked/crewmori-stacked-green.png",
+    "png_size": [
+      2200,
+      1188
+    ]
+  },
+  {
+    "svg": "symbol/crewmori-symbol-green.svg",
+    "png": "symbol/crewmori-symbol-green.png",
+    "png_size": [
+      1024,
+      1024
+    ]
+  },
+  {
+    "svg": "wordmark/crewmori-wordmark-green.svg",
+    "png": "wordmark/crewmori-wordmark-green.png",
+    "png_size": [
+      3000,
+      768
+    ]
+  },
+  {
+    "svg": "horizontal/crewmori-horizontal-black.svg",
+    "png": "horizontal/crewmori-horizontal-black.png",
+    "png_size": [
+      3600,
+      958
+    ]
+  },
+  {
+    "svg": "primary/crewmori-primary-black.svg",
+    "png": "primary/crewmori-primary-black.png",
+    "png_size": [
+      3600,
+      958
+    ]
+  },
+  {
+    "svg": "stacked/crewmori-stacked-black.svg",
+    "png": "stacked/crewmori-stacked-black.png",
+    "png_size": [
+      2200,
+      1188
+    ]
+  },
+  {
+    "svg": "symbol/crewmori-symbol-black.svg",
+    "png": "symbol/crewmori-symbol-black.png",
+    "png_size": [
+      1024,
+      1024
+    ]
+  },
+  {
+    "svg": "wordmark/crewmori-wordmark-black.svg",
+    "png": "wordmark/crewmori-wordmark-black.png",
+    "png_size": [
+      3000,
+      768
+    ]
+  },
+  {
+    "svg": "horizontal/crewmori-horizontal-white.svg",
+    "png": "horizontal/crewmori-horizontal-white.png",
+    "png_size": [
+      3600,
+      958
+    ]
+  },
+  {
+    "svg": "primary/crewmori-primary-white.svg",
+    "png": "primary/crewmori-primary-white.png",
+    "png_size": [
+      3600,
+      958
+    ]
+  },
+  {
+    "svg": "stacked/crewmori-stacked-white.svg",
+    "png": "stacked/crewmori-stacked-white.png",
+    "png_size": [
+      2200,
+      1188
+    ]
+  },
+  {
+    "svg": "symbol/crewmori-symbol-white.svg",
+    "png": "symbol/crewmori-symbol-white.png",
+    "png_size": [
+      1024,
+      1024
+    ]
+  },
+  {
+    "svg": "wordmark/crewmori-wordmark-white.svg",
+    "png": "wordmark/crewmori-wordmark-white.png",
+    "png_size": [
+      3000,
+      768
+    ]
+  }
+]
