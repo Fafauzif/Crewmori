@@ -19,15 +19,17 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.135.0",
+    "@elevenlabs/client": "1.28.0",
     "@google/genai": "2.30.0",
     "@langchain/langgraph": "1.5.0",
     "@langchain/langgraph-checkpoint-postgres": "1.1.0",
     "@supabase/ssr": "0.12.7",
     "@supabase/supabase-js": "2.118.0",
-    "fflate": "0.8.2",
-    "jspdf": "4.2.0",
+    "fflate": "0.8.3",
+    "jspdf": "4.2.1",
     "lucide-react": "0.577.0",
-    "next": "16.2.1",
+    "next": "16.4.2",
+    "pdfjs-dist": "6.4.299",
     "pg": "8.23.1",
     "pg-boss": "12.38.0",
     "react": "19.2.4",
@@ -36,16 +38,17 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
+    "@playwright/test": "1.64.1",
     "@types/node": "24.12.0",
     "@types/pg": "8.23.1",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "eslint": "9.39.4",
-    "eslint-config-next": "16.2.1",
-    "tsx": "4.21.0",
+    "eslint-config-next": "16.4.2",
+    "tsx": "4.23.15",
     "typescript": "5.9.3"
   },
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.13.0"
   }
 }

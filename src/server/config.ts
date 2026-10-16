@@ -40,6 +40,7 @@ export function runtimeConfig(env: Environment = process.env) {
   const value = z.object({
     APP_URL: z.url().default("http://localhost:4173"),
     CREWMORI_BACKEND_ENABLED: z.enum(["true", "false"]).default("false"),
+    MAIL_PROVIDER: z.enum(["google", "resend"]).default("google"),
     PAYMENT_PROVIDER: z.enum(["sandbox", "stripe_test"]).default("sandbox"),
     DATABASE_POOL_SIZE: z.coerce.number().int().min(1).max(20).default(5),
     AGENT_MAX_OUTPUT_TOKENS: z.coerce.number().int().min(256).max(4096).default(1500),
