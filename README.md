@@ -4,6 +4,8 @@ Crewmori is a freelancer-owned AI business team. Six illustrated specialists hel
 
 This repository is a working **local frontend simulation**. It contains the owner workspace, public freelancer/service pages, inquiry and buyer journey, sample account/setup screens, editable records and real downloadable files. Agent outputs, connected tools, sending, publishing and payments are deterministic sample effects. No live service credentials or business backend are required.
 
+An opt-in **backend preparation** now adds authenticated Next.js APIs, Supabase/Postgres migrations, a durable Node worker and real provider adapters. The existing frontend still uses its local store; enabling the backend does not automatically migrate those views. See [backend setup, implementation boundaries and verification](docs/BACKEND.md) and [`.env.example`](.env.example). Live provider credentials and full frontend/business-command integration remain required for the connected product.
+
 ## Run locally
 
 Use Node.js **22.12.0 or later** and npm. Versions are pinned in `package.json` and `package-lock.json`.
@@ -105,6 +107,9 @@ Documentation, research, reference images and skill snapshots belong outside `pu
 | `src/lib/fixture.json`, `scenarios.json` | Canonical baseline and twelve independent sample branches |
 | `src/lib/spec-contracts.ts` | Retained typed contract vocabulary alongside the runtime adapter |
 | `tests/` | Domain, projection, lifecycle, stale/replay, file and arithmetic checks |
+| `src/server/`, `src/app/api/` | Opt-in authenticated APIs, provider adapters and backend services |
+| `supabase/migrations/`, `scripts/worker.ts` | Private database schema and durable worker process |
+| `docs/BACKEND.md` | Backend activation, API inventory, provider setup and remaining integration work |
 | `public/assets/` | Used local fonts, approved logo vectors, characters, map and sample portfolio artwork |
 | `docs/MASTER_AI_CONTEXT.md` | Current architecture, product decisions, known limits and continuation context |
 | `docs/DEVELOPER_FUNCTIONALITY.md` | Route/action inventory and production replacement responsibilities |

@@ -1,0 +1,12 @@
+FROM node:24-bookworm-slim
+WORKDIR /app
+COPY package.json package-lock.json ./
+# tsx is the pinned worker runner. Include development dependencies for this TS image.
+RUN npm ci --include=dev --no-audit --no-fund
+COPY --chown=node:node src ./src
+COPY --chown=node:node scripts ./scripts
+COPY --chown=node:node supabase ./supabase
+COPY --chown=node:node tsconfig.json ./
+ENV NODE_ENV=production
+USER node
+CMD ["npm", "run", "worker"]

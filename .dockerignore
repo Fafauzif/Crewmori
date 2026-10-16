@@ -1,0 +1,11 @@
+.git
+.next
+node_modules
+.env*
+docs
+references
+skills
+tests
+public
+*.tsbuildinfo
+.DS_Store
