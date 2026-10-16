@@ -30,7 +30,9 @@ export async function ownerActor(request: Request): Promise<OwnerActor> {
   return { kind: "owner", workspaceId: result.rows[0].id, userId: user.id };
 }
 export async function buyerActor(request: Request): Promise<BuyerActor> {
-  const authorization = request.headers.get("authorization") || "";
+  const bearer = request.headers.get("authorization");
+  const cookie = (await cookies()).get("crewmori_buyer")?.value;
+  const authorization = bearer || (cookie ? `Bearer ${cookie}` : "");
   assertService(/^Bearer [A-Za-z0-9_-]{43}$/.test(authorization), "UNAUTHENTICATED", "A current buyer invitation is required.", 401);
   const token = authorization.slice(7);
   const result = await database().query("select id, workspace_id, engagement_id from crewmori.buyer_grants where token_hash=$1 and revoked_at is null and expires_at > now()", [hashToken(token)]);

@@ -13,7 +13,7 @@ import PublicViews from "@/views/public";
 function Content() {
   const path = usePathname(),
     router = useRouter();
-  const { ready, state } = useStore();
+  const { ready, state, storageError, connected, refresh } = useStore();
   const [delegate, setDelegate] = useState<string | null>(null);
   const onAsk = (text = "") => setDelegate(text);
   useEffect(() => {
@@ -28,9 +28,10 @@ function Content() {
     }
   }, [path, ready]);
   useEffect(() => {
-    if (ready && path.startsWith("/app") && !state.session)
+    if (ready && (path.startsWith("/app") || path === "/onboarding") && !state.session)
       router.replace("/auth/sign-in?returnTo=" + encodeURIComponent(path));
   }, [path, ready, router, state.session]);
+  if (connected && storageError && !ready) return <div className="loading-shell" role="alert"><h1>Workspace unavailable</h1><p>{storageError}</p><button onClick={() => void refresh()}>Try again</button></div>;
   if (!ready)
     return (
       <div className="loading-shell" role="status">
@@ -39,10 +40,10 @@ function Content() {
         <div className="loading-bar" style={{ width: "60%" }} />
       </div>
     );
-  if (path.startsWith("/app") && !state.session)
+  if ((path.startsWith("/app") || path === "/onboarding") && !state.session)
     return (
       <div className="loading-shell" role="status">
-        Opening sample sign in…
+        Opening sign in…
       </div>
     );
   if (!path.startsWith("/app")) return <PublicViews path={path} />;
@@ -77,9 +78,9 @@ function Content() {
     </Shell>
   );
 }
-export default function Application() {
+export default function Application({ connected = false }: { connected?: boolean }) {
   return (
-    <StoreProvider>
+    <StoreProvider connected={connected}>
       <DirtyProvider>
         <Content />
       </DirtyProvider>

@@ -195,7 +195,7 @@ function Profile() {
   );
   const update = (key: keyof ProfileDraft, value: string | string[]) =>
     setDraft((d) => ({ ...d, [key]: value }));
-  const save = (event?: FormEvent) => {
+  const save = async (event?: FormEvent) => {
     event?.preventDefault();
     setError("");
     if (
@@ -217,12 +217,12 @@ function Profile() {
       setError(t("Enter a valid contact email."));
       return;
     }
-    const r = command("record.save", {
+    const r = (await command("record.save", {
       table: "profiles",
       id: saved.id,
       expected_version: base,
       values: draft,
-    });
+    }));
     if (r.ok) {
       setBase(base + 1);
       notify(t("Profile draft saved. Review changes before publishing."));
@@ -247,9 +247,9 @@ function Profile() {
       services: structuredClone(services),
     });
   };
-  const publish = () => {
+  const publish = async () => {
     if (!review) return;
-    const r = command("profile.publish", {
+    const r = (await command("profile.publish", {
       id: saved.id,
       expected_version: review.profile.version,
       service_versions: Object.fromEntries(
@@ -257,7 +257,7 @@ function Profile() {
       ),
       destination: `/u/${s(review.profile.handle, "alya")}`,
       reviewed: true,
-    });
+    }));
     if (r.ok) {
       setReview(null);
       setBase(saved.version + 1);
@@ -290,14 +290,14 @@ function Profile() {
           {t("Service archived.")}{" "}
           <Button
             variant="secondary"
-            onClick={() => {
+            onClick={async () => {
               const x = record("services", undoService);
-              const r = command("record.archive", {
+              const r = (await command("record.archive", {
                 table: "services",
                 id: undoService,
                 expected_version: x?.version,
                 archived: false,
-              });
+              }));
               if (r.ok) {
                 setUndoService(null);
                 notify(t("Service restored."));
@@ -498,12 +498,12 @@ function Profile() {
           title={t("Archive this service?")}
           description={`${s(archive.title)}. ${t("It will be removed from future public publication. Accepted offers keep their saved scope.")}`}
           onClose={() => setArchive(null)}
-          onConfirm={() => {
-            const r = command("record.archive", {
+          onConfirm={async () => {
+            const r = (await command("record.archive", {
               table: "services",
               id: archive.id,
               expected_version: archive.version,
-            });
+            }));
             if (r.ok) {
               notify(t("Service archived."));
               setUndoService(archive.id);
@@ -719,7 +719,7 @@ function ServiceEditor({
   const dirty = changed(initial, draft);
   const update = (key: keyof ServiceDraft, value: string) =>
     setDraft((d) => ({ ...d, [key]: value }));
-  const save = (e: FormEvent) => {
+  const save = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
     if (
@@ -747,7 +747,7 @@ function ServiceEditor({
       setError(t("Use a positive whole-number amount in minor units."));
       return;
     }
-    const r = command("record.save", {
+    const r = (await command("record.save", {
       table: "services",
       id: service?.id,
       expected_version: service?.version,
@@ -769,7 +769,7 @@ function ServiceEditor({
         published: service?.published || false,
         audience: "owner",
       },
-    });
+    }));
     if (r.ok) {
       notify(t("Service draft saved. Review changes before publishing."));
       onClose();
@@ -877,7 +877,7 @@ function Availability({ onSaved }: { onSaved: (version: number) => void }) {
   const [ver, setVer] = useState(profile.version);
   const dirty = changed(initial, d);
   useDirtyGuard(dirty);
-  const save = (e: FormEvent) => {
+  const save = async (e: FormEvent) => {
     e.preventDefault();
     if (
       !/^([01]\d|2[0-3]):[0-5]\d$/.test(d.start) ||
@@ -912,7 +912,7 @@ function Availability({ onSaved }: { onSaved: (version: number) => void }) {
       );
       return;
     }
-    const r = command("settings.availability", {
+    const r = (await command("settings.availability", {
       profile_id: profile.id,
       profile_version: ver,
       policy_id: policy.id,
@@ -927,7 +927,7 @@ function Availability({ onSaved }: { onSaved: (version: number) => void }) {
         reservation_hours: d.reservation,
         holiday_dates: holidays,
       },
-    });
+    }));
     if (!r.ok) {
       setError(r.message);
       return;
@@ -1212,7 +1212,7 @@ function RuleForm({
   const dirty = changed(d, initial);
   useDirtyGuard(dirty);
   useEffect(() => onDirty(dirty), [dirty, onDirty]);
-  const save = (e: FormEvent) => {
+  const save = async (e: FormEvent) => {
     e.preventDefault();
     const validTools = rows("connections")
       .filter(
@@ -1233,12 +1233,12 @@ function RuleForm({
       );
       return;
     }
-    const r = command("record.save", {
+    const r = (await command("record.save", {
       table: "capability_preferences",
       id: `policy_${role}`,
       expected_version: version,
       values: { role, ...d, mandatory_external_approval: true },
-    });
+    }));
     if (r.ok) {
       setVersion((version || 0) + 1);
       setError("");
@@ -1386,7 +1386,7 @@ function Preferences() {
   const [restore, setRestore] = useState(false);
   const dirty = changed(d, preferenceDraft(saved));
   useDirtyGuard(dirty);
-  const save = (e: FormEvent) => {
+  const save = async (e: FormEvent) => {
     e.preventDefault();
     try {
       new Intl.DateTimeFormat("en", { timeZone: d.timezone }).format();
@@ -1394,12 +1394,12 @@ function Preferences() {
       setError(t("Choose a valid display timezone."));
       return;
     }
-    const r = command("record.save", {
+    const r = (await command("record.save", {
       table: "preferences",
       id: saved.id,
       expected_version: base,
       values: d,
-    });
+    }));
     if (r.ok) {
       setBase(base + 1);
       setError("");
@@ -1812,14 +1812,14 @@ function ConnectionDetails({
     )
     .slice(-8)
     .reverse();
-  const change = (action: string) => {
-    const r = command("connection.change", {
+  const change = async (action: string) => {
+    const r = (await command("connection.change", {
       id: connection.id,
       action,
       approved_capabilities: caps,
       allowed_roles: roles,
       expected_version: base,
-    });
+    }));
     if (r.ok) {
       setBase(base + 1);
       setReview(null);
@@ -1931,7 +1931,7 @@ function ConnectionDetails({
           </Button>
         )}
         <div className="settings-actions">
-          <Button variant="secondary" onClick={() => change("refresh")}>
+          <Button variant="secondary" onClick={async () => (await change("refresh"))}>
             {t("Refresh sample status")}
           </Button>
           {connection.state !== "disconnected" &&
@@ -1998,7 +1998,7 @@ function ConnectionDetails({
             <Button variant="secondary" onClick={() => setReview(null)}>
               {t("Cancel")}
             </Button>
-            <Button onClick={() => change(review)}>
+            <Button onClick={async () => (await change(review))}>
               {t(
                 review === "permissions"
                   ? "Confirm permissions"
@@ -2013,7 +2013,7 @@ function ConnectionDetails({
           title={t("Disconnect this sample tool?")}
           description={`${s(connection.label)} · ${s(connection.account_label)}. ${t("Future dependent tasks may need a reconnect. Saved messages, files, and completed history will remain.")}`}
           onClose={() => setDisconnect(false)}
-          onConfirm={() => change("disconnect")}
+          onConfirm={async () => (await change("disconnect"))}
           confirmLabel={t("Disconnect")}
           danger
         />
@@ -2127,7 +2127,7 @@ function Knowledge() {
         const oldHistory = replacing
           ? a<Record<string, unknown>>(replacing.history)
           : [];
-        const r = command("knowledge.save", {
+        const r = (await command("knowledge.save", {
           id,
           expected_version: replacing?.version,
           source: {
@@ -2149,7 +2149,7 @@ function Knowledge() {
             archived: false,
           },
           attachment,
-        });
+        }));
         if (!r.ok) errors.push(`${file.name}: ${r.message}`);
         else {
           notify(
@@ -2201,14 +2201,14 @@ function Knowledge() {
           {t("Source archived. Historical evidence was retained.")}{" "}
           <Button
             variant="secondary"
-            onClick={() => {
+            onClick={async () => {
               const x = record("sources", undo.id);
-              const r = command("record.save", {
+              const r = (await command("record.save", {
                 table: "sources",
                 id: undo.id,
                 expected_version: x?.version,
                 values: { archived: false, status: undo.status },
-              });
+              }));
               if (r.ok) {
                 setUndo(null);
                 notify(t("Source restored."));
@@ -2237,7 +2237,7 @@ function Knowledge() {
           accept=".pdf,.png,.jpg,.jpeg,.txt,application/pdf,image/png,image/jpeg,text/plain"
           disabled={busy}
           aria-label={t("Upload source")}
-          onChange={(e) => void upload(e.target.files)}
+          onChange={async (e) => void (await upload(e.target.files))}
         />
         <p className="settings-meta" style={{ marginTop: 12 }}>
           {t(
@@ -2363,12 +2363,12 @@ function Knowledge() {
           title={t("Archive this source?")}
           description={`${s(archive.label)} · v${archive.version}. ${t("It will leave the active source picker. Existing artifact references and earlier versions remain available.")}`}
           onClose={() => setArchive(null)}
-          onConfirm={() => {
-            const r = command("record.archive", {
+          onConfirm={async () => {
+            const r = (await command("record.archive", {
               table: "sources",
               id: archive.id,
               expected_version: archive.version,
-            });
+            }));
             if (r.ok) {
               setUndo({ id: archive.id, status: s(archive.status, "ready") });
               setArchive(null);
@@ -2386,7 +2386,7 @@ function ManualSource({ onClose }: { onClose: () => void }) {
   const [content, setContent] = useState("");
   const [url, setUrl] = useState("");
   const [error, setError] = useState("");
-  const save = (e: FormEvent) => {
+  const save = async (e: FormEvent) => {
     e.preventDefault();
     if (
       !title.trim() ||
@@ -2398,7 +2398,7 @@ function ManualSource({ onClose }: { onClose: () => void }) {
       );
       return;
     }
-    const r = command("knowledge.save", {
+    const r = (await command("knowledge.save", {
       source: {
         kind: content.trim() ? "manual_entry" : "url_reference",
         label: title.trim(),
@@ -2414,7 +2414,7 @@ function ManualSource({ onClose }: { onClose: () => void }) {
         factual_status: "owner_provided",
         attachment_ids: [],
       },
-    });
+    }));
     if (r.ok) {
       notify(t("Source saved privately."));
       onClose();
@@ -2548,7 +2548,7 @@ function SourceDetails({
         ),
       );
   };
-  const visibility = () => {
+  const visibility = async () => {
     if (
       audience !== "owner" &&
       (source.connection_id || source.kind === "sample_message")
@@ -2560,7 +2560,7 @@ function SourceDetails({
       );
       return;
     }
-    const r = command("record.save", {
+    const r = (await command("record.save", {
       table: "sources",
       id: source.id,
       expected_version: source.version,
@@ -2569,7 +2569,7 @@ function SourceDetails({
         visibility_approved_version: source.version,
         visibility_reviewed: true,
       },
-    });
+    }));
     if (r.ok) {
       setReview(false);
       notify(t("Source visibility updated."));
@@ -2658,7 +2658,7 @@ function SourceDetails({
         <div className="settings-actions">
           <Button
             variant="secondary"
-            onClick={() => void download()}
+            onClick={async () => void (await download())}
             disabled={
               loading || (!binary && !s(source.content) && !s(source.url))
             }
@@ -2671,7 +2671,7 @@ function SourceDetails({
           {source.status === "failed" && (
             <Button
               variant="secondary"
-              onClick={() => {
+              onClick={async () => {
                 if (!binary && !s(source.content)) {
                   setError(
                     t(
@@ -2680,7 +2680,7 @@ function SourceDetails({
                   );
                   return;
                 }
-                const r = command("record.save", {
+                const r = (await command("record.save", {
                   table: "sources",
                   id: source.id,
                   expected_version: source.version,
@@ -2691,7 +2691,7 @@ function SourceDetails({
                       : "original_file_retained",
                     processing_attempts: n(source.processing_attempts) + 1,
                   },
-                });
+                }));
                 if (r.ok)
                   notify(
                     t(

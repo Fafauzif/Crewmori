@@ -50,6 +50,7 @@ import {
   parseAmount,
 } from "@/lib/downloads";
 import "./public.css";
+import ConnectedAuth from "./connected-auth";
 
 const emailOk = (value: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
@@ -113,8 +114,8 @@ function Frame({
   children: ReactNode;
   buyer?: boolean;
 }) {
-  const { state, command, t } = useStore();
-  const prefs = state.tables.preferences?.preferences_alya;
+  const { state, command, t, connected } = useStore();
+  const prefs = Object.values(state.tables.preferences || {})[0];
   return (
     <div className="public-frame">
       <a className="public-skip" href="#main">
@@ -125,7 +126,7 @@ function Frame({
         <nav aria-label="Public navigation">
           {!buyer && (
             <>
-              <Link href="/u/alya">{t("Meet a freelancer")}</Link>
+              {!connected && <Link href="/u/alya">{t("Meet a freelancer")}</Link>}
               <Link href="/auth/sign-in">{t("Sign in")}</Link>
             </>
           )}
@@ -134,18 +135,18 @@ function Frame({
             <select
               aria-label="Language"
               value={s(prefs?.locale, "en")}
-              onChange={(e) =>
-                command("preferences.save", {
+              onChange={async (e) =>
+                (await command("preferences.save", {
                   id: "preferences_alya",
                   values: { locale: e.target.value },
-                })
+                }))
               }
             >
               <option value="en">English</option>
               <option value="id">Bahasa Indonesia</option>
             </select>
           </label>
-          {buyer && <Badge>Sample client space</Badge>}
+          {buyer && <Badge>{connected ? "Client space" : "Sample client space"}</Badge>}
         </nav>
       </header>
       <main id="main" className="public-main">
@@ -153,7 +154,7 @@ function Frame({
       </main>
       <footer className="public-footer">
         <span>Your work. Your business. Your team.</span>
-        <span>Sample experience · No external actions</span>
+        <span>{connected ? "Crewmori" : "Sample experience · No external actions"}</span>
       </footer>
     </div>
   );
@@ -212,8 +213,8 @@ function Entry() {
           </p>
           <div className="public-actions">
             <Button
-              onClick={() => {
-                const r = command("session.set", { authenticated: true });
+              onClick={async () => {
+                const r = (await command("session.set", { authenticated: true }));
                 if (r.ok) router.push("/app/home");
               }}
             >
@@ -319,12 +320,12 @@ function Auth({ mode }: { mode: string }) {
     !returnTo.includes("//")
       ? returnTo
       : "/app/home";
-  const enter = () => {
-    const result = command("session.set", { authenticated: true });
+  const enter = async () => {
+    const result = (await command("session.set", { authenticated: true }));
     if (result.ok) router.push(safeReturn);
     else setError(result.message);
   };
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
     if (busy) return;
     setError("");
@@ -353,15 +354,15 @@ function Auth({ mode }: { mode: string }) {
       const prior = rows("recovery_grants").filter(
         (x) => x.state === "prepared",
       );
-      prior.forEach((x) =>
-        command("record.save", {
+      prior.forEach(async (x) =>
+        (await command("record.save", {
           table: "recovery_grants",
           id: x.id,
           values: { state: "replaced" },
-        }),
+        })),
       );
       const id = uid("reset");
-      const result = command("record.save", {
+      const result = (await command("record.save", {
         table: "recovery_grants",
         id,
         values: {
@@ -370,7 +371,7 @@ function Auth({ mode }: { mode: string }) {
             new Date(state.sample_clock).getTime() + 900000,
           ).toISOString(),
         },
-      });
+      }));
       if (result.ok) setRecovery(id);
       else setError(result.message);
     } else if (mode === "reset") {
@@ -379,14 +380,14 @@ function Auth({ mode }: { mode: string }) {
           "This sample reset link is unavailable. Prepare another link.",
         );
       } else {
-        const result = command("record.save", {
+        const result = (await command("record.save", {
           table: "recovery_grants",
           id: grant,
           values: {
             state: "consumed",
             password_reset_demonstrated_at: state.sample_clock,
           },
-        });
+        }));
         if (result.ok) setDone(true);
         else setError(result.message);
       }
@@ -400,7 +401,7 @@ function Auth({ mode }: { mode: string }) {
           "This local sample account already exists. Sign in to continue.",
         );
       } else {
-        const result = command("record.save", {
+        const result = (await command("record.save", {
           table: "local_accounts",
           id: `account_${encodeURIComponent(email.trim().toLowerCase())}`,
           values: {
@@ -408,9 +409,9 @@ function Auth({ mode }: { mode: string }) {
             email: email.trim().toLowerCase(),
             setup_status: "in_progress",
           },
-        });
+        }));
         if (result.ok) {
-          command("setup.saveStep", {
+          (await command("setup.saveStep", {
             step: "business",
             values: {
               basics: {
@@ -421,13 +422,13 @@ function Auth({ mode }: { mode: string }) {
               },
               services: [],
             },
-          });
-          command("session.set", { authenticated: true });
+          }));
+          (await command("session.set", { authenticated: true }));
           router.push("/onboarding");
         } else setError(result.message);
       }
     } else {
-      const result = command("session.set", { authenticated: true });
+      const result = (await command("session.set", { authenticated: true }));
       if (result.ok)
         router.push(
           setup?.state === "in_progress" ? "/onboarding" : safeReturn,
@@ -626,7 +627,7 @@ function Profile({ handle, slug }: { handle: string; slug?: string }) {
     return <Unavailable title="This service is not available" />;
   const dirty = !!(name || email || brief || budget || timing);
   const close = () => (dirty ? setDiscard(true) : setInquire(false));
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
     if (!name.trim() || !emailOk(email) || !brief.trim()) {
@@ -639,7 +640,7 @@ function Profile({ handle, slug }: { handle: string; slug?: string }) {
       setError("Use a nonnegative budget or leave it blank.");
       return;
     }
-    const r = command("inquiry.submit", {
+    const r = (await command("inquiry.submit", {
       idempotency_key: key.current,
       values: {
         name: name.trim(),
@@ -651,7 +652,7 @@ function Profile({ handle, slug }: { handle: string; slug?: string }) {
         desired_timing: timing || null,
         consent: true,
       },
-    });
+    }));
     if (r.ok) {
       router.push(`/inquiry/${r.id}?grant=${r.ids?.grant_id || ""}`);
     } else setError(r.message);
@@ -900,8 +901,8 @@ function Onboarding() {
   const stepIndex = Math.max(0, steps.indexOf(step));
   const update = (group: string, key: string, value: unknown) =>
     setDraft((d) => ({ ...d, [group]: { ...o(d[group]), [key]: value } }));
-  const save = (next = step, values = draft) => {
-    const r = command("setup.saveStep", { step: next, values });
+  const save = async (next = step, values = draft) => {
+    const r = (await command("setup.saveStep", { step: next, values }));
     if (r.ok) {
       setStep(next);
       setDraft({ ...values, lastStep: next });
@@ -909,7 +910,7 @@ function Onboarding() {
     } else setError(r.message);
     return r.ok;
   };
-  const addService = () => {
+  const addService = async () => {
     if (!serviceTitle.trim() || !serviceDescription.trim()) {
       setError(
         "Add a service name and description, or choose the sample service.",
@@ -940,7 +941,7 @@ function Onboarding() {
       service_editor: {},
     };
     setDraft(next);
-    save("services", next);
+    (await save("services", next));
     setServiceTitle("");
     setServiceDescription("");
     setPrice("");
@@ -948,18 +949,18 @@ function Onboarding() {
     setError("");
     return next;
   };
-  const proceed = () => {
+  const proceed = async () => {
     setError("");
     if (step === "business") {
       if (!s(basics.name).trim() || !s(basics.profession).trim()) {
         setError("Add your display name and a short description of your work.");
         return;
       }
-      save("services");
+      (await save("services"));
     } else if (step === "services") {
       let next = draft;
       if (serviceTitle || serviceDescription) {
-        const result = addService();
+        const result = (await addService());
         if (!result) return;
         next = result;
       }
@@ -967,7 +968,7 @@ function Onboarding() {
         setError("Add one service or use the sample service to continue.");
         return;
       }
-      save("availability", next);
+      (await save("availability", next));
     } else if (step === "availability") {
       const days = a<number>(availability.days ?? [0, 1, 2, 3, 4]);
       const start = s(availability.start, "09:00"),
@@ -993,10 +994,10 @@ function Onboarding() {
         setError("Choose an availability date on or after the sample date.");
         return;
       }
-      save("connections");
+      (await save("connections"));
     } else {
-      if (!save("connections")) return;
-      const result = command("setup.complete", {});
+      if (!(await save("connections"))) return;
+      const result = (await command("setup.complete", {}));
       if (result.ok) router.push("/app/home");
       else setError(result.message);
     }
@@ -1024,7 +1025,7 @@ function Onboarding() {
         ],
       };
       setDraft(next);
-      save(step, next);
+      (await save(step, next));
     } catch (e) {
       setError(
         e instanceof Error ? e.message : "File could not be saved. Try again.",
@@ -1151,14 +1152,14 @@ function Onboarding() {
                     </Button>
                     <Button
                       variant="secondary"
-                      onClick={() => {
+                      onClick={async () => {
                         setRemoved(item);
                         const next = {
                           ...draft,
                           services: services.filter((x) => x.id !== item.id),
                         };
                         setDraft(next);
-                        save(step, next);
+                        (await save(step, next));
                       }}
                     >
                       Remove
@@ -1171,13 +1172,13 @@ function Onboarding() {
                   Service removed.{" "}
                   <Button
                     variant="secondary"
-                    onClick={() => {
+                    onClick={async () => {
                       const next = {
                         ...draft,
                         services: [...services, removed],
                       };
                       setDraft(next);
-                      save(step, next);
+                      (await save(step, next));
                       setRemoved(null);
                     }}
                   >
@@ -1225,7 +1226,7 @@ function Onboarding() {
                 {!services.length && (
                   <Button
                     variant="secondary"
-                    onClick={() => {
+                    onClick={async () => {
                       const next = {
                         ...draft,
                         services: [
@@ -1242,7 +1243,7 @@ function Onboarding() {
                         ],
                       };
                       setDraft(next);
-                      save(step, next);
+                      (await save(step, next));
                     }}
                   >
                     Use sample service
@@ -1260,9 +1261,9 @@ function Onboarding() {
                   type="file"
                   accept=".pdf,.png,.jpg,.jpeg,.txt"
                   disabled={uploadBusy}
-                  onChange={(e) => {
+                  onChange={async (e) => {
                     const f = e.target.files?.[0];
-                    if (f) void addFile(f);
+                    if (f) void (await addFile(f));
                   }}
                 />
               </Field>
@@ -1276,7 +1277,7 @@ function Onboarding() {
               <div className="public-actions">
                 <Button
                   variant="secondary"
-                  onClick={() => {
+                  onClick={async () => {
                     if (!/^https:\/\//.test(portfolioLink)) {
                       setError("Use an HTTPS link.");
                       return;
@@ -1294,7 +1295,7 @@ function Onboarding() {
                       ],
                     };
                     setDraft(next);
-                    save(step, next);
+                    (await save(step, next));
                     setPortfolioLink("");
                   }}
                 >
@@ -1302,10 +1303,10 @@ function Onboarding() {
                 </Button>
                 <Button
                   variant="secondary"
-                  onClick={() => {
+                  onClick={async () => {
                     const next = { ...draft, portfolio_status: "skipped" };
                     setDraft(next);
-                    save(step, next);
+                    (await save(step, next));
                   }}
                 >
                   Add portfolio later
@@ -1464,10 +1465,10 @@ function Onboarding() {
               <div className="public-actions">
                 <Button
                   variant="secondary"
-                  onClick={() => {
+                  onClick={async () => {
                     const next = { ...draft, connections_skipped: true };
                     setDraft(next);
-                    save(step, next);
+                    (await save(step, next));
                   }}
                 >
                   Skip connections
@@ -1497,8 +1498,8 @@ function Onboarding() {
               {stepIndex > 0 && (
                 <Button
                   variant="secondary"
-                  onClick={() =>
-                    save(steps[stepIndex - 1], {
+                  onClick={async () =>
+                    (await save(steps[stepIndex - 1], {
                       ...draft,
                       service_editor: {
                         editing,
@@ -1507,7 +1508,7 @@ function Onboarding() {
                         price,
                         currency,
                       },
-                    })
+                    }))
                   }
                 >
                   Back
@@ -1522,9 +1523,9 @@ function Onboarding() {
         <div className="public-actions">
           <Button
             variant="secondary"
-            onClick={() => {
+            onClick={async () => {
               if (
-                save(step, {
+                (await save(step, {
                   ...draft,
                   service_editor: {
                     editing,
@@ -1533,7 +1534,7 @@ function Onboarding() {
                     price,
                     currency,
                   },
-                })
+                }))
               )
                 router.push("/auth/sign-in");
             }}
@@ -1542,9 +1543,9 @@ function Onboarding() {
           </Button>
           <Button
             variant="secondary"
-            onClick={() => {
+            onClick={async () => {
               if (
-                save(step, {
+                (await save(step, {
                   ...draft,
                   service_editor: {
                     editing,
@@ -1553,9 +1554,9 @@ function Onboarding() {
                     price,
                     currency,
                   },
-                })
+                }))
               ) {
-                command("session.set", { authenticated: true });
+                (await command("session.set", { authenticated: true }));
                 router.push("/app/home");
               }
             }}
@@ -1761,7 +1762,7 @@ function BuyerMessages({
   const data = o(inquiry),
     conversation = o(data.conversation);
   const messages = a<Entity>(data.messages);
-  const send = () => {
+  const send = async () => {
     setError("");
     if (!text.trim() && !upload) {
       setError("Write a message or attach a readable file.");
@@ -1769,7 +1770,7 @@ function BuyerMessages({
     }
     const attachments: string[] = [];
     if (upload) {
-      const saved = command("file.attach", {
+      const saved = (await command("file.attach", {
         id: upload.id,
         values: Object.fromEntries(
           Object.entries(upload).filter(
@@ -1778,14 +1779,14 @@ function BuyerMessages({
         ),
         grant_id: grantId,
         engagement_id: engagementId,
-      });
+      }));
       if (!saved.ok) {
         setError(saved.message);
         return;
       }
       attachments.push(upload.id);
     }
-    const result = command("conversation.send", {
+    const result = (await command("conversation.send", {
       id: s(conversation.id),
       expected_version: n(conversation.version),
       content: text.trim() || `Attached ${s(upload?.name)}`,
@@ -1793,7 +1794,7 @@ function BuyerMessages({
       grant_id: grantId,
       engagement_id: engagementId,
       idempotency_key: attempt.current,
-    });
+    }));
     if (result.ok) {
       setText("");
       setUpload(null);
@@ -1874,9 +1875,9 @@ function BuyerMessages({
         )}
       </div>
       <form
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          send();
+          (await send());
         }}
         noValidate
       >
@@ -1891,10 +1892,10 @@ function BuyerMessages({
               setText(e.target.value);
               onDraftChange?.(e.target.value);
             }}
-            onKeyDown={(e) => {
+            onKeyDown={async (e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                send();
+                (await send());
               }
             }}
             placeholder="Tell us a little more…"
@@ -1920,9 +1921,9 @@ function BuyerMessages({
               type="file"
               accept=".pdf,.png,.jpg,.jpeg,.txt"
               disabled={uploadBusy}
-              onChange={(e) => {
+              onChange={async (e) => {
                 const file = e.target.files?.[0];
-                if (file) void addFile(file);
+                if (file) void (await addFile(file));
               }}
             />
           </label>
@@ -1978,7 +1979,7 @@ function Inquiry({ id, grant }: { id: string; grant: string }) {
     setEditing(true);
     setBriefOpen(true);
   };
-  const saveBrief = () => {
+  const saveBrief = async () => {
     if (
       !scope.trim() ||
       (budget && parseAmount(budget, currency) === null) ||
@@ -1989,7 +1990,7 @@ function Inquiry({ id, grant }: { id: string; grant: string }) {
       );
       return;
     }
-    const r = command("inquiry.updateBrief", {
+    const r = (await command("inquiry.updateBrief", {
       id: s(requirements.id),
       expected_version: n(requirements.version),
       grant_id: grant,
@@ -1999,7 +2000,7 @@ function Inquiry({ id, grant }: { id: string; grant: string }) {
         requested_budget: budget ? minor(budget, currency) : null,
         requested_delivery_business_days: days ? Number(days) : null,
       },
-    });
+    }));
     if (r.ok) {
       setBriefOpen(false);
       setEditing(false);
@@ -2047,13 +2048,13 @@ function Inquiry({ id, grant }: { id: string; grant: string }) {
           <Button
             variant="secondary"
             disabled={b(conversation.owner_review_requested)}
-            onClick={() => {
-              const r = command("conversation.requestOwner", {
+            onClick={async () => {
+              const r = (await command("conversation.requestOwner", {
                 id: s(conversation.id),
                 grant_id: grant,
                 engagement_id: id,
                 reason: "Buyer requested freelancer follow-up",
-              });
+              }));
               if (!r.ok) setError(r.message);
             }}
           >
@@ -2345,13 +2346,13 @@ function Offer({ id, grant }: { id: string; grant: string }) {
   };
   const accepted = offer.state === "accepted";
   const eligibility = o(offer.accept_eligibility);
-  const requestChanges = () => {
+  const requestChanges = async () => {
     if (!reason.trim()) {
       setError("Describe what you would like changed.");
       return;
     }
     const exact = reviewed.current || offer;
-    const r = command("offer.requestChanges", {
+    const r = (await command("offer.requestChanges", {
       id: s(exact.offer_id),
       offer_version_id: s(exact.offer_version_id),
       expected_version: n(exact.offer_record_version),
@@ -2359,17 +2360,17 @@ function Offer({ id, grant }: { id: string; grant: string }) {
       engagement_id: id,
       reason: reason.trim(),
       content: reason.trim(),
-    });
+    }));
     if (r.ok) {
       setChange(false);
       setReason("");
       setError("");
     } else setError(r.message);
   };
-  const acceptOffer = () => {
+  const acceptOffer = async () => {
     if (!agreed) return;
     const exact = reviewed.current || offer;
-    const r = command("offer.accept", {
+    const r = (await command("offer.accept", {
       id: s(exact.offer_id),
       offer_version_id: s(exact.offer_version_id),
       expected_version: n(exact.offer_record_version),
@@ -2377,7 +2378,7 @@ function Offer({ id, grant }: { id: string; grant: string }) {
       engagement_id: id,
       confirmed: true,
       idempotency_key: acceptKey.current,
-    });
+    }));
     if (r.ok) {
       setAccept(false);
       setAgreed(false);
@@ -2683,7 +2684,7 @@ function InputEditor({
       setBusy(false);
     }
   };
-  const submit = () => {
+  const submit = async () => {
     if (answer.trim().length < 3 && !files.length) {
       setError("Add input details or a readable attachment.");
       return;
@@ -2693,20 +2694,20 @@ function InputEditor({
       return;
     }
     for (const file of files) {
-      const saved = command("file.attach", {
+      const saved = (await command("file.attach", {
         id: file.id,
         values: Object.fromEntries(
           Object.entries(file).filter(([k]) => !["id", "version"].includes(k)),
         ),
         grant_id: grantId,
         engagement_id: engagementId,
-      });
+      }));
       if (!saved.ok) {
         setError(saved.message);
         return;
       }
     }
-    const result = command("project.provideInput", {
+    const result = (await command("project.provideInput", {
       id: item.id,
       expected_version: item.version,
       answer: answer.trim(),
@@ -2715,7 +2716,7 @@ function InputEditor({
         : a<string>(item.attachment_ids),
       grant_id: grantId,
       engagement_id: engagementId,
-    });
+    }));
     if (result.ok) onClose();
     else setError(result.message);
   };
@@ -2751,9 +2752,9 @@ function InputEditor({
           type="file"
           accept=".pdf,.png,.jpg,.jpeg,.txt"
           disabled={busy}
-          onChange={(e) => {
+          onChange={async (e) => {
             const file = e.target.files?.[0];
-            if (file) void add(file);
+            if (file) void (await add(file));
           }}
         />
       </Field>
@@ -2912,14 +2913,14 @@ function BuyerFiles({
                   <Button
                     variant="secondary"
                     disabled={busy === file.id}
-                    onClick={() => void open(file)}
+                    onClick={async () => void (await open(file))}
                   >
                     Preview file
                   </Button>
                   <Button
                     variant="secondary"
                     disabled={busy === file.id}
-                    onClick={() => void open(file, true)}
+                    onClick={async () => void (await open(file, true))}
                   >
                     Download file
                   </Button>
@@ -2966,7 +2967,7 @@ function BuyerFiles({
           ) : (
             <p>This format is available to download.</p>
           )}
-          <Button onClick={() => void open(preview.file, true)}>
+          <Button onClick={async () => void (await open(preview.file, true))}>
             Download file
           </Button>
         </Modal>
@@ -2996,17 +2997,17 @@ function BuyerPayment({
   const requests = a<Entity>(data.requests),
     invoices = a<Entity>(data.invoices),
     receipts = a<Entity>(data.receipts);
-  const openRequest = (request: Entity) => {
+  const openRequest = async (request: Entity) => {
     setError("");
-    const r = command("payment.startRequest", {
+    const r = (await command("payment.startRequest", {
       id: request.id,
       expected_version: request.version,
       grant_id: grantId,
       engagement_id: engagementId,
-    });
+    }));
     if (!r.ok) setError(r.message);
   };
-  const apply = () => {
+  const apply = async () => {
     if (!selected) return;
     const amount = o(
       selected.expected ??
@@ -3022,12 +3023,12 @@ function BuyerPayment({
         setError("Record a receipt before replaying it.");
         return;
       }
-      const replay = command("payment.replayReceipt", {
+      const replay = (await command("payment.replayReceipt", {
         id: selected.id,
         receipt_id: prior.id,
         grant_id: grantId,
         engagement_id: engagementId,
-      });
+      }));
       if (replay.ok) {
         setSample(false);
         setError("");
@@ -3051,7 +3052,7 @@ function BuyerPayment({
       ...gross,
       amount_minor: Math.round(n(gross.amount_minor) * 0.02),
     };
-    const result = command("payment.simulateReceipt", {
+    const result = (await command("payment.simulateReceipt", {
       id: selected.id,
       grant_id: grantId,
       engagement_id: engagementId,
@@ -3059,7 +3060,7 @@ function BuyerPayment({
       fee,
       provider_event_id: `buyer_sample_${selected.id}_${event}_${state.sample_clock}`,
       observed_at: state.sample_clock,
-    });
+    }));
     if (result.ok) {
       setSample(false);
       setError("");
@@ -3132,7 +3133,7 @@ function BuyerPayment({
               </p>
             )}
             {request.state === "created" ? (
-              <Button onClick={() => openRequest(request)}>
+              <Button onClick={async () => (await openRequest(request))}>
                 View deposit instructions
               </Button>
             ) : (
@@ -3331,32 +3332,32 @@ function Portal({ id, grant }: { id: string; grant: string }) {
       0,
     );
   };
-  const accept = () => {
-    const result = command("project.acceptDelivery", {
+  const accept = async () => {
+    const result = (await command("project.acceptDelivery", {
       id: s(project.id),
       expected_version: n(project.version),
       grant_id: grant,
       engagement_id: id,
       confirmed: true,
-    });
+    }));
     if (result.ok) {
       setAcceptDelivery(false);
       setDelivery(false);
     } else setError(result.message);
   };
-  const revision = () => {
+  const revision = async () => {
     if (!feedback.trim()) {
       setError("Describe the revision you need.");
       return;
     }
-    const result = command("project.requestRevision", {
+    const result = (await command("project.requestRevision", {
       id: s(project.id),
       expected_version: n(project.version),
       grant_id: grant,
       engagement_id: id,
       reason: feedback.trim(),
       content: feedback.trim(),
-    });
+    }));
     if (result.ok) {
       setDelivery(false);
       setFeedback("");
@@ -3649,6 +3650,7 @@ function Portal({ id, grant }: { id: string; grant: string }) {
 }
 
 export default function PublicViews({ path }: { path: string }) {
+  const { connected, state } = useStore();
   const params = useSearchParams();
   const clean = path.split("?")[0].replace(/\/$/, "") || "/";
   const segments = clean.split("/").filter(Boolean);
@@ -3657,7 +3659,7 @@ export default function PublicViews({ path }: { path: string }) {
     segments[0] === "auth" &&
     ["sign-in", "sign-up", "recover", "reset"].includes(segments[1])
   )
-    return <Auth key={clean} mode={segments[1]} />;
+    return connected ? <ConnectedAuth key={clean} mode={segments[1]} /> : <Auth key={clean} mode={segments[1]} />;
   if (clean === "/onboarding") return <Onboarding />;
   if (
     segments[0] === "u" &&
@@ -3670,7 +3672,7 @@ export default function PublicViews({ path }: { path: string }) {
       <Inquiry
         key={`${clean}:${params.get("grant") || ""}`}
         id={segments[1]}
-        grant={params.get("grant") || ""}
+        grant={connected ? s(state.remote?.grantId) : params.get("grant") || ""}
       />
     );
   if (
@@ -3682,7 +3684,7 @@ export default function PublicViews({ path }: { path: string }) {
       <Offer
         key={`${clean}:${params.get("grant") || ""}`}
         id={segments[1]}
-        grant={params.get("grant") || ""}
+        grant={connected ? s(state.remote?.grantId) : params.get("grant") || ""}
       />
     );
   if (segments[0] === "buyer" && segments.length === 2)
@@ -3690,7 +3692,7 @@ export default function PublicViews({ path }: { path: string }) {
       <Portal
         key={`${clean}:${params.get("grant") || ""}`}
         id={segments[1]}
-        grant={params.get("grant") || ""}
+        grant={connected ? s(state.remote?.grantId) : params.get("grant") || ""}
       />
     );
   return (

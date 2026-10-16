@@ -1,6 +1,8 @@
 export type Entity = { id: string; version: number; [key: string]: unknown };
 export type Tables = Record<string, Record<string, Entity>>;
 export interface StoreState {
+  mode?: "sample" | "connected";
+  remote?: Record<string, unknown>;
   schema_version: string;
   sample_clock: string;
   tables: Tables;
@@ -50,3 +52,5 @@ export const date = (v: unknown): string => {
         timeZone: "Asia/Jakarta",
       }).format(d);
 };
+
+export const primaryId = (st: StoreState, table: string, fallback = ""): string => Object.keys(st.tables[table] || {})[0] || fallback;

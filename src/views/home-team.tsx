@@ -497,10 +497,10 @@ export function Home({ onAsk }: { onAsk: (text?: string) => void }) {
                 <button
                   style={{ marginLeft: "auto" }}
                   aria-label={`Dismiss ${label(u.role_id)} update`}
-                  onClick={() =>
-                    command("ui.set", {
+                  onClick={async () =>
+                    (await command("ui.set", {
                       values: { dismissed_updates: [...dismissed, u.id] },
-                    })
+                    }))
                   }
                 >
                   ×
@@ -541,8 +541,8 @@ export function Home({ onAsk }: { onAsk: (text?: string) => void }) {
       {dismissed.length > 0 && (
         <Button
           variant="ghost"
-          onClick={() =>
-            command("ui.set", { values: { dismissed_updates: [] } })
+          onClick={async () =>
+            (await command("ui.set", { values: { dismissed_updates: [] } }))
           }
         >
           Undo dismissed updates
@@ -610,14 +610,14 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
     s(prefs?.focus_mode) === "focus";
   const artifacts = rows("artifacts");
   const close = () => router.push("/app/team", { scroll: false });
-  const action = (act: string) => {
+  const action = async (act: string) => {
     if (selectedRun) {
-      const result = command("agent.control", {
+      const result = (await command("agent.control", {
         id: selectedRun.id,
         action: act,
         control_version: selectedRun.control_version,
         expected_version: selectedRun.version,
-      });
+      }));
       setResult(result);
       if (result.ok && act === "retry" && result.id)
         router.push("/app/team?task=" + result.id, { scroll: false });
@@ -672,15 +672,15 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
           </Button>
           <Button
             variant="ghost"
-            onClick={() =>
-              command("record.save", {
+            onClick={async () =>
+              (await command("record.save", {
                 table: "preferences",
                 id: "preferences_alya",
                 expected_version: prefs?.version,
                 values: {
                   team_animation_paused: !prefs?.team_animation_paused,
                 },
-              })
+              }))
             }
           >
             {prefs?.team_animation_paused ? (
@@ -987,19 +987,19 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
               <div className="actions">
                 {["queued", "running"].includes(s(selectedRun.status)) && (
                   <>
-                    <Button onClick={() => action("checkpoint")}>
+                    <Button onClick={async () => (await action("checkpoint"))}>
                       Run next sample step
                     </Button>
-                    <Button variant="secondary" onClick={() => action("pause")}>
+                    <Button variant="secondary" onClick={async () => (await action("pause"))}>
                       Pause task
                     </Button>
                   </>
                 )}
                 {selectedRun.status === "paused" && (
-                  <Button onClick={() => action("resume")}>Resume task</Button>
+                  <Button onClick={async () => (await action("resume"))}>Resume task</Button>
                 )}
                 {["failed", "blocked"].includes(s(selectedRun.status)) && (
-                  <Button onClick={() => action("retry")}>Retry task</Button>
+                  <Button onClick={async () => (await action("retry"))}>Retry task</Button>
                 )}
                 {!["completed", "cancelled", "failed"].includes(
                   s(selectedRun.status),
@@ -1036,15 +1036,15 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
                   </Field>
                   <div className="actions">
                     <Button
-                      onClick={() => {
+                      onClick={async () => {
                         setResult(
-                          command("agent.control", {
+                          (await command("agent.control", {
                             id: selectedRun.id,
                             action: "clarify",
                             intent: clarify,
                             expected_version: selectedRun.version,
                             control_version: selectedRun.control_version,
-                          }),
+                          })),
                         );
                       }}
                     >
@@ -1155,8 +1155,8 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
           description="Saved outputs and completed actions stay available. Only the remaining steps stop."
           confirmLabel="Cancel remaining work"
           onClose={() => setCancel(false)}
-          onConfirm={() => {
-            action("cancel");
+          onConfirm={async () => {
+            (await action("cancel"));
             setCancel(false);
           }}
         />

@@ -3,6 +3,8 @@ import { api, json, jsonBody } from "@/server/http";
 import { authenticatedUser } from "@/server/auth";
 import { database, transaction } from "@/server/db";
 
+import { initializeWorkspace } from "@/server/domain-state";
+
 export const runtime = "nodejs";
 export async function GET(request: Request) {
   return api(request, async () => {
@@ -16,7 +18,9 @@ export async function POST(request: Request) {
     const input = await jsonBody(request, z.object({ name: z.string().trim().min(1).max(120) }).strict());
     const workspace = await transaction(async (client) => {
       await client.query("insert into crewmori.workspaces(owner_id,name) values($1,$2) on conflict(owner_id) do nothing", [user.id, input.name]);
-      return (await client.query("select id,name,timezone,revision from crewmori.workspaces where owner_id=$1", [user.id])).rows[0];
+      const row = (await client.query("select * from crewmori.workspaces where owner_id=$1 for update", [user.id])).rows[0];
+      await initializeWorkspace(client, row, user.email);
+      return { id: row.id, name: row.name, revision: Number(row.revision) };
     });
     return json({ workspace }, 201);
   });

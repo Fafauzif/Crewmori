@@ -82,6 +82,7 @@ export function Shell({
     t,
     storageError,
     resetStorage,
+    connected,
   } = useStore();
   const [menu, setMenu] = useState(false),
     [search, setSearch] = useState(false),
@@ -145,11 +146,11 @@ export function Shell({
     if (key === "scenario") setSample(false);
     else setNotifications(false);
   };
-  const enterScenario = (id: string) => {
-    const result = command("scenario.load", {
+  const enterScenario = async (id: string) => {
+    const result = (await command("scenario.load", {
       id,
       discard_edited_work_confirmed: true,
-    });
+    }));
     if (result.ok) {
       setSample(false);
       setPendingScenario("");
@@ -157,7 +158,7 @@ export function Shell({
       router.push(id === "first_use" ? "/onboarding" : "/app/home");
     }
   };
-  const openRecap = () => {
+  const openRecap = async () => {
     const list = events
       .filter((e) => n(e.sequence) > n(prefs?.last_seen_event_sequence))
       .reverse();
@@ -166,14 +167,14 @@ export function Shell({
     setPlaying(list.length > 0 && prefs?.motion !== "reduced");
     setRecap(true);
     if (list.length)
-      command("record.save", {
+      (await command("record.save", {
         table: "preferences",
         id: "preferences_alya",
         expected_version: prefs?.version,
         values: {
           last_seen_event_sequence: Math.max(...list.map((e) => n(e.sequence))),
         },
-      });
+      }));
   };
   const recordTitle = (table: string, e: Entity) =>
     table === "offers"
@@ -220,7 +221,7 @@ export function Shell({
         >
           <img src="/assets/brand/crewmori-primary-green.svg" alt="Crewmori" />
         </Link>
-        <div className="sample-label">Your sample workspace</div>
+        <div className="sample-label">{connected ? "Your workspace" : "Your sample workspace"}</div>
         <nav className="primary-nav">
           {nav.map(({ name, path: href, icon: Icon, match }) => (
             <Link
@@ -235,7 +236,7 @@ export function Shell({
           ))}
         </nav>
         <div className="sidebar-tools">
-          <div className="eyebrow">Sample connections</div>
+          <div className="eyebrow">{connected ? "Connections" : "Sample connections"}</div>
           <Link className="nav-item" href="/app/connections?connection=gmail">
             <Mail size={16} />
             Gmail
@@ -304,6 +305,7 @@ export function Shell({
             </span>
           </div>
           <div className="topbar-actions">
+            {connected ? <Button variant="secondary" onClick={async () => { const result = await command("session.signOut"); if (result.ok) router.replace("/auth/sign-in"); }}>Sign out</Button> : <>
             <button
               className="sample-trigger"
               aria-label={t("Sample workspace")}
@@ -317,6 +319,7 @@ export function Shell({
               </span>
               <ChevronDown size={12} />
             </button>
+            </>}
             <Button
               variant="secondary"
               className="desktop-only"
@@ -329,19 +332,19 @@ export function Shell({
               <Play size={13} />
               {path.includes("/team")
                 ? t("Catch me up")
-                : t("Run a sample task")}
+                : t(connected ? "Ask your team" : "Run a sample task")}
             </Button>
             <Button
               variant="secondary"
               className="desktop-only"
               aria-pressed={focus}
-              onClick={() =>
-                command("record.save", {
+              onClick={async () =>
+                (await command("record.save", {
                   table: "preferences",
                   id: "preferences_alya",
                   expected_version: prefs?.version,
                   values: { focus_mode: focus ? "normal" : "focus" },
-                })
+                }))
               }
             >
               <Focus size={15} />
@@ -475,7 +478,7 @@ export function Shell({
           </div>
         </Modal>
       )}
-      {sample && (
+      {sample && !connected && (
         <Modal
           title="Explore your sample workspace"
           onClose={() => closeQueryModal("scenario")}
@@ -489,8 +492,8 @@ export function Shell({
               <Badge>Frozen clock: {date(state.sample_clock)}</Badge>
               <Button
                 variant="secondary"
-                onClick={() => {
-                  const r = command("clock.advance", { days: 1 });
+                onClick={async () => {
+                  const r = (await command("clock.advance", { days: 1 }));
                   notify(r.message);
                 }}
               >
@@ -502,8 +505,8 @@ export function Shell({
                 <button
                   key={x.id}
                   className={`scenario-option ${state.scenario === x.id ? "selected" : ""}`}
-                  onClick={() =>
-                    state.dirty ? setPendingScenario(x.id) : enterScenario(x.id)
+                  onClick={async () =>
+                    state.dirty ? setPendingScenario(x.id) : (await enterScenario(x.id))
                   }
                 >
                   <strong>{x.title}</strong>
@@ -520,8 +523,8 @@ export function Shell({
               </Button>
               <Button
                 variant="ghost"
-                onClick={() => {
-                  command("session.set", { authenticated: false });
+                onClick={async () => {
+                  (await command("session.set", { authenticated: false }));
                   router.push("/auth/sign-in");
                 }}
               >
@@ -538,11 +541,11 @@ export function Shell({
           description="Your edited records in this browser will be replaced with this scenario. Downloaded files stay on your device."
           confirmLabel="Load sample"
           onClose={() => setPendingScenario("")}
-          onConfirm={() => {
+          onConfirm={async () => {
             if (pendingScenario === "recovery") {
               resetStorage();
               setPendingScenario("");
-            } else enterScenario(pendingScenario);
+            } else (await enterScenario(pendingScenario));
           }}
         />
       )}
@@ -567,10 +570,10 @@ export function Shell({
               </Button>
               <Button
                 variant="ghost"
-                onClick={() =>
-                  command("ui.set", {
+                onClick={async () =>
+                  (await command("ui.set", {
                     values: { read_events: events.map((e) => e.id) },
-                  })
+                  }))
                 }
               >
                 Mark all as read
@@ -587,10 +590,10 @@ export function Shell({
                   <div className="actions">
                     <Button
                       variant="ghost"
-                      onClick={() => {
-                        command("ui.set", {
+                      onClick={async () => {
+                        (await command("ui.set", {
                           values: { read_events: [...read, e.id] },
-                        });
+                        }));
                         setNotifications(false);
                         router.push(eventHref(e, state));
                       }}
@@ -601,10 +604,10 @@ export function Shell({
                     {!read.includes(e.id) && (
                       <Button
                         variant="ghost"
-                        onClick={() =>
-                          command("ui.set", {
+                        onClick={async () =>
+                          (await command("ui.set", {
                             values: { read_events: [...read, e.id] },
-                          })
+                          }))
                         }
                       >
                         Mark read
@@ -733,15 +736,15 @@ export function Delegate({
   const promotion = task ? task.role === "promoter" : role === "promoter";
   const sourceTitle = (id: string) =>
     s(record("sources", id)?.label, s(record("sources", id)?.title, id));
-  const save = () => {
-    const r = command("ui.set", { values: { delegate_draft: value } });
+  const save = async () => {
+    const r = (await command("ui.set", { values: { delegate_draft: value } }));
     if (r.ok) {
       setSaved(JSON.stringify(value));
       notify("Request draft saved.");
     }
     setResult(r);
   };
-  const submit = () => {
+  const submit = async () => {
     if (!text.trim()) {
       setResult({
         ok: false,
@@ -786,18 +789,18 @@ export function Delegate({
         id: requirement.id,
         version: requirement.version,
       });
-    const r = command("agent.start", {
+    const r = (await command("agent.start", {
       role_id: task ? task.role : role,
       intent: task?.intent || text,
       opportunity_id: promotion ? "" : opportunityId,
       service_id: promotion ? serviceId : undefined,
       source_ids: sourceIds,
       input_refs: refs,
-    });
+    }));
     setResult(r);
     if (r.ok && r.id) {
       setSaved(JSON.stringify(value));
-      command("ui.set", { values: { delegate_draft: {} } });
+      (await command("ui.set", { values: { delegate_draft: {} } }));
       router.push("/app/team?task=" + r.id);
       onClose();
     }
@@ -949,7 +952,7 @@ export function Delegate({
                     attachmentId = "attachment_" + uploaded.id;
                   const content =
                     file.type === "text/plain" ? await file.text() : "";
-                  const r = command("knowledge.save", {
+                  const r = (await command("knowledge.save", {
                     id,
                     source: {
                       label: file.name,
@@ -982,7 +985,7 @@ export function Delegate({
                       audience: "owner",
                       shared_with_buyer: false,
                     },
-                  });
+                  }));
                   if (r.ok) ids.push(id);
                   else setResult(r);
                 } catch (error) {

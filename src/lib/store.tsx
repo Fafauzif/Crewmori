@@ -19,19 +19,26 @@ import {
   o,
 } from "./types";
 const KEY = "crewmori.workspace.v1";
-interface StoreContext {
+export interface StoreContext {
   state: StoreState;
   ready: boolean;
+  connected: boolean;
+  refresh: () => Promise<void>;
   rows: (table: string) => Entity[];
   record: (table: string, id: string) => Entity | undefined;
-  command: (type: string, input?: Input) => Result;
+  command: (type: string, input?: Input) => Promise<Result>;
   notify: (message: string) => void;
   t: (english: string) => string;
   storageError: string;
   resetStorage: () => void;
 }
-const Context = createContext<StoreContext | null>(null);
-export function StoreProvider({ children }: { children: ReactNode }) {
+export const Context = createContext<StoreContext | null>(null);
+import { ConnectedStoreProvider } from "./connected-store";
+
+export function StoreProvider({ children, connected = false }: { children: ReactNode; connected?: boolean }) {
+  return connected ? <ConnectedStoreProvider>{children}</ConnectedStoreProvider> : <SampleStoreProvider>{children}</SampleStoreProvider>;
+}
+function SampleStoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<StoreState>(() => ({
       ...createState(),
       session: false,
@@ -93,7 +100,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("storage", storage);
   }, [notify]);
   const command = useCallback(
-    (type: string, input: Input = {}): Result => {
+    async (type: string, input: Input = {}): Promise<Result> => {
       if (
         storageError &&
         !["scenario.load", "sample.loadScenario"].includes(type)
@@ -169,6 +176,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       value={{
         state,
         ready,
+        connected: false,
+        refresh: async () => {},
         rows: (table) => Object.values(state.tables[table] || {}),
         record: (table, id) => state.tables[table]?.[id],
         command,

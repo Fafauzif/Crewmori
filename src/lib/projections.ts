@@ -67,6 +67,7 @@ export function publicProfile(
   st: StoreState,
   handle: string,
 ): PublicProfile | null {
+  if (st.remote) return (st.remote.profile as PublicProfile | null)?.handle === handle ? st.remote.profile as PublicProfile : null;
   const profile = rows(st, "profiles").find((x) => {
     const snapshot = published(st, "profiles", x.id);
     const owner = st.tables.owners?.[s(x.owner_id)];
@@ -173,6 +174,7 @@ export function buyerOffer(
   grantId: string,
   versionId?: string,
 ): BuyerOffer | null {
+  if (st.remote) return st.remote.engagementId === engagementId ? (versionId ? st.remote.offer : st.remote.latestOffer) as BuyerOffer | null : null;
   const grant = validGrant(st, engagementId, grantId);
   if (!grant) return null;
   const offer = st.tables.offers?.[s(grant.offer_id)];
@@ -400,6 +402,7 @@ export function inquiryProjection(
   engagementId: string,
   grantId: string,
 ): InquiryProjection | null {
+  if (st.remote) return st.remote.engagementId === engagementId ? st.remote.inquiry as InquiryProjection | null : null;
   const grant = validGrant(st, engagementId, grantId);
   if (!grant) return null;
   const conv = st.tables.conversations?.[s(grant.conversation_id)],
@@ -447,6 +450,7 @@ export function buyerPortal(
   engagementId: string,
   grantId: string,
 ): BuyerPortal | null {
+  if (st.remote) return st.remote.engagementId === engagementId ? st.remote.portal as BuyerPortal | null : null;
   const grant = validGrant(st, engagementId, grantId);
   if (!grant) return null;
   const raw = st.tables.projects?.[s(grant.project_id)],

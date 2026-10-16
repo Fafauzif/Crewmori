@@ -215,3 +215,60 @@ test("worker process starts with durable queue/checkpoints and shuts down cleanl
     assert.equal(code, 0);
   } finally { if (worker.exitCode === null) worker.kill("SIGKILL"); }
 });
+
+test("connected workspaces start empty, persist setup and publish a unique public profile", async () => {
+  const { initializeWorkspace } = await import("../../src/server/domain-state");
+  const { runDomainCommand, ownerState } = await import("../../src/server/domain");
+  const { getPublicProfile } = await import("../../src/server/buyers");
+  const workspace = (await database().query("insert into crewmori.workspaces(owner_id,name) values($1,'Independent studio') returning *", [randomUUID()])).rows[0];
+  const actor: OwnerActor = { kind: "owner", workspaceId: workspace.id, userId: workspace.owner_id };
+  await transaction((client) => initializeWorkspace(client, workspace, "owner@example.test"));
+  let state = await ownerState(actor);
+  assert.equal(Object.keys(state.tables.clients || {}).length, 0);
+  assert.equal(Object.values(state.tables.owners)[0].id, workspace.owner_id);
+  assert.equal(JSON.stringify(state).includes("Northstar"), false);
+  const send = (type: string, input: Record<string, unknown>) => runDomainCommand(actor, { type, input, idempotencyKey: randomUUID() });
+  await send("setup.saveStep", { step: "business", values: { basics: { name: "Rani", profession: "Designer", locale: "en", timezone: "Asia/Jakarta" }, services: [], availability: { days: [0, 1, 2, 3, 4], deposit_percent: 50 } } });
+  await send("setup.complete", {});
+  state = await ownerState(actor);
+  assert.equal(Object.values(state.tables.owners)[0].display_name, "Rani");
+  assert.equal(Object.values(state.tables.onboarding_sessions)[0].state, "completed");
+  await send("record.save", { table: "profiles", id: "profile_current", values: { handle: "rani-test", headline: "Design for teams", biography: "Independent designer", public_availability: "open_to_inquiries" } });
+  state = await ownerState(actor);
+  const profile = state.tables.profiles.profile_current;
+  await send("profile.publish", { id: profile.id, expected_version: profile.version, confirmed: true });
+  const published = await getPublicProfile("rani-test");
+  assert.equal(published.public_name, "Rani");
+  assert.equal(JSON.stringify(published).includes("owner@example.test"), false);
+  await assert.rejects(send("record.save", { table: "receipts", values: { gross: { amount_minor: 999 } } }), /dedicated workflow/);
+  await assert.rejects(send("record.save", { table: "profiles", id: "profile_current", values: { published: true } }), /dedicated workflow/);
+  await assert.rejects(send("payment.simulateReceipt", {}), /not available/);
+  await assert.rejects(send("sample.reset", {}), /not available/);
+});
+
+test("public inquiries are durable and buyer sessions cannot read or change another engagement", async () => {
+  const { submitInquiry, buyerState, createInvitation, exchangeInvitation } = await import("../../src/server/buyers");
+  const { runDomainCommand } = await import("../../src/server/domain");
+  const input = { handle: "rani-test", values: { name: "Buyer", email: "buyer@example.test", request: "Please design a product page", consent: true }, idempotencyKey: randomUUID() };
+  const first = await submitInquiry(input, "browser-one");
+  const replay = await submitInquiry(input, "browser-one");
+  assert.equal(first.engagementId, replay.engagementId);
+  const grant = (await database().query("select * from crewmori.buyer_grants where id=$1", [first.grantId])).rows[0];
+  const actor = { kind: "buyer" as const, workspaceId: grant.workspace_id, engagementId: first.engagementId, grantId: first.grantId };
+  const state = await buyerState(actor);
+  assert.equal(state.inquiry?.contact.display_name, "Buyer");
+  assert.equal(JSON.stringify(state).includes("owner@example.test"), false);
+  assert.equal("tables" in state, false);
+  await assert.rejects(runDomainCommand(actor, { type: "profile.publish", input: {}, idempotencyKey: randomUUID() }), /not available/);
+  await assert.rejects(buyerState({ ...actor, engagementId: "someone-else" }), /expired or was revoked/);
+  const conv = state.inquiry!.conversation;
+  await runDomainCommand(actor, { type: "conversation.send", input: { id: conv.id, content: "Here is the timeline." }, idempotencyKey: randomUUID() });
+  const updated = await buyerState(actor);
+  assert.equal(updated.inquiry?.messages.length, 2, "No fake representative reply is added in connected mode");
+  const ownerId = (await database().query("select owner_id from crewmori.workspaces where id=$1", [actor.workspaceId])).rows[0].owner_id;
+  const invitation = await createInvitation({ kind: "owner", workspaceId: actor.workspaceId, userId: ownerId }, actor.engagementId);
+  await assert.rejects(buyerState(actor), /expired or was revoked/);
+  const session = await exchangeInvitation(invitation.token);
+  assert.ok(session.token);
+  await assert.rejects(exchangeInvitation(invitation.token), /already opened/);
+});

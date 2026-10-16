@@ -14,7 +14,8 @@ export async function GET(request: Request, context: Context) {
       assertService(code, "INVALID_CALLBACK", "The sign-in code is missing.", 422);
       const { error } = await (await sessionClient()).auth.exchangeCodeForSession(code);
       assertService(!error, "INVALID_CALLBACK", "This sign-in code expired or was already used.", 401);
-      return json({ authenticated: true, message: "Session established. Continue in the application." });
+      const next = new URL(request.url).searchParams.get("next") === "reset" ? "/auth/reset" : "/onboarding";
+      return Response.redirect(new URL(next, runtimeConfig().APP_URL), 303);
     }
     assertService(action === "user", "NOT_FOUND", "Unknown authentication action.", 404);
     const user = await authenticatedUser();
@@ -32,7 +33,7 @@ export async function POST(request: Request, context: Context) {
     }
     if (action === "recover") {
       const input = await jsonBody(request, z.object({ email: z.email() }).strict());
-      await client.auth.resetPasswordForEmail(input.email, { redirectTo: `${runtimeConfig().APP_URL}/api/auth/callback` });
+      await client.auth.resetPasswordForEmail(input.email, { redirectTo: `${runtimeConfig().APP_URL}/api/auth/callback?next=reset` });
       return json({ message: "If this account exists, recovery instructions will be sent." });
     }
     if (action === "reset") {

@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useStore } from "@/lib/store";
+import { BackendClient } from "@/lib/backend-client";
 import { Entity, Input, a, b, date, label, money, n, o, s } from "@/lib/types";
 import { downloadPdf } from "@/lib/downloads";
 import { amendmentSchedule } from "@/lib/engine";
@@ -455,7 +456,7 @@ function LeadEditor({ lead, onClose }: { lead?: Entity; onClose: () => void }) {
   const dirty = JSON.stringify(form) !== JSON.stringify(initial);
   const field = (key: keyof typeof initial, value: string) =>
     setForm((f) => ({ ...f, [key]: value }));
-  function save(e: FormEvent) {
+  async function save(e: FormEvent) {
     e.preventDefault();
     if (!form.name.trim() || !form.request.trim() || !form.title.trim())
       return setError("Add a client name, lead title and original request.");
@@ -466,7 +467,7 @@ function LeadEditor({ lead, onClose }: { lead?: Entity; onClose: () => void }) {
       return setError("Use an http or https source URL.");
     if (form.days && (!/^\d+$/.test(form.days) || +form.days < 1))
       return setError("Requested duration must be a positive whole number.");
-    const result = command("opportunity.save", {
+    const result = (await command("opportunity.save", {
       id: lead?.id,
       expected_version: expectedVersion,
       values: {
@@ -481,7 +482,7 @@ function LeadEditor({ lead, onClose }: { lead?: Entity; onClose: () => void }) {
               },
         delivery_business_days: form.days ? +form.days : null,
       },
-    });
+    }));
     if (!result.ok) return setError(result.message);
     onClose();
     router.push(`/app/opportunities/${result.id || lead?.id}`);
@@ -688,7 +689,7 @@ function ImportLeads({ onClose }: { onClose: () => void }) {
       ),
     );
   }
-  function save() {
+  async function save() {
     if (
       nameCol === requestCol ||
       preview.slice(1).some((row) => !row[nameCol] || !row[requestCol])
@@ -698,7 +699,7 @@ function ImportLeads({ onClose }: { onClose: () => void }) {
       );
     let count = 0;
     for (const row of preview.slice(1)) {
-      const result = command("opportunity.save", {
+      const result = (await command("opportunity.save", {
         idempotency_key: `import:${text}:${count}`,
         values: {
           name: row[nameCol],
@@ -708,7 +709,7 @@ function ImportLeads({ onClose }: { onClose: () => void }) {
           source_label: "Owner-imported request",
           currency: "USD",
         },
-      });
+      }));
       if (!result.ok) {
         setError(
           `${count} rows were saved. The next row needs attention: ${result.message}`,
@@ -881,12 +882,12 @@ function LeadDetail({ id }: { id: string }) {
     "won",
     "converted",
   ].includes(s(lead.status));
-  const run = (type: string, values: Input = {}) => {
-    const result = command(type, {
+  const run = async (type: string, values: Input = {}) => {
+    const result = (await command(type, {
       id,
       expected_version: lead.version,
       ...values,
-    });
+    }));
     if (!result.ok) setError(result.message);
     else {
       setError("");
@@ -986,12 +987,12 @@ function LeadDetail({ id }: { id: string }) {
             <Button
               variant="secondary"
               disabled={!!activeRun}
-              onClick={() =>
-                run("agent.start", {
+              onClick={async () =>
+                (await run("agent.start", {
                   role_id: "scout",
                   intent: "assess_opportunity",
                   opportunity_id: id,
-                })
+                }))
               }
             >
               Ask Scout to assess
@@ -1042,7 +1043,7 @@ function LeadDetail({ id }: { id: string }) {
             </Button>
           )}
           {["declined", "archived"].includes(s(lead.status)) && (
-            <Button onClick={() => run("opportunity.restore")}>
+            <Button onClick={async () => (await run("opportunity.restore"))}>
               Restore lead
             </Button>
           )}
@@ -1089,11 +1090,11 @@ function LeadDetail({ id }: { id: string }) {
                     <Button
                       variant="secondary"
                       disabled={!src.connection_id}
-                      onClick={() => {
-                        const result = command("source.refresh", {
+                      onClick={async () => {
+                        const result = (await command("source.refresh", {
                           id: src.id,
                           expected_version: src.version,
-                        });
+                        }));
                         if (result.ok) notify(result.message);
                         else setError(result.message);
                       }}
@@ -1166,8 +1167,8 @@ function LeadDetail({ id }: { id: string }) {
           title="Qualify this lead?"
           description={`Record your decision for ${s(client?.name)}. ${a<string>(lead.unknowns).length ? "The listed unknowns remain open and must be resolved where required before an offer is approved." : "This records a qualified lead; it does not create an agreement."}`}
           onClose={() => setConfirm("")}
-          onConfirm={() => {
-            if (run("opportunity.qualify").ok) setConfirm("");
+          onConfirm={async () => {
+            if ((await run("opportunity.qualify")).ok) setConfirm("");
           }}
         />
       )}
@@ -1190,8 +1191,8 @@ function LeadDetail({ id }: { id: string }) {
             <div className="actions">
               <Button
                 variant="danger"
-                onClick={() => {
-                  if (run("opportunity.decline", { reason }).ok) setConfirm("");
+                onClick={async () => {
+                  if ((await run("opportunity.decline", { reason })).ok) setConfirm("");
                 }}
               >
                 Confirm decline
@@ -1223,13 +1224,13 @@ function LeadDetail({ id }: { id: string }) {
             </Field>
             <Button
               disabled={!question.trim()}
-              onClick={() => {
-                const result = command("message.saveDraft", {
+              onClick={async () => {
+                const result = (await command("message.saveDraft", {
                   client_id: lead.client_id,
                   conversation_id: lead.conversation_id,
                   content: question,
                   destination_contact_id: lead.contact_id,
-                });
+                }));
                 if (result.ok) {
                   notify(result.message);
                   setConfirm("");
@@ -1610,7 +1611,7 @@ function OfferEditor({
   const amendment =
     !!offer?.accepted_version_id &&
     offer.accepted_version_id === offer.current_version_id;
-  function save(e: FormEvent, review = false) {
+  async function save(e: FormEvent, review = false) {
     e.preventDefault();
     if (
       !form.client_id ||
@@ -1686,12 +1687,12 @@ function OfferEditor({
       amendment_reason: form.reason,
       assessment_ids: a(current?.assessment_ids),
     };
-    const result = command(amendment ? "offer.amend" : "offer.saveDraft", {
+    const result = (await command(amendment ? "offer.amend" : "offer.saveDraft", {
       id: offer?.id,
       expected_version: expectedVersion,
       values,
       submit_for_review: review,
-    });
+    }));
     if (!result.ok) return setError(result.message);
     onClose();
     router.push(`/app/offers/${result.id || offer?.id}`);
@@ -1894,7 +1895,7 @@ function OfferEditor({
               <Button
                 type="button"
                 variant="secondary"
-                onClick={(e) => save(e, true)}
+                onClick={async (e) => (await save(e, true))}
               >
                 {amendment
                   ? "Submit amendment for review"
@@ -1912,7 +1913,7 @@ function OfferEditor({
 }
 
 function OfferDetail({ id }: { id: string }) {
-  const { record, rows, command, notify, state } = useStore();
+  const { record, rows, command, notify, state, connected } = useStore();
   const { search, set } = useQuery();
   const offer = record("offers", id);
   const [error, setError] = useState(""),
@@ -1975,14 +1976,14 @@ function OfferDetail({ id }: { id: string }) {
     engagement && buyerGrant
       ? `/buyer/${engagement.id}/offer?grant=${encodeURIComponent(buyerGrant.id)}&version=${encodeURIComponent(s(offer.shared_version_id, s(offer.accepted_version_id)))}`
       : "";
-  const run = (type: string, values: Input = {}) => {
-    const result = command(type, {
+  const run = async (type: string, values: Input = {}) => {
+    const result = (await command(type, {
       id,
       expected_version: offer.version,
       offer_version_id: current.id,
       destination_contact_id: selectedDestination,
       ...values,
-    });
+    }));
     if (!result.ok) setError(result.message);
     else {
       setError("");
@@ -2015,6 +2016,14 @@ function OfferDetail({ id }: { id: string }) {
     notify("Buyer-safe offer PDF generated.");
   };
   const copyLink = async () => {
+    if (connected && engagement) {
+      try {
+        const response = await new BackendClient().request<{ url: string }>("/api/buyer/invitations", { engagementId: engagement.id });
+        setFallback(response.url);
+        try { await navigator.clipboard.writeText(response.url); notify("New invitation copied. Previous buyer sessions have been revoked."); } catch { notify("Copy the invitation below."); }
+      } catch (error) { setError(error instanceof Error ? error.message : "Invitation could not be created."); }
+      return;
+    }
     if (!buyerHref) {
       setError(
         "The buyer invitation is missing or expired. Prepare a fresh eligible share.",
@@ -2107,7 +2116,7 @@ function OfferDetail({ id }: { id: string }) {
               </Button>
             )}
             {!historical && activeStatus === "draft" && (
-              <Button onClick={() => run("offer.requestReview")}>
+              <Button onClick={async () => (await run("offer.requestReview"))}>
                 Submit for review
               </Button>
             )}
@@ -2135,7 +2144,7 @@ function OfferDetail({ id }: { id: string }) {
                 Download offer PDF
               </Button>
             )}
-            {!historical && activeStatus === "shared" && (
+            {!historical && ["shared", "accepted"].includes(activeStatus) && (
               <Button variant="secondary" onClick={copyLink}>
                 Copy buyer link
               </Button>
@@ -2306,8 +2315,8 @@ function OfferDetail({ id }: { id: string }) {
             <div className="actions">
               <Button
                 disabled={!selectedDestination || expired}
-                onClick={() => {
-                  if (run("offer.approve").ok) set({ review: null });
+                onClick={async () => {
+                  if ((await run("offer.approve")).ok) set({ review: null });
                 }}
               >
                 Approve exact version
@@ -2330,12 +2339,12 @@ function OfferDetail({ id }: { id: string }) {
                 <Button
                   disabled={!revision.trim()}
                   variant="secondary"
-                  onClick={() => {
+                  onClick={async () => {
                     if (
-                      run("offer.returnRevision", {
+                      (await run("offer.returnRevision", {
                         reason: revision,
                         instruction: revision,
-                      }).ok
+                      })).ok
                     )
                       set({ review: null });
                   }}
@@ -2363,8 +2372,8 @@ function OfferDetail({ id }: { id: string }) {
             <div className="actions">
               <Button
                 disabled={activeStatus !== "approved"}
-                onClick={() => {
-                  if (run("offer.share", { channel: "sample_link" }).ok)
+                onClick={async () => {
+                  if ((await run("offer.share", { channel: "sample_link" })).ok)
                     set({ preview: null });
                 }}
               >
@@ -2392,8 +2401,8 @@ function OfferDetail({ id }: { id: string }) {
           title={`Withdraw version ${n(current.revision)}?`}
           description={`${s(current.title)} will no longer be available for buyer acceptance. Its terms and history remain saved. A revised offer will need fresh review and sharing.`}
           onClose={() => setConfirm("")}
-          onConfirm={() => {
-            if (run("offer.withdraw").ok) setConfirm("");
+          onConfirm={async () => {
+            if ((await run("offer.withdraw")).ok) setConfirm("");
           }}
         />
       )}
@@ -2633,13 +2642,13 @@ function PromotionEditor({
     ) && !dirty;
   const field = (key: keyof typeof form, value: string) =>
     setForm((f) => ({ ...f, [key]: value }));
-  const act = (type: string, values: Input = {}) => {
-    const result = command(type, {
+  const act = async (type: string, values: Input = {}) => {
+    const result = (await command(type, {
       id: promotion?.id,
       expected_version: expectedVersion,
       destination: form.destination,
       ...values,
-    });
+    }));
     if (!result.ok) setError(result.message);
     else {
       setError("");
@@ -2648,7 +2657,7 @@ function PromotionEditor({
     }
     return result;
   };
-  function save(e?: FormEvent) {
+  async function save(e?: FormEvent) {
     e?.preventDefault();
     const service = record("services", form.service_id);
     if (!service || !b(service.published))
@@ -2659,7 +2668,7 @@ function PromotionEditor({
       return setError("Write the promotion text before saving.");
     if (form.url && !safeUrl(form.url))
       return setError("Use a safe http or https destination URL.");
-    const result = act("promotion.saveDraft", {
+    const result = (await act("promotion.saveDraft", {
       values: {
         ...form,
         destination_url: form.url,
@@ -2668,7 +2677,7 @@ function PromotionEditor({
           { table: "services", id: service.id, version: service.version },
         ],
       },
-    });
+    }));
     if (result.ok) {
       setMode("");
       onClose();
@@ -2763,13 +2772,13 @@ function PromotionEditor({
                   type="button"
                   variant="secondary"
                   disabled={!form.service_id}
-                  onClick={() => {
-                    const result = command("agent.start", {
+                  onClick={async () => {
+                    const result = (await command("agent.start", {
                       role_id: "promoter",
                       intent: "draft_promotion",
                       service_id: form.service_id,
                       destination: form.destination,
-                    });
+                    }));
                     if (result.ok) notify(result.message);
                     else setError(result.message);
                   }}
@@ -2843,8 +2852,8 @@ function PromotionEditor({
                 </details>
                 <div className="actions">
                   <Button
-                    onClick={() => {
-                      if (act("promotion.approve").ok) setMode("");
+                    onClick={async () => {
+                      if ((await act("promotion.approve")).ok) setMode("");
                     }}
                   >
                     Approve exact promotion
@@ -2879,7 +2888,7 @@ function PromotionEditor({
                 </Field>
                 <div className="actions">
                   <Button
-                    onClick={() => {
+                    onClick={async () => {
                       if (
                         !publishedAt ||
                         Number.isNaN(new Date(publishedAt).getTime())
@@ -2890,12 +2899,12 @@ function PromotionEditor({
                           "Use an http or https evidence URL, or a plain text reference.",
                         );
                       if (
-                        act("promotion.recordPublication", {
+                        (await act("promotion.recordPublication", {
                           confirmed: true,
                           evidence,
                           publication_reference: evidence,
                           published_at: `${publishedAt}T12:00:00+07:00`,
-                        }).ok
+                        })).ok
                       )
                         setMode("");
                     }}
@@ -2926,7 +2935,7 @@ function PromotionEditor({
                 </p>
                 <Button
                   variant="secondary"
-                  onClick={() => act("promotion.pause")}
+                  onClick={async () => (await act("promotion.pause"))}
                 >
                   Pause follow-up promotion
                 </Button>
@@ -2979,11 +2988,11 @@ function PromotionEditor({
             {promotion && activeStatus === "archived" && (
               <Button
                 variant="secondary"
-                onClick={() =>
-                  act("record.archive", {
+                onClick={async () =>
+                  (await act("record.archive", {
                     table: "promotions",
                     archived: false,
-                  })
+                  }))
                 }
               >
                 Restore draft
@@ -2997,12 +3006,12 @@ function PromotionEditor({
                 title="Archive this promotion?"
                 description="The draft leaves your active work. Its versions and any publication evidence remain saved, and you can restore it."
                 onClose={() => setMode("")}
-                onConfirm={() => {
+                onConfirm={async () => {
                   if (
-                    act("record.archive", {
+                    (await act("record.archive", {
                       table: "promotions",
                       archived: true,
-                    }).ok
+                    })).ok
                   )
                     setMode("");
                 }}

@@ -1,8 +1,10 @@
 # Backend preparation and activation
 
-Updated 16 October 2026. User-selected direction: one TypeScript repository, Next.js APIs, a persistent Node worker, Supabase Postgres/Auth/private Storage, real AI and external integrations. This preparation implements the infrastructure and provider boundaries below. It does **not** claim that the existing 34 frontend routes have been migrated to these APIs or that the complete commercial application is production-ready.
+Updated 17 October 2026. The application now selects the connected frontend when `CREWMORI_BACKEND_ENABLED=true`. The default disabled mode retains the demo for local design review. Connected accounts use real server sessions and empty workspaces; business mutations run through serialized PostgreSQL transactions with idempotency and stale-version checks.
 
-The existing browser application still runs its local simulation. `CREWMORI_BACKEND_ENABLED` enables API endpoints; it does not change `StoreProvider`, authenticate the sample sign-in form, or move browser records to a server. Do not enter real customer records into the sample UI. A typed HTTP adapter is available at `src/lib/backend-client.ts` for the next frontend migration.
+Connected flows now include auth/recovery, onboarding, published profiles, public inquiries, single-use buyer invitations, scoped buyer projections, and the domain command API. The remaining provider integration work is tracked below; setting the flag alone does not configure external accounts. Keep credentials in the hosting secret store or `.env.local`.
+
+The detailed preparation inventory below describes the initial provider boundaries. The connected implementation supersedes its statements that StoreProvider and domain commands are entirely local. See the final integration status before activating a deployment.
 
 ## Implemented and prepared
 

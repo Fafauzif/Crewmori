@@ -211,7 +211,7 @@ function ProjectEditor({
       s(x.status, s(x.state)) === "accepted" &&
       !rows("projects").some((p) => p.offer_id === x.id),
   );
-  function save() {
+  async function save() {
     if (!name.trim() || name.trim().length > 120)
       return setError("Enter a project name of 1–120 characters.");
     if (!client) return setError("Choose a client.");
@@ -221,7 +221,7 @@ function ProjectEditor({
       );
     if (!project && basis === "offer" && !offer)
       return setError("Choose an accepted offer.");
-    const result = command(project ? "project.update" : "project.create", {
+    const result = (await command(project ? "project.update" : "project.create", {
       id: project?.id,
       expected_version: expectedVersion,
       values: {
@@ -239,7 +239,7 @@ function ProjectEditor({
             }
           : {}),
       },
-    });
+    }));
     if (result.ok && result.id) onSaved(result.id);
     else if (result.ok && project) onSaved(project.id);
     else setError(result.message);
@@ -598,11 +598,11 @@ function TaskEditor({
     [shared, setShared] = useState(b(task?.shared_with_buyer)),
     [error, setError] = useState("");
   const [expectedVersion] = useState(task?.version);
-  function save() {
+  async function save() {
     if (!name.trim()) return setError("Enter a task name.");
     if (kind === "professional" && owner !== "owner_alya")
       return setError("Professional work must be assigned to you.");
-    const result = command("record.save", {
+    const result = (await command("record.save", {
       table: "work_tasks",
       id: task?.id,
       expected_version: expectedVersion,
@@ -620,7 +620,7 @@ function TaskEditor({
         audience: shared ? "buyer" : "owner",
         state: s(task?.state, "not_started"),
       },
-    });
+    }));
     if (result.ok) onClose();
     else setError(result.message);
   }
@@ -758,7 +758,7 @@ function MilestoneEditor({
         .map((x) => [x.id, x.version]),
     ),
   );
-  function save() {
+  async function save() {
     if (!name.trim() || !target)
       return setError("Add a milestone name and target date.");
     if (
@@ -769,7 +769,7 @@ function MilestoneEditor({
     if (contractual && target !== isoDay(milestone?.due_at)) {
       if (reason.trim().length < 5)
         return setError("Describe why the agreed target needs to change.");
-      const result = command("record.save", {
+      const result = (await command("record.save", {
         table: "change_requests",
         values: {
           project_id: project.id,
@@ -780,7 +780,7 @@ function MilestoneEditor({
           state: "draft",
           audience: "owner",
         },
-      });
+      }));
       if (result.ok) onClose();
       else setError(result.message);
       return;
@@ -806,7 +806,7 @@ function MilestoneEditor({
       return setError(
         "A linked task changed. Reopen the milestone and compare the current task assignments.",
       );
-    const result = command("record.save", {
+    const result = (await command("record.save", {
       table: "milestones",
       id: milestone?.id,
       expected_version: expectedVersion,
@@ -818,19 +818,19 @@ function MilestoneEditor({
         notes: reason,
         shared_with_buyer: b(milestone?.shared_with_buyer),
       },
-    });
+    }));
     if (!result.ok) return setError(result.message);
     const id = result.id || milestone?.id;
     for (const task of rows("work_tasks").filter(
       (x) => s(x.project_id) === project.id,
     )) {
       if (selected.includes(task.id) || s(task.milestone_id) === milestone?.id)
-        command("record.save", {
+        (await command("record.save", {
           table: "work_tasks",
           id: task.id,
           expected_version: taskVersions[task.id],
           values: { milestone_id: selected.includes(task.id) ? id : null },
-        });
+        }));
     }
     onClose();
   }
@@ -931,21 +931,21 @@ function ProjectTasks({ project }: { project: Entity }) {
       active(x) &&
       ["not_started", "in_progress", "blocked"].includes(s(x.state)),
   );
-  function transition(type: string, task: Entity) {
-    const result = command(type, {
+  async function transition(type: string, task: Entity) {
+    const result = (await command(type, {
       id: task.id,
       expected_version: task.version,
-    });
+    }));
     if (!result.ok) setError(result.message);
   }
-  function complete() {
+  async function complete() {
     const chosen = reviewTasks;
-    const result = command("task.completeMany", {
+    const result = (await command("task.completeMany", {
       ids: chosen.map((x) => x.id),
       expected_versions: Object.fromEntries(
         chosen.map((x) => [x.id, x.version]),
       ),
-    });
+    }));
     if (!result.ok) {
       setError(result.message);
       setConfirm(false);
@@ -1104,7 +1104,7 @@ function ProjectTasks({ project }: { project: Entity }) {
                     s(project.professional_delivery_state) ===
                       "buyer_accepted" || !enabled
                   }
-                  onClick={() => transition("task.reopen", x)}
+                  onClick={async () => (await transition("task.reopen", x))}
                 >
                   Reopen
                 </Button>
@@ -1112,13 +1112,13 @@ function ProjectTasks({ project }: { project: Entity }) {
                 <Button
                   variant="secondary"
                   disabled={!enabled}
-                  onClick={() => {
-                    const result = command("record.archive", {
+                  onClick={async () => {
+                    const result = (await command("record.archive", {
                       table: "work_tasks",
                       id: x.id,
                       archived: false,
                       expected_version: x.version,
-                    });
+                    }));
                     if (!result.ok) setError(result.message);
                   }}
                 >
@@ -1128,7 +1128,7 @@ function ProjectTasks({ project }: { project: Entity }) {
                 <Button
                   variant="secondary"
                   disabled={!enabled}
-                  onClick={() => transition("task.archive", x)}
+                  onClick={async () => (await transition("task.archive", x))}
                 >
                   Archive
                 </Button>
@@ -1283,7 +1283,7 @@ function Files({ project, clientId }: { project?: Entity; clientId?: string }) {
       }
       for (const file of files) {
         const saved = await persistUpload(file);
-        const result = command("record.save", {
+        const result = (await command("record.save", {
           table: "attachments",
           values: {
             name: file.name,
@@ -1299,12 +1299,12 @@ function Files({ project, clientId }: { project?: Entity; clientId?: string }) {
             audience: shared ? "buyer" : "owner",
             replaces_attachment_id: replace?.id || null,
           },
-        });
+        }));
         if (!result.ok) throw Error(`${file.name}: ${result.message}`);
         setFiles((pending) => pending.filter((item) => item !== file));
       }
       if (link) {
-        const result = command("record.save", {
+        const result = (await command("record.save", {
           table: "attachments",
           values: {
             name: name.trim(),
@@ -1318,7 +1318,7 @@ function Files({ project, clientId }: { project?: Entity; clientId?: string }) {
             audience: shared ? "buyer" : "owner",
             byte_length: 0,
           },
-        });
+        }));
         if (!result.ok) throw Error(result.message);
       }
       setAdding(false);
@@ -1407,7 +1407,7 @@ function Files({ project, clientId }: { project?: Entity; clientId?: string }) {
                   <Button variant="secondary" onClick={() => setPreview(x)}>
                     Preview
                   </Button>
-                  <Button variant="secondary" onClick={() => void download(x)}>
+                  <Button variant="secondary" onClick={async () => void (await download(x))}>
                     Download
                   </Button>
                 </>
@@ -1435,13 +1435,13 @@ function Files({ project, clientId }: { project?: Entity; clientId?: string }) {
                         s(project?.professional_delivery_state) ===
                           "buyer_accepted" && b(x.shared_with_buyer)
                       }
-                      onClick={() => {
-                        const result = command("record.archive", {
+                      onClick={async () => {
+                        const result = (await command("record.archive", {
                           table: "attachments",
                           id: x.id,
                           expected_version: x.version,
                           archived: active(x),
-                        });
+                        }));
                         if (!result.ok) setError(result.message);
                       }}
                     >
@@ -1468,7 +1468,7 @@ function Files({ project, clientId }: { project?: Entity; clientId?: string }) {
             setReplace(null);
             setError("");
           }}
-          onSave={() => void save()}
+          onSave={async () => void (await save())}
           saveLabel="Add files"
           error={error}
           busy={busy}
@@ -1554,15 +1554,15 @@ function InputChecklist({
   const inputs = rows("required_inputs").filter(
     (x) => s(x.project_id) === project.id,
   );
-  function saveChanges() {
+  async function saveChanges() {
     if (!change) return;
     if (!reason.trim())
       return setError("Describe the correction the client needs to make.");
-    const result = command("project.requestInputChanges", {
+    const result = (await command("project.requestInputChanges", {
       id: change.id,
       reason: reason.trim(),
       expected_version: change.version,
-    });
+    }));
     if (result.ok) {
       setChange(null);
       setReason("");
@@ -1589,11 +1589,11 @@ function InputChecklist({
               {s(x.state) === "provided" && (
                 <Button
                   variant="secondary"
-                  onClick={() => {
-                    const r = command("project.reviewInput", {
+                  onClick={async () => {
+                    const r = (await command("project.reviewInput", {
                       id: x.id,
                       expected_version: x.version,
-                    });
+                    }));
                     if (!r.ok) setError(r.message);
                   }}
                 >
@@ -1671,7 +1671,7 @@ function Delivery({
       active(x) &&
       s(x.availability) === "available",
   );
-  function save() {
+  async function save() {
     if (!selected.length)
       return setError(
         "Select at least one shared, available file as delivery evidence.",
@@ -1682,12 +1682,12 @@ function Delivery({
       setError("");
       return;
     }
-    const result = command("project.reportDelivery", {
+    const result = (await command("project.reportDelivery", {
       id: project.id,
       attachment_ids: selected,
       message,
       expected_version: expectedVersion,
-    });
+    }));
     if (result.ok) onClose();
     else setError(result.message);
   }
@@ -1807,7 +1807,7 @@ function ProjectDetail({ id }: { id: string }) {
     s(project.professional_delivery_state) === "buyer_accepted" &&
     !terminal.includes(status);
   const tabs = ["overview", "tasks", "files", "messages"];
-  function prepareUpdate(kind: "cancellation" | "delivery") {
+  async function prepareUpdate(kind: "cancellation" | "delivery") {
     if (!project) return;
     const contact = rows("contacts").find(
       (x) => x.client_id === project.client_id,
@@ -1820,7 +1820,7 @@ function ProjectDetail({ id }: { id: string }) {
       (x) => x.client_id === project.client_id,
     );
     if (!conversation) {
-      const made = command("record.save", {
+      const made = (await command("record.save", {
         table: "conversations",
         values: {
           client_id: project.client_id,
@@ -1828,7 +1828,7 @@ function ProjectDetail({ id }: { id: string }) {
           status: "open",
           audience: "buyer",
         },
-      });
+      }));
       if (!made.ok || !made.id) return setError(made.message);
       conversation = { id: made.id, version: 1 };
     }
@@ -1858,25 +1858,25 @@ function ProjectDetail({ id }: { id: string }) {
       router.push(`/app/projects/${id}?tab=messages&draft=${previous.id}`);
       return;
     }
-    const result = command("message.saveDraft", {
+    const result = (await command("message.saveDraft", {
       conversation_id: conversation.id,
       subject,
       content,
       destination_contact_id: contact.id,
       attachment_ids:
         kind === "delivery" ? a<string>(project.shared_attachment_ids) : [],
-    });
+    }));
     if (result.ok && result.id)
       router.push(`/app/projects/${id}?tab=messages&draft=${result.id}`);
     else setError(result.message);
   }
-  function lifecycle() {
+  async function lifecycle() {
     if (!project) return;
-    const result = command(`project.${action}`, {
+    const result = (await command(`project.${action}`, {
       id: project.id,
       expected_version: actionVersion,
       reason,
-    });
+    }));
     if (result.ok) {
       setAction("");
       setReview(false);
@@ -1981,7 +1981,7 @@ function ProjectDetail({ id }: { id: string }) {
               {status === "cancelled" && (
                 <Button
                   variant="secondary"
-                  onClick={() => prepareUpdate("cancellation")}
+                  onClick={async () => (await prepareUpdate("cancellation"))}
                 >
                   Draft client update
                 </Button>
@@ -1991,7 +1991,7 @@ function ProjectDetail({ id }: { id: string }) {
               ) && (
                 <Button
                   variant="secondary"
-                  onClick={() => prepareUpdate("delivery")}
+                  onClick={async () => (await prepareUpdate("delivery"))}
                 >
                   Review delivery message
                 </Button>
@@ -2109,13 +2109,13 @@ function ProjectDetail({ id }: { id: string }) {
                   {!active(project) && (
                     <Button
                       variant="secondary"
-                      onClick={() => {
-                        const r = command("record.archive", {
+                      onClick={async () => {
+                        const r = (await command("record.archive", {
                           table: "projects",
                           id,
                           archived: false,
                           expected_version: project.version,
-                        });
+                        }));
                         if (!r.ok) setError(r.message);
                       }}
                     >
@@ -2160,11 +2160,11 @@ function ProjectDetail({ id }: { id: string }) {
             setAction("");
             setReview(false);
           }}
-          onSave={() => {
+          onSave={async () => {
             if (reason.trim().length < 5)
               return setError("Add a reason of at least five characters.");
             if (!review) setReview(true);
-            else lifecycle();
+            else (await lifecycle());
           }}
           saveLabel={review ? "Confirm cancellation" : "Review cancellation"}
           error={error}
@@ -2246,7 +2246,7 @@ function ClientEditor({
       s(x.email).trim().toLowerCase() === email.trim().toLowerCase() &&
       s(x.client_id) !== client?.id,
   );
-  function save() {
+  async function save() {
     if (contact?.version !== contactVersion)
       return setError(
         "This contact changed while you were editing. Reopen the editor to compare the current details.",
@@ -2260,7 +2260,7 @@ function ClientEditor({
       return setError(
         "This email already belongs to a client. Open that record or use a different address.",
       );
-    const result = command("client.save", {
+    const result = (await command("client.save", {
       id: client?.id,
       expected_version: expectedVersion,
       values: {
@@ -2272,7 +2272,7 @@ function ClientEditor({
         private_notes: notes,
         status: s(client?.status, "prospect"),
       },
-    });
+    }));
     if (result.ok && result.id) onSaved(result.id);
     else setError(result.message);
   }
@@ -2428,7 +2428,7 @@ function Messages({
       !["draft", "approved", "archived"].includes(s(x.delivery_state)) &&
       active(x),
   );
-  function saveDraft(): Entity | undefined {
+  async function saveDraft(): Promise<Entity | undefined> {
     if (!contact?.email) {
       setError("Add a contact email before preparing a message.");
       return;
@@ -2439,7 +2439,7 @@ function Messages({
     }
     let cid = conversation?.id;
     if (!cid) {
-      const created = command("record.save", {
+      const created = (await command("record.save", {
         table: "conversations",
         values: {
           client_id: clientId,
@@ -2447,7 +2447,7 @@ function Messages({
           status: "open",
           audience: "buyer",
         },
-      });
+      }));
       if (!created.ok || !created.id) {
         setError(created.message);
         return;
@@ -2455,7 +2455,7 @@ function Messages({
       cid = created.id;
     }
     const current = record("messages", draftId);
-    const result = command("message.saveDraft", {
+    const result = (await command("message.saveDraft", {
       id: draftId || undefined,
       expected_version: draftVersion,
       conversation_id: cid,
@@ -2464,7 +2464,7 @@ function Messages({
       subject: subject.trim(),
       attachment_ids: selected,
       destination_contact_id: contact.id,
-    });
+    }));
     if (!result.ok) {
       setError(result.message);
       return;
@@ -2485,7 +2485,7 @@ function Messages({
       destination_email: contact.email,
     };
   }
-  function send() {
+  async function send() {
     if (!review || !contact) return;
     const current = record("messages", review.id);
     if (!current)
@@ -2501,18 +2501,18 @@ function Messages({
         "This draft changed. Close this review and review the latest version.",
       );
     if (s(current.delivery_state) === "draft") {
-      const approval = command("message.approve", {
+      const approval = (await command("message.approve", {
         id: current.id,
         expected_version: current.version,
         destination_contact_id: contact.id,
-      });
+      }));
       if (!approval.ok) return setError(approval.message);
       setReview({ ...review, version: current.version + 1 });
     }
-    const result = command("message.send", {
+    const result = (await command("message.send", {
       id: current.id,
       destination_contact_id: contact.id,
-    });
+    }));
     if (!result.ok) return setError(result.message);
     setReview(null);
     setBody("");
@@ -2648,14 +2648,14 @@ function Messages({
           )}
           <div className="actions">
             <Button
-              onClick={() => {
-                const saved = saveDraft();
+              onClick={async () => {
+                const saved = (await saveDraft());
                 if (saved) setReview(saved);
               }}
             >
               Review message
             </Button>
-            <Button variant="secondary" onClick={() => saveDraft()}>
+            <Button variant="secondary" onClick={async () => (await saveDraft())}>
               Save draft
             </Button>
           </div>
@@ -2710,13 +2710,13 @@ function Messages({
           title="Discard this message draft?"
           description="The unsent draft will be archived. Sent messages are kept."
           confirmLabel="Discard draft"
-          onConfirm={() => {
-            const result = command("record.archive", {
+          onConfirm={async () => {
+            const result = (await command("record.archive", {
               table: "messages",
               id: discard.id,
               expected_version: discard.version,
               archived: true,
-            });
+            }));
             if (result.ok) {
               if (draftId === discard.id) {
                 setDraftId("");
@@ -3102,13 +3102,13 @@ function ClientDetail({ id }: { id: string }) {
           title={`${active(client) ? "Archive" : "Restore"} ${titleOf(client)}?`}
           description="The client’s linked records and financial history will be preserved."
           onClose={() => setArchive(false)}
-          onConfirm={() => {
-            const r = command("record.archive", {
+          onConfirm={async () => {
+            const r = (await command("record.archive", {
               table: "clients",
               id,
               expected_version: client.version,
               archived: active(client),
-            });
+            }));
             if (r.ok) setArchive(false);
             else setError(r.message);
           }}
@@ -3154,7 +3154,7 @@ function EventEditor({
       s(x.starts_at) < `${end}:00+07:00` &&
       s(x.ends_at) > `${start}:00+07:00`,
   );
-  function save() {
+  async function save() {
     if (!name.trim()) return setError("Enter an event name.");
     const from = new Date(`${start}:00+07:00`),
       to = new Date(`${end}:00+07:00`);
@@ -3176,7 +3176,7 @@ function EventEditor({
         `This overlaps ${overlap.map(titleOf).join(", ")}. Save again to keep both blocks.`,
       );
     }
-    const result = command("record.save", {
+    const result = (await command("record.save", {
       table: "calendar_events",
       id: event?.id,
       expected_version: expectedVersion,
@@ -3193,7 +3193,7 @@ function EventEditor({
         shared_with_buyer: false,
         connection_id: null,
       },
-    });
+    }));
     if (result.ok) onSaved();
     else setError(result.message);
   }
@@ -3321,7 +3321,7 @@ function EventDetail({
     "committed_deadline",
     "provisional",
   ].includes(s(event.kind));
-  function invite() {
+  async function invite() {
     if (
       event.version !== reviewVersion ||
       JSON.stringify(recipients) !== JSON.stringify(reviewRecipients)
@@ -3329,13 +3329,13 @@ function EventDetail({
       return setError(
         "The time or attendee details changed. Close this review and review the current invitation.",
       );
-    const r = command("calendar.approve", {
+    const r = (await command("calendar.approve", {
       id: event.id,
       expected_version: event.version,
       recipients,
-    });
+    }));
     if (!r.ok) return setError(r.message);
-    const sent = command("calendar.invite", { id: event.id, recipients });
+    const sent = (await command("calendar.invite", { id: event.id, recipients }));
     if (sent.ok) {
       setReview(false);
       onClose();
@@ -3435,23 +3435,23 @@ function EventDetail({
                 : "This removes the internal block from the current calendar. You can restore it from archived items."
             }
             onClose={() => setArchive(false)}
-            onConfirm={() => {
+            onConfirm={async () => {
               const result =
                 s(event.external_invitation_state) === "sample_invited"
-                  ? command("record.save", {
+                  ? (await command("record.save", {
                       table: "change_requests",
                       values: {
                         calendar_event_id: event.id,
                         type: "invitation_cancellation",
                         state: "draft",
                       },
-                    })
-                  : command("record.archive", {
+                    }))
+                  : (await command("record.archive", {
                       table: "calendar_events",
                       id: event.id,
                       expected_version: event.version,
                       archived: true,
-                    });
+                    }));
               if (result.ok) onClose();
               else setError(result.message);
             }}
@@ -3501,20 +3501,20 @@ function Reservation({
   useDirtyGuard(planning && !!(target || reason));
   const close = () =>
     planning && (target || reason) ? setDiscard(true) : onClose();
-  function save() {
+  async function save() {
     if (!project) return setError("This reservation has no available project.");
     if (!target) return setError("Choose a valid start date.");
     if (reason.trim().length < 5)
       return setError(
         "Explain the schedule change in at least five characters.",
       );
-    const result = command("project.proposeReschedule", {
+    const result = (await command("project.proposeReschedule", {
       id: project.id,
       expected_version: baseProjectVersion,
       expected_reservation_version: baseReservationVersion,
       proposed_start_at: `${target}T09:00:00+07:00`,
       reason: reason.trim(),
-    });
+    }));
     if (result.ok) {
       onClose();
       router.push(
@@ -3522,18 +3522,18 @@ function Reservation({
       );
     } else setError(result.message);
   }
-  function apply() {
+  async function apply() {
     if (!project || !applyReview) return;
     if (project.accepted_version_id !== applyReview.acceptedVersion)
       return setError(
         "The accepted agreement changed. Close this review and inspect the latest schedule.",
       );
-    const result = command("project.reschedule", {
+    const result = (await command("project.reschedule", {
       id: project.id,
       expected_version: applyReview.projectVersion,
       expected_reservation_version: applyReview.reservationVersion,
       confirmed: true,
-    });
+    }));
     if (result.ok) onClose();
     else setError(result.message);
   }
@@ -3785,13 +3785,13 @@ function Calendar() {
             {!active(x) && (
               <Button
                 variant="secondary"
-                onClick={() =>
-                  command("record.archive", {
+                onClick={async () =>
+                  (await command("record.archive", {
                     table: "calendar_events",
                     id: x.id,
                     expected_version: x.version,
                     archived: false,
-                  })
+                  }))
                 }
               >
                 Restore

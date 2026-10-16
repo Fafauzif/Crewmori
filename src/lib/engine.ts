@@ -12,6 +12,7 @@ import {
   type Result,
   type StoreState,
   type Tables,
+  primaryId,
 } from "./types";
 
 const clone = <T>(value: T): T => structuredClone(value);
@@ -47,7 +48,7 @@ const identifier = (_st: StoreState, prefix: string): string =>
 const put = (st: StoreState, t: string, id: string, fields: Input): Entity => {
   const prior = table(st, t)[id];
   const record: Entity = {
-    workspace_id: "workspace_alya",
+    workspace_id: primaryId(st, "workspaces", "workspace_alya"),
     audience: "owner",
     created_at: st.sample_clock,
     ...prior,
@@ -908,7 +909,7 @@ function allocation(
     "CURRENCY_MISMATCH",
   );
   need(
-    receipt.observation_state === "sample_confirmed",
+    ["sample_confirmed", "provider_confirmed"].includes(s(receipt.observation_state)),
     "This receipt is not confirmed.",
     "INVALID_STATE",
   );
@@ -1712,7 +1713,7 @@ function acceptOffer(st: StoreState, input: Input): Result {
     task_kind: "professional",
     kind: "professional",
     assignee_kind: "owner",
-    assignee_id: "owner_alya",
+    assignee_id: primaryId(st, "owners", "owner_alya"),
     state: "not_started",
     due_at: null,
     notes: "Professional work is performed by the owner.",
@@ -1884,7 +1885,7 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
         put(st, "sample_sessions", "session_current", {
           mode: "sample",
           role: s(input.role, "owner"),
-          owner_id: "owner_alya",
+          owner_id: primaryId(st, "owners", "owner_alya"),
           grant_id: input.grant_id || null,
           expires_at: new Date(
             Date.parse(st.sample_clock) + 30 * 86400000,
@@ -2044,7 +2045,7 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
           version: approved.version,
         },
         action: "share_offer",
-        approved_by: "owner_alya",
+        approved_by: primaryId(st, "owners", "owner_alya"),
         destination_contact_id: dest,
         state: "current",
         approved_at: st.sample_clock,
@@ -2520,7 +2521,7 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
         relatedId = put(st, "messages", identifier(st, "message"), {
           conversation_id: conv?.id,
           sender_kind: "owner",
-          sender_id: "owner_alya",
+          sender_id: primaryId(st, "owners", "owner_alya"),
           content: note,
           delivery_state: "draft",
           shared_with_buyer: false,
@@ -2836,7 +2837,7 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
             project_id: rec.id,
             kind: "delivery",
             sender_kind: "owner",
-            sender_id: "owner_alya",
+            sender_id: primaryId(st, "owners", "owner_alya"),
             subject: `Delivery ready — ${s(rec.title)}`,
             content: s(
               input.message,
@@ -3258,7 +3259,7 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
         {
           conversation_id: conv.id,
           sender_kind: "owner",
-          sender_id: "owner_alya",
+          sender_id: primaryId(st, "owners", "owner_alya"),
           subject: s(input.subject),
           content,
           delivery_state: "draft",
@@ -3378,7 +3379,7 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
         shared_with_buyer: true,
         attachment_ids: files,
       });
-      const reply = put(st, "messages", identifier(st, "message"), {
+      const reply = st.mode === "connected" ? rec : put(st, "messages", identifier(st, "message"), {
         audience: "buyer",
         conversation_id: conv.id,
         sender_kind: "representative",
@@ -3394,7 +3395,7 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
         owner_review_requested: true,
       });
       return ok(
-        "Message and sample clarification saved for owner review.",
+        st.mode === "connected" ? "Message saved for owner review." : "Message and sample clarification saved for owner review.",
         rec.id,
       );
     }
@@ -3472,8 +3473,8 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
         );
       else
         need(
-          rows(st, "owners").some((x) => x.handle === s(vals.handle, "alya")) &&
-            get(st, "profiles", "profile_alya").published,
+          rows(st, "owners").some((x) => x.handle === s(vals.handle)) &&
+            get(st, "profiles", primaryId(st, "profiles", "profile_alya")).published,
           "This profile is not open for inquiries.",
           "NOT_FOUND",
         );
@@ -4033,7 +4034,7 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
       return ok("View preferences saved.");
     }
     case "setup.saveStep": {
-      const onboarding = get(st, "onboarding_sessions", "onboarding_alya"),
+      const onboarding = get(st, "onboarding_sessions", primaryId(st, "onboarding_sessions", "onboarding_alya")),
         step = s(input.step, s(input.step_id, "business")),
         values = o(input.values);
       const draft = { ...o(onboarding.draft), ...values, lastStep: step };
@@ -4045,10 +4046,10 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
           ...new Set([...a<string>(onboarding.completed_steps), step]),
         ],
       });
-      return ok("Setup progress saved.", "onboarding_alya");
+      return ok("Setup progress saved.", primaryId(st, "onboarding_sessions", "onboarding_alya"));
     }
     case "setup.complete": {
-      const onboarding = get(st, "onboarding_sessions", "onboarding_alya"),
+      const onboarding = get(st, "onboarding_sessions", primaryId(st, "onboarding_sessions", "onboarding_alya")),
         draft = o(onboarding.draft),
         basics = o(draft.basics ?? draft.business),
         availability = o(draft.availability ?? draft.schedule);
@@ -4058,8 +4059,8 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
         name && profession,
         "Add your name and profession before completing setup.",
       );
-      const owner = get(st, "owners", "owner_alya"),
-        profile = get(st, "profiles", "profile_alya");
+      const owner = get(st, "owners", primaryId(st, "owners", "owner_alya")),
+        profile = get(st, "profiles", primaryId(st, "profiles", "profile_alya"));
       patch(st, "owners", owner, {
         display_name: name,
         profession,
@@ -4124,7 +4125,7 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
           published: false,
         });
       }
-      patch(st, "preferences", get(st, "preferences", "preferences_alya"), {
+      patch(st, "preferences", get(st, "preferences", primaryId(st, "preferences", "preferences_alya")), {
         locale: s(basics.locale, "en"),
         timezone: s(basics.timezone, "Asia/Jakarta"),
       });
@@ -4150,7 +4151,7 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
         requested >= 0 && requested <= latest,
         "The read marker must refer to an existing event.",
       );
-      patch(st, "preferences", get(st, "preferences", "preferences_alya"), {
+      patch(st, "preferences", get(st, "preferences", primaryId(st, "preferences", "preferences_alya")), {
         last_seen_event_sequence: requested,
       });
       return ok("Activity read marker updated.");
@@ -4640,7 +4641,7 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
         ref = put(st, "messages", identifier(st, "message"), {
           conversation_id: conv.id,
           sender_kind: "owner",
-          sender_id: "owner_alya",
+          sender_id: primaryId(st, "owners", "owner_alya"),
           content:
             "Hello — checking in on the project inputs. Please share any missing details or tell me what you need help with.",
           delivery_state: "draft",
@@ -4849,7 +4850,7 @@ export function execute(
 ): { state: StoreState; result: Result } {
   try {
     need(
-      !input.workspace_id || input.workspace_id === "workspace_alya",
+      !input.workspace_id || input.workspace_id === primaryId(state, "workspaces", "workspace_alya"),
       "Unknown workspace.",
       "NOT_AUTHORIZED",
     );
@@ -4897,7 +4898,7 @@ export function execute(
       };
     }
     const st = clone(state);
-    const actor = s(input.grant_id, s(input.actor_id, "owner_alya"));
+    const actor = s(input.grant_id, s(input.actor_id, primaryId(st, "owners", "owner_alya")));
     const key = s(
       input.idempotency_key,
       s(input.command_id, `${state.revision}:${type}`),
@@ -4951,7 +4952,7 @@ export function execute(
         message: `Sample clock advanced by ${days} day${days === 1 ? "" : "s"}. Expiry and prerequisites were checked.`,
       };
     } else result = runCommand(st, type, input);
-    settleApprovedRuns(st);
+    if (st.mode !== "connected") settleApprovedRuns(st);
     st.revision = state.revision + 1;
     st.dirty = true;
     if (!result.replayed) {

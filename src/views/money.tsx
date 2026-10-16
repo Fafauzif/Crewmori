@@ -595,7 +595,7 @@ function InvoiceEditor({
     if (dirty) setDiscard(true);
     else onClose();
   }
-  function save(submittedDue: string) {
+  async function save(submittedDue: string) {
     if (!client || !store.record("clients", client))
       return setError("Choose an existing client.");
     if (project && !projects.some((p: Entity) => p.id === project))
@@ -625,7 +625,7 @@ function InvoiceEditor({
       return setError(
         "Every line needs a description, a positive quantity (up to 10,000, two decimals), and a nonnegative price. The invoice total must be positive.",
       );
-    const result = store.command("invoice.saveDraft", {
+    const result = (await store.command("invoice.saveDraft", {
       id: invoice?.id,
       idempotency_key: operationId,
       expected_version: baseVersion,
@@ -643,7 +643,7 @@ function InvoiceEditor({
           tax_basis_points: 0,
         })),
       },
-    });
+    }));
     if (!result.ok) return setError(result.message);
     setDirty(false);
     store.notify(result.message);
@@ -959,17 +959,17 @@ function InvoiceDetail({ id }: { id: string }) {
       .rows("contacts")
       .find((c: Entity) => c.client_id === invoice.client_id);
   const allocationsCount = allocations(store, invoice.id).length;
-  function act(
+  async function act(
     type: string,
     input: Record<string, unknown> = {},
     close?: Record<string, null>,
   ) {
-    const result = store.command(type, {
+    const result = (await store.command(type, {
       invoice_id: id,
       id,
       expected_version: invoice?.version,
       ...input,
-    });
+    }));
     if (!result.ok) setError(result.message);
     else {
       setError("");
@@ -1146,8 +1146,8 @@ function InvoiceDetail({ id }: { id: string }) {
                 </Button>
               ) : (
                 <Button
-                  onClick={() => {
-                    const result = store.command("invoice.saveDraft", {
+                  onClick={async () => {
+                    const result = (await store.command("invoice.saveDraft", {
                       values: {
                         previous_invoice_id: invoice.id,
                         client_id: invoice.client_id,
@@ -1165,7 +1165,7 @@ function InvoiceDetail({ id }: { id: string }) {
                           tax_basis_points: 0,
                         })),
                       },
-                    });
+                    }));
                     if (result.ok && result.id)
                       router.push(`/app/money/invoices/${result.id}?edit=1`);
                   }}
@@ -1258,15 +1258,15 @@ function InvoiceDetail({ id }: { id: string }) {
             <div className="actions">
               <Button
                 disabled={!invoice.due_at || !isDraft}
-                onClick={() =>
-                  act(
+                onClick={async () =>
+                  (await act(
                     "invoice.issue",
                     {
                       confirmed: true,
                       expected_version: reviewVersion ?? invoice.version,
                     },
                     { review: null },
-                  )
+                  ))
                 }
               >
                 {invoice.authorized_by_acceptance_id
@@ -1326,8 +1326,8 @@ function InvoiceDetail({ id }: { id: string }) {
                   isDraft ||
                   invoice.state === "void"
                 }
-                onClick={() =>
-                  act(
+                onClick={async () =>
+                  (await act(
                     "invoice.send",
                     {
                       content: message,
@@ -1336,7 +1336,7 @@ function InvoiceDetail({ id }: { id: string }) {
                       confirmed: true,
                     },
                     { send: null },
-                  )
+                  ))
                 }
               >
                 Approve and send sample invoice
@@ -1383,12 +1383,12 @@ function InvoiceDetail({ id }: { id: string }) {
               <Button
                 variant="danger"
                 disabled={allocationsCount > 0 || reason.trim().length < 3}
-                onClick={() =>
-                  act(
+                onClick={async () =>
+                  (await act(
                     "invoice.void",
                     { reason: reason.trim() },
                     { action: null },
-                  )
+                  ))
                 }
               >
                 Void unpaid invoice
@@ -1809,11 +1809,11 @@ function PaymentDetail({ id }: { id: string }) {
               {!receipt &&
                 ["pending", "unknown"].includes(s(request?.state)) && (
                   <Button
-                    onClick={() => {
-                      const result = store.command("payment.check", {
+                    onClick={async () => {
+                      const result = (await store.command("payment.check", {
                         id: request?.id,
                         expected_version: request?.version,
-                      });
+                      }));
                       if (result.ok) store.notify(result.message);
                       else setError(result.message);
                     }}
@@ -2027,8 +2027,8 @@ function MatchReceipt({
               </p>
               <div className="actions">
                 <Button
-                  onClick={() => {
-                    const result = store.command("finance.allocateReceipt", {
+                  onClick={async () => {
+                    const result = (await store.command("finance.allocateReceipt", {
                       idempotency_key: operationId,
                       receipt_id: receipt.id,
                       invoice_id: selected,
@@ -2037,7 +2037,7 @@ function MatchReceipt({
                       expected_invoice_version: review.invoiceVersion,
                       reason:
                         "Owner reviewed same-client and same-currency gross allocation",
-                    });
+                    }));
                     if (!result.ok) setError(result.message);
                     else {
                       store.notify(result.message);
@@ -2193,7 +2193,7 @@ function IssueReview({
       if (action === "attach_evidence") {
         for (const file of files) {
           const upload = await persistUpload(file);
-          const saved = store.command("record.save", {
+          const saved = (await store.command("record.save", {
             table: "attachments",
             values: {
               original_filename: upload.name,
@@ -2207,12 +2207,12 @@ function IssueReview({
               origin: "manual_attachment",
               audience: "owner",
             },
-          });
+          }));
           if (!saved.ok || !saved.id) throw new Error(saved.message);
           evidenceIds.push(saved.id);
         }
       }
-      const result = store.command("finance.resolveIssue", {
+      const result = (await store.command("finance.resolveIssue", {
         id: issue!.id,
         expected_version: issue!.version,
         action,
@@ -2220,7 +2220,7 @@ function IssueReview({
         evidence_ids: evidenceIds,
         evidence_url: url || null,
         original_receipt_id: original || null,
-      });
+      }));
       if (!result.ok) throw new Error(result.message);
       store.notify(result.message);
       onClose();
@@ -2346,7 +2346,7 @@ function IssueReview({
                 </select>
               </Field>
             )}
-            <Button onClick={() => void validate()}>Review resolution</Button>
+            <Button onClick={async () => void (await validate())}>Review resolution</Button>
           </>
         ) : (
           <>
@@ -2366,7 +2366,7 @@ function IssueReview({
               </p>
             </div>
             <div className="actions">
-              <Button disabled={busy} onClick={() => void confirm()}>
+              <Button disabled={busy} onClick={async () => void (await confirm())}>
                 {busy ? "Saving…" : "Confirm resolution"}
               </Button>
               <Button
@@ -2443,12 +2443,12 @@ function ExpensesList() {
     );
   const expenseId = query.get("expense");
   const selected = expenseId ? store.record("expenses", expenseId) : undefined;
-  function archive(expense: Entity) {
-    const result = store.command("record.archive", {
+  async function archive(expense: Entity) {
+    const result = (await store.command("record.archive", {
       table: "expenses",
       id: expense.id,
       expected_version: expense.version,
-    });
+    }));
     if (!result.ok) setError(result.message);
     else {
       setUndo({ ...expense, version: expense.version + 1 });
@@ -2498,7 +2498,7 @@ function ExpensesList() {
           <span>{s(undo.description)} archived.</span>
           <Button
             variant="secondary"
-            onClick={() => {
+            onClick={async () => {
               const current = store.record("expenses", undo.id);
               if (current?.version !== undo.version) {
                 setError(
@@ -2506,12 +2506,12 @@ function ExpensesList() {
                 );
                 return;
               }
-              const result = store.command("record.save", {
+              const result = (await store.command("record.save", {
                 table: "expenses",
                 id: undo.id,
                 expected_version: current?.version,
                 values: { archived_at: null, archived: false },
-              });
+              }));
               if (!result.ok) setError(result.message);
               else {
                 setUndo(null);
@@ -2832,7 +2832,7 @@ function ExpenseEditor({
     setError("");
     return minor;
   }
-  function save() {
+  async function save() {
     const minor = validate();
     if (minor === null) return;
     if (correction && !reviewCorrection) {
@@ -2840,7 +2840,7 @@ function ExpenseEditor({
       return;
     }
     const result = correction
-      ? store.command("expense.correct", {
+      ? (await store.command("expense.correct", {
           id: expense?.id,
           idempotency_key: operationId,
           expected_version: baseVersion,
@@ -2848,8 +2848,8 @@ function ExpenseEditor({
           currency,
           reason: reason.trim(),
           expense_date: day,
-        })
-      : store.command("record.save", {
+        }))
+      : (await store.command("record.save", {
           table: "expenses",
           id: expense?.id,
           idempotency_key: operationId,
@@ -2867,7 +2867,7 @@ function ExpenseEditor({
             source: expense?.source || "manual",
             attachment_id: expense?.attachment_id || null,
           },
-        });
+        }));
     if (!result.ok) return setError(result.message);
     store.notify(result.message);
     setDirty(false);
@@ -3197,7 +3197,7 @@ function ReceiptAttachment({
     setBusy(true);
     try {
       const upload = await persistUpload(file);
-      const saved = store.command("record.save", {
+      const saved = (await store.command("record.save", {
         table: "attachments",
         values: {
           original_filename: upload.name,
@@ -3212,14 +3212,14 @@ function ReceiptAttachment({
           audience: "owner",
           previous_attachment_id: expense.attachment_id || null,
         },
-      });
+      }));
       if (!saved.ok || !saved.id) throw new Error(saved.message);
-      const linked = store.command("record.save", {
+      const linked = (await store.command("record.save", {
         table: "expenses",
         id: expense.id,
         expected_version: expense.version,
         values: { attachment_id: saved.id },
-      });
+      }));
       if (!linked.ok) throw new Error(linked.message);
       setFile(null);
       store.notify(
@@ -3291,13 +3291,13 @@ function ReceiptAttachment({
             <Button
               variant="secondary"
               disabled={!!expense.historical_evidence_locked}
-              onClick={() => {
-                const result = store.command("record.save", {
+              onClick={async () => {
+                const result = (await store.command("record.save", {
                   table: "expenses",
                   id: expense.id,
                   expected_version: expense.version,
                   values: { attachment_id: null },
-                });
+                }));
                 if (!result.ok) setError(result.message);
                 else {
                   setDetached(attachment.id);
@@ -3314,14 +3314,14 @@ function ReceiptAttachment({
         {detached && (
           <Button
             variant="secondary"
-            onClick={() => {
+            onClick={async () => {
               const current = store.record("expenses", expense.id);
-              const result = store.command("record.save", {
+              const result = (await store.command("record.save", {
                 table: "expenses",
                 id: expense.id,
                 expected_version: current?.version,
                 values: { attachment_id: detached },
-              });
+              }));
               if (!result.ok) setError(result.message);
               else {
                 setDetached("");
@@ -3336,7 +3336,7 @@ function ReceiptAttachment({
           <input
             type="file"
             accept=".pdf,.png,.jpg,.jpeg,.txt"
-            onChange={(e) => void choose(e.target.files?.[0] || null)}
+            onChange={async (e) => void (await choose(e.target.files?.[0] || null))}
           />
         </Field>
         <p className="money-upload-info">
@@ -3351,7 +3351,7 @@ function ReceiptAttachment({
         <div className="actions">
           <Button
             disabled={!file || !!error || busy}
-            onClick={() => void save()}
+            onClick={async () => void (await save())}
           >
             {busy ? "Saving actual file…" : "Save receipt"}
           </Button>
@@ -3586,7 +3586,7 @@ function ExpenseExport({
         <div className="actions">
           <Button
             disabled={busy || (format === "zip" && !receiptCheck)}
-            onClick={() => void generate()}
+            onClick={async () => void (await generate())}
           >
             {busy
               ? "Generating…"
