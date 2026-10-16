@@ -6,7 +6,7 @@ This repository is a working **local frontend simulation**. It contains the owne
 
 ## Run locally
 
-Use Node.js **20.9.0 or later** and npm. Versions are pinned in `package.json` and `package-lock.json`.
+Use Node.js **22.12.0 or later** and npm. Versions are pinned in `package.json` and `package-lock.json`.
 
 ```sh
 npm ci
@@ -82,7 +82,7 @@ Uploads accept actual **PDF, PNG, JPEG or TXT**, with matching type/content sign
 2. Commit the source and lockfile to a GitHub repository. Exclude `node_modules`, `.next`, `.git`, local caches and private test captures. Preserve the supplied documentation, licensed source references and historical archive parts as repository material.
 3. Import the repository into Vercel with the **Next.js** framework preset and **Root Directory `.`**.
 4. Use **Install Command `npm ci`**, **Build Command `npm run build`**, and the framework's default output configuration. Do not set `output: 'export'` or a custom static output directory.
-5. Choose a supported Node runtime satisfying `>=20.9.0`. Leave environment variables empty for this simulation.
+5. Choose a supported Node runtime satisfying `>=22.12.0`. Leave environment variables empty for this simulation.
 6. After deployment, check `/`, a direct owner detail URL and a valid buyer link in the deployed browser. The repository does not include a claim that this deployment has already happened.
 
 Documentation, research, reference images and skill snapshots belong outside `public/` and are not imported into the app. The root `.vercelignore` excludes handoff-only material from Vercel CLI source uploads; Git-based deployment still builds the same root project. Only `public/assets/` contains publicly served assets. Source-upload limits and runtime bundle limits are different concerns.
