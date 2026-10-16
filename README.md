@@ -132,3 +132,8 @@ The developer should replace the command/store/projection boundary with authenti
 The delivered revision passes clean `npm ci`, type checking, lint, 95 automated tests and the production build. All 34 route patterns were opened; selected owner/buyer, invoice, setup, preference and responsive journeys received browser checks. Read `docs/VERIFICATION.md` for the exact scope.
 
 `docs/TRACEABILITY.md` explicitly records 12 detailed interaction differences plus partial Indonesian copy and non-universal draft recovery. It is the continuation checklist for those remaining frontend details; a passing build does not imply exhaustive control or accessibility verification.
+
+
+## Spacing polish release 1.0.1
+
+This patch refines Team action spacing, search borders/focus, filter layout, command-field shrinking, phone header labels and small control targets. Read `docs/POLISH_NOTES.md` for the exact scope and validation. Upload the extracted project contents to the existing repository and commit to its Vercel-connected branch to publish this revision.

@@ -68,3 +68,8 @@ For a failing command, retain its exact input, actor/grant, record versions, ide
 For storage corruption, export the saved JSON from the recovery banner before resetting. Runtime schema is `1.1.0`; automatic migration is not implemented. Scenario reset replaces normalized records and command receipts. Local binary garbage collection is a separate future concern.
 
 Read `MASTER_AI_CONTEXT.md` and `DEVELOPER_FUNCTIONALITY.md` before making architectural changes. Retained original context/brand/reference/skill material is provenance and specification evidence; it must not be served publicly or treated as a live provider implementation.
+
+
+## Presentation patch 1.0.1
+
+Focused spacing review complete. The latest package contains the shared-control and responsive polish described in POLISH_NOTES.md; all 95 regression tests, lint, TypeScript, strict static UI audit and production build pass. The public baseline was inspected; publishing this revision requires committing the updated extracted files to the user's Vercel-connected repository.

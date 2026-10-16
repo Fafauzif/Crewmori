@@ -180,3 +180,8 @@ The implementation must capture Home and Team at 1440px after local fonts load, 
 The review-and-revision loop lives in the implementation instructions; scores are private. Observable evidence matters: real screenshots, functioning controls, persisted state, real downloads, build/lint/type checks, keyboard/reduced-motion checks and the stated sample journey. Do not score a static attractive screenshot as a working app.
 
 Update the final master AI context pack, developer brief, active design overlay, token paths, font/asset manifest and verification notes to reflect what was actually implemented. Preserve original source references separately. The final source ZIP has one installable app root and locally resolved assets; brand-builder runtime dependencies are not app-build dependencies.
+
+
+## Spacing refinement — 1.0.1
+
+Shared search controls use the existing surface/edge/focus tokens with one border; the native field baseline has low specificity so the canonical component can own its interior. Team decision footer labels occupy a separate line, with a 12px wrapping action gap. Ask fields shrink safely; phone sample controls use a short visible label and the full accessible name. Acquisition filters hide redundant captions visually while preserving their labels; Money filters reserve at least 145px on desktop to keep selected labels readable. Home dismissal targets are 44px and share the existing hover treatment. Runtime ownership remains globals.css, acquisition.css, money.css and the shell. See docs/POLISH_NOTES.md for review evidence.

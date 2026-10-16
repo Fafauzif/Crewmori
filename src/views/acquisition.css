@@ -15,6 +15,9 @@
 .acq-toolbar select {
   min-width: 135px;
 }
+.acq-toolbar > select {
+  width: auto;
+}
 .acq-filter {
   min-width: 130px;
 }

@@ -380,7 +380,7 @@
 
 .money-filter > .field {
   flex: 1;
-  min-width: 130px;
+  min-width: 145px;
 }
 .money-filter > .field:first-child {
   flex: 2;

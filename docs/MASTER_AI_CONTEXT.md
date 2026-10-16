@@ -1,6 +1,6 @@
 # Crewmori — current master implementation context
 
-Version 2.0 · 16 October 2026 · Frontend source handoff
+Version 2.1 · 16 October 2026 · Frontend source handoff
 
 This is the active continuation context for the implemented frontend. The original `Crewmori_Master_Implementation_Pack` is retained as specification and provenance, with its historical documents preserved. Statements in the input pack saying “no frontend has been implemented” describe the earlier planning phase. Historical instructions requesting real providers, a different stack, older naming or a different visual system do not override this implementation's frontend-only boundary.
 
@@ -216,3 +216,8 @@ Shared native form labels are owned by `components/ui.tsx`. Invoice dates use a 
 
 
 Final integrated verification: 95 automated tests passed; clean installation, TypeScript, lint and production build passed. The browser checked the 34 route patterns and selected owner/buyer/setup/Money/locale journeys at the widths recorded in VERIFICATION.md. This does not upgrade partial controls or unverified branches to complete.
+
+
+## Presentation patch 1.0.1
+
+The user-deployed baseline at https://crewmori.vercel.app/ was reviewed alongside the supplied spacing crop. The revised source improves decision-card action spacing, canonical search borders/focus, acquisition filter alignment, command-field shrinking, mobile sample labels, update dismissal targets, the existing unread indicator and Money filter label width. It changes four runtime presentation files and no business services, projections or fixtures. Current build/test/browser evidence and GitHub redeployment steps are in POLISH_NOTES.md. The patch has not been pushed to the user's repository by this run.

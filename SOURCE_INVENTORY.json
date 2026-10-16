@@ -1,6 +1,7 @@
 {
   "format": 1,
-  "file_count_excluding_inventory": 321,
+  "version": "1.0.1",
+  "file_count_excluding_inventory": 322,
   "files": [
     {
       "path": ".gitignore",
@@ -14,13 +15,13 @@
     },
     {
       "path": "DESIGN.md",
-      "bytes": 28001,
-      "sha256": "6e2f352b47712997488f66e432515d835b0e44c494f009199146fe3adc149968"
+      "bytes": 28768,
+      "sha256": "c22da45daa67ab9ef2525393fb33e5a85277dd42a730482dc7536cdcdbb6bcd3"
     },
     {
       "path": "README.md",
-      "bytes": 11612,
-      "sha256": "a06ef5ecee354e6fca01ae034dc8cb698ebca53eab7aed45c49efe2d6cd4a1c7"
+      "bytes": 11993,
+      "sha256": "c073837b5e3a453fef66c0d0befc04445f69f81f39b5ce3d4c3f0bee2da12713"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -39,8 +40,8 @@
     },
     {
       "path": "docs/BUILD_STATUS.md",
-      "bytes": 8294,
-      "sha256": "bbf870c8c30685bcb447d90f67bb7d4c02631bfe42db57b51dc98c64b9e16fcd"
+      "bytes": 8701,
+      "sha256": "7b1ee4dafe1803b117c83afaa519731bdb2169a40be925b15f74978b69cbc067"
     },
     {
       "path": "docs/CONTROL_IMPLEMENTATION_MAP.json",
@@ -59,8 +60,8 @@
     },
     {
       "path": "docs/Crewmori_Developer_Functionality.md",
-      "bytes": 33636,
-      "sha256": "f1a12848357f3b0867aadd7a63218afc2146cb5d2fa5802ab55a491dfaa67970"
+      "bytes": 34080,
+      "sha256": "5f2141d21aa10b2e5c5f472d31165f9daf44e6ae5bcfe058c1ea2558822ea19b"
     },
     {
       "path": "docs/DECISIONS.md",
@@ -69,13 +70,13 @@
     },
     {
       "path": "docs/DESIGN.md",
-      "bytes": 28001,
-      "sha256": "6e2f352b47712997488f66e432515d835b0e44c494f009199146fe3adc149968"
+      "bytes": 28768,
+      "sha256": "c22da45daa67ab9ef2525393fb33e5a85277dd42a730482dc7536cdcdbb6bcd3"
     },
     {
       "path": "docs/DEVELOPER_FUNCTIONALITY.md",
-      "bytes": 33636,
-      "sha256": "f1a12848357f3b0867aadd7a63218afc2146cb5d2fa5802ab55a491dfaa67970"
+      "bytes": 34080,
+      "sha256": "5f2141d21aa10b2e5c5f472d31165f9daf44e6ae5bcfe058c1ea2558822ea19b"
     },
     {
       "path": "docs/FLOW_FORMAT.md",
@@ -94,13 +95,18 @@
     },
     {
       "path": "docs/MASTER_AI_CONTEXT.md",
-      "bytes": 24283,
-      "sha256": "7a4302800ac7158f3c47860d433afdd28223362b2d1f84c802b43aabba622577"
+      "bytes": 24928,
+      "sha256": "3216548568807befe40085f5dc729ac6f25a84f73a7d78f0dd32522f1f4c34c8"
     },
     {
       "path": "docs/MASTER_CONTEXT.md",
-      "bytes": 24283,
-      "sha256": "7a4302800ac7158f3c47860d433afdd28223362b2d1f84c802b43aabba622577"
+      "bytes": 24928,
+      "sha256": "3216548568807befe40085f5dc729ac6f25a84f73a7d78f0dd32522f1f4c34c8"
+    },
+    {
+      "path": "docs/POLISH_NOTES.md",
+      "bytes": 2855,
+      "sha256": "dfaa02fbbcf9ae561691413d7a5536c71e5ff6dc28cc2187de3623ece207af8d"
     },
     {
       "path": "docs/PRODUCT.md",
@@ -124,8 +130,8 @@
     },
     {
       "path": "docs/VERIFICATION.md",
-      "bytes": 8659,
-      "sha256": "b340609b1970e0d5ff87e43d3acbf9b296350a797a604331d7f7b29270b5b43d"
+      "bytes": 9416,
+      "sha256": "1d5ad0811620720a514661a8caab97b4bb26550bba9060ff87fa255225b02398"
     },
     {
       "path": "docs/acceptance/00_START_HERE.md",
@@ -915,12 +921,12 @@
     {
       "path": "package-lock.json",
       "bytes": 237180,
-      "sha256": "d77de250b56620dccccb8525d626c273c9130445880c4b976f104ceacadac6c9"
+      "sha256": "6d0d509c1d7a659f9c0356e3752b14dcc859f905df3902401f88ef3577cab6e8"
     },
     {
       "path": "package.json",
       "bytes": 780,
-      "sha256": "d80c38a16dfc0875b5e6435cf0823d2b64e0f626111ec08c9341006f7dc7f44e"
+      "sha256": "4d1a7b1ead07eb7ed7077216a7ff615be26ae79ef6732002b40d47da093ec7b5"
     },
     {
       "path": "premium-ui.json",
@@ -1434,8 +1440,8 @@
     },
     {
       "path": "src/app/globals.css",
-      "bytes": 32268,
-      "sha256": "9837c69ffab352018cb86e2da86951446bdf069da18c73dffc3db8ec357d0a00"
+      "bytes": 33878,
+      "sha256": "5b1e58b47ec6540ec1518b6b173fa9094d5f3aad39e6a45d56c4198251ed323d"
     },
     {
       "path": "src/app/layout.tsx",
@@ -1449,8 +1455,8 @@
     },
     {
       "path": "src/components/shell.tsx",
-      "bytes": 32853,
-      "sha256": "45105d5dbb198e0d3bafb4b0484e85a0e2c005dfb4903ebb1003c80f8244143d"
+      "bytes": 33153,
+      "sha256": "1e588bbebb2974c3e3b597cb69a36f9172cd5e4f118c5eef04717ddf54645869"
     },
     {
       "path": "src/components/ui.tsx",
@@ -1509,8 +1515,8 @@
     },
     {
       "path": "src/views/acquisition.css",
-      "bytes": 6852,
-      "sha256": "d4a5174e6f29c6531ca11c0663c3c0ee780f85385ebcb79b19b66eaf1fff066a"
+      "bytes": 6893,
+      "sha256": "d4a407d7dfbe76cd00718efdb560a3c18b3c9bb92f1effd463ea64c9612dc388"
     },
     {
       "path": "src/views/acquisition.tsx",
@@ -1525,7 +1531,7 @@
     {
       "path": "src/views/money.css",
       "bytes": 7161,
-      "sha256": "ecbc141fda026360b9ff6e5be56aaaed34ffa226aa13ebe7d6c8028ce8376792"
+      "sha256": "2546e61b6b38ae88f210a5cdc5df1e8dc778ba49a9dd57d1e77d6b36c86e1454"
     },
     {
       "path": "src/views/money.tsx",

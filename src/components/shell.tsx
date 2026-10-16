@@ -304,8 +304,17 @@ export function Shell({
             </span>
           </div>
           <div className="topbar-actions">
-            <button className="sample-trigger" onClick={() => setSample(true)}>
-              Sample workspace
+            <button
+              className="sample-trigger"
+              aria-label={t("Sample workspace")}
+              onClick={() => setSample(true)}
+            >
+              <span className="sample-trigger-wide">
+                {t("Sample workspace")}
+              </span>
+              <span className="sample-trigger-narrow" aria-hidden="true">
+                {t("Sample")}
+              </span>
               <ChevronDown size={12} />
             </button>
             <Button

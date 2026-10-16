@@ -135,7 +135,7 @@ button {
   border: 0;
   background: transparent;
 }
-input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+input:where(:not([type="checkbox"]):not([type="radio"]):not([type="file"])),
 select,
 textarea {
   width: 100%;
@@ -390,14 +390,32 @@ button.primary:focus-visible {
   flex: 1;
 }
 .search-field input[type="search"] {
+  flex: 1;
+  width: auto;
   border: 0;
   padding: 10px 0;
   background: transparent;
   min-width: 0;
 }
 .search-field button {
+  min-width: 44px;
+  min-height: 44px;
+  flex-shrink: 0;
   padding: 10px;
-  display: flex;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+.search-field:focus-within {
+  outline: 2px solid var(--forest);
+  outline-offset: 2px;
+}
+.search-field input[type="search"]:focus-visible {
+  outline: none;
+}
+.search-field button:hover {
+  background: var(--selected);
 }
 .filter-row,
 .toolbar {
@@ -756,11 +774,27 @@ hr {
   font-size: 12px;
 }
 .topbar .btn.icon {
+  position: relative;
   width: 36px;
   height: 36px;
   padding: 8px;
 }
+.notification-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--forest);
+  box-shadow: 0 0 0 2px var(--surface);
+  pointer-events: none;
+}
+.sample-trigger-narrow {
+  display: none;
+}
 .topbar .sample-trigger {
+  white-space: nowrap;
   font-size: 11px;
   color: var(--muted);
   border: 1px solid var(--border);
@@ -800,6 +834,9 @@ hr {
   box-shadow: 0 3px 10px #202a2503;
 }
 .ask-bar input {
+  flex: 1;
+  min-width: 0;
+  width: auto;
   border: 0 !important;
   background: transparent !important;
   min-height: 40px !important;
@@ -814,6 +851,7 @@ hr {
   outline-offset: 2px;
 }
 .ask-bar .btn {
+  flex-shrink: 0;
   border-radius: 99px;
   min-height: 38px;
   padding: 8px 22px;
@@ -927,6 +965,9 @@ hr {
   background: #faf9f4;
   padding: 22px;
 }
+.term-summary > .eyebrow {
+  display: block;
+}
 .term-summary dl {
   margin: 16px 0 20px;
   display: grid;
@@ -1003,6 +1044,21 @@ hr {
 .update-head img {
   width: 34px;
   height: 40px;
+}
+.update-head > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 20px;
+}
+.update-head > button:hover {
+  color: var(--forest);
+  background: var(--selected);
 }
 .update-head strong {
   font-size: 12px;
@@ -1306,17 +1362,24 @@ hr {
   display: block;
 }
 .team-below .term-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-top: 20px;
   background: transparent;
   border: 0;
   padding: 0;
+}
+.team-below .term-summary > .eyebrow {
+  flex-basis: 100%;
 }
 .team-below .term-summary dl {
   display: none;
 }
 .team-below .term-summary .btn {
   width: auto;
-  margin-right: 10px;
+  margin: 0;
 }
 .artifact-list .record-link {
   padding: 16px;
@@ -1551,7 +1614,14 @@ html[data-motion="off"] * {
   .topbar .desktop-only {
     display: none;
   }
+  .sample-trigger-wide {
+    display: none;
+  }
+  .sample-trigger-narrow {
+    display: inline;
+  }
   .topbar .sample-trigger {
+    min-height: 36px;
     font-size: 10px;
     max-width: 140px;
   }
@@ -1858,4 +1928,17 @@ html[data-motion="off"] * {
 
 h1[tabindex="-1"]:focus {
   outline: none;
+}
+
+/* Accessible captions retain their names without taking toolbar space. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

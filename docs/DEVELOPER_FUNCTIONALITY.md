@@ -1,6 +1,6 @@
 # Crewmori — developer functionality and implementation handoff
 
-Updated 16 October 2026 · Frontend implementation 1.0.0 · Runtime schema 1.1.0
+Updated 16 October 2026 · Frontend implementation 1.0.1 · Runtime schema 1.1.0
 
 Crewmori is a freelancer-owned AI business team. Six specialists prepare business work; the freelancer performs the commissioned professional work. This handoff contains an implemented Next.js frontend with persistent local sample data, deterministic agent outcomes, owner approval controls, public/buyer projections and actual downloadable files.
 
@@ -253,3 +253,8 @@ Shared native form labels are owned by `components/ui.tsx`. Invoice dates use a 
 
 
 Final integrated verification: 95 automated tests passed; clean installation, TypeScript, lint and production build passed. The browser checked the 34 route patterns and selected owner/buyer/setup/Money/locale journeys at the widths recorded in VERIFICATION.md. This does not upgrade partial controls or unverified branches to complete.
+
+
+## Presentation patch 1.0.1
+
+This update adjusts spacing and responsive shared controls only. Team footer labels/buttons, search borders/focus, filter widths, mobile sample labels, command-field shrink behavior, dismissal targets and the existing unread indicator are refined. The command, financial, permission and lifecycle contracts are unchanged. See docs/POLISH_NOTES.md inside the source repository for exact files and review evidence.
