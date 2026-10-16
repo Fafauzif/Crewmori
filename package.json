@@ -15,7 +15,8 @@
     "worker": "node --env-file-if-exists=.env.local --import tsx scripts/worker.ts",
     "backend:check": "node --env-file-if-exists=.env.local --import tsx scripts/check-backend.ts",
     "storage:setup": "node --env-file-if-exists=.env.local --import tsx scripts/setup-storage.ts",
-    "test:api": "node scripts/smoke-api.mjs"
+    "test:api": "node scripts/smoke-api.mjs",
+    "test:e2e": "node scripts/test-e2e.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.135.0",

@@ -1,0 +1,38 @@
+name: Verify connected application
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Install PostgreSQL server and browser
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql
+          echo "PG_BIN=$(pg_config --bindir)" >> "$GITHUB_ENV"
+          npx playwright install --with-deps chromium
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run test:db
+      - run: npm run build
+      - run: npm run test:e2e
+      - run: npm run test:api
+      - run: npm audit --omit=dev
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-test-failures
+          path: /tmp/crewmori-e2e-results
+          if-no-files-found: ignore
+          retention-days: 7

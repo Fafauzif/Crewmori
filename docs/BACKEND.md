@@ -1,34 +1,24 @@
-# Backend preparation and activation
+# Connected backend
 
-Updated 17 October 2026. The application now selects the connected frontend when `CREWMORI_BACKEND_ENABLED=true`. The default disabled mode retains the demo for local design review. Connected accounts use real server sessions and empty workspaces; business mutations run through serialized PostgreSQL transactions with idempotency and stale-version checks.
+Updated 17 October 2026. Crewmori uses one TypeScript repository: Next.js web/API, a persistent Node worker, and Supabase PostgreSQL/Auth/private Storage. Set `CREWMORI_BACKEND_ENABLED=true` to select the connected frontend. Disabled mode retains the independent browser demo. Connected accounts start with empty workspaces; demo fixtures are never imported.
 
-Connected flows now include auth/recovery, onboarding, published profiles, public inquiries, single-use buyer invitations, scoped buyer projections, and the domain command API. The remaining provider integration work is tracked below; setting the flag alone does not configure external accounts. Keep credentials in the hosting secret store or `.env.local`.
+## What is connected
 
-The detailed preparation inventory below describes the initial provider boundaries. The connected implementation supersedes its statements that StoreProvider and domain commands are entirely local. See the final integration status before activating a deployment.
+- Supabase signup, signin, confirmation callback, recovery/reset and signout use server-verified sessions and HTTP-only cookies. Onboarding saves real profile, services, availability and policy records.
+- Owner commands run the shared business rules inside serialized PostgreSQL transactions. Stable transport keys, expected record versions and workspace revisions protect retries and concurrent decisions. Browser roles cannot write the private domain schema.
+- Public profiles expose reviewed publication snapshots. Inquiries create scoped engagements. Owner-issued invitations exchange a single-use token for an expiring HTTP-only buyer session; the invitation token travels in a URL fragment and is removed after exchange. Buyer responses contain explicit projections, never the owner's store.
+- Six Claude roles run through pg-boss, an outbox and LangGraph PostgreSQL checkpoints. Sources are versioned and rechecked before publication/application. The owner reviews an artifact before saving an assessment, offer draft, message draft, promotional draft or team note. Business approval and external delivery remain separate actions.
+- Private TXT and selectable-text PDF sources are extracted, chunked and embedded with Gemini. Knowledge search supports semantic ranking. Archived or superseded source versions do not enter retrieval. Drive imports use the same storage and ingestion path. Images/scanned PDFs require a written summary; OCR is not implemented.
+- Reviewed email uses Gmail or Resend. Approved invitations use Google Calendar. Exact recipients/content are captured before dispatch and locked against concurrent edits. Uncertain provider outcomes require owner review and are never silently resent. Client portal messages and files also work without email transport.
+- Authorized invoices create sandbox or Stripe **test** Checkout requests. Verified receipts are deduplicated and allocated transactionally; outstanding balance, deposits and project prerequisites update together. Wrong currencies and excess receipts require review. Unknown fees remain unknown. Returning from Checkout never proves payment.
+- Buyer voice uses the ElevenLabs browser SDK, explicit microphone/transcript consent, private signed sessions and narrow session-bound tools. Signed final transcripts return to the engagement; text continuation remains available.
+- Connections provides selected-scope Google OAuth, Drive import, Calendar availability, bounded Exa discovery and external dispatch review. An external search result becomes private evidence for review; it does not authorize outreach.
 
-## Implemented and prepared
+Working calendars use the agreement's timezone, local hours, working days and holidays, including daylight saving transitions. Display language/timezone preferences do not rewrite accepted terms.
 
-| Area | Implemented now | Still required for the connected product |
-| --- | --- | --- |
-| Identity/workspaces | Server-verified Supabase sessions, HTTP-only cookies, signup/signin/recovery/reset endpoints, owner workspace lookup, CSRF origin checks | Connect account/onboarding UI; test email confirmation/recovery against the actual project; account deletion/retention |
-| Database | Versioned SQL migrations, private schema, workspace RLS, normalized versioned JSONB records, transactional idempotency/event helpers | Port the complete domain command layer; add specific relational constraints where records become commercial/financial authority |
-| Files | Server type/signature/size validation, private bucket check, pending/available records, scoped signed download links | Connect existing upload/download UI; buyer upload/share workflow, deletion and orphan cleanup |
-| Buyer identity | Cryptographic tokens stored as hashes, engagement-bound expiring grants, replacement revocation | Migrate inquiry/engagement creation and buyer UI; single-use invitation-to-session exchange |
-| Claude | Official SDK, six distinct role prompts, structured draft output, source-ID validation, token caps | Configure an available model; run live task/evidence evaluations; map reviewed artifacts to business-specific commands |
-| Worker | pg-boss dispatch through an outbox, LangGraph Postgres checkpoints, pause/cancel/resume/retry, atomic daily token reservations, saved usage/artifacts | Operational alerting and cleanup; cost budgets calibrated to actual account pricing; complete handoff orchestration |
-| Google | OAuth PKCE/state/owner binding, encrypted token storage, refresh/version checks, disconnect; Gmail draft/send, Calendar free/busy/invite and Drive file-list adapters | Provider OAuth verification where applicable; owner-approved dispatch service and existing Connections UI wiring; Drive picker/import |
-| Gemini | Configurable embedding SDK and dimension validation | Extraction/chunking/index migrations, retrieval ranking and ingestion jobs |
-| Voice | Buyer-authorized ElevenLabs signed sessions, consent, session quota, signed transcript webhook, session-bound narrow tools | Browser microphone/ElevenLabs client integration, provider agent configuration and live voice recovery tests |
-| Payments | Signed sandbox webhook, Stripe test Checkout/status/signature/normalization adapters, immutable observations, event/checkout deduplication, quarantine | Connect authorized invoices to provider request creation; transactional allocations, settlement, prerequisite/calendar effects and buyer payment UI |
-| Discovery/email | Bounded Exa search and Resend transport adapters | Task dispatch, reviewed recipients/content, explicit owner approval and uncertain-outcome recovery |
+## Local activation
 
-The prepared voice tools are `capture_requirements`, `get_public_offer_status` and `request_owner`. Voice cannot approve an offer, accept for a buyer, move money or inspect owner-private records. Draft model artifacts always require owner review. External send/invite/payment creation adapters are not exposed through unrestricted HTTP dispatch endpoints.
-
-Verified payment observations remain `review_required`. A signed webhook does not mark an invoice paid or commit a project start. Unknown provider events/references remain quarantined. Stripe events for the same Checkout session are deduplicated even when their event IDs differ. Unknown fees stay null. This intentionally leaves the commercial allocation step visible as outstanding work.
-
-## Local setup
-
-Use Node.js **22.12 or newer** (the worker's pg-boss requirement), npm, and a Supabase project. Keep credentials in `.env.local` or the hosting secret store.
+Use Node.js **22.13 or newer**, npm and a Supabase project. Store secrets in `.env.local` or the host's secret store; never commit them.
 
 ```sh
 npm ci
@@ -36,54 +26,56 @@ cp .env.example .env.local
 npm run backend:check
 ```
 
-`backend:check` reports missing variable names without printing values. “Configured” means present, not authenticated or connection-tested. Fill the core configuration first:
+Fill the core variables first:
 
 | Variable | Purpose |
 | --- | --- |
-| `APP_URL` | Exact application origin; HTTPS when hosted, HTTP allowed on localhost |
-| `DATABASE_URL` | Server PostgreSQL connection; use direct or session-pooler access for the worker, with verified TLS when hosted |
-| `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` | Server-side user session integration |
-| `SUPABASE_SECRET_KEY` | Server-only Supabase storage access; never a public frontend variable |
-| `STORAGE_BUCKET` | Private bucket name, default template `crewmori-private` |
-| `CREWMORI_BACKEND_ENABLED` | Set `true` only after core setup; defaults to `false` |
+| `APP_URL` | Exact application origin; HTTPS when hosted, HTTP on localhost |
+| `DATABASE_URL` | Privileged server PostgreSQL connection; direct/session pooler for persistent workers |
+| `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` | Auth project and publishable key |
+| `SUPABASE_SECRET_KEY` | Server-only Auth/Storage access |
+| `STORAGE_BUCKET` | Private bucket, default `crewmori-private` |
+| `CREWMORI_BACKEND_ENABLED` | `true` enables the connected application |
 
-Use an administrative database credential for migrations. Browser roles receive no domain mutation grants. Privileged application and worker code must continue resolving workspace/actor scope even when the database credential bypasses RLS.
+`backend:check` reports missing variable names without printing values. Configuration presence does not prove connectivity. Configure Supabase Auth Site URL to `APP_URL` and allow `${APP_URL}/api/auth/callback`. Enable and verify confirmation/recovery email delivery in that project.
 
 ```sh
 npm run db:migrate
 npm run storage:setup
 npm run dev
-# In another terminal, after setting CREWMORI_BACKEND_ENABLED=true:
+# Start a second process with the same environment:
 npm run worker
 ```
 
-Migrations are ordered and checksum-checked; an applied file must not be edited. Add a successor migration. `storage:setup` creates a private bucket and refuses an existing public bucket. The worker initializes its own queue/checkpoint tables in separate private schemas. A PostgreSQL restart does not require reseeding application records.
+Set the flag before starting the web and worker processes. Migrations are ordered and checksum-checked; add successor migrations rather than editing applied files. `storage:setup` refuses a public bucket. The worker initializes its queue/checkpoint schemas. New accounts have no client, payment or project fixtures.
 
-All new workspaces start empty. The Alya/Northstar browser fixture is not imported into new accounts. The repository has no general-purpose endpoint that lets a browser write arbitrary normalized domain records.
+For production, run `npm run build` and `npm start`, or deploy Next.js to the selected web host. Run `npm run worker` separately as a persistent process; request-limited web functions are unsuitable for the worker. `Dockerfile.worker` prepares that process. Run migrations as a release step before updating web/worker instances. Use verified database TLS, configure backups/restore, provider quotas and host monitoring. No hosted deployment or external account was created during implementation.
 
-## Provider setup
-
-### Supabase Auth
-
-Configure Site URL to `APP_URL` and allow `${APP_URL}/api/auth/callback` as a redirect. Verify email confirmation, recovery delivery and session refresh with the project's Auth settings. Auth APIs establish server cookies; the existing sample forms still need their migration. `GET /api/auth/callback` currently returns a confirmation response rather than navigating the sample UI.
+## Provider configuration
 
 ### Claude and Gemini
 
-Set `ANTHROPIC_API_KEY` and an account-supported `ANTHROPIC_MODEL`. Set `GEMINI_API_KEY`, `GEMINI_EMBEDDING_MODEL` and `GEMINI_EMBEDDING_DIMENSIONS` for the embedding adapter. Model IDs are deliberately explicit configuration, not guessed current defaults. Changing the embedding model/dimension will require rebuilding the future index.
+Set `ANTHROPIC_API_KEY` and an account-supported `ANTHROPIC_MODEL`. Set `GEMINI_API_KEY`, `GEMINI_EMBEDDING_MODEL` and `GEMINI_EMBEDDING_DIMENSIONS` to matching values. Model IDs are explicit configuration. Changing the embedding model/dimension requires reindexing sources with Refresh/Retry processing.
 
-The worker over-reserves input plus maximum output tokens before a model call. A confirmed result is saved before a graph can advance. An uncertain request retains its reservation and blocks silent paid retries; an owner can create a new attempt. Configure `AGENT_DAILY_TOKEN_BUDGET` for the account and expected source sizes. This is a token allowance, not a verified currency-denominated spending limit. No provider API was called during repository verification.
+`AGENT_MAX_OUTPUT_TOKENS` bounds each response; `AGENT_DAILY_TOKEN_BUDGET` is a shared daily workspace token allowance. The worker reserves a conservative input/output bound before dispatch and saves confirmed usage. Uncertain calls retain their reservation and block silent paid retries. An explicit retry creates a new attempt with current source versions. These token limits are not currency-denominated billing guarantees. Knowledge ingestion/search have separate request quotas.
 
-### Google
+### Google and mail
 
-Create a Web OAuth client, enable Gmail/Calendar/Drive APIs and register `${APP_URL}/api/connections/google/callback`. Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`. Generate an independent 32-byte base64 `TOKEN_ENCRYPTION_KEY`; rotating it requires a credential re-encryption plan or reconnection.
+Create a Web OAuth client, enable Gmail/Calendar/Drive APIs and register `${APP_URL}/api/connections/google/callback`. Set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` and an independent 32-byte base64 `TOKEN_ENCRYPTION_KEY`.
 
-POST selected capabilities to `/api/connections/google`: `gmail`, `calendar_read`, `calendar_write`, `drive`. Consent is limited to the selected scopes. `gmail.compose` includes sending authority, so the application still needs exact-content/destination approval before dispatch. `drive.file` lists files accessible to this application; it does not grant unrestricted access to every Drive file. Disconnect removes the application's stored credential and blocks its future use; provider-account revocation is managed separately in Google settings.
+In Connections select `gmail`, `calendar_read`, `calendar_write` and/or `drive`. Updating consent replaces the stored capability set. `gmail.compose` includes sending authority; the application requires separate exact-content approval. `drive.file` accesses files shared with this application, not every file in an account. Disconnect removes stored credentials; provider-side revocation is managed in Google settings.
+
+Choose `MAIL_PROVIDER=google` or `resend`. Resend requires `RESEND_API_KEY` and verified `RESEND_FROM`. Email currently sends reviewed text; share attachments through the secure client portal. Automatic Gmail inbox synchronization, calendar synchronization and social publishing are not implemented. Calendar invitations are explicit approved sends.
+
+If delivery is uncertain, inspect the provider account and review the attempt in Connections. Releasing an attempt does not resend it. If the provider reference was saved but local finalization failed, use Finish recording confirmed delivery in Connections; it completes local recording without sending again. Replaying the original transport key has the same behavior.
+
+Set `EXA_API_KEY` for bounded domain-restricted discovery in Connections. Search results require owner review before use.
 
 ### ElevenLabs
 
-Set `ELEVENLABS_API_KEY`, `ELEVENLABS_AGENT_ID`, `ELEVENLABS_WEBHOOK_SECRET` and an independent `ELEVENLABS_TOOL_SECRET`. Configure a private agent, allowed application origins, a bounded conversation duration, and appropriate transcript/audio retention. The application does not store raw audio; disabling provider-side audio retention is an account configuration step, not something a response flag can establish.
+Set `ELEVENLABS_API_KEY`, `ELEVENLABS_AGENT_ID`, `ELEVENLABS_WEBHOOK_SECRET` and an independent `ELEVENLABS_TOOL_SECRET`. Configure a private agent, allowed application origins, a conversation duration bound and retention settings. The browser stops after 15 minutes. The application stores final transcripts, not raw audio; provider audio retention must be configured in the provider account.
 
-The future browser client obtains `/api/voice/session` with a buyer Bearer token and `{ "consent": true }`, then passes the returned `dynamicVariables` when connecting. Configure provider tools to POST to `/api/voice/tools/{tool}` with the server-only `X-Crewmori-Voice-Secret` header and this body:
+The browser requests `/api/voice/session` with buyer cookies and `{ "consent": true }`, then passes the returned signed URL and `dynamicVariables` to the SDK. Configure provider tools to POST to `/api/voice/tools/{tool}` with the server-only `X-Crewmori-Voice-Secret` header:
 
 ```json
 {
@@ -93,96 +85,70 @@ The future browser client obtains `/api/voice/session` with a buyer Bearer token
 }
 ```
 
-Use the exact tool input schemas in `src/server/voice-tools.ts`. The binding is scoped and short-lived; supplied engagement/workspace IDs are not accepted as authority. Configure final transcript webhooks at `/api/webhooks/elevenlabs`, preserving the dynamic variables. Duplicate final transcripts are replay-safe. Revoked or mismatched sessions are rejected or quarantined. A saved brief is a draft for review and does not amend accepted terms.
+Use schemas in `src/server/voice-tools.ts`: `capture_requirements`, `get_public_offer_status`, `request_owner`. Voice cannot approve/accept offers or move money. Supplied workspace/engagement IDs are not authority. Configure signed final transcript events at `/api/webhooks/elevenlabs`, preserving initiation dynamic variables. Duplicate transcripts replay safely; invalid bindings are rejected or quarantined. A captured brief does not amend accepted terms.
 
 ### Payments
 
-Keep `PAYMENT_PROVIDER=sandbox` initially and set `PAYMENT_SANDBOX_SECRET`. `/api/webhooks/sandbox` requires `X-Crewmori-Signature: t=<unix-seconds>,v1=<hex-hmac-sha256>` over `<timestamp>.<raw-body>`, within five minutes. The body follows `receiptSchema` in `src/server/contracts.ts`. A corresponding server-created payment request must already exist; missing mappings are quarantined.
+Start with `PAYMENT_PROVIDER=sandbox` and a `PAYMENT_SANDBOX_SECRET`. Buyers explicitly confirm a labelled test payment; no money is charged. The signed external sandbox webhook also accepts `receiptSchema` from `src/server/contracts.ts`. Its header is `X-Crewmori-Signature: t=<unix-seconds>,v1=<hex-hmac-sha256>` over `<timestamp>.<raw-body>`, within five minutes.
 
-For Stripe preparation, set `PAYMENT_PROVIDER=stripe_test`, a **test** secret key and webhook signing secret. Register `/api/webhooks/stripe`; forward the untouched raw body and `Stripe-Signature`. Live keys/events are rejected. Checkout completion with an unpaid state cannot create a receipt. USD domain cents map directly to Stripe minor units; IDR domain rupiah multiply by 100 at the Stripe boundary, and fractional-rupiah responses are rejected. Fee data is not invented.
+For Stripe use `PAYMENT_PROVIDER=stripe_test`, a **test** secret key and `STRIPE_WEBHOOK_SECRET`. Register `/api/webhooks/stripe`, forwarding the unchanged body and `Stripe-Signature`. Live keys/events are rejected. A paid Checkout session must map to a server-authorized request. USD cents map directly to Stripe minor units; IDR rupiah multiply by 100 at the Stripe boundary. Unknown events/references are quarantined, not settled. Checkout return UI is `/payment/return`.
 
-The Checkout adapter's return URL is reserved as `/payment/return`; its production UI and authorized request dispatch are still part of the next commercial integration slice. No live settlement, Wise route, escrow, tax policy or refunds are implemented.
+Live money, escrow, refunds, tax calculation and Wise are outside this implementation. Financial corrections preserve the original receipt/allocation history and require explicit review.
 
-### Optional discovery and transactional mail
+## HTTP boundaries
 
-Set `EXA_API_KEY` for capped, domain-restricted search. Set `RESEND_API_KEY` and a verified `RESEND_FROM` for transactional transport. Neither adapter is automatically invoked by adding a key. Both need explicit domain workflows; a search result never authorizes outreach.
-
-## API inventory
-
-All API responses use `no-store`. Except verified provider webhooks/tools, mutations require an exact matching `Origin`. Owner requests use a validated Supabase session cookie and optional `X-Workspace-Id`. Buyer requests use a Bearer grant. Secrets, owner records and owner event streams are not included in buyer responses.
+Responses use `no-store`. Except verified callbacks/webhooks/provider tools, mutations require matching `Origin`. Owners use Supabase cookies; buyers use scoped cookies or Bearer grants. Server code resolves actor/workspace scope for every operation, including when a database credential bypasses RLS.
 
 | Endpoint | Purpose |
 | --- | --- |
-| `GET /api/health` | Process liveness and backend mode, no connectivity assertion |
+| `GET /api/health` | Liveness and mode; no database/provider health claim |
 | `GET /api/backend/status` | Authenticated configuration presence |
-| `POST /api/auth/{sign-up,sign-in,sign-out,recover,reset}` | Real server Auth APIs |
-| `GET /api/auth/{user,callback}` | Session identity / code exchange |
-| `GET/POST /api/workspaces` | List/create the current owner's workspace |
-| `POST /api/sources` | Save an owner text source with a stable idempotency UUID |
-| `POST /api/tasks` | Queue a role task with versioned source references |
-| `GET/POST /api/runs/{id}` | Inspect or control a run with expected control version |
-| `GET /api/activity?after=N` | Durable owner event replay, up to 100 events/page |
-| `POST /api/connections/google` | Start selected-capability OAuth |
-| `GET /api/connections/google/callback` | Consume single-use state and save consent |
-| `DELETE /api/connections/google` | Disable connector and remove stored credential |
-| `POST /api/files` | Raw file bytes, MIME Content-Type and X-File-Name; max 10 MiB |
-| `GET /api/files?id=UUID` | Scoped 60-second signed download |
-| `POST /api/buyer/grants` | Owner-issued grant for an existing engagement; replaces prior grants |
-| `POST /api/voice/session` | Consented buyer voice session |
-| `POST /api/voice/tools/{tool}` | Authenticated, session-bound narrow provider tool |
-| `POST /api/webhooks/{sandbox,stripe,elevenlabs}` | Verified event intake |
+| `/api/auth/{sign-up,sign-in,sign-out,recover,reset,user,callback}` | Auth/session lifecycle |
+| `GET/POST /api/workspaces`, `GET /api/workspace/state` | Empty workspace bootstrap and owner projection |
+| `POST /api/commands`, `POST /api/buyer/commands` | Versioned domain commands with idempotency |
+| `GET /api/public/profile`, `POST /api/public/inquiries` | Reviewed public profile and bounded intake |
+| `/api/buyer/{invitations,session,state}` | Single-use invitation exchange and scoped buyer projection |
+| `POST /api/sources`, `POST /api/knowledge/search` | Private text ingestion and retrieval |
+| `POST /api/tasks`, `GET/POST /api/runs/{id}` | Role tasks and pause/resume/cancel/retry |
+| `POST /api/runs/{id}/apply` | Owner review/application of current artifacts |
+| `GET /api/activity?after=N` | Durable owner event replay, 100/page |
+| `/api/connections/google` | Selected-scope OAuth and disconnect |
+| `POST /api/integrations` | Drive list/import, availability, Exa discovery |
+| `POST/PATCH /api/dispatch` | Approved external sends and uncertain attempt review |
+| `POST/GET /api/files` | Private bytes/scoped short-lived signed download; buyer uses `?buyer=true` |
+| `/api/payments/{start,sandbox,status}` | Authorized Checkout, explicit sandbox confirmation, verified status |
+| `/api/voice/session`, `/api/voice/tools/{tool}` | Consented voice and narrow tools |
+| `/api/webhooks/{sandbox,stripe,elevenlabs}` | Verified provider events |
 
-Task input example:
+Use a new UUID for each deliberate command and reuse that UUID for network retries of unchanged input. Changed input requires a new key. UI commands are asynchronous and serialized; stale edits are rejected for review. Owner state polls every five seconds and on focus. No frontend fallback to sample data occurs when the backend is unavailable.
 
-```json
-{
-  "role": "scout",
-  "instruction": "Assess this request against the saved capability evidence.",
-  "references": [{ "table": "sources", "id": "source-id-from-api", "version": 1 }],
-  "idempotencyKey": "a new UUID for this deliberate action"
-}
+## Verification and operational limits
+
+```sh
+npm run typecheck
+npm run lint
+npm test
+npm run test:db
+npm run build
+npm run test:e2e
+npm run test:api
+npm audit --omit=dev
 ```
 
-Use the same idempotency key for network retries of unchanged input. Changed input needs a new key. Source references are scoped before model invocation, and source versions are rechecked before artifact publication. Promoter requires published, public sources; the production publication command is still outstanding.
+`test:db` and `test:e2e` create and remove disposable PostgreSQL clusters; they never use an existing application `DATABASE_URL`. Install PostgreSQL server binaries (`PG_BIN` may select their directory). Before first browser run use `npx playwright install chromium`. E2E requires a production build.
 
-## Deployment preparation
+The browser suite runs the production web server and actual durable worker against isolated Auth/Storage and Claude/Gemini HTTP test services. It exercises signup, onboarding, public inquiry, scoped buyer access, reviewed AI assessments, exact offer approval/share/acceptance, sandbox settlement, private upload and indexed knowledge search. SDK traffic follows the production code paths. These controlled responses do not verify external account credentials or provider availability.
 
-The Next.js application can remain on the selected web host. The durable worker requires a persistent Node/container process with database access; run it separately from request-limited web functions. `Dockerfile.worker` and `.dockerignore` prepare this process without copying credentials into the image. The TypeScript worker image includes its pinned `tsx` runner and development toolchain. The Docker image itself has not been built in this verification run.
+Locally verified: 109 unit/domain tests, 24 database integration tests, typecheck/lint and production build. The connected browser journey and production HTTP smoke test passed on 17 October 2026. Production dependency audit has zero reported vulnerabilities at verification time. Development-only audit findings remain in the lint toolchain's transitive glob dependencies. CI repeats the automated checks.
 
-Run migrations as a release step before starting updated web/worker processes. Store shared secrets in the host's secret store. Use a direct/session-pooler database connection compatible with long-lived workers and verify TLS; do not disable certificate checks. Backups, restore drills, application-level retention and provider health alerts still need deployment-specific configuration. No service was purchased, deployed or connected in this preparation.
+Hosted Supabase confirmation/recovery, Google consent/send, paid Claude/Gemini calls, Stripe test-account Checkout, microphone/ElevenLabs conversation and deployed hosting still require configured accounts and live validation. Automatic notification email, account deletion/retention automation, storage orphan cleanup, crashed ingestion lease recovery, provider quarantine reconciliation and deployment-specific operational alerts remain operational follow-up work. Financial/legal localization and full multilingual document fonts remain product-specific work.
 
-## Verification evidence
+## Primary references
 
-Executed locally with Node 25.8.0 and disposable PostgreSQL 16.14 on 16 October 2026:
-
-- `npm run typecheck`: passed.
-- `npm run lint`: passed.
-- `npm test`: 107 passed, including the original 95 frontend/domain tests.
-- `npm run test:db`: 15 passed. PostgreSQL RLS, cross-workspace denial, rollback, concurrent idempotency, shared budget reservation, cancellation, stored model response replay, durable LangGraph/pg-boss, payment event deduplication, voice tool scope and worker lifecycle checks.
-- `npm run build`: passed, including the new API routes.
-- `npm run test:api`: production HTTP health, disabled-backend rejection, unknown API rejection and existing frontend route passed.
-- `npm run backend:check`: confirmed missing provider configuration; no secret values printed.
-
-`test:db` always creates and removes a disposable local cluster. It does not use an existing application `DATABASE_URL`. Install PostgreSQL server binaries first; `PG_BIN` can select their directory. Provider adapters use controlled responses in tests. Supabase-hosted Auth/Storage, Google consent/send, Claude/Gemini calls, Stripe test-account checkout, live browser voice and deployed hosting have **not** been exercised.
-
-## Next integration slices
-
-1. Replace sample account/setup flows with the Auth/workspace APIs and create real profile/policy records.
-2. Split owner, public and buyer query stores; adopt asynchronous commands and remove hardcoded Alya identifiers from production paths.
-3. Port commercial commands from `engine.ts` into authenticated database transactions, retaining the existing acceptance/amendment/version tests and adding actual capacity races.
-4. Connect approved provider dispatch and payment requests to immutable commercial authority; implement receipt allocation and prerequisite scheduling in the same transaction.
-5. Connect role artifacts, knowledge ingestion/retrieval, activity subscriptions and owner interventions to the existing UI.
-6. Complete buyer grant exchange, browser voice/text continuation and scoped file workflows; run live provider and end-to-end tests with configured accounts.
-
-The original frontend acceptance contracts still govern business semantics. Historical claims about a finished live backend remain superseded by this explicit implementation/verification inventory.
-
-## Primary API references checked during preparation
-
-- [Supabase server-side session clients](https://supabase.com/docs/guides/auth/server-side/creating-a-client)
-- [Claude Messages API and tool output](https://platform.claude.com/docs/en/api/messages/create)
-- [Gemini embeddings](https://ai.google.dev/gemini-api/docs/embeddings)
+- [Supabase server clients](https://supabase.com/docs/guides/auth/server-side/creating-a-client)
+- [Claude Messages](https://platform.claude.com/docs/en/api/messages/create), [Gemini embeddings](https://ai.google.dev/gemini-api/docs/embeddings)
 - [LangGraph persistence](https://docs.langchain.com/oss/javascript/langgraph/persistence), [pg-boss workers](https://pgboss.io/api/workers)
-- [Google Web OAuth](https://developers.google.com/identity/protocols/oauth2/web-server), [Gmail drafts](https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.drafts/create), [Calendar events](https://developers.google.com/workspace/calendar/api/v3/reference/events/insert)
-- [ElevenLabs signed sessions](https://elevenlabs.io/docs/api-reference/conversations/get-signed-url), [signed webhooks](https://elevenlabs.io/docs/eleven-api/resources/webhooks)
-- [Stripe webhooks](https://docs.stripe.com/webhooks), [currency minor units](https://docs.stripe.com/currencies)
-- [Exa search](https://exa.ai/docs/reference/search), [Resend email](https://resend.com/docs/api-reference/emails/send-email)
+- [Google OAuth](https://developers.google.com/identity/protocols/oauth2/web-server), [Gmail send](https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.messages/send), [Calendar events](https://developers.google.com/workspace/calendar/api/v3/reference/events/insert)
+- [ElevenLabs signed sessions](https://elevenlabs.io/docs/api-reference/conversations/get-signed-url)
+- [Stripe webhooks](https://docs.stripe.com/webhooks), [currency units](https://docs.stripe.com/currencies)
+- [Exa](https://exa.ai/docs/reference/search), [Resend](https://resend.com/docs/api-reference/emails/send-email)

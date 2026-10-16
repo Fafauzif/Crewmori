@@ -1,14 +1,14 @@
-# Crewmori frontend
+# Crewmori
 
 Crewmori is a freelancer-owned AI business team. Six illustrated specialists help with opportunities, sales, promotion, client relationships, operations and money. The freelancer performs the commissioned professional work.
 
-This repository is a working **local frontend simulation**. It contains the owner workspace, public freelancer/service pages, inquiry and buyer journey, sample account/setup screens, editable records and real downloadable files. Agent outputs, connected tools, sending, publishing and payments are deterministic sample effects. No live service credentials or business backend are required.
+This repository contains the connected owner workspace, public freelancer/service pages, buyer journey, Next.js APIs and a persistent Node worker. Supabase supplies Auth, PostgreSQL and private Storage. Claude tasks, Gemini knowledge retrieval, Google integrations, ElevenLabs voice and sandbox/Stripe test payments connect through scoped server workflows.
 
-An opt-in **backend preparation** now adds authenticated Next.js APIs, Supabase/Postgres migrations, a durable Node worker and real provider adapters. The existing frontend still uses its local store; enabling the backend does not automatically migrate those views. See [backend setup, implementation boundaries and verification](docs/BACKEND.md) and [`.env.example`](.env.example). Live provider credentials and full frontend/business-command integration remain required for the connected product.
+Set `CREWMORI_BACKEND_ENABLED=true` after configuring the database/Auth and running migrations. Connected accounts start empty and use server sessions, reviewed business commands and durable jobs. The default disabled mode keeps the independent browser demo available without service accounts. See [activation, provider configuration and verification](docs/BACKEND.md) and [`.env.example`](.env.example). External accounts and hosted deployment still require configuration and live validation.
 
 ## Run locally
 
-Use Node.js **22.12.0 or later** and npm. Versions are pinned in `package.json` and `package-lock.json`.
+Use Node.js **22.13.0 or later** and npm. Versions are pinned in `package.json` and `package-lock.json`.
 
 ```sh
 npm ci
@@ -28,7 +28,7 @@ npm run build
 npm start
 ```
 
-`npm start` serves the production build at port 4173. No `.env` file, API key, OAuth credential, database, or model connection is needed.
+`npm start` serves the production build at port 4173. The demo needs no credentials. For the connected app, copy `.env.example` to `.env.local`, configure services, run `npm run db:migrate` and `npm run storage:setup`, then start `npm run worker` alongside the web process.
 
 Verification commands:
 
@@ -36,12 +36,17 @@ Verification commands:
 npm run typecheck
 npm run lint
 npm test
+npm run test:db
 npm run build
+npm run test:e2e
+npm run test:api
 ```
 
-The test command uses `node --import tsx --test`; it does not require the IPC socket opened by the separate `tsx --test` CLI. See `docs/BUILD_STATUS.md` and `docs/VERIFICATION.md` for the final evidence record. A source build is not evidence of a live Vercel deployment.
+Unit tests use `node --import tsx --test`. Database/browser suites create disposable PostgreSQL clusters; install PostgreSQL server binaries and run `npx playwright install chromium` before the first browser test. The browser suite uses the production web app and real worker with isolated provider test services. See `docs/BACKEND.md` for connected verification; older frontend handoff documents describe the retained demo. A source build is not evidence of a live deployment.
 
 ## Try the sample
+
+These sample instructions apply when the backend flag is disabled.
 
 1. Open `/` and choose the sample workspace, or open `/app/home` directly in a fresh browser.
 2. Review Northstar's proposed offer from Home. The initial offer is awaiting review; there is no accepted project, reservation, invoice or received payment yet.
@@ -70,6 +75,8 @@ Buyer availability depends on the active scenario and exact shared version. Thes
 
 ## Saved state and files
 
+This section describes demo persistence. Connected records live in PostgreSQL; files use private Storage and scoped signed downloads. Connected sessions do not save owner records in browser localStorage.
+
 Committed records are stored under `localStorage['crewmori.workspace.v1']`, using runtime schema `1.1.0`. Local receipt/project/source bytes are stored in IndexedDB database `crewmori-files-v1`, object store `files`. A different browser or cleared site data has a different workspace. Downloaded files are ordinary files on your device.
 
 The sample clock begins at **16 October 2026, 09:00, Asia/Jakarta**. Business calculations use that clock, not the machine's present time. Explicit day advancement checks expiry and prerequisites. Changing a display preference does not rewrite agreed dates, currency, or commercial terms.
@@ -84,7 +91,7 @@ Uploads accept actual **PDF, PNG, JPEG or TXT**, with matching type/content sign
 2. Commit the source and lockfile to a GitHub repository. Exclude `node_modules`, `.next`, `.git`, local caches and private test captures. Preserve the supplied documentation, licensed source references and historical archive parts as repository material.
 3. Import the repository into Vercel with the **Next.js** framework preset and **Root Directory `.`**.
 4. Use **Install Command `npm ci`**, **Build Command `npm run build`**, and the framework's default output configuration. Do not set `output: 'export'` or a custom static output directory.
-5. Choose a supported Node runtime satisfying `>=22.12.0`. Leave environment variables empty for this simulation.
+5. Choose a supported Node runtime satisfying `>=22.13.0`. Leave environment variables empty for the demo, or follow `docs/BACKEND.md` to configure the connected web app and separate persistent worker.
 6. After deployment, check `/`, a direct owner detail URL and a valid buyer link in the deployed browser. The repository does not include a claim that this deployment has already happened.
 
 Documentation, research, reference images and skill snapshots belong outside `public/` and are not imported into the app. The root `.vercelignore` excludes handoff-only material from Vercel CLI source uploads; Git-based deployment still builds the same root project. Only `public/assets/` contains publicly served assets. Source-upload limits and runtime bundle limits are different concerns.
@@ -94,12 +101,12 @@ Documentation, research, reference images and skill snapshots belong outside `pu
 | Path | Responsibility |
 | --- | --- |
 | `src/app/[[...slug]]/page.tsx` | Next App Router entry with suspense; all declared paths enter the client application |
-| `src/components/application.tsx` | Route dispatch and local sample owner-session guard |
+| `src/components/application.tsx` | Route dispatch and owner-session guard |
 | `src/components/ui.tsx` | Shared controls, fields, native-dialog overlays, dirty navigation guard and feedback |
 | `src/components/shell.tsx` | Owner navigation, search, scenarios, notifications, recap and delegation |
 | `src/views/` | Home/Team, acquisition, Work, Money, public/buyer/account and Settings domain views |
-| `src/lib/engine.ts` | Pure transactional sample commands, validations, lifecycle rules, events and scenarios |
-| `src/lib/store.tsx` | React context, browser persistence, storage recovery and cross-tab refresh |
+| `src/lib/engine.ts` | Shared transactional business rules plus independent demo scenarios |
+| `src/lib/store.tsx`, `connected-store.tsx` | Demo/connected store selection, asynchronous commands and refresh |
 | `src/lib/projections.ts` | Explicit public profile, inquiry, buyer offer and buyer portal field allowlists |
 | `src/lib/downloads.ts` | Real PDF/CSV/ZIP generation, upload checks, hashes and IndexedDB file access |
 | `src/lib/local-crypto.ts` | Local sample IDs and hash support, including restricted browser contexts |
@@ -109,7 +116,7 @@ Documentation, research, reference images and skill snapshots belong outside `pu
 | `tests/` | Domain, projection, lifecycle, stale/replay, file and arithmetic checks |
 | `src/server/`, `src/app/api/` | Opt-in authenticated APIs, provider adapters and backend services |
 | `supabase/migrations/`, `scripts/worker.ts` | Private database schema and durable worker process |
-| `docs/BACKEND.md` | Backend activation, API inventory, provider setup and remaining integration work |
+| `docs/BACKEND.md` | Connected activation, API inventory, provider setup and verification boundaries |
 | `public/assets/` | Used local fonts, approved logo vectors, characters, map and sample portfolio artwork |
 | `docs/MASTER_AI_CONTEXT.md` | Current architecture, product decisions, known limits and continuation context |
 | `docs/DEVELOPER_FUNCTIONALITY.md` | Route/action inventory and production replacement responsibilities |
@@ -122,17 +129,19 @@ Consult `DESIGN.md`, `UX-CONTRACT.md`, the retained design/contract documents, a
 
 ## Material boundaries
 
-- This is one local Alya sample workspace. Sign-in/recovery and buyer grants demonstrate navigation and lifecycle behavior, not server authentication or tenant security. Password fields are never persisted or transmitted.
-- AI work, Gmail/Calendar/Drive, sending, publication, payments and status checks are simulated. External `.example`/`.test` identities are synthetic.
+- Disabled mode is a local Alya sample workspace with simulated accounts and provider actions. Connected mode uses verified server sessions, scoped workspaces and real provider transports. External `.example`/`.test` identities in fixtures/tests are synthetic.
+- Payment modes are sandbox and Stripe test. Live money, escrow, refunds and tax calculation are not enabled. Hosted providers, microphone conversations and deployment need account-specific validation.
 - Reviewed successor amendments reuse the existing project and preserve accepted versions, original invoices and receipts. A positive upfront difference creates an authorized amendment-deposit draft/request; new funds and usable inputs must arrive before revised duration dates apply. Reductions requiring credits/refunds, insufficient capacity and elapsed/conflicting schedules return explicit review requirements. Saved operational schedule-change proposals remain proposals until separately agreed.
 - English/Bahasa dictionaries cover shared UI and substantial Settings content; some domain prose/native labels remain English. The application is not represented as fully translated word for word.
-- Browser storage is not a multi-user durable database. The safe buyer rendering boundary must become a server-enforced authorization and response boundary before production.
+- Connected buyer authorization and response allowlists are enforced on the server. Demo browser storage remains independent of connected accounts.
 - Generic generated PDFs use standard PDF fonts; full multilingual typography and jurisdiction-specific invoicing/tax rules remain production work.
 
-The developer should replace the command/store/projection boundary with authenticated, versioned server APIs, durable storage/jobs/events and scoped provider adapters. Keep approval, share, acceptance, receipt allocation and professional delivery as distinct operations.
+Approval, share, acceptance, receipt allocation and professional delivery remain distinct operations. See `docs/BACKEND.md` for implementation limits and account activation.
 
 
 ## Verified handoff
+
+The following release notes preserve the original frontend handoff. Connected implementation evidence is maintained in `docs/BACKEND.md`.
 
 The delivered revision passes clean `npm ci`, type checking, lint, 95 automated tests and the production build. All 34 route patterns were opened; selected owner/buyer, invoice, setup, preference and responsive journeys received browser checks. Read `docs/VERIFICATION.md` for the exact scope.
 
