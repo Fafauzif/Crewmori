@@ -8,6 +8,7 @@ import { BackendClient } from "@/lib/backend-client";
 import { Entity, Input, a, b, date, label, money, n, o, s } from "@/lib/types";
 import { downloadPdf } from "@/lib/downloads";
 import { amendmentSchedule } from "@/lib/engine";
+import { zonedDateTime } from "@/lib/business-time";
 import {
   PageHead,
   Panel,
@@ -1572,6 +1573,8 @@ function OfferEditor({
   const terms = o(current?.terms),
     price = o(current?.price),
     policy = rows("policies")[0];
+  const businessTimezone = s(terms.timezone, s(policy?.timezone, "Asia/Jakarta"));
+  const workingEnd = s(terms.due_local_time, s(policy?.due_local_time, "17:00"));
   const initial = {
     opportunity_id: s(opportunity?.id),
     client_id: s(offer?.client_id, s(opportunity?.client_id)),
@@ -1632,9 +1635,9 @@ function OfferEditor({
       return setError("Effort must be a positive whole number of minutes.");
     if (
       form.expires &&
-      new Date(`${form.expires}T17:00:00+07:00`) <= new Date(state.sample_clock)
+      new Date(zonedDateTime(form.expires, workingEnd, businessTimezone)) <= new Date(state.sample_clock)
     )
-      return setError("Choose an expiry after the sample workspace date.");
+      return setError("Choose an expiry after the current workspace date.");
     if (amendment && !form.reason.trim())
       return setError(
         "Explain the proposed change before saving an amendment.",
@@ -1668,22 +1671,22 @@ function OfferEditor({
             ...terms,
             delivery_business_days: +form.days,
             deposit_basis_points: depositBp,
-            reservation_hours: 48,
+            reservation_hours: n(terms.reservation_hours, n(policy?.reservation_hours, 48)),
             start_basis:
               "next_business_day_after_confirmed_deposit_and_required_inputs",
-            timezone: "Asia/Jakarta",
-            workdays: [0, 1, 2, 3, 4],
-            holidays: [],
-            start_local_time: "09:00",
-            due_local_time: "17:00",
+            timezone: businessTimezone,
+            workdays: terms.workdays || policy?.business_weekdays || [0, 1, 2, 3, 4],
+            holidays: terms.holidays || policy?.holiday_dates || [],
+            start_local_time: s(terms.start_local_time, s(policy?.start_local_time, "09:00")),
+            due_local_time: workingEnd,
             required_input_keys: lines(form.inputs),
-            acceptance_disclosure: `Acceptance creates a provisional reservation for 48 elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at 17:00 on business day ${form.days}, counting that start day as day one. Late prerequisites require rescheduling.`,
+            acceptance_disclosure: `Acceptance creates a provisional reservation for ${n(terms.reservation_hours, n(policy?.reservation_hours, 48))} elapsed hours. Confirmed deposit and required inputs commit a start on the next business day. Delivery is due at ${workingEnd} ${businessTimezone} on business day ${form.days}, counting that start day as day one. Late prerequisites require rescheduling.`,
           }
         : null,
       buyer_note: form.buyer_note,
       internal_notes: form.notes,
       estimated_effort_minutes: form.effort ? +form.effort : null,
-      expires_at: form.expires ? `${form.expires}T17:00:00+07:00` : null,
+      expires_at: form.expires ? zonedDateTime(form.expires, workingEnd, businessTimezone) : null,
       amendment_reason: form.reason,
       assessment_ids: a(current?.assessment_ids),
     };
@@ -2309,8 +2312,7 @@ function OfferDetail({ id }: { id: string }) {
               </select>
             </Field>
             <p className="muted">
-              Sample buyer link · approval is bound to this exact version and
-              selected recipient.
+              Buyer link · approval is bound to this exact version and selected recipient.
             </p>
             <div className="actions">
               <Button
@@ -2377,7 +2379,7 @@ function OfferDetail({ id }: { id: string }) {
                     set({ preview: null });
                 }}
               >
-                Share offer in sample
+                {connected ? "Share offer with buyer" : "Share offer in sample"}
               </Button>
               <Button variant="secondary" onClick={pdf}>
                 Download offer PDF
@@ -2390,8 +2392,7 @@ function OfferDetail({ id }: { id: string }) {
               </Button>
             </div>
             <p className="muted">
-              This records a sample share. No real email or external message is
-              sent.
+              {connected ? "This makes the reviewed terms available in the buyer portal. Copy an invitation to give the buyer access." : "This records a sample share. No real email or external message is sent."}
             </p>
           </div>
         </Modal>

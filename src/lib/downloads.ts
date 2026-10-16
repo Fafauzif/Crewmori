@@ -38,7 +38,7 @@ function pdfText(text: string): string {
 export function makePdf(
   title: string,
   rows: Array<[string, string]>,
-  note = "Crewmori sample document. No real payment or external dispatch.",
+  note = typeof document !== "undefined" && document.documentElement.dataset.backend === "connected" ? "Generated from your saved Crewmori records." : "Crewmori sample document. No real payment or external dispatch.",
 ): Blob {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   doc.setFillColor(245, 243, 236);
@@ -216,7 +216,15 @@ function uploadDb(): Promise<IDBDatabase> {
 export async function hashBytes(bytes: ArrayBuffer): Promise<string> {
   return sha256Bytes(bytes);
 }
+function connectedBrowser() { return typeof document !== "undefined" && document.documentElement.dataset.backend === "connected"; }
+function fileEndpoint() { return `/api/files?buyer=${/^\/(buyer|inquiry)\//.test(window.location.pathname)}`; }
 export async function persistUpload(file: File): Promise<UploadedFile> {
+  if (connectedBrowser()) {
+    const response = await fetch(fileEndpoint(), { method: "POST", credentials: "same-origin", headers: { "content-type": file.type, "x-file-name": encodeURIComponent(file.name) }, body: file });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error?.message || "File upload failed.");
+    return result as UploadedFile;
+  }
   const error = await validateUpload(file);
   if (error) throw new Error(error);
   const bytes = await file.arrayBuffer();
@@ -244,6 +252,14 @@ export async function persistUpload(file: File): Promise<UploadedFile> {
   return { id, name: file.name, type: file.type, size: file.size, sha256 };
 }
 export async function readUpload(id: string): Promise<Blob | null> {
+  if (connectedBrowser()) {
+    const response = await fetch(`${fileEndpoint()}&id=${encodeURIComponent(id)}`, { cache: "no-store", credentials: "same-origin" });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error?.message || "File unavailable.");
+    const file = await fetch(result.url, { credentials: "omit" });
+    if (!file.ok) throw new Error("File download failed.");
+    return file.blob();
+  }
   if (!id) return null;
   const db = await uploadDb();
   const blob = await new Promise<Blob | null>((resolve, reject) => {
@@ -263,6 +279,7 @@ export async function attachmentBlob(
   meta: Record<string, unknown>,
 ): Promise<Blob | null> {
   const locator = String(meta.storage_locator || meta.blob_id || "");
+  if (connectedBrowser() && /^[0-9a-f-]{36}$/.test(locator)) return readUpload(locator);
   if (locator.startsWith("file_")) return readUpload(locator);
   if (locator.startsWith("/assets/") && !locator.includes("..")) {
     const result = await fetch(locator);

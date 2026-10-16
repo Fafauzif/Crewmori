@@ -10,6 +10,8 @@ import {
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useStore } from "@/lib/store";
+import KnowledgeSearch from "./knowledge-search";
+import IntegrationTools, { ConnectedConnections } from "./integration-tools";
 import { sampleId } from "@/lib/local-crypto";
 import { s, n, b, o, a, date, label, type Entity } from "@/lib/types";
 import {
@@ -167,7 +169,7 @@ function profileDraft(x: Entity): ProfileDraft {
   };
 }
 function Profile() {
-  const { record, rows, command, notify, t } = useStore();
+  const { record, rows, command, notify, t, connected } = useStore();
   const params = useSearchParams();
   const router = useRouter();
   const saved = record("profiles", "profile_alya")!;
@@ -261,7 +263,7 @@ function Profile() {
     if (r.ok) {
       setReview(null);
       setBase(saved.version + 1);
-      notify(t("Sample profile published."));
+      notify(t(connected ? "Profile published." : "Sample profile published."));
     } else {
       setError(r.message);
       setReview(null);
@@ -530,7 +532,7 @@ function Profile() {
         >
           <p className="settings-help">
             {t(
-              "The following saved content will appear on your sample public page.",
+              connected ? "Review the saved content that will appear on your public page." : "The following saved content will appear on your sample public page.",
             )}
           </p>
           <PublicationDiff
@@ -547,7 +549,7 @@ function Profile() {
             <Button variant="secondary" onClick={() => setReview(null)}>
               {t("Keep editing")}
             </Button>
-            <Button onClick={publish}>{t("Publish sample profile")}</Button>
+            <Button onClick={publish}>{t(connected ? "Publish profile" : "Publish sample profile")}</Button>
           </div>
         </Modal>
       )}
@@ -1037,7 +1039,7 @@ function Availability({ onSaved }: { onSaved: (version: number) => void }) {
             />
           </Field>
         </div>
-        <p>{t("Business schedule timezone")}: Asia/Jakarta</p>
+        <p>{t("Business schedule timezone")}: {s(policy.timezone, "Asia/Jakarta")}</p>
         <Field label={t("Unavailable dates — one YYYY-MM-DD per line")}>
           <textarea
             className="resize-none"
@@ -1617,6 +1619,10 @@ function ToolIcon({ id }: { id: string }) {
   );
 }
 function Connections() {
+  const { connected } = useStore();
+  return connected ? <ConnectedConnections /> : <SampleConnections />;
+}
+function SampleConnections() {
   const { rows, t } = useStore();
   const router = useRouter();
   const params = useSearchParams();
@@ -1681,6 +1687,7 @@ function Connections() {
           </Button>
         )}
       </div>
+      <IntegrationTools />
       {filtered.length ? (
         <div className="settings-tool-grid">
           {filtered.map((x) => (
@@ -2038,7 +2045,7 @@ function ConnectionDetails({
 }
 
 function Knowledge() {
-  const { rows, record, command, notify, state, t } = useStore();
+  const { rows, record, command, notify, state, t, connected } = useStore();
   const params = useSearchParams();
   const router = useRouter();
   const [manual, setManual] = useState(false);
@@ -2219,6 +2226,7 @@ function Knowledge() {
           </Button>
         </div>
       )}
+      <KnowledgeSearch />
       <div className="settings-upload">
         <h3>
           {t(
@@ -2241,7 +2249,7 @@ function Knowledge() {
         />
         <p className="settings-meta" style={{ marginTop: 12 }}>
           {t(
-            "Original files are retained locally. PDF and image text is not automatically extracted.",
+            connected ? "Original files are stored privately. Selectable PDF and TXT text is indexed by your crew; images need a written summary." : "Original files are retained locally. PDF and image text is not automatically extracted.",
           )}
         </p>
       </div>
@@ -2478,7 +2486,7 @@ function SourceDetails({
   onClose: () => void;
   onReplace: () => void;
 }) {
-  const { record, rows, command, notify, t } = useStore();
+  const { record, rows, command, notify, t, connected } = useStore();
   const [audience, setAudience] = useState(s(source.audience, "owner"));
   const [review, setReview] = useState(false);
   const [error, setError] = useState("");
@@ -2586,6 +2594,7 @@ function SourceDetails({
     >
       <div className="settings-form">
         <ErrorMessage message={error} />
+        {source.indexing_error ? <p role="alert">Indexing needs attention: {s(source.indexing_error)}. Check the source and connection, then retry.</p> : null}
         <div className="settings-status-line">
           <Badge>
             {t(
@@ -2668,10 +2677,15 @@ function SourceDetails({
           <Button variant="secondary" onClick={onReplace}>
             {t("Replace file")}
           </Button>
-          {source.status === "failed" && (
+          {(source.status === "failed" || source.indexing_state === "failed") && (
             <Button
               variant="secondary"
               onClick={async () => {
+                if (connected) {
+                  const r = await command("source.refresh", { id: source.id, expected_version: source.version });
+                  if (r.ok) notify(r.message); else setError(r.message);
+                  return;
+                }
                 if (!binary && !s(source.content)) {
                   setError(
                     t(

@@ -91,17 +91,26 @@ export function ConnectedStoreProvider({ children }: { children: ReactNode }) {
           const response = await client.request<{ result: Result }>("/api/public/inquiries", { handle: s(o(input.values).handle), values: input.values, idempotencyKey });
           result = response.result;
         } else if (type === "agent.start") {
-          const refs = a<{ table: string; id: string; version: number }>(input.references);
-          for (const id of [...a<string>(input.source_ids), ...[s(input.opportunity_id), s(input.project_id), s(input.invoice_id)].filter(Boolean)]) {
+          const refs = [...a<{ table: string; id: string; version: number }>(input.references), ...a<{ table: string; id: string; version: number }>(input.input_refs)];
+          for (const id of [...a<string>(input.source_ids), ...[s(input.opportunity_id), s(input.project_id), s(input.invoice_id), s(input.service_id)].filter(Boolean)]) {
             for (const [table, records] of Object.entries(ref.current.tables)) if (records[id]) refs.push({ table, id, version: records[id].version });
           }
           const role = s(input.role_id, "scout") === "auto" ? "scout" : s(input.role_id, "scout");
           const run = await client.request<{ id: string }>("/api/tasks", { role, instruction: s(input.instruction, s(input.intent, s(input.task_kind, "Review the selected business records and propose next steps."))), references: Array.from(new Map(refs.map((r) => [`${r.table}:${r.id}`, r])).values()), idempotencyKey });
           result = { ok: true, id: run.id, message: "Task queued for your AI teammate." };
+        } else if (["message.send", "invoice.send", "calendar.invite"].includes(type)) {
+          const response = await client.request<{ result: Result }>("/api/dispatch", { type, input: clean, idempotencyKey });
+          result = response.result;
+        } else if (type === "artifact.apply") {
+          const response = await client.request<{ result: Result }>(`/api/runs/${encodeURIComponent(s(input.id))}/apply`, { expectedVersion: input.expected_version, confirmed: true, idempotencyKey });
+          result = response.result;
         } else if (type === "agent.control") {
           const run = ref.current.tables.agent_runs?.[s(input.id, s(input.run_id))];
           const response = await client.request<{ id: string }>(`/api/runs/${encodeURIComponent(s(run?.id))}`, { action: input.action, expectedVersion: run?.version, idempotencyKey });
           result = { ok: true, id: response.id, message: "Task control updated." };
+        } else if (type === "payment.startRequest" || type === "payment.check") {
+          const payment = await client.request<{ id: string; url: string | null; provider: string }>("/api/payments/start", { requestId: s(input.id), buyer: /^\/(buyer|inquiry)\//.test(path), idempotencyKey });
+          result = { ok: true, id: payment.id, message: payment.provider === "sandbox" ? "Sandbox request ready in the buyer portal." : "Checkout is ready in the buyer portal." };
         } else if (type === "connection.change") {
           if (input.action === "disconnect") await client.request("/api/connections/google", undefined, "DELETE");
           else {
@@ -112,6 +121,9 @@ export function ConnectedStoreProvider({ children }: { children: ReactNode }) {
           result = { ok: true, message: "Connection updated." };
         } else {
           const buyer = /^\/(buyer|inquiry)\//.test(path);
+          // Uploads and worker events can advance the workspace independently of this form.
+          // Refresh transport revision; form-captured record versions still reject stale edits.
+          await refresh();
           const response = await client.request<{ result: Result }>(buyer ? "/api/buyer/commands" : "/api/commands", { type, input: clean, idempotencyKey, expectedRevision: ref.current.revision });
           result = response.result;
         }
@@ -121,7 +133,7 @@ export function ConnectedStoreProvider({ children }: { children: ReactNode }) {
         return result;
       } catch (error) {
         const code = error instanceof BackendError ? error.code : "CONNECTION_INTERRUPTED";
-        if (error instanceof BackendError && error.status < 500) keys.current.delete(signature);
+        if (error instanceof BackendError && error.status < 500 && !["DISPATCH_REVIEW_REQUIRED", "DISPATCH_FINALIZATION_REQUIRED"].includes(code)) keys.current.delete(signature);
         if (code === "STALE_VERSION") await refresh();
         const message = error instanceof Error ? error.message : "The connection was interrupted. Retry the same action to check its result.";
         notify(message); return { ok: false, code, message };

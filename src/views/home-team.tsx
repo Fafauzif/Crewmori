@@ -571,7 +571,7 @@ export function Home({ onAsk }: { onAsk: (text?: string) => void }) {
   );
 }
 export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
-  const { state, record, rows, command, t } = useStore();
+  const { state, record, rows, command, t, connected } = useStore();
   const router = useRouter(),
     query = useSearchParams();
   const [list, setList] = useState(false),
@@ -987,9 +987,7 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
               <div className="actions">
                 {["queued", "running"].includes(s(selectedRun.status)) && (
                   <>
-                    <Button onClick={async () => (await action("checkpoint"))}>
-                      Run next sample step
-                    </Button>
+                    {!connected && <Button onClick={async () => (await action("checkpoint"))}>Run next sample step</Button>}
                     <Button variant="secondary" onClick={async () => (await action("pause"))}>
                       Pause task
                     </Button>
@@ -1172,6 +1170,13 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
                   "This saved result is linked to its originating task.",
                 )}
               </p>
+              {connected && <>
+                <h4>Evidence</h4><ul>{a<{ text: string; sourceId: string }>(record("artifacts", artifact)?.facts).map((fact, index) => <li key={index}>{fact.text} <small>({fact.sourceId})</small></li>)}</ul>
+                <h4>Unknowns</h4><ul>{a<string>(record("artifacts", artifact)?.unknowns).map((text, index) => <li key={index}>{text}</li>)}</ul>
+                <h4>Recommendations</h4><ul>{a<string>(record("artifacts", artifact)?.recommendations).map((text, index) => <li key={index}>{text}</li>)}</ul>
+                {record("artifacts", artifact)?.status !== "applied" && <Button onClick={async () => { const item = record("artifacts", artifact); const outcome = await command("artifact.apply", { id: item?.run_id, expected_version: item?.version, confirmed: true }); setResult(outcome); }}>Save reviewed business draft</Button>}
+                <Feedback result={result} />
+              </>}
               <RecordLink
                 href={recordHref(
                   s(o(record("artifacts", artifact)?.record_ref).table),

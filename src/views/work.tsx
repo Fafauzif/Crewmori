@@ -26,6 +26,7 @@ import {
   downloadBlob,
 } from "@/lib/downloads";
 import { amendmentSchedule } from "@/lib/engine";
+import { localDateTime, zonedDateTime } from "@/lib/business-time";
 import "./work.css";
 
 const terminal = ["completed", "cancelled", "archived"];
@@ -43,7 +44,6 @@ const statuses = [
 const titleOf = (x?: Entity) =>
   x ? s(x.title, s(x.name, s(x.label, x.id))) : "Not linked";
 const isoDay = (x: unknown) => s(x).slice(0, 10);
-const localTime = (x: unknown) => s(x).slice(0, 16);
 const active = (x: Entity) =>
   !b(x.archived) && s(x.state) !== "archived" && s(x.status) !== "archived";
 const safeHref = (value: unknown) => {
@@ -2371,7 +2371,7 @@ function Messages({
   clientId: string;
   projectId?: string;
 }) {
-  const { rows, record, command, notify } = useStore();
+  const { rows, record, command, notify, connected } = useStore();
   const q = useSearchParams();
   const contact = rows("contacts").find((x) => s(x.client_id) === clientId);
   const conversation = rows("conversations").find(
@@ -2485,7 +2485,7 @@ function Messages({
       destination_email: contact.email,
     };
   }
-  async function send() {
+  async function send(channel = "email") {
     if (!review || !contact) return;
     const current = record("messages", review.id);
     if (!current)
@@ -2509,7 +2509,7 @@ function Messages({
       if (!approval.ok) return setError(approval.message);
       setReview({ ...review, version: current.version + 1 });
     }
-    const result = (await command("message.send", {
+    const result = (await command(connected && channel === "portal" ? "message.deliver" : "message.send", {
       id: current.id,
       destination_contact_id: contact.id,
     }));
@@ -2521,7 +2521,7 @@ function Messages({
     setDraftVersion(undefined);
     setSelected([]);
     setComposing(false);
-    notify("Sample message sent. No real email was sent.");
+    notify(result.message);
   }
   return (
     <Panel>
@@ -2660,12 +2660,12 @@ function Messages({
             </Button>
           </div>
           <p className="work-field-hint">
-            Review the exact recipient and content before simulating a send.
+            Review the exact recipient and content before sending.
           </p>
         </div>
       )}
       {review && (
-        <Modal title="Review sample message" onClose={() => setReview(null)}>
+        <Modal title={connected ? "Review message" : "Review sample message"} onClose={() => setReview(null)}>
           <div className="work-form">
             <p>
               <strong>To:</strong> {s(contact?.display_name)} &lt;
@@ -2684,12 +2684,12 @@ function Messages({
               </div>
             )}
             <div className="work-notice">
-              Approval applies to this exact draft and recipient. This records a
-              sample message; no real email is sent.
+              Approval applies to this exact draft and recipient. {connected ? "Choose portal delivery or external email." : "This records a sample message; no real email is sent."}
             </div>
             <ErrorText message={error} />
             <div className="actions">
-              <Button onClick={send}>Approve and send sample message</Button>
+              <Button onClick={() => void send("email")}>{connected ? "Approve and send email" : "Approve and send sample message"}</Button>
+              {connected && <Button variant="secondary" onClick={() => void send("portal")}>Approve and deliver to portal</Button>}
               <Button variant="secondary" onClick={() => setReview(null)}>
                 Back to editing
               </Button>
@@ -3128,12 +3128,13 @@ function EventEditor({
   onSaved: () => void;
 }) {
   const { rows, state, command } = useStore();
+  const timezone = s(event?.timezone, s(rows("policies")[0]?.timezone, "Asia/Jakarta"));
   const [name, setName] = useState(s(event?.title)),
     [start, setStart] = useState(
-      localTime(event?.starts_at) || `${isoDay(state.sample_clock)}T09:00`,
+      event?.starts_at ? localDateTime(s(event.starts_at), timezone) : `${localDateTime(state.sample_clock, timezone).slice(0, 10)}T09:00`,
     ),
     [end, setEnd] = useState(
-      localTime(event?.ends_at) || `${isoDay(state.sample_clock)}T10:00`,
+      event?.ends_at ? localDateTime(s(event.ends_at), timezone) : `${localDateTime(state.sample_clock, timezone).slice(0, 10)}T10:00`,
     ),
     [kind, setKind] = useState(s(event?.kind, "internal_work")),
     [project, setProject] = useState(s(event?.project_id)),
@@ -3146,18 +3147,24 @@ function EventEditor({
     ["committed_start", "committed_deadline", "provisional"].includes(
       s(event.kind),
     );
+  const instant = (value: string) => {
+    try { return Date.parse(zonedDateTime(value.slice(0, 10), value.slice(11), timezone)); }
+    catch { return NaN; }
+  };
   const overlap = rows("calendar_events").filter(
     (x) =>
       x.id !== event?.id &&
       active(x) &&
       !["cancelled", "completed"].includes(s(x.state)) &&
-      s(x.starts_at) < `${end}:00+07:00` &&
-      s(x.ends_at) > `${start}:00+07:00`,
+      Date.parse(s(x.starts_at)) < instant(end) &&
+      Date.parse(s(x.ends_at)) > instant(start),
   );
   async function save() {
     if (!name.trim()) return setError("Enter an event name.");
-    const from = new Date(`${start}:00+07:00`),
-      to = new Date(`${end}:00+07:00`);
+    let startAt: string, endAt: string;
+    try { startAt = zonedDateTime(start.slice(0, 10), start.slice(11), timezone); endAt = zonedDateTime(end.slice(0, 10), end.slice(11), timezone); }
+    catch (error) { return setError(error instanceof Error ? error.message : "Choose valid event times."); }
+    const from = new Date(startAt), to = new Date(endAt);
     if (
       !start ||
       !end ||
@@ -3182,12 +3189,12 @@ function EventEditor({
       expected_version: expectedVersion,
       values: {
         title: name.trim(),
-        starts_at: `${start}:00+07:00`,
-        ends_at: `${end}:00+07:00`,
+        starts_at: startAt,
+        ends_at: endAt,
         kind,
         project_id: project || null,
         attendee_ids: kind === "client_meeting" ? [contact] : [],
-        timezone: "Asia/Jakarta",
+        timezone,
         state: kind === "client_meeting" ? "proposed" : "scheduled",
         external_invitation_state: "not_requested",
         shared_with_buyer: false,
@@ -3306,7 +3313,7 @@ function EventDetail({
   onClose: () => void;
   onEdit: () => void;
 }) {
-  const { record, command } = useStore();
+  const { record, command, connected } = useStore();
   const [review, setReview] = useState(false),
     [reviewVersion, setReviewVersion] = useState<number | undefined>(),
     [reviewRecipients, setReviewRecipients] = useState<string[]>([]),
@@ -3381,13 +3388,11 @@ function EventDetail({
         {review ? (
           <>
             <div className="work-notice">
-              Send this exact title, time, timezone and attendee list as a
-              sample invitation. Attendance remains pending until the buyer
-              responds.
+              {connected ? "Send this exact title, time, timezone and attendee list through Google Calendar. Attendance remains pending until the buyer responds." : "Send this exact title, time, timezone and attendee list as a sample invitation. Attendance remains pending until the buyer responds."}
             </div>
             <div className="actions">
               <Button onClick={invite}>
-                Approve and send sample invitation
+                {connected ? "Approve and send invitation" : "Approve and send sample invitation"}
               </Button>
               <Button variant="secondary" onClick={() => setReview(false)}>
                 Cancel review
@@ -3512,7 +3517,7 @@ function Reservation({
       id: project.id,
       expected_version: baseProjectVersion,
       expected_reservation_version: baseReservationVersion,
-      proposed_start_at: `${target}T09:00:00+07:00`,
+      proposed_start_at: zonedDateTime(target, s(terms.start_local_time, "09:00"), s(terms.timezone, "Asia/Jakarta")),
       reason: reason.trim(),
     }));
     if (result.ok) {

@@ -51,6 +51,8 @@ import {
 } from "@/lib/downloads";
 import "./public.css";
 import ConnectedAuth from "./connected-auth";
+import ConnectedVoice from "./connected-voice";
+import { ConnectedBuyerPayment, PaymentReturn } from "./connected-payments";
 
 const emailOk = (value: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
@@ -195,7 +197,7 @@ function Unavailable({
 }
 
 function Entry() {
-  const { command, t } = useStore();
+  const { command, t, connected } = useStore();
   const router = useRouter();
   return (
     <Frame>
@@ -214,18 +216,19 @@ function Entry() {
           <div className="public-actions">
             <Button
               onClick={async () => {
+                if (connected) { router.push("/auth/sign-up"); return; }
                 const r = (await command("session.set", { authenticated: true }));
                 if (r.ok) router.push("/app/home");
               }}
             >
-              {t("Explore sample workspace")} <span aria-hidden>→</span>
+              {t(connected ? "Create your workspace" : "Explore sample workspace")} <span aria-hidden>→</span>
             </Button>
             <LinkButton href="/auth/sign-up" variant="secondary">
               {t("Get started")}
             </LinkButton>
           </div>
           <p className="public-small">
-            A working local sample. No account or connected tools required.
+            {connected ? "Start your business workspace and connect the tools you need." : "A working local sample. No account or connected tools required."}
           </p>
         </div>
         <div className="public-hero-art">
@@ -273,7 +276,7 @@ function Entry() {
           </p>
         </article>
       </section>
-      <section className="public-profile-invite">
+      {!connected && <section className="public-profile-invite">
         <div>
           <p className="public-eyebrow">FROM YOUR CLIENT’S SIDE</p>
           <h2>A clear beginning for every project.</h2>
@@ -285,7 +288,7 @@ function Entry() {
         <LinkButton href="/u/alya" variant="ghost">
           View sample freelancer →
         </LinkButton>
-      </section>
+      </section>}
     </Frame>
   );
 }
@@ -777,8 +780,7 @@ function Profile({ handle, slug }: { handle: string; slug?: string }) {
       {inquire && (
         <Modal title="Tell us what you have in mind" onClose={close}>
           <p>
-            Alya’s sample AI representative will help collect your brief. This
-            creates a local inquiry.
+            Share your request with the freelancer. You can continue the conversation and review proposed terms in your private client space.
           </p>
           <form onSubmit={submit} noValidate>
             <ErrorNote message={error} />
@@ -1476,7 +1478,7 @@ function Onboarding() {
               </div>
               {b(draft.connections_skipped) && (
                 <Notice>
-                  Connections skipped. You can add sample tools later.
+                  Connections skipped. You can connect your tools later.
                 </Notice>
               )}
               <h3>Your setup</h3>
@@ -1591,7 +1593,11 @@ function Onboarding() {
   );
 }
 
-function Voice({
+function Voice(props: { transcript: string; onClose: () => void; onText: () => void }) {
+  const { connected } = useStore();
+  return connected ? <ConnectedVoice onClose={props.onClose} onText={props.onText} /> : <SampleVoice {...props} />;
+}
+function SampleVoice({
   transcript,
   onClose,
   onText,
@@ -2388,7 +2394,7 @@ function Offer({ id, grant }: { id: string; grant: string }) {
   const pdf = () => {
     try {
       downloadPdf(`Offer-${s(offer.offer_version_id)}.pdf`, s(offer.title), [
-        "SAMPLE OFFER",
+        state.mode === "connected" ? "OFFER" : "SAMPLE OFFER",
         `Freelancer: ${s(offer.freelancer_name)}`,
         `Prepared for: ${s(offer.buyer_name)}`,
         `Version: ${versionLabel(offer.offer_version_id)}`,
@@ -2987,7 +2993,7 @@ function BuyerPayment({
   grantId: string;
   message: (text: string) => void;
 }) {
-  const { state, command } = useStore();
+  const { state, command, connected } = useStore();
   const [sample, setSample] = useState(false);
   const [event, setEvent] = useState("exact");
   const [selected, setSelected] = useState<Entity | null>(null);
@@ -3089,6 +3095,7 @@ function BuyerPayment({
       ],
     );
   };
+  if (connected) return <ConnectedBuyerPayment data={data} />;
   return (
     <>
       <h2>Payment, clearly laid out.</h2>
@@ -3654,6 +3661,7 @@ export default function PublicViews({ path }: { path: string }) {
   const params = useSearchParams();
   const clean = path.split("?")[0].replace(/\/$/, "") || "/";
   const segments = clean.split("/").filter(Boolean);
+  if (clean === "/payment/return" && connected) return <PaymentReturn />;
   if (clean === "/") return <Entry />;
   if (
     segments[0] === "auth" &&

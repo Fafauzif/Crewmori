@@ -926,7 +926,7 @@ function invoicePdf(store: Store, invoice: Entity): Blob {
       ],
       ["Buyer note", s(invoice.buyer_note, "—")],
     ],
-    "Sample invoice. Issuance, payment observations and sending are simulated.",
+    store.connected ? "Generated from the saved invoice and its recorded allocations." : "Sample invoice. Issuance, payment observations and sending are simulated.",
   );
 }
 function InvoiceDetail({ id }: { id: string }) {
@@ -1201,7 +1201,7 @@ function InvoiceDetail({ id }: { id: string }) {
             </div>
             {invoice.sent_at ? (
               <p className="money-subtitle">
-                Sample send recorded {date(invoice.sent_at)}.
+                {store.connected ? "Email sent" : "Sample send recorded"} {date(invoice.sent_at)}.
               </p>
             ) : (
               <p className="money-subtitle">
@@ -1316,7 +1316,7 @@ function InvoiceDetail({ id }: { id: string }) {
               />
             </Field>
             <p className="money-note">
-              This approval records a sample dispatch. No real email is sent.
+              {store.connected ? "This sends the reviewed message to the selected billing contact through your configured email service." : "This approval records a sample dispatch. No real email is sent."}
             </p>
             <div className="actions">
               <Button
@@ -1339,7 +1339,7 @@ function InvoiceDetail({ id }: { id: string }) {
                   ))
                 }
               >
-                Approve and send sample invoice
+                {store.connected ? "Approve and send invoice email" : "Approve and send sample invoice"}
               </Button>
               <Button variant="secondary" onClick={() => patch({ send: null })}>
                 Cancel
@@ -1485,7 +1485,7 @@ function PaymentsList() {
         title="Payments"
         description="Understand what arrived, and where it belongs."
         action={
-          <LinkButton href="/app/money/payments?scenario=1" variant="secondary">
+          !store.connected && <LinkButton href="/app/money/payments?scenario=1" variant="secondary">
             Sample payment controls
           </LinkButton>
         }
@@ -1643,14 +1643,14 @@ function PaymentDetail({ id }: { id: string }) {
   function receiptDownload() {
     if (!receipt) return;
     const blob = makePdf(
-      "Sample payment receipt",
+      store.connected ? "Payment receipt" : "Sample payment receipt",
       [
         ["Receipt reference", receipt.id],
         ["Invoice", s(invoice?.number)],
         ["Client", clientName(store, invoice?.client_id)],
         ["Received", date(receipt.received_at)],
         ["Gross amount", money(receipt.gross)],
-        ["Payment observation", "Sample confirmed"],
+        ["Payment observation", label(receipt.observation_state)],
         [
           "Invoice allocation",
           money(
@@ -1661,7 +1661,7 @@ function PaymentDetail({ id }: { id: string }) {
           ),
         ],
       ],
-      "Sample receipt. This document is a local simulation, not evidence of real funds.",
+      store.connected ? `Recorded provider: ${s(receipt.provider)}. Sandbox and Stripe test receipts do not represent live funds.` : "Sample receipt. This document is a local simulation, not evidence of real funds.",
     );
     downloadBlob(blob, `${receipt.id}.pdf`);
     store.notify("Receipt PDF prepared.");
@@ -1844,7 +1844,7 @@ function PaymentDetail({ id }: { id: string }) {
       </div>
       {query.get("evidence") === "1" && (
         <Modal
-          title="Sample payment evidence"
+          title={store.connected ? "Payment evidence" : "Sample payment evidence"}
           onClose={() => patch({ evidence: null })}
         >
           <p>
@@ -2136,7 +2136,7 @@ function IssueReview({
     .rows("receipts")
     .filter(
       (r: Entity) =>
-        r.observation_state === "sample_confirmed" &&
+        ["sample_confirmed", "provider_confirmed"].includes(s(r.observation_state)) &&
         o(r.gross).currency === invoice?.currency &&
         receiptInvoice(store, r)?.client_id === invoice?.client_id &&
         receiptRemaining(store, r) > 0,
