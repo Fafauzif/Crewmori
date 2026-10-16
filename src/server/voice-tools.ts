@@ -5,6 +5,8 @@ import { transaction } from "./db";
 import { assertService } from "./errors";
 import { fingerprint, hashToken } from "./security";
 import { appendEvent } from "./repository";
+import { loadDomain, persistDomain } from "./domain-state";
+import { s, o } from "../lib/types";
 
 export function verifyVoiceToolSecret(supplied: string | null) {
   const { ELEVENLABS_TOOL_SECRET } = requireConfiguration(["ELEVENLABS_TOOL_SECRET"]);
@@ -42,7 +44,17 @@ export async function runVoiceTool(tool: string, envelope: z.infer<typeof voiceT
     } else {
       const collection = tool === "capture_requirements" ? "buyer_briefs" : "owner_requests";
       await client.query("insert into crewmori.records(workspace_id,collection,id,version,data) values($1,$2,$3,1,$4) on conflict(workspace_id,collection,id) do update set version=crewmori.records.version+1,data=excluded.data", [session.workspace_id, collection, session.engagement_id, JSON.stringify({ ...input, engagement_id: session.engagement_id, audience: "buyer", source: "voice", captured_at: new Date().toISOString() })]);
-      await appendEvent(client, session.workspace_id, operation, tool === "capture_requirements" ? "A buyer brief was saved from voice for owner review." : "A buyer requested the owner's attention.");
+      const before = await loadDomain(client, session.workspace_id), after = structuredClone(before);
+      const engagement = after.tables.engagements?.[session.engagement_id], conversation = after.tables.conversations?.[s(engagement?.conversation_id)];
+      if (conversation) {
+        Object.assign(conversation, { version: conversation.version + 1, owner_review_requested: true, owner_review_reason: tool === "request_owner" ? o(input).reason : "Review the saved voice brief before changing scope or terms." });
+        const id = `voice_tool_${envelope.eventId}`;
+        const text = tool === "capture_requirements" ? `Voice brief for review: ${s(o(input).scope)}${o(input).timing ? `\nTiming: ${s(o(input).timing)}` : ""}${o(input).budgetMinor !== undefined ? `\nBudget (minor units): ${o(input).budgetMinor} ${s(o(input).currency, "currency to confirm")}` : ""}` : `Owner review requested: ${s(o(input).reason)}`;
+        (after.tables.messages ||= {})[id] = { id, version: 1, conversation_id: conversation.id, sender_kind: "representative", content: text, audience: "buyer", shared_with_buyer: true, delivery_state: "recorded", attachment_ids: [], created_at: new Date().toISOString(), source: "voice_tool" };
+        conversation.latest_message_id = id;
+        await persistDomain(client, before, after, session.workspace_id);
+      }
+      await appendEvent(client, session.workspace_id, operation, tool === "capture_requirements" ? "A buyer brief was saved from voice for owner review." : "A buyer requested the owner's attention.", conversation ? [{ table: "conversations", id: conversation.id }] : []);
       result = { saved: true, requiresOwnerReview: true };
     }
     await client.query("insert into crewmori.command_receipts(workspace_id,actor_id,operation,key,fingerprint,result) values($1,$2,$3,$4,$5,$6)", [session.workspace_id, actorId, operation, envelope.eventId, fingerprint(input), JSON.stringify(result)]);

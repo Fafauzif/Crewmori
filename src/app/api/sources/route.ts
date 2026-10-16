@@ -4,6 +4,7 @@ import { api, json, jsonBody } from "@/server/http";
 import { ownerActor } from "@/server/auth";
 import { transaction } from "@/server/db";
 import { appendEvent, lockWorkspace, previousCommand, saveCommand } from "@/server/repository";
+import { enqueueKnowledge } from "@/server/knowledge";
 export const runtime = "nodejs";
 export async function POST(request: Request) {
   return api(request, async () => {
@@ -14,7 +15,9 @@ export async function POST(request: Request) {
       const prior = await previousCommand(client, actor, "source.create", input.idempotencyKey, input);
       if (prior) return { ...prior, replayed: true };
       const id = randomUUID();
-      await client.query("insert into crewmori.records(workspace_id,collection,id,version,data) values($1,'sources',$2,1,$3)", [actor.workspaceId, id, JSON.stringify({ title: input.title, text: input.text, audience: "owner", origin: "manual_import" })]);
+      const source = { id, version: 1, label: input.title, title: input.title, content: input.text, kind: "note", audience: "owner", origin: "manual_import", status: "processing" };
+      await client.query("insert into crewmori.records(workspace_id,collection,id,version,data) values($1,'sources',$2,1,$3)", [actor.workspaceId, id, JSON.stringify(source)]);
+      await enqueueKnowledge(client, actor.workspaceId, source);
       const result = { table: "sources", id, version: 1 };
       await appendEvent(client, actor.workspaceId, "source.saved", "An owner source was saved.", [result]);
       await saveCommand(client, actor, "source.create", input.idempotencyKey, input, result);

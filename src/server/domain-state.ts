@@ -3,7 +3,7 @@ import { emptyState, workspaceState } from "../lib/workspace-state";
 import { o, s, type StoreState, type Entity } from "../lib/types";
 import { appendEvent } from "./repository";
 
-const transient = new Set(["events", "command_receipts", "connections", "agent_runs", "model_calls", "local_accounts", "recovery_grants", "sample_sessions"]);
+const transient = new Set(["events", "command_receipts", "connections", "agent_runs", "model_calls", "local_accounts", "recovery_grants", "sample_sessions", "external_dispatches"]);
 export async function initializeWorkspace(client: PoolClient, workspace: { id: string; owner_id: string; name: string }, email = "") {
   if ((await client.query("select 1 from crewmori.records where workspace_id=$1 and collection='owners'", [workspace.id])).rowCount) return;
   const state = workspaceState(workspace, email);
@@ -30,11 +30,24 @@ export async function loadDomain(client: PoolClient, workspaceId: string): Promi
     const active = connection?.state === "active" && connection.scopes.some((item: string) => item.includes(scope));
     state.tables.connections[id] = { id, version: connection?.version || 1, label: id === "gmail" ? "Gmail" : id === "calendar" ? "Calendar" : "Drive", mode: "connected", state: active ? "connected" : "disconnected", capabilities, approved_capabilities: active ? capabilities : [], account_label: active ? "Google account" : "" };
   }
-  const runs = await client.query("select id,role,instruction,state,control_version,input_refs,artifact,error_code,created_at,updated_at from crewmori.agent_runs where workspace_id=$1 order by created_at", [workspaceId]);
+  const dispatches = await client.query("select id,operation,state,provider_reference,created_at,payload from crewmori.external_dispatches where workspace_id=$1 order by created_at desc limit 100", [workspaceId]);
+  state.tables.external_dispatches = Object.fromEntries(dispatches.rows.map((row) => [row.id, { ...row, version: 1 }]));
+  const transcripts = await client.query("select id,data from crewmori.records where workspace_id=$1 and collection='voice_transcripts'", [workspaceId]);
+  for (const transcript of transcripts.rows) {
+    const engagement = state.tables.engagements?.[s(transcript.data.engagement_id)];
+    if (!engagement) continue;
+    for (const [index, segment] of (transcript.data.segments || []).entries()) {
+      const id = `voice_${transcript.id}_${index}`;
+      (state.tables.messages ||= {})[id] = { id, version: 1, conversation_id: engagement.conversation_id, sender_kind: segment.role === "user" ? "buyer" : "representative", content: segment.message, delivery_state: "recorded", shared_with_buyer: true, audience: "buyer", attachment_ids: [] };
+    }
+  }
+  const jobs = await client.query("select distinct on (source_id) source_id,state,error_code from crewmori.knowledge_jobs where workspace_id=$1 order by source_id,created_at desc", [workspaceId]);
+  for (const job of jobs.rows) if (state.tables.sources?.[job.source_id]) Object.assign(state.tables.sources[job.source_id], { indexing_state: job.state, indexing_error: job.error_code });
+  const runs = await client.query("select id,role,instruction,state,control_version,input_refs,artifact,error_code,applied_at,applied_result,created_at,updated_at from crewmori.agent_runs where workspace_id=$1 order by created_at", [workspaceId]);
   state.tables.agent_runs = {};
   for (const row of runs.rows) {
-    state.tables.agent_runs[row.id] = { id: row.id, version: row.control_version, role_id: row.role, intent: row.instruction, state: row.state, status: row.state, task_kind: "reasoning", input_refs: row.input_refs, artifact: row.artifact, error_code: row.error_code, created_at: row.created_at.toISOString(), updated_at: row.updated_at.toISOString(), steps: [], artifact_ids: row.artifact ? [`artifact_${row.id}`] : [] };
-    if (row.artifact) (state.tables.artifacts ||= {})[`artifact_${row.id}`] = { id: `artifact_${row.id}`, version: row.control_version, run_id: row.id, role_id: row.role, title: row.artifact.title, summary: row.artifact.summary, body: row.artifact.summary, facts: row.artifact.facts, unknowns: row.artifact.unknowns, recommendations: row.artifact.recommendations, status: "awaiting_review", requires_owner_review: true };
+    state.tables.agent_runs[row.id] = { id: row.id, version: row.control_version, role_id: row.role, intent: row.instruction, state: row.state, status: row.state, control_version: row.control_version, blocked_reason: row.error_code, task_kind: "reasoning", input_refs: row.input_refs, artifact: row.artifact, error_code: row.error_code, created_at: row.created_at.toISOString(), updated_at: row.updated_at.toISOString(), steps: [], artifact_ids: row.artifact ? [`artifact_${row.id}`] : [], output_artifact_ids: row.artifact ? [`artifact_${row.id}`] : [] };
+    if (row.artifact) (state.tables.artifacts ||= {})[`artifact_${row.id}`] = { id: `artifact_${row.id}`, version: row.control_version, run_id: row.id, creator_run_id: row.id, role_id: row.role, title: row.artifact.title, summary: row.artifact.summary, body: row.artifact.summary, facts: row.artifact.facts, unknowns: row.artifact.unknowns, recommendations: row.artifact.recommendations, status: row.applied_at ? "applied" : "awaiting_review", requires_owner_review: true, record_ref: row.applied_result ? { table: row.applied_result.ids?.table, id: row.applied_result.id } : null };
   }
   return state;
 }

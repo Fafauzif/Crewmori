@@ -1,4 +1,5 @@
-/** Deterministic, transactional sample domain adapter. All effects remain local. */
+/** Pure transactional business commands; provider effects are dispatched by the server. */
+import { localDateTime, zonedDateTime } from "./business-time";
 import fixture from "./fixture.json";
 import scenarioFile from "./scenarios.json";
 import { sampleId } from "./local-crypto";
@@ -375,6 +376,10 @@ function validateFields(st: StoreState, t: string, v: Input, id = "") {
       "Choose a valid public availability.",
     );
   if (t === "policies") {
+    if (v.timezone !== undefined) {
+      try { new Intl.DateTimeFormat("en", { timeZone: s(v.timezone) }).format(); }
+      catch { fail("VALIDATION_ERROR", "Choose a valid IANA business timezone."); }
+    }
     if (v.available_effort_minutes !== undefined)
       need(
         Number.isSafeInteger(v.available_effort_minutes) &&
@@ -585,8 +590,8 @@ function reviewAssessments(st: StoreState, v: Entity) {
     );
 }
 function deriveDates(clock: string, terms: Input) {
-  const current = new Date(Date.parse(clock) + 7 * 3600000);
-  current.setUTCHours(0, 0, 0, 0);
+  const timezone = s(terms.timezone, "Asia/Jakarta");
+  const current = new Date(localDateTime(clock, timezone).slice(0, 10) + "T00:00:00Z");
   const holidays = a<string>(terms.holidays),
     days = a<number>(terms.workdays).length
       ? a<number>(terms.workdays)
@@ -597,20 +602,20 @@ function deriveDates(clock: string, terms: Input) {
   do {
     current.setUTCDate(current.getUTCDate() + 1);
   } while (!valid(current));
-  const start = current.toISOString().slice(0, 10) + "T09:00:00+07:00";
+  const start = zonedDateTime(current.toISOString().slice(0, 10), s(terms.start_local_time, "09:00"), timezone);
   let left = n(terms.delivery_business_days, 5) - 1;
   while (left > 0) {
     current.setUTCDate(current.getUTCDate() + 1);
     if (valid(current)) left--;
   }
-  return { start, due: current.toISOString().slice(0, 10) + "T17:00:00+07:00" };
+  return { start, due: zonedDateTime(current.toISOString().slice(0, 10), s(terms.due_local_time, "17:00"), timezone) };
 }
 export function amendmentSchedule(
   startAt: string,
   terms: Input,
 ): { start: string; due: string } {
-  const current = new Date(Date.parse(startAt) + 7 * 3600000);
-  current.setUTCHours(0, 0, 0, 0);
+  const timezone = s(terms.timezone, "Asia/Jakarta");
+  const current = new Date(localDateTime(startAt, timezone).slice(0, 10) + "T00:00:00Z");
   const days = a<number>(terms.workdays).length
       ? a<number>(terms.workdays)
       : [0, 1, 2, 3, 4],
@@ -634,7 +639,7 @@ export function amendmentSchedule(
   }
   return {
     start: startAt,
-    due: current.toISOString().slice(0, 10) + "T17:00:00+07:00",
+    due: zonedDateTime(current.toISOString().slice(0, 10), s(terms.due_local_time, "17:00"), timezone),
   };
 }
 function applyAmendmentSchedule(
@@ -683,7 +688,7 @@ function applyAmendmentSchedule(
         state: "committed",
         starts_at: d,
         ends_at: new Date(Date.parse(d) + 1800000).toISOString(),
-        timezone: "Asia/Jakarta",
+        timezone: s(o(get(st, "acceptances", acceptanceId).terms_snapshot).timezone, "Asia/Jakarta"),
         external_invitation_state:
           existing?.external_invitation_state || "not_requested",
         connection_id: "calendar",
@@ -851,7 +856,7 @@ function refreshProject(st: StoreState, projectId: string, force = false) {
         state: "committed",
         starts_at: d,
         ends_at: new Date(Date.parse(d) + 30 * 60000).toISOString(),
-        timezone: "Asia/Jakarta",
+        timezone: s(o(acceptance.terms_snapshot).timezone, "Asia/Jakarta"),
         external_invitation_state: "not_requested",
         connection_id: "calendar",
         shared_with_buyer: true,
@@ -1235,18 +1240,19 @@ function offerDraft(st: StoreState, input: Input): Entity {
       (x) => o(x.subject_ref).id === previous?.id && x.state === "current",
     ))
       patch(st, "approvals", approval, { state: "superseded" });
+  const businessPolicy = get(st, "policies", "policy_business");
   const terms = {
     delivery_business_days: 5,
-    deposit_basis_points: 6000,
-    reservation_hours: 48,
+    deposit_basis_points: n(businessPolicy.deposit_basis_points, 6000),
+    reservation_hours: n(businessPolicy.reservation_hours, 48),
     start_basis:
       "next_business_day_after_confirmed_deposit_and_required_inputs",
-    timezone: "Asia/Jakarta",
-    workdays: [0, 1, 2, 3, 4],
-    holidays: [],
-    start_local_time: "09:00",
-    due_local_time: "17:00",
-    required_input_keys: ["brand_assets", "launch_message"],
+    timezone: s(businessPolicy.timezone, "Asia/Jakarta"),
+    workdays: a(businessPolicy.business_weekdays).length ? businessPolicy.business_weekdays : [0, 1, 2, 3, 4],
+    holidays: a(businessPolicy.holiday_dates),
+    start_local_time: s(businessPolicy.start_local_time, "09:00"),
+    due_local_time: s(businessPolicy.due_local_time, "17:00"),
+    required_input_keys: businessPolicy.required_input_keys || ["brand_assets", "launch_message"],
     acceptance_disclosure:
       "Acceptance reserves capacity for 48 elapsed hours. A confirmed deposit and complete inputs commit the next business day; delivery is due on business day five. Late prerequisites require rescheduling.",
   };
@@ -1524,7 +1530,7 @@ function acceptOffer(st: StoreState, input: Input): Result {
         project_id: project.id,
         offer_version_id: v.id,
         kind: "amendment_deposit",
-        number: `SAMPLE-${String(rows(st, "invoices").length + 1).padStart(4, "0")}`,
+        number: `${st.mode === "connected" ? "INV" : "SAMPLE"}-${String(rows(st, "invoices").length + 1).padStart(4, "0")}`,
         state: "draft",
         currency: price.currency,
         line_ids: [lineId],
@@ -1764,7 +1770,7 @@ function acceptOffer(st: StoreState, input: Input): Result {
     project_id: ids.project_id,
     offer_version_id: v.id,
     kind: "deposit",
-    number: `SAMPLE-${String(rows(st, "invoices").length + 1).padStart(4, "0")}`,
+    number: `${st.mode === "connected" ? "INV" : "SAMPLE"}-${String(rows(st, "invoices").length + 1).padStart(4, "0")}`,
     state: "draft",
     currency: price.currency,
     line_ids: [lineId],
@@ -2658,8 +2664,8 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
       const start = s(input.proposed_start_at);
       validateDate(start);
       need(
-        /T09:00:00\+07:00$/.test(start),
-        "Choose 09:00 Asia/Jakarta for the proposed business-day start.",
+        localDateTime(start, s(terms.timezone, "Asia/Jakarta")).slice(11) === s(terms.start_local_time, "09:00"),
+        "Choose the agreed local working start time for the proposed business day.",
       );
       need(
         Date.parse(start) >=
@@ -2717,7 +2723,7 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
           starts_at: dates.start,
           ends_at: new Date(Date.parse(dates.start) + 1800000).toISOString(),
           proposed_due_at: dates.due,
-          timezone: "Asia/Jakarta",
+          timezone: s(terms.timezone, "Asia/Jakarta"),
           external_invitation_state: "not_requested",
           shared_with_buyer: false,
           offer_id: offer.id,
@@ -3105,7 +3111,7 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
           existing?.number,
           s(
             values.number,
-            `SAMPLE-${String(rows(st, "invoices").length + 1).padStart(4, "0")}`,
+            `${st.mode === "connected" ? "INV" : "SAMPLE"}-${String(rows(st, "invoices").length + 1).padStart(4, "0")}`,
           ),
         ),
         state: "draft",
@@ -3923,7 +3929,7 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
           name: s(attachment.filename, s(attachment.name)),
           media_type: mime,
           byte_length: size,
-          storage_kind: "indexeddb",
+          storage_kind: st.mode === "connected" ? "private" : "indexeddb",
           storage_locator: s(attachment.content_ref),
           availability: "available",
         });
@@ -4002,7 +4008,16 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
     case "file.remove": {
       const rec = get(st, "attachments", target);
       expect(rec, input);
-      if (input.grant_id) scope(st, input, "project_id", s(rec.project_id));
+      if (input.grant_id) {
+        const grant = granted(st, input);
+        need(
+          rec.engagement_id === grant.engagement_id ||
+            (!!grant.project_id && rec.project_id === grant.project_id) ||
+            (!!grant.conversation_id && rec.conversation_id === grant.conversation_id),
+          "This file belongs to another engagement.",
+          "NOT_AUTHORIZED",
+        );
+      }
       patch(st, "attachments", rec, {
         availability: "removed",
         removed_at: st.sample_clock,
@@ -4097,6 +4112,8 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
         deposit_basis_points: percent * 100,
         working_start: s(availability.start, "09:00"),
         working_end: s(availability.end, "17:00"),
+        start_local_time: s(availability.start, "09:00"),
+        due_local_time: s(availability.end, "17:00"),
         timezone: s(basics.timezone, "Asia/Jakarta"),
       });
       for (const item of a<Input>(draft.services)) {

@@ -370,7 +370,7 @@ function messages(st: StoreState, conversationId: string): Entity[] {
       (x) =>
         x.conversation_id === conversationId &&
         x.shared_with_buyer === true &&
-        ["sample_sent", "sample_recorded"].includes(s(x.delivery_state)),
+        ["sample_sent", "sample_recorded", "recorded"].includes(s(x.delivery_state)),
     )
     .map((x) => {
       const dto = pick(x, [

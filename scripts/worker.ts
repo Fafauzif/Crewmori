@@ -6,6 +6,8 @@ import { requireConfiguration, runtimeConfig } from "../src/server/config";
 import { agentGraph, recordRunFailure } from "../src/server/agent-runtime";
 import { ServiceError } from "../src/server/errors";
 
+import { ingestKnowledge } from "../src/server/knowledge";
+
 let activeBoss: PgBoss | undefined;
 
 async function main() {
@@ -18,6 +20,8 @@ async function main() {
   await checkpointer.setup();
   await boss.start();
   await boss.createQueue("agent.run", { retryLimit: 2, retryDelay: 10, retryBackoff: true, expireInSeconds: 240 });
+  await boss.createQueue("knowledge.ingest", { retryLimit: 0, expireInSeconds: 600 });
+  await boss.work("knowledge.ingest", { localConcurrency: 1 }, async (jobs) => { for (const job of jobs) await ingestKnowledge(z.object({ jobId: z.uuid() }).parse(job.data).jobId); });
   const graph = agentGraph(checkpointer);
   await boss.work("agent.run", { localConcurrency: 2 }, async (jobs) => {
     for (const job of jobs) {
@@ -36,6 +40,11 @@ async function main() {
     relaying = true;
     try {
       await transaction(async (client) => {
+        const knowledge = await client.query("select * from crewmori.outbox where dispatched_at is null and kind='knowledge.ingest' order by created_at limit 10 for update skip locked");
+        for (const item of knowledge.rows) {
+          await boss.send("knowledge.ingest", { jobId: item.reference_id }, { singletonKey: item.deduplication_key, singletonSeconds: 86400 });
+          await client.query("update crewmori.outbox set dispatched_at=now() where id=$1", [item.id]);
+        }
         const pending = await client.query("select o.*,r.control_version from crewmori.outbox o join crewmori.agent_runs r on r.workspace_id=o.workspace_id and r.id=o.reference_id where o.dispatched_at is null and o.kind='agent.run' order by o.created_at limit 20 for update of o skip locked");
         for (const item of pending.rows) {
           const version = Number(item.deduplication_key.split(":").at(-1));

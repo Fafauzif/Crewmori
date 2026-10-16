@@ -28,7 +28,7 @@ export async function runReasoning(ref: RunReference, adapter: ReasoningAdapter)
     assertService(run.state !== "completed", "INVALID_STATE", "Completed tasks cannot be dispatched again.", 409);
     const active = await client.query("select count(*)::int as count from crewmori.agent_runs where workspace_id=$1 and state='running' and id<>$2", [ref.workspaceId, ref.runId]);
     assertService(active.rows[0].count < 2, "WORKSPACE_BUSY", "Two tasks are already running.", 409);
-    const sources = await resolveReferences(client, ref.workspaceId, z.array(referenceSchema).parse(run.input_refs));
+    const sources = await resolveReferences(client, ref.workspaceId, z.array(referenceSchema).parse(run.input_refs), run.role === "promoter");
     if (run.role === "promoter") assertService(sources.every((source) => {
       const content = source.content as Record<string, unknown>;
       return content.audience === "public" && content.published === true;
@@ -79,7 +79,7 @@ export async function saveRunArtifact(ref: RunReference, output: ReasoningOutput
     const run = found.rows[0];
     if (run.state === "completed") return;
     assertService(run.state === "running", "RUN_INTERRUPTED", "Task is no longer running.", 409);
-    await resolveReferences(client, ref.workspaceId, z.array(referenceSchema).parse(run.input_refs));
+    await resolveReferences(client, ref.workspaceId, z.array(referenceSchema).parse(run.input_refs), run.role === "promoter");
     await client.query("update crewmori.agent_runs set state='completed',artifact=$3,usage=$4,error_code=null,updated_at=now() where workspace_id=$1 and id=$2", [ref.workspaceId, ref.runId, JSON.stringify(output.artifact), JSON.stringify(output.usage)]);
     await appendEvent(client, ref.workspaceId, "artifact.saved", `${run.role} saved a draft for owner review.`, [{ table: "agent_runs", id: ref.runId }]);
   });
