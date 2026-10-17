@@ -498,3 +498,11 @@ test("expired authorization state and stale rate-limit windows are purged", asyn
   assert.deepEqual((await database().query("select token_hash from crewmori.buyer_invitations where token_hash like 'purge-%'")).rows.map((row) => row.token_hash), ["purge-recent"]);
   assert.deepEqual((await database().query("select key from crewmori.request_limits where key like 'purge-%'")).rows.map((row) => row.key), ["purge-live"]);
 });
+
+test("a maintenance sweep runs every recovery step against the live schema", async () => {
+  const { runMaintenance } = await import("../../src/server/maintenance");
+  let removals = 0;
+  assert.deepEqual(await runMaintenance(async () => { removals++; return { error: null }; }), { failed: [] });
+  assert.deepEqual(await runMaintenance(), { failed: [] });
+  assert.ok(removals <= 1);
+});

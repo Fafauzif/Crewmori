@@ -1,4 +1,5 @@
 import type { Pool, PoolClient } from "pg";
+import { database, transaction } from "./db";
 import { appendEvent } from "./repository";
 
 // Ingestion jobs expire in the queue after 600 seconds; a longer lease avoids racing live work.
@@ -57,4 +58,17 @@ export async function purgeExpiredRecords(client: PoolClient) {
   const invitations = await client.query("delete from crewmori.buyer_invitations where expires_at < now()-interval '30 days'");
   const limits = await client.query("delete from crewmori.request_limits where window_start < now()-interval '2 days'");
   return { oauthStates: oauth.rowCount ?? 0, invitations: invitations.rowCount ?? 0, requestLimits: limits.rowCount ?? 0 };
+}
+
+// One sweep runs every recovery step independently; a failing step does not block the others.
+export async function runMaintenance(remove?: RemoveObjects) {
+  const steps: Record<string, () => Promise<unknown>> = {
+    knowledge: () => transaction((client) => recoverStaleKnowledgeJobs(client)),
+    runs: () => transaction((client) => recoverStaleRuns(client)),
+    records: () => transaction((client) => purgeExpiredRecords(client)),
+  };
+  if (remove) steps.uploads = () => removeAbandonedUploads(database(), remove);
+  const failed: string[] = [];
+  for (const [name, step] of Object.entries(steps)) await step().catch(() => { failed.push(name); });
+  return { failed };
 }

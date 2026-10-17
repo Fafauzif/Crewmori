@@ -47,7 +47,7 @@ npm run dev
 npm run worker
 ```
 
-Set the flag before starting the web and worker processes. Migrations are ordered and checksum-checked; add successor migrations rather than editing applied files. `storage:setup` refuses a public bucket. The worker initializes its queue/checkpoint schemas. New accounts have no client, payment or project fixtures.
+Set the flag before starting the web and worker processes. Every five minutes the worker runs a maintenance sweep: knowledge jobs running longer than 15 minutes fail with `INDEXING_INTERRUPTED` so Retry works again, agent runs stuck running for 30 minutes become blocked with `WORKER_INTERRUPTED` (unconfirmed model calls stay reserved as unknown), pending uploads older than one hour are removed from storage before their records are retired, and expired OAuth states, old invitations and stale rate-limit windows are purged. Migrations are ordered and checksum-checked; add successor migrations rather than editing applied files. `storage:setup` refuses a public bucket. The worker initializes its queue/checkpoint schemas. New accounts have no client, payment or project fixtures.
 
 For production, run `npm run build` and `npm start`, or deploy Next.js to the selected web host. Run `npm run worker` separately as a persistent process; request-limited web functions are unsuitable for the worker. `Dockerfile.worker` prepares that process. Run migrations as a release step before updating web/worker instances. Use verified database TLS, configure backups/restore, provider quotas and host monitoring. No hosted deployment or external account was created during implementation.
 
@@ -139,9 +139,9 @@ npm audit --omit=dev
 
 The browser suite runs the production web server and actual durable worker against isolated Auth/Storage and Claude/Gemini HTTP test services. It exercises signup, onboarding, public inquiry, scoped buyer access, reviewed AI assessments, exact offer approval/share/acceptance, sandbox settlement, private upload and indexed knowledge search. SDK traffic follows the production code paths. These controlled responses do not verify external account credentials or provider availability.
 
-Locally verified: 109 unit/domain tests, 24 database integration tests, typecheck/lint and production build. The connected browser journey and production HTTP smoke test passed on 17 October 2026. Production dependency audit has zero reported vulnerabilities at verification time. Development-only audit findings remain in the lint toolchain's transitive glob dependencies. CI repeats the automated checks.
+Locally verified: 109 unit/domain tests, 29 database integration tests, typecheck/lint and production build. The connected browser journey and production HTTP smoke test passed on 17 October 2026. Production dependency audit has zero reported vulnerabilities at verification time. Development-only audit findings remain in the lint toolchain's transitive glob dependencies. CI repeats the automated checks.
 
-Hosted Supabase confirmation/recovery, Google consent/send, paid Claude/Gemini calls, Stripe test-account Checkout, microphone/ElevenLabs conversation and deployed hosting still require configured accounts and live validation. Automatic notification email, account deletion/retention automation, storage orphan cleanup, crashed ingestion lease recovery, provider quarantine reconciliation and deployment-specific operational alerts remain operational follow-up work. Financial/legal localization and full multilingual document fonts remain product-specific work.
+Hosted Supabase confirmation/recovery, Google consent/send, paid Claude/Gemini calls, Stripe test-account Checkout, microphone/ElevenLabs conversation and deployed hosting still require configured accounts and live validation. Automatic notification email, account deletion/retention automation, provider quarantine reconciliation and deployment-specific operational alerts remain operational follow-up work. Financial/legal localization and full multilingual document fonts remain product-specific work.
 
 ## Primary references
 

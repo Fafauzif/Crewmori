@@ -2,11 +2,13 @@ import { PgBoss } from "pg-boss";
 import { PostgresSaver } from "@langchain/langgraph-checkpoint-postgres";
 import { z } from "zod";
 import { database, transaction, closeDatabase } from "../src/server/db";
-import { requireConfiguration, runtimeConfig } from "../src/server/config";
+import { integrationStatus, requireConfiguration, runtimeConfig } from "../src/server/config";
 import { agentGraph, recordRunFailure } from "../src/server/agent-runtime";
 import { ServiceError } from "../src/server/errors";
 
 import { ingestKnowledge } from "../src/server/knowledge";
+import { privateStorage } from "../src/server/files";
+import { runMaintenance } from "../src/server/maintenance";
 
 let activeBoss: PgBoss | undefined;
 
@@ -22,6 +24,14 @@ async function main() {
   await boss.createQueue("agent.run", { retryLimit: 2, retryDelay: 10, retryBackoff: true, expireInSeconds: 240 });
   await boss.createQueue("knowledge.ingest", { retryLimit: 0, expireInSeconds: 600 });
   await boss.work("knowledge.ingest", { localConcurrency: 1 }, async (jobs) => { for (const job of jobs) await ingestKnowledge(z.object({ jobId: z.uuid() }).parse(job.data).jobId); });
+  await boss.createQueue("maintenance.sweep", { retryLimit: 0, expireInSeconds: 240 });
+  // Storage cleanup only runs when the private bucket is configured for this worker.
+  const removeObjects = integrationStatus().storage.configured ? (paths: string[]) => privateStorage().bucket.remove(paths) : undefined;
+  await boss.work("maintenance.sweep", { localConcurrency: 1 }, async () => {
+    const { failed } = await runMaintenance(removeObjects);
+    if (failed.length) process.stderr.write(`Crewmori maintenance incomplete: ${failed.join(", ")}.\n`);
+  });
+  await boss.schedule("maintenance.sweep", "*/5 * * * *");
   const graph = agentGraph(checkpointer);
   await boss.work("agent.run", { localConcurrency: 2 }, async (jobs) => {
     for (const job of jobs) {
