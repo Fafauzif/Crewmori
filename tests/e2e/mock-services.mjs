@@ -24,6 +24,7 @@ export async function mockServices() {
       if (url.searchParams.get("grant_type") === "refresh_token") { const user = tokens.get(body.refresh_token); return user ? json(login(user)) : json({ msg: "Invalid refresh token" }, 400); }
       let user = users.get(body.email);
       if (url.pathname.endsWith("signup")) {
+        if (body.email.startsWith("rate-limited")) return json({ code: 429, error_code: "over_email_send_rate_limit", msg: "email rate limit exceeded" }, 429);
         if (user) return json({ msg: "Account already exists" }, 400);
         user = { id: randomUUID(), email: body.email, aud: "authenticated", role: "authenticated", app_metadata: { provider: "email" }, user_metadata: {}, created_at: new Date().toISOString(), email_confirmed_at: new Date().toISOString(), password: body.password };
         users.set(body.email, user);

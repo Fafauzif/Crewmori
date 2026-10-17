@@ -18,6 +18,10 @@ test("connected owner and buyer complete an AI-reviewed commercial workflow", as
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message)); client.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/auth/sign-up");
+  await page.getByLabel("Email", { exact: true }).fill("rate-limited@browser.test");
+  await page.getByLabel("Password", { exact: true }).fill("test-password-strong");
+  await page.getByRole("button", { name: "Create account", exact: true }).click();
+  await expect(page.getByText("Too many account emails were sent recently").first()).toBeVisible();
   await page.getByLabel("Email", { exact: true }).fill("owner@browser.test");
   await page.getByLabel("Password", { exact: true }).fill("test-password-strong");
   await page.getByRole("button", { name: "Create account", exact: true }).click();
