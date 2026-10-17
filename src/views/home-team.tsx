@@ -95,6 +95,12 @@ export const roles = [
 ];
 export const roleAsset = (id: string) =>
   `/assets/characters/${id.replace("_", "-")}.svg`;
+// Intents are either typed instructions or workflow slugs such as "draft_offer".
+function taskSummary(run: Entity): string {
+  const intent = s(run.intent) || s(run.task_kind);
+  const text = /^[a-z0-9_]+$/.test(intent) ? label(intent).replace(/^./, (c) => c.toUpperCase()) : intent.trim();
+  return text ? (/[.!?]$/.test(text) ? text : text + ".") : "";
+}
 export function recordHref(
   table: string,
   id: string,
@@ -971,10 +977,8 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
                 </div>
               </div>
               <p className="muted">
-                {s(selectedRun.intent) ||
-                  s(selectedRun.task_kind).replaceAll("_", " ")}
-                . This task supports your business; professional delivery
-                remains yours.
+                {taskSummary(selectedRun)} This task supports your business;
+                professional delivery remains yours.
               </p>
               {selectedRun.blocked_reason ? (
                 <p className="feedback error">
@@ -983,9 +987,10 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
               ) : null}
               <div className="row">
                 <small>
-                  Step {n(selectedRun.progress_step)} of{" "}
-                  {n(selectedRun.progress_total, 3)} · Attempt{" "}
-                  {n(selectedRun.attempt, 1)}
+                  {/* Connected runs report state and timestamps, not sample step counters. */}
+                  {selectedRun.progress_total !== undefined
+                    ? `Step ${n(selectedRun.progress_step)} of ${n(selectedRun.progress_total, 3)} · Attempt ${n(selectedRun.attempt, 1)}`
+                    : `Requested ${date(selectedRun.created_at)} · Updated ${date(selectedRun.updated_at)}`}
                 </small>
               </div>
               <div className="actions">
