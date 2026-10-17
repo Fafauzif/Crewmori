@@ -462,3 +462,16 @@ test("stale running knowledge jobs are released for retry without touching activ
   const events = await database().query("select kind from crewmori.events where workspace_id=$1 and sequence>$2", [workspaceA, before]);
   assert.deepEqual(events.rows.map((row) => row.kind), ["knowledge.blocked"]);
 });
+
+test("runs abandoned by a crashed worker are blocked and keep uncertain usage reserved", async () => {
+  const { recoverStaleRuns } = await import("../../src/server/maintenance");
+  const runs = await database().query("insert into crewmori.agent_runs(workspace_id,role,instruction,state,updated_at) values($1,'scout','stale','running',now()-interval '2 hours'),($1,'scout','active','running',now()) returning id,instruction", [workspaceB]);
+  const stale = runs.rows.find((row) => row.instruction === "stale"), active = runs.rows.find((row) => row.instruction === "active");
+  await database().query("insert into crewmori.model_calls(workspace_id,run_id,control_version,reserved_tokens,budget_day,state) values($1,$2,1,500,current_date,'reserved')", [workspaceB, stale.id]);
+  assert.equal(await transaction((client) => recoverStaleRuns(client)), 1);
+  const saved = Object.fromEntries((await database().query("select id,state,error_code from crewmori.agent_runs where id = any($1)", [[stale.id, active.id]])).rows.map((row) => [row.id, [row.state, row.error_code]]));
+  assert.deepEqual(saved[stale.id], ["blocked", "WORKER_INTERRUPTED"]);
+  assert.deepEqual(saved[active.id], ["running", null]);
+  assert.equal((await database().query("select state from crewmori.model_calls where run_id=$1", [stale.id])).rows[0].state, "unknown");
+  await database().query("update crewmori.agent_runs set state='cancelled' where id=$1", [active.id]);
+});
