@@ -1,6 +1,6 @@
 import { api, json } from "@/server/http";
 import { sessionClient, authenticatedUser } from "@/server/auth";
-import { runtimeConfig } from "@/server/config";
+import { requireConfiguration, runtimeConfig } from "@/server/config";
 import { ensureOwnerWorkspace } from "@/server/workspaces";
 import { safeReturnPath } from "@/server/auth-redirect";
 import { assertService, ServiceError } from "@/server/errors";
@@ -8,8 +8,21 @@ import { assertService, ServiceError } from "@/server/errors";
 export const runtime = "nodejs";
 type Context = { params: Promise<{ action: string }> };
 const redirect = (path: string) => new Response(null, { status: 303, headers: { location: new URL(path, runtimeConfig().APP_URL).toString(), "cache-control": "no-store" } });
+// Supabase answers a disabled provider with a raw JSON page, so check before leaving the app.
+let providerCheck: { enabled: boolean; at: number } | undefined;
+async function googleEnabled() {
+  if (providerCheck && Date.now() - providerCheck.at < 60_000) return providerCheck.enabled;
+  const { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } = requireConfiguration(["SUPABASE_URL", "SUPABASE_PUBLISHABLE_KEY"]);
+  try {
+    const response = await fetch(new URL("/auth/v1/settings", SUPABASE_URL), { headers: { apikey: SUPABASE_PUBLISHABLE_KEY }, signal: AbortSignal.timeout(5000) });
+    const settings = (await response.json()) as { external?: { google?: boolean } };
+    providerCheck = { enabled: settings.external?.google === true, at: Date.now() };
+    return providerCheck.enabled;
+  } catch { return true; }
+}
 // Accounts are created and resumed only through Google; the PKCE verifier stays in an HTTP-only cookie.
 async function startGoogle(request: Request) {
+  if (!(await googleEnabled())) return redirect("/auth/sign-in?error=unavailable");
   const returnTo = safeReturnPath(new URL(request.url).searchParams.get("returnTo"));
   const callback = new URL("/api/auth/callback", runtimeConfig().APP_URL);
   callback.searchParams.set("returnTo", returnTo);

@@ -20,6 +20,7 @@ export async function mockServices() {
       tokens.set(token, user); tokens.set(refresh, user);
       return { access_token: token, refresh_token: refresh, expires_in: 3600, expires_at: now + 3600, token_type: "bearer", user };
     };
+    if (url.pathname === "/auth/v1/settings") return json({ external: { google: true, email: false } });
     // Google sign-in: the consent step returns immediately with a single-use PKCE code.
     if (url.pathname === "/auth/v1/authorize") {
       const email = url.searchParams.get("login_hint") || "owner@browser.test";
