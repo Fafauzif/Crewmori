@@ -198,7 +198,7 @@ test("voice tools bind their writes to a current buyer grant and reject arbitrar
 
 test("worker process starts with durable queue/checkpoints and shuts down cleanly", { timeout: 20000 }, async () => {
   const worker = spawn(process.execPath, ["--import", "tsx", "scripts/worker.ts"], {
-    env: { ...process.env, CREWMORI_BACKEND_ENABLED: "true", ANTHROPIC_API_KEY: "", ANTHROPIC_MODEL: "" },
+    env: { ...process.env, CREWMORI_BACKEND_ENABLED: "true", ANTHROPIC_API_KEY: "", ANTHROPIC_MODEL: "", GEMINI_MODEL: "" },
     stdio: ["ignore", "pipe", "pipe"],
   });
   let output = "";

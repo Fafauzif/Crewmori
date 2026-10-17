@@ -53,3 +53,36 @@ test("preparation rejects live Stripe credentials", () => {
   try { assert.throws(stripeClient, /test key/); }
   finally { if (prior === undefined) delete process.env.STRIPE_SECRET_KEY; else process.env.STRIPE_SECRET_KEY = prior; }
 });
+
+test("Gemini reasoning returns validated JSON artifacts and counts thinking tokens as output", async () => {
+  const { createServer } = await import("node:http");
+  const { GeminiReasoningAdapter } = await import("../src/server/providers/reasoning");
+  const artifact = { title: "Lead review", summary: "Review the request.", facts: [{ text: "Saved request.", sourceId: "source_1" }], unknowns: [], recommendations: [], requiresOwnerReview: true };
+  let finishReason = "STOP", request: Record<string, unknown> = {};
+  const server = createServer((incoming, response) => {
+    let body = "";
+    incoming.on("data", (chunk) => { body += chunk; });
+    incoming.on("end", () => {
+      request = JSON.parse(body);
+      response.writeHead(200, { "content-type": "application/json" });
+      response.end(JSON.stringify({ candidates: [{ content: { role: "model", parts: [{ text: JSON.stringify(artifact) }] }, finishReason }], usageMetadata: { promptTokenCount: 40, candidatesTokenCount: 30, thoughtsTokenCount: 5 }, modelVersion: "gemini-test" }));
+    });
+  });
+  await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const previous = { ...process.env };
+  Object.assign(process.env, { GEMINI_API_KEY: "test-key", GEMINI_MODEL: "gemini-test", GOOGLE_GEMINI_BASE_URL: `http://127.0.0.1:${(server.address() as { port: number }).port}` });
+  try {
+    const input = { role: "scout" as const, instruction: "Assess fit", sources: [{ id: "source_1", version: 1, content: { text: "Need a page" } }] };
+    const output = await new GeminiReasoningAdapter().generate(input);
+    assert.deepEqual(output.artifact, artifact);
+    assert.deepEqual(output.usage, { inputTokens: 40, outputTokens: 35, model: "gemini-test" });
+    assert.equal((request.generationConfig as Record<string, unknown>).responseMimeType, "application/json");
+    finishReason = "MAX_TOKENS";
+    await assert.rejects(new GeminiReasoningAdapter().generate(input), /did not finish/);
+    finishReason = "STOP";
+    await assert.rejects(new GeminiReasoningAdapter().generate({ ...input, sources: [] }), /unavailable source/);
+  } finally {
+    process.env = previous;
+    server.close();
+  }
+});

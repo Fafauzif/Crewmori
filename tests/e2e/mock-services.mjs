@@ -47,6 +47,11 @@ export async function mockServices() {
       const evidence = JSON.parse(body.messages[0].content).evidence;
       return json({ id: `msg_${randomUUID()}`, type: "message", role: "assistant", model: "controlled-claude", content: [{ type: "tool_use", id: "tool_test", name: "save_role_artifact", input: { title: "Reviewed design request", summary: "Prepare the requested product design with the owner confirming scope and effort.", facts: evidence.length ? [{ text: "The saved request is available for review.", sourceId: evidence[0].id }] : [], unknowns: ["Final effort requires owner review."], recommendations: ["Review the deliverables before sharing an offer."], requiresOwnerReview: true } }], stop_reason: "tool_use", stop_sequence: null, usage: { input_tokens: 100, output_tokens: 100 } });
     }
+    if (url.pathname.endsWith(":generateContent")) {
+      const evidence = JSON.parse(body.contents[0].parts[0].text).evidence;
+      const artifact = { title: "Reviewed design request", summary: "Prepare the requested product design with the owner confirming scope and effort.", facts: evidence.length ? [{ text: "The saved request is available for review.", sourceId: evidence[0].id }] : [], unknowns: ["Final effort requires owner review."], recommendations: ["Review the deliverables before sharing an offer."], requiresOwnerReview: true };
+      return json({ candidates: [{ content: { role: "model", parts: [{ text: JSON.stringify(artifact) }] }, finishReason: "STOP" }], usageMetadata: { promptTokenCount: 100, candidatesTokenCount: 100, totalTokenCount: 200 }, modelVersion: "controlled-gemini" });
+    }
     if (url.pathname.includes("embedContent") || url.pathname.includes("batchEmbedContents")) return json({ embedding: { values: Array(768).fill(0.01) }, embeddings: [{ values: Array(768).fill(0.01) }] });
     return json({ error: "Unknown test provider endpoint", path: url.pathname }, 404);
   });

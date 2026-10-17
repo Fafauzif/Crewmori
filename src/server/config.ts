@@ -12,7 +12,7 @@ export const integrationKeys = {
   database: ["DATABASE_URL"],
   auth: ["SUPABASE_URL", "SUPABASE_PUBLISHABLE_KEY"],
   storage: ["SUPABASE_URL", "SUPABASE_SECRET_KEY", "STORAGE_BUCKET"],
-  reasoning: ["ANTHROPIC_API_KEY", "ANTHROPIC_MODEL"],
+  reasoning: ["GEMINI_API_KEY", "GEMINI_MODEL"],
   embeddings: ["GEMINI_API_KEY", "GEMINI_EMBEDDING_MODEL"],
   google: ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "TOKEN_ENCRYPTION_KEY", "APP_URL"],
   voice: ["ELEVENLABS_API_KEY", "ELEVENLABS_AGENT_ID", "ELEVENLABS_WEBHOOK_SECRET", "ELEVENLABS_TOOL_SECRET"],
@@ -29,8 +29,10 @@ export function requireConfiguration<K extends string>(keys: readonly K[], env: 
   return Object.fromEntries(keys.map((key) => [key, env[key]!.trim()])) as Record<K, string>;
 }
 
+// Gemini is the default reasoning provider; Claude remains available by explicit selection.
+export const reasoningKeys = (env: Environment = process.env) => env.REASONING_PROVIDER?.trim() === "anthropic" ? ["ANTHROPIC_API_KEY", "ANTHROPIC_MODEL"] : integrationKeys.reasoning;
 export function integrationStatus(env: Environment = process.env) {
-  return Object.fromEntries(Object.entries(integrationKeys).map(([name, keys]) => {
+  return Object.fromEntries(Object.entries({ ...integrationKeys, reasoning: reasoningKeys(env) }).map(([name, keys]) => {
     const missing = keys.filter((key) => !env[key]?.trim());
     return [name, { configured: missing.length === 0, missing }];
   }));
@@ -41,6 +43,7 @@ export function runtimeConfig(env: Environment = process.env) {
     APP_URL: z.url().default("http://localhost:4173"),
     CREWMORI_BACKEND_ENABLED: z.enum(["true", "false"]).default("false"),
     MAIL_PROVIDER: z.enum(["google", "resend"]).default("google"),
+    REASONING_PROVIDER: z.enum(["gemini", "anthropic"]).default("gemini"),
     PAYMENT_PROVIDER: z.enum(["sandbox", "stripe_test"]).default("sandbox"),
     DATABASE_POOL_SIZE: z.coerce.number().int().min(1).max(20).default(5),
     AGENT_MAX_OUTPUT_TOKENS: z.coerce.number().int().min(256).max(4096).default(1500),

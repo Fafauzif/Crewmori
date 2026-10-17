@@ -7,7 +7,7 @@ Updated 17 October 2026. Crewmori uses one TypeScript repository: Next.js web/AP
 - Supabase signup, signin, confirmation callback, recovery/reset and signout use server-verified sessions and HTTP-only cookies. Onboarding saves real profile, services, availability and policy records.
 - Owner commands run the shared business rules inside serialized PostgreSQL transactions. Stable transport keys, expected record versions and workspace revisions protect retries and concurrent decisions. Browser roles cannot write the private domain schema.
 - Public profiles expose reviewed publication snapshots. Inquiries create scoped engagements. Owner-issued invitations exchange a single-use token for an expiring HTTP-only buyer session; the invitation token travels in a URL fragment and is removed after exchange. Buyer responses contain explicit projections, never the owner's store.
-- Six Claude roles run through pg-boss, an outbox and LangGraph PostgreSQL checkpoints. Sources are versioned and rechecked before publication/application. The owner reviews an artifact before saving an assessment, offer draft, message draft, promotional draft or team note. Business approval and external delivery remain separate actions.
+- Six AI roles (Gemini by default, Claude optional) run through pg-boss, an outbox and LangGraph PostgreSQL checkpoints. Sources are versioned and rechecked before publication/application. The owner reviews an artifact before saving an assessment, offer draft, message draft, promotional draft or team note. Business approval and external delivery remain separate actions.
 - Private TXT and selectable-text PDF sources are extracted, chunked and embedded with Gemini. Knowledge search supports semantic ranking. Archived or superseded source versions do not enter retrieval. Drive imports use the same storage and ingestion path. Images/scanned PDFs require a written summary; OCR is not implemented.
 - Reviewed email uses Gmail or Resend. Approved invitations use Google Calendar. Exact recipients/content are captured before dispatch and locked against concurrent edits. Uncertain provider outcomes require owner review and are never silently resent. Client portal messages and files also work without email transport.
 - Authorized invoices create sandbox or Stripe **test** Checkout requests. Verified receipts are deduplicated and allocated transactionally; outstanding balance, deposits and project prerequisites update together. Wrong currencies and excess receipts require review. Unknown fees remain unknown. Returning from Checkout never proves payment.
@@ -53,9 +53,9 @@ For production, run `npm run build` and `npm start`, or deploy Next.js to the se
 
 ## Provider configuration
 
-### Claude and Gemini
+### Gemini and Claude
 
-Set `ANTHROPIC_API_KEY` and an account-supported `ANTHROPIC_MODEL`. Set `GEMINI_API_KEY`, `GEMINI_EMBEDDING_MODEL` and `GEMINI_EMBEDDING_DIMENSIONS` to matching values. Model IDs are explicit configuration. Changing the embedding model/dimension requires reindexing sources with Refresh/Retry processing.
+`REASONING_PROVIDER` selects the role model: `gemini` (default) uses `GEMINI_API_KEY` and `GEMINI_MODEL` with structured JSON output and a low thinking level; `anthropic` uses `ANTHROPIC_API_KEY` and `ANTHROPIC_MODEL`. Gemini thinking tokens count as output against the token budget. Set `GEMINI_API_KEY`, `GEMINI_EMBEDDING_MODEL` and `GEMINI_EMBEDDING_DIMENSIONS` to matching values. Model IDs are explicit configuration. Changing the embedding model/dimension requires reindexing sources with Refresh/Retry processing.
 
 `AGENT_MAX_OUTPUT_TOKENS` bounds each response; `AGENT_DAILY_TOKEN_BUDGET` is a shared daily workspace token allowance. The worker reserves a conservative input/output bound before dispatch and saves confirmed usage. Uncertain calls retain their reservation and block silent paid retries. An explicit retry creates a new attempt with current source versions. These token limits are not currency-denominated billing guarantees. Knowledge ingestion/search have separate request quotas.
 

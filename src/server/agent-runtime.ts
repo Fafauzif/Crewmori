@@ -6,7 +6,7 @@ import { runtimeConfig } from "./config";
 import { assertService, ServiceError } from "./errors";
 import { appendEvent } from "./repository";
 import { resolveReferences } from "./tasks";
-import { ClaudeReasoningAdapter, type ReasoningAdapter, type ReasoningOutput } from "./providers/reasoning";
+import { reasoningAdapter, type ReasoningAdapter, type ReasoningOutput } from "./providers/reasoning";
 
 export interface RunReference { workspaceId: string; runId: string; controlVersion: number }
 const usageSchema = z.object({ inputTokens: z.number().int().nonnegative(), outputTokens: z.number().int().nonnegative(), model: z.string().min(1) });
@@ -89,7 +89,7 @@ const GraphState = Annotation.Root({
   workspaceId: Annotation<string>(), runId: Annotation<string>(), controlVersion: Annotation<number>(),
   artifact: Annotation<Artifact | undefined>(), usage: Annotation<ReasoningOutput["usage"] | undefined>(),
 });
-export function agentGraph(checkpointer?: BaseCheckpointSaver, adapter: ReasoningAdapter = new ClaudeReasoningAdapter()) {
+export function agentGraph(checkpointer?: BaseCheckpointSaver, adapter: ReasoningAdapter = reasoningAdapter()) {
   return new StateGraph(GraphState)
     .addNode("reason", async (state) => runReasoning(state, adapter))
     .addNode("persist", async (state) => {
