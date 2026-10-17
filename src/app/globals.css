@@ -283,6 +283,15 @@ button.primary:focus-visible {
     background 0.16s,
     color 0.16s;
 }
+.google-sign-in {
+  width: 100%;
+  gap: 10px;
+  margin-top: 8px;
+}
+.auth-note {
+  margin-top: 16px;
+  font-size: 13px;
+}
 .btn.primary {
   background: var(--forest);
   color: #fff;

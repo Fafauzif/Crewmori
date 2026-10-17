@@ -4,7 +4,7 @@ Updated 17 October 2026. Crewmori uses one TypeScript repository: Next.js web/AP
 
 ## What is connected
 
-- Supabase signup, signin, confirmation callback, recovery/reset and signout use server-verified sessions and HTTP-only cookies. Onboarding saves real profile, services, availability and policy records.
+- Accounts sign up and sign in only with Google through Supabase Auth (PKCE, HTTP-only cookies); password sign-up, sign-in and recovery endpoints return `GOOGLE_SIGN_IN_REQUIRED`. The first callback creates the empty workspace. Onboarding saves real profile, services, availability and policy records.
 - Owner commands run the shared business rules inside serialized PostgreSQL transactions. Stable transport keys, expected record versions and workspace revisions protect retries and concurrent decisions. Browser roles cannot write the private domain schema.
 - Public profiles expose reviewed publication snapshots. Inquiries create scoped engagements. Owner-issued invitations exchange a single-use token for an expiring HTTP-only buyer session; the invitation token travels in a URL fragment and is removed after exchange. Buyer responses contain explicit projections, never the owner's store.
 - Six AI roles (Gemini by default, Claude optional) run through pg-boss, an outbox and LangGraph PostgreSQL checkpoints. Sources are versioned and rechecked before publication/application. The owner reviews an artifact before saving an assessment, offer draft, message draft, promotional draft or team note. Business approval and external delivery remain separate actions.
@@ -37,7 +37,7 @@ Fill the core variables first:
 | `STORAGE_BUCKET` | Private bucket, default `crewmori-private` |
 | `CREWMORI_BACKEND_ENABLED` | `true` enables the connected application |
 
-`backend:check` reports missing variable names without printing values. Configuration presence does not prove connectivity. Configure Supabase Auth Site URL to `APP_URL` and allow `${APP_URL}/api/auth/callback`. Enable and verify confirmation/recovery email delivery in that project.
+`backend:check` reports missing variable names without printing values. Configuration presence does not prove connectivity. Configure Supabase Auth Site URL to `APP_URL` and allow `${APP_URL}/api/auth/callback**`. Enable the Google provider in Supabase with a Google OAuth web client, and add `https://<project-ref>.supabase.co/auth/v1/callback` to that client's authorized redirect URIs. Disable the Email provider so accounts cannot be created outside Google.
 
 ```sh
 npm run db:migrate

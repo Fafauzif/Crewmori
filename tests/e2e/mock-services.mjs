@@ -3,7 +3,7 @@ import { createHmac, randomUUID } from "node:crypto";
 
 /** Test process only: no application auth bypass. Supabase/Claude/Gemini SDKs use HTTP. */
 export async function mockServices() {
-  const users = new Map(), tokens = new Map(), objects = new Map();
+  const users = new Map(), tokens = new Map(), objects = new Map(), codes = new Map();
   const server = createServer(async (request, response) => {
     const url = new URL(request.url, "http://localhost");
     const chunks = []; for await (const chunk of request) chunks.push(chunk);
@@ -20,11 +20,23 @@ export async function mockServices() {
       tokens.set(token, user); tokens.set(refresh, user);
       return { access_token: token, refresh_token: refresh, expires_in: 3600, expires_at: now + 3600, token_type: "bearer", user };
     };
+    // Google sign-in: the consent step returns immediately with a single-use PKCE code.
+    if (url.pathname === "/auth/v1/authorize") {
+      const email = url.searchParams.get("login_hint") || "owner@browser.test";
+      let user = users.get(email);
+      if (!user) { user = { id: randomUUID(), email, aud: "authenticated", role: "authenticated", app_metadata: { provider: "google" }, user_metadata: {}, created_at: new Date().toISOString(), email_confirmed_at: new Date().toISOString() }; users.set(email, user); }
+      const code = randomUUID(); codes.set(code, user);
+      const target = new URL(url.searchParams.get("redirect_to")); target.searchParams.set("code", code);
+      response.writeHead(302, { location: target.toString() }); return response.end();
+    }
+    if (url.pathname === "/auth/v1/token" && url.searchParams.get("grant_type") === "pkce") {
+      const user = codes.get(body.auth_code); codes.delete(body.auth_code);
+      return user && body.code_verifier ? json(login(user)) : json({ code: 400, error_code: "bad_code_verifier", msg: "Invalid code" }, 400);
+    }
     if (url.pathname === "/auth/v1/signup" || url.pathname === "/auth/v1/token") {
       if (url.searchParams.get("grant_type") === "refresh_token") { const user = tokens.get(body.refresh_token); return user ? json(login(user)) : json({ msg: "Invalid refresh token" }, 400); }
       let user = users.get(body.email);
       if (url.pathname.endsWith("signup")) {
-        if (body.email.startsWith("rate-limited")) return json({ code: 429, error_code: "over_email_send_rate_limit", msg: "email rate limit exceeded" }, 429);
         if (user) return json({ msg: "Account already exists" }, 400);
         user = { id: randomUUID(), email: body.email, aud: "authenticated", role: "authenticated", app_metadata: { provider: "email" }, user_metadata: {}, created_at: new Date().toISOString(), email_confirmed_at: new Date().toISOString(), password: body.password };
         users.set(body.email, user);

@@ -17,14 +17,11 @@ test("connected owner and buyer complete an AI-reviewed commercial workflow", as
   const page = await owner.newPage(), client = await buyer.newPage();
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message)); client.on("pageerror", (error) => errors.push(error.message));
+  const passwordSignUp = await owner.request.post("/api/auth/sign-up", { headers: { origin }, data: { email: "owner@browser.test", password: "test-password-strong" } });
+  expect(passwordSignUp.status()).toBe(410);
   await page.goto("/auth/sign-up");
-  await page.getByLabel("Email", { exact: true }).fill("rate-limited@browser.test");
-  await page.getByLabel("Password", { exact: true }).fill("test-password-strong");
-  await page.getByRole("button", { name: "Create account", exact: true }).click();
-  await expect(page.getByText("Too many account emails were sent recently").first()).toBeVisible();
-  await page.getByLabel("Email", { exact: true }).fill("owner@browser.test");
-  await page.getByLabel("Password", { exact: true }).fill("test-password-strong");
-  await page.getByRole("button", { name: "Create account", exact: true }).click();
+  await expect(page.getByLabel("Email", { exact: true })).toHaveCount(0);
+  await page.getByRole("link", { name: "Continue with Google" }).click();
   await expect(page).toHaveURL(/\/onboarding/);
   await page.getByLabel("Business / display name").fill("Browser Studio");
   await page.getByLabel("What do you do?").fill("Product designer");
