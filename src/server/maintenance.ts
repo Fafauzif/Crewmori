@@ -50,3 +50,11 @@ export async function removeAbandonedUploads(source: Pool, remove: RemoveObjects
   const updated = await source.query("update crewmori.files set state='deleted' where id = any($1) and state='pending'", [pending.rows.map((row) => row.id)]);
   return updated.rowCount ?? 0;
 }
+
+// Rate-limit windows are at most one day, so older rows can no longer affect a decision.
+export async function purgeExpiredRecords(client: PoolClient) {
+  const oauth = await client.query("delete from crewmori.oauth_states where expires_at < now()-interval '1 day'");
+  const invitations = await client.query("delete from crewmori.buyer_invitations where expires_at < now()-interval '30 days'");
+  const limits = await client.query("delete from crewmori.request_limits where window_start < now()-interval '2 days'");
+  return { oauthStates: oauth.rowCount ?? 0, invitations: invitations.rowCount ?? 0, requestLimits: limits.rowCount ?? 0 };
+}

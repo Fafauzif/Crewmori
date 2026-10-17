@@ -486,3 +486,15 @@ test("abandoned pending uploads are removed from storage before their records ar
   const states = Object.fromEntries((await database().query("select name,state from crewmori.files where id = any($1)", [files.rows.map((row) => row.id)])).rows.map((row) => [row.name, row.state]));
   assert.deepEqual(states, { "old.txt": "deleted", "new.txt": "pending", "kept.txt": "available" });
 });
+
+test("expired authorization state and stale rate-limit windows are purged", async () => {
+  const { purgeExpiredRecords } = await import("../../src/server/maintenance");
+  await database().query("insert into crewmori.oauth_states(state_hash,workspace_id,owner_id,verifier_ciphertext,scopes,expires_at) values('purge-old',$1,$2,'x','{}',now()-interval '2 days'),('purge-live',$1,$2,'x','{}',now()+interval '5 minutes')", [workspaceA, ownerA]);
+  await database().query("insert into crewmori.buyer_invitations(token_hash,workspace_id,engagement_id,expires_at) values('purge-old',$1,'e1',now()-interval '40 days'),('purge-recent',$1,'e1',now()-interval '1 day')", [workspaceA]);
+  await database().query("insert into crewmori.request_limits(key,window_start,count) values('purge-old',now()-interval '3 days',4),('purge-live',now(),1)");
+  const purged = await transaction((client) => purgeExpiredRecords(client));
+  assert.ok(purged.oauthStates >= 1 && purged.invitations >= 1 && purged.requestLimits >= 1);
+  assert.deepEqual((await database().query("select state_hash from crewmori.oauth_states where state_hash like 'purge-%'")).rows.map((row) => row.state_hash), ["purge-live"]);
+  assert.deepEqual((await database().query("select token_hash from crewmori.buyer_invitations where token_hash like 'purge-%'")).rows.map((row) => row.token_hash), ["purge-recent"]);
+  assert.deepEqual((await database().query("select key from crewmori.request_limits where key like 'purge-%'")).rows.map((row) => row.key), ["purge-live"]);
+});
