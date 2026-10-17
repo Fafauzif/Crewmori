@@ -63,6 +63,12 @@ const nav = [
     match: /^\/app\/money/,
   },
 ];
+const connectionLinks = [
+  { id: "gmail", label: "Gmail", icon: Mail, size: 16 },
+  { id: "calendar", label: "Google Calendar", icon: Calendar, size: 16 },
+  { id: "drive", label: "Google Drive", icon: Cloud, size: 16 },
+  { id: "", label: "Manage connections", icon: Link2, size: 15 },
+];
 export function Shell({
   children,
   onAsk,
@@ -237,25 +243,22 @@ export function Shell({
         </nav>
         <div className="sidebar-tools">
           <div className="eyebrow">{connected ? "Connections" : "Sample connections"}</div>
-          <Link className="nav-item" href="/app/connections?connection=gmail">
-            <Mail size={16} />
-            Gmail
-          </Link>
-          <Link
-            className="nav-item"
-            href="/app/connections?connection=calendar"
-          >
-            <Calendar size={16} />
-            Google Calendar
-          </Link>
-          <Link className="nav-item" href="/app/connections?connection=drive">
-            <Cloud size={16} />
-            Google Drive
-          </Link>
-          <Link className="nav-item" href="/app/connections">
-            <Link2 size={15} />
-            {t("Manage connections")}
-          </Link>
+          {connectionLinks.map(({ id, label, icon: Icon, size }) => {
+            const active =
+              path.startsWith("/app/connections") &&
+              (params.get("connection") || "") === id;
+            return (
+              <Link
+                key={id || "all"}
+                className={`nav-item ${active ? "active" : ""}`}
+                aria-current={active ? "page" : undefined}
+                href={id ? `/app/connections?connection=${id}` : "/app/connections"}
+              >
+                <Icon size={size} />
+                {id ? label : t(label)}
+              </Link>
+            );
+          })}
         </div>
         <div className="sidebar-footer">
           <Link

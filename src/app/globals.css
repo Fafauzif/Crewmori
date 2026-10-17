@@ -235,6 +235,14 @@ button.primary:focus-visible {
   padding: 32px;
   min-width: 0;
 }
+.panel-focused {
+  border-color: var(--forest);
+  box-shadow: 0 0 0 3px var(--selected);
+  scroll-margin-top: calc(var(--header) + 16px);
+}
+.panel[tabindex="-1"]:focus {
+  outline: none;
+}
 .panel > h2,
 .panel > h3 {
   margin-bottom: 16px;

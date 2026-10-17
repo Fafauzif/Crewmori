@@ -41,6 +41,14 @@ test("connected owner and buyer complete an AI-reviewed commercial workflow", as
     await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
     await expect(page.getByRole("heading", { name: "Workspace unavailable", exact: true })).toHaveCount(0);
   }
+  for (const [label, panel] of [["Google Calendar", "Calendar availability"], ["Google Drive", "Google Drive"], ["Gmail", "Google account"]]) {
+    await page.locator(".sidebar-tools").getByRole("link", { name: label, exact: true }).click();
+    await expect(page.locator(".sidebar-tools").getByRole("link", { name: label, exact: true })).toHaveAttribute("aria-current", "page");
+    await expect(page.getByRole("region", { name: panel, exact: true })).toHaveClass(/panel-focused/);
+  }
+  await page.locator(".sidebar-tools").getByRole("link", { name: "Manage connections" }).click();
+  await expect(page.locator(".sidebar-tools [aria-current=page]")).toHaveText("Manage connections");
+  await expect(page.locator(".panel-focused")).toHaveCount(0);
   const profile = Object.values(workspace.tables.profiles)[0], service = Object.values(workspace.tables.services)[0];
   await command(owner, "record.save", { table: "profiles", id: profile.id, expected_version: profile.version, values: { handle: "browser-studio", biography: "Design for independent teams", public_availability: "open_to_inquiries" } });
   await command(owner, "profile.publish", { id: profile.id, confirmed: true, service_versions: { [service.id]: service.version } });
