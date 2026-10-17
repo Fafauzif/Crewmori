@@ -72,7 +72,9 @@ test("connected owner and buyer complete an AI-reviewed commercial workflow", as
   for (const role of ["scout", "operations", "finance"]) {
     const task = await post(owner, "/api/tasks", { role, instruction: "Review the saved product design requirements", references: [{ table: "opportunities", id: opportunity.id, version: opportunity.version }], idempotencyKey: randomUUID() });
     await expect.poll(async () => (await (await owner.request.get(`/api/runs/${task.id}`)).json()).state, { timeout: 20000 }).toBe("completed");
-    await page.goto(`/app/team?artifact=artifact_${task.id}`);
+    await page.goto(`/app/team?task=${task.id}`);
+    await page.getByRole("dialog").getByRole("link", { name: "Reviewed design request" }).click();
+    await expect(page).toHaveURL(new RegExp(`artifact=artifact_${task.id}`));
     await expect(page.getByRole("heading", { name: "Reviewed design request" })).toBeVisible();
     await page.getByRole("button", { name: "Save reviewed business draft" }).click();
     await expect.poll(async () => Object.values((await state(owner)).tables.assessments || {}).filter((item) => item.opportunity_id === opportunity.id && item.role_id === role).length).toBe(1);

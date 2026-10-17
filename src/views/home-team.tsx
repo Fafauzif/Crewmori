@@ -149,7 +149,11 @@ export function recordHref(
       ? "/app/opportunities/" + s(rec.opportunity_id)
       : unavailable;
   if (resolvedTable === "team_notes")
-    return rec?.offer_id ? "/app/offers/" + s(rec.offer_id) : unavailable;
+    return rec?.offer_id
+      ? "/app/offers/" + s(rec.offer_id)
+      : rec?.run_id
+        ? "/app/team?artifact=" + encodeURIComponent("artifact_" + s(rec.run_id))
+        : unavailable;
   if (resolvedTable === "contacts")
     return rec?.client_id ? "/app/clients/" + s(rec.client_id) : unavailable;
   if (resolvedTable === "messages" || resolvedTable === "conversations") {
@@ -1064,11 +1068,16 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
                 return artifact ? (
                   <RecordLink
                     key={id}
-                    href={recordHref(
-                      s(o(artifact.record_ref).table),
-                      s(o(artifact.record_ref).id),
-                      state,
-                    )}
+                    href={
+                      // Unreviewed artifacts have no business record yet; open the review first.
+                      s(o(artifact.record_ref).id)
+                        ? recordHref(
+                            s(o(artifact.record_ref).table),
+                            s(o(artifact.record_ref).id),
+                            state,
+                          )
+                        : recordHref("artifacts", id, state)
+                    }
                   >
                     {s(artifact.title)}
                   </RecordLink>
@@ -1177,15 +1186,17 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
                 {record("artifacts", artifact)?.status !== "applied" && <Button onClick={async () => { const item = record("artifacts", artifact); const outcome = await command("artifact.apply", { id: item?.run_id, expected_version: item?.version, confirmed: true }); setResult(outcome); }}>Save reviewed business draft</Button>}
                 <Feedback result={result} />
               </>}
-              <RecordLink
-                href={recordHref(
-                  s(o(record("artifacts", artifact)?.record_ref).table),
-                  s(o(record("artifacts", artifact)?.record_ref).id),
-                  state,
-                )}
-              >
-                Open the saved result
-              </RecordLink>
+              {s(o(record("artifacts", artifact)?.record_ref).id) && (
+                <RecordLink
+                  href={recordHref(
+                    s(o(record("artifacts", artifact)?.record_ref).table),
+                    s(o(record("artifacts", artifact)?.record_ref).id),
+                    state,
+                  )}
+                >
+                  Open the saved result
+                </RecordLink>
+              )}
               <RecordLink
                 href={recordHref(
                   "agent_runs",
