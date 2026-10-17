@@ -450,3 +450,15 @@ test("voice brief capture appears in its buyer conversation once and requests ow
   assert.equal(saved.inquiry?.conversation.owner_review_requested, true);
   assert.equal(saved.inquiry?.messages.filter((message) => String(message.content).includes("One accessible product page")).length, 1);
 });
+
+test("stale running knowledge jobs are released for retry without touching active leases", async () => {
+  const { recoverStaleKnowledgeJobs } = await import("../../src/server/maintenance");
+  const jobs = await database().query("insert into crewmori.knowledge_jobs(workspace_id,source_id,source_version,state,started_at) values($1,'lease-stale',1,'running',now()-interval '1 hour'),($1,'lease-active',1,'running',now()) returning id,source_id", [workspaceA]);
+  const before = Number((await database().query("select event_sequence from crewmori.workspaces where id=$1", [workspaceA])).rows[0].event_sequence);
+  assert.equal(await transaction((client) => recoverStaleKnowledgeJobs(client)), 1);
+  assert.equal(await transaction((client) => recoverStaleKnowledgeJobs(client)), 0);
+  const states = Object.fromEntries((await database().query("select source_id,state,error_code from crewmori.knowledge_jobs where id = any($1)", [jobs.rows.map((row) => row.id)])).rows.map((row) => [row.source_id, [row.state, row.error_code]]));
+  assert.deepEqual(states, { "lease-stale": ["failed", "INDEXING_INTERRUPTED"], "lease-active": ["running", null] });
+  const events = await database().query("select kind from crewmori.events where workspace_id=$1 and sequence>$2", [workspaceA, before]);
+  assert.deepEqual(events.rows.map((row) => row.kind), ["knowledge.blocked"]);
+});

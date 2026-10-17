@@ -52,7 +52,7 @@ export async function ingestKnowledge(jobId: string, embed: typeof embedText = e
     const item = (await client.query("select * from crewmori.knowledge_jobs where id=$1", [jobId])).rows[0];
     if (!item || item.state !== "queued") return null;
     await client.query("select id from crewmori.workspaces where id=$1 for update", [item.workspace_id]);
-    const claimed = await client.query("update crewmori.knowledge_jobs set state='running' where id=$1 and state='queued' returning id", [jobId]);
+    const claimed = await client.query("update crewmori.knowledge_jobs set state='running',started_at=now() where id=$1 and state='queued' returning id", [jobId]);
     if (!claimed.rowCount) return null;
     return item;
   });
