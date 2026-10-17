@@ -79,6 +79,8 @@ test("connected owner and buyer complete an AI-reviewed commercial workflow", as
     await page.getByRole("dialog").getByRole("link", { name: "Reviewed design request" }).click();
     await expect(page).toHaveURL(new RegExp(`artifact=artifact_${task.id}`));
     await expect(page.getByRole("heading", { name: "Reviewed design request" })).toBeVisible();
+    await expect(page.getByRole("dialog").getByRole("link", { name: /^Opportunity/ })).toBeVisible();
+    await expect(page.getByRole("dialog")).not.toContainText("opportunities:");
     await page.getByRole("button", { name: "Save reviewed business draft" }).click();
     await expect.poll(async () => Object.values((await state(owner)).tables.assessments || {}).filter((item) => item.opportunity_id === opportunity.id && item.role_id === role).length).toBe(1);
   }

@@ -95,6 +95,17 @@ export const roles = [
 ];
 export const roleAsset = (id: string) =>
   `/assets/characters/${id.replace("_", "-")}.svg`;
+// Evidence cites "table:id" references; show the record the owner recognizes instead.
+const evidenceKinds: Record<string, string> = { opportunities: "Opportunity", requirements: "Requirements", policies: "Business policy", sources: "Knowledge source", services: "Service", offers: "Offer", offer_versions: "Offer version", projects: "Project", clients: "Client", invoices: "Invoice", receipts: "Receipt", profiles: "Profile", contacts: "Contact" };
+function EvidenceSource({ sourceId, state }: { sourceId: string; state: ReturnType<typeof useStore>["state"] }) {
+  const [table, ...rest] = sourceId.split(":"), id = rest.join(":");
+  const rec = state.tables[table]?.[id];
+  const kind = evidenceKinds[table] || label(table).replace(/^./, (c) => c.toUpperCase());
+  const title = rec ? s(rec.title) || s(rec.label) || s(rec.name) || s(rec.display_name) : "";
+  const text = title && title !== kind ? `${kind}: ${title}` : kind;
+  const href = recordHref(table, id, state);
+  return <small className="muted">({href.startsWith("/app/unavailable") ? text : <Link href={href}>{text}</Link>})</small>;
+}
 // Intents are either typed instructions or workflow slugs such as "draft_offer".
 function taskSummary(run: Entity): string {
   const intent = s(run.intent) || s(run.task_kind);
@@ -1185,7 +1196,7 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
                 )}
               </p>
               {connected && <>
-                <h4>Evidence</h4><ul>{a<{ text: string; sourceId: string }>(record("artifacts", artifact)?.facts).map((fact, index) => <li key={index}>{fact.text} <small>({fact.sourceId})</small></li>)}</ul>
+                <h4>Evidence</h4><ul>{a<{ text: string; sourceId: string }>(record("artifacts", artifact)?.facts).map((fact, index) => <li key={index}>{fact.text} <EvidenceSource sourceId={fact.sourceId} state={state} /></li>)}</ul>
                 <h4>Unknowns</h4><ul>{a<string>(record("artifacts", artifact)?.unknowns).map((text, index) => <li key={index}>{text}</li>)}</ul>
                 <h4>Recommendations</h4><ul>{a<string>(record("artifacts", artifact)?.recommendations).map((text, index) => <li key={index}>{text}</li>)}</ul>
                 {record("artifacts", artifact)?.status !== "applied" && <Button onClick={async () => { const item = record("artifacts", artifact); const outcome = await command("artifact.apply", { id: item?.run_id, expected_version: item?.version, confirmed: true }); setResult(outcome); }}>Save reviewed business draft</Button>}
