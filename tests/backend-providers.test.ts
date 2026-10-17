@@ -86,3 +86,14 @@ test("Gemini reasoning returns validated JSON artifacts and counts thinking toke
     server.close();
   }
 });
+
+test("Drive Picker configuration derives the project number and requires a browser key", async () => {
+  const { pickerConfig } = await import("../src/server/connections");
+  const previous = { ...process.env };
+  try {
+    Object.assign(process.env, { GOOGLE_CLIENT_ID: "645008123456-abc123.apps.googleusercontent.com", GOOGLE_PICKER_API_KEY: "browser-key" });
+    assert.deepEqual(pickerConfig(), { clientId: "645008123456-abc123.apps.googleusercontent.com", appId: "645008123456", developerKey: "browser-key" });
+    process.env.GOOGLE_PICKER_API_KEY = "";
+    assert.throws(() => pickerConfig(), /GOOGLE_PICKER_API_KEY/);
+  } finally { process.env = previous; }
+});

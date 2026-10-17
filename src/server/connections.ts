@@ -65,3 +65,12 @@ export async function revokeGoogleConnection(actor: OwnerActor) {
     await appendEvent(client, actor.workspaceId, "connection.revoked", "Google access disabled and local credentials removed.");
   });
 }
+
+// Picker runs in the browser: the client ID and a referrer-restricted browser key are public by design.
+// The app ID is the Cloud project number, which prefixes every OAuth client ID.
+export function pickerConfig() {
+  const { GOOGLE_CLIENT_ID, GOOGLE_PICKER_API_KEY } = requireConfiguration(["GOOGLE_CLIENT_ID", "GOOGLE_PICKER_API_KEY"]);
+  const appId = GOOGLE_CLIENT_ID.split("-")[0];
+  assertService(/^\d+$/.test(appId), "GOOGLE_CLIENT_INVALID", "Use a Google OAuth web client ID.", 503);
+  return { clientId: GOOGLE_CLIENT_ID, appId, developerKey: GOOGLE_PICKER_API_KEY };
+}
