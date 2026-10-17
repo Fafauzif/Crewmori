@@ -11,12 +11,12 @@ export function database(): Pool {
   }
   return pool;
 }
-export async function transaction<T>(work: (client: PoolClient) => Promise<T>, source = database()): Promise<T> {
+// Snapshot transactions read one consistent view without taking the workspace write lock.
+export async function transaction<T>(work: (client: PoolClient) => Promise<T>, source = database(), snapshot = false): Promise<T> {
   const client = await source.connect();
   try {
-    await client.query("BEGIN");
-    await client.query("SET LOCAL statement_timeout = '15s'");
-    await client.query("SET LOCAL lock_timeout = '10s'");
+    // One round trip: hosted databases add network latency to every statement.
+    await client.query(`${snapshot ? "BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY" : "BEGIN"}; SET LOCAL statement_timeout = '15s'; SET LOCAL lock_timeout = '10s'`);
     const result = await work(client);
     await client.query("COMMIT");
     return result;

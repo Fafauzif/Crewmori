@@ -163,7 +163,11 @@ export async function runDomainCommand(actor: Actor, raw: unknown) {
   });
 }
 export async function ownerState(actor: OwnerActor) {
-  return transaction(async (client) => { await lockWorkspace(client, actor); return ownerProjection(await loadDomain(client, actor.workspaceId)); });
+  return transaction(async (client) => {
+    const owned = await client.query("select 1 from crewmori.workspaces where id=$1 and owner_id=$2", [actor.workspaceId, actor.userId]);
+    assertService(owned.rowCount, "WORKSPACE_NOT_FOUND", "This workspace is unavailable.", 404);
+    return ownerProjection(await loadDomain(client, actor.workspaceId));
+  }, undefined, true);
 }
 export async function rateLimit(client: PoolClient, key: string, limit: number, seconds: number) {
   const row = (await client.query("insert into crewmori.request_limits(key,window_start,count) values($1,now(),1) on conflict(key) do update set count=case when crewmori.request_limits.window_start < now()-($2 * interval '1 second') then 1 else crewmori.request_limits.count+1 end,window_start=case when crewmori.request_limits.window_start < now()-($2 * interval '1 second') then now() else crewmori.request_limits.window_start end returning count", [key, seconds])).rows[0];
