@@ -1,4 +1,4 @@
-import type { PoolClient } from "pg";
+import type { Pool, PoolClient } from "pg";
 import { appendEvent } from "./repository";
 
 // Ingestion jobs expire in the queue after 600 seconds; a longer lease avoids racing live work.
@@ -35,4 +35,18 @@ export async function recoverStaleRuns(client: PoolClient, leaseSeconds = RUN_LE
     await appendEvent(client, run.workspace_id, "run.blocked", "Task processing was interrupted. Review it before another attempt.", [{ table: "agent_runs", id: run.id }]);
   }
   return recovered;
+}
+
+// Uploads finish in seconds; an hour-old pending record means the request failed or crashed.
+export const PENDING_UPLOAD_SECONDS = 3600;
+export type RemoveObjects = (paths: string[]) => Promise<{ error: unknown }>;
+
+// Storage removal happens first: a record is only marked deleted once its bytes are gone.
+export async function removeAbandonedUploads(source: Pool, remove: RemoveObjects, olderThanSeconds = PENDING_UPLOAD_SECONDS) {
+  const pending = await source.query("select id,object_path from crewmori.files where state='pending' and created_at < now()-($1 * interval '1 second') order by created_at limit 100", [olderThanSeconds]);
+  if (!pending.rowCount) return 0;
+  const removed = await remove(pending.rows.map((row) => row.object_path));
+  if (removed.error) return 0;
+  const updated = await source.query("update crewmori.files set state='deleted' where id = any($1) and state='pending'", [pending.rows.map((row) => row.id)]);
+  return updated.rowCount ?? 0;
 }

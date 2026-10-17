@@ -31,7 +31,8 @@ export async function uploadFile(actor: Actor, file: File) {
   assertService(!upload.error, "UPLOAD_FAILED", "File upload did not complete. Its pending record is retained for recovery.", 502);
   await transaction(async (client) => {
     await lockActor(client, actor);
-    await client.query("update crewmori.files set state='available' where workspace_id=$1 and id=$2", [actor.workspaceId, id]);
+    const saved = await client.query("update crewmori.files set state='available' where workspace_id=$1 and id=$2 and state='pending'", [actor.workspaceId, id]);
+    assertService(saved.rowCount, "UPLOAD_EXPIRED", "This upload expired before it completed. Upload the file again.", 409);
     await appendEvent(client, actor.workspaceId, "file.saved", "A private file was saved.", [{ table: "files", id }]);
   });
   return { id, name: safeFilename(file.name), type: file.type, size: file.size, sha256: hash };

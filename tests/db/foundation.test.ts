@@ -475,3 +475,14 @@ test("runs abandoned by a crashed worker are blocked and keep uncertain usage re
   assert.equal((await database().query("select state from crewmori.model_calls where run_id=$1", [stale.id])).rows[0].state, "unknown");
   await database().query("update crewmori.agent_runs set state='cancelled' where id=$1", [active.id]);
 });
+
+test("abandoned pending uploads are removed from storage before their records are retired", async () => {
+  const { removeAbandonedUploads } = await import("../../src/server/maintenance");
+  const files = await database().query("insert into crewmori.files(workspace_id,owner_id,name,mime_type,byte_size,sha256,object_path,state,created_at) values($1,$2,'old.txt','text/plain',1,'x',$3,'pending',now()-interval '2 hours'),($1,$2,'new.txt','text/plain',1,'x',$4,'pending',now()),($1,$2,'kept.txt','text/plain',1,'x',$5,'available',now()-interval '2 hours') returning id,name", [workspaceA, ownerA, `${workspaceA}/orphan/old.txt`, `${workspaceA}/orphan/new.txt`, `${workspaceA}/orphan/kept.txt`]);
+  let requested: string[] = [];
+  assert.equal(await removeAbandonedUploads(database(), async () => ({ error: new Error("storage unavailable") })), 0);
+  assert.equal(await removeAbandonedUploads(database(), async (paths) => { requested = paths; return { error: null }; }), 1);
+  assert.deepEqual(requested, [`${workspaceA}/orphan/old.txt`]);
+  const states = Object.fromEntries((await database().query("select name,state from crewmori.files where id = any($1)", [files.rows.map((row) => row.id)])).rows.map((row) => [row.name, row.state]));
+  assert.deepEqual(states, { "old.txt": "deleted", "new.txt": "pending", "kept.txt": "available" });
+});
