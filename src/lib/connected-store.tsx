@@ -12,6 +12,8 @@ export function ConnectedStoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<StoreState>(emptyState), [ready, setReady] = useState(false), [storageError, setError] = useState(""), [toast, setToast] = useState("");
   const ref = useRef(state), queue = useRef<Promise<unknown>>(Promise.resolve()), generation = useRef(0);
   const keys = useRef(new Map<string, string>());
+  // Signed-in email after the one-time workspace bootstrap; later refreshes only read state.
+  const owner = useRef<string | undefined>(undefined);
   const notify = useCallback((message: string) => setToast(message), []);
   const apply = useCallback((next: StoreState) => { ref.current = next; setState(next); }, []);
   const refresh = useCallback(async () => {
@@ -33,14 +35,18 @@ export function ConnectedStoreProvider({ children }: { children: ReactNode }) {
         next.revision = n(remote.revision);
       } else {
         try {
-          const response = await client.request<{ user: { id: string; email?: string } }>("/api/auth/user");
-          await client.request("/api/workspaces", { name: "My studio" });
+          if (owner.current === undefined) {
+            const response = await client.request<{ user: { id: string; email?: string } }>("/api/auth/user");
+            await client.request("/api/workspaces", { name: "My studio" });
+            owner.current = response.user.email || "";
+          }
           next = (await client.request<{ state: StoreState }>("/api/workspace/state")).state;
           next.session = true;
           next.remote = undefined;
-          next.ui = { ...next.ui, authenticated_email: response.user.email };
+          next.ui = { ...next.ui, authenticated_email: owner.current };
         } catch (error) {
           if (!(error instanceof BackendError && error.status === 401)) throw error;
+          owner.current = undefined;
         }
       }
       if (generation.current !== current) return;
@@ -85,7 +91,7 @@ export function ConnectedStoreProvider({ children }: { children: ReactNode }) {
         }
         if (type === "session.set" || type === "session.signOut") {
           if (input.authenticated !== false && type !== "session.signOut") return { ok: false, message: "Sign in with your account to continue." };
-          await client.request("/api/auth/sign-out", {}); apply(emptyState());
+          await client.request("/api/auth/sign-out", {}); owner.current = undefined; apply(emptyState());
           return { ok: true, message: "Signed out." };
         } else if (type === "inquiry.submit") {
           const response = await client.request<{ result: Result }>("/api/public/inquiries", { handle: s(o(input.values).handle), values: input.values, idempotencyKey });
@@ -121,10 +127,9 @@ export function ConnectedStoreProvider({ children }: { children: ReactNode }) {
           result = { ok: true, message: "Connection updated." };
         } else {
           const buyer = /^\/(buyer|inquiry)\//.test(path);
-          // Uploads and worker events can advance the workspace independently of this form.
-          // Refresh transport revision; form-captured record versions still reject stale edits.
-          await refresh();
-          const response = await client.request<{ result: Result }>(buyer ? "/api/buyer/commands" : "/api/commands", { type, input: clean, idempotencyKey, expectedRevision: ref.current.revision });
+          // Uploads and worker events advance the workspace revision independently of this form,
+          // so commands rely on form-captured record versions to reject stale edits.
+          const response = await client.request<{ result: Result }>(buyer ? "/api/buyer/commands" : "/api/commands", { type, input: clean, idempotencyKey });
           result = response.result;
         }
         keys.current.delete(signature);
