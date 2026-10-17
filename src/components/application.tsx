@@ -29,7 +29,8 @@ function Content() {
   }, [path, ready]);
   useEffect(() => {
     if (ready && (path.startsWith("/app") || path === "/onboarding") && !state.session)
-      router.replace("/auth/sign-in?returnTo=" + encodeURIComponent(path));
+      // Keep the query so deep links such as ?connection=drive survive sign-in.
+      router.replace("/auth/sign-in?returnTo=" + encodeURIComponent(path + window.location.search));
   }, [path, ready, router, state.session]);
   if (connected && storageError && !ready) return <div className="loading-shell" role="alert"><h1>Workspace unavailable</h1><p>{storageError}</p><button onClick={() => void refresh()}>Try again</button></div>;
   if (!ready)
