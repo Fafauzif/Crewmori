@@ -1059,3 +1059,8 @@
 .amendment-table th:first-child {
   padding-left: 0;
 }
+
+.buyer-shared-tasks { margin-top: 24px; min-width: 0; }
+.buyer-shared-tasks .buyer-row { align-items: flex-start; gap: 16px; }
+.buyer-shared-tasks .buyer-row > div { min-width: 0; overflow-wrap: anywhere; }
+.buyer-shared-tasks .buyer-row p { margin: 4px 0 0; }

@@ -335,7 +335,7 @@ function safeFiles(
   return ids
     .map((id) => st.tables.attachments?.[id])
     .filter((x): x is Entity => {
-      if (!x || x.shared_with_buyer !== true) return false;
+      if (!x || x.shared_with_buyer !== true || x.archived === true || x.availability === "removed") return false;
       if (x.project_id && x.project_id !== projectId) return false;
       if (x.conversation_id && x.conversation_id !== conversationId)
         return false;
@@ -345,7 +345,6 @@ function safeFiles(
         !!x.project_id ||
         !!x.conversation_id ||
         !!x.engagement_id ||
-        !!x.client_id ||
         x.audience === "public"
       );
     })
@@ -439,6 +438,7 @@ export interface BuyerPortal {
   project: Entity | null;
   inputs: Entity[];
   milestones: Entity[];
+  tasks: Entity[];
   files: Entity[];
   messages: Entity[];
   invoices: Entity[];
@@ -549,6 +549,11 @@ export function buyerPortal(
       ? rows(st, "milestones")
           .filter((x) => x.project_id === raw.id && b(x.shared_with_buyer))
           .map((x) => pick(x, ["title", "state", "due_at"]))
+      : [],
+    tasks: raw
+      ? rows(st, "work_tasks")
+          .filter((task) => task.project_id === raw.id && task.shared_with_buyer === true && task.audience === "buyer" && task.archived !== true)
+          .map((task) => pick(task, ["title", "state", "due_at", "notes"]))
       : [],
     files: safeFiles(
       st,

@@ -6,7 +6,7 @@ This contract governs all routes. Domain flow JSON adds concrete steps and mutat
 
 One shared owner shell. Primary Home/Team/Opportunities/Work/Money ownership remains consistent across desktop, tablet and mobile. Each page shows a clear title/context and one dominant next action for its state. Contextual subnavigation maps to real routes or correctly implemented local tabs; do not create duplicate global categories.
 
-Use links for navigation and buttons for actions. Every route supports direct load, refresh and browser Back/Forward. Preserve relevant query/filter/sort and list scroll on return; use breadcrumbs for hierarchy. Unknown IDs show an app-owned not-found state and safe return, not another client's data. A simulated session protects navigation only as a demo affordance; document that real authorization is future backend work.
+Use links for navigation and buttons for actions. Every route supports direct load, refresh and browser Back/Forward. Preserve relevant query/filter/sort and list scroll on return; use breadcrumbs for hierarchy. Unknown IDs show an app-owned not-found state and safe return, not another client's data. Connected authorization is resolved by server Auth/owner or scoped buyer grants. Disabled-mode simulated sessions are demonstration only and are never an authorization claim.
 
 Public/buyer pages use their own restrained shell and safe projection. Never inherit owner sidebar or private data. Demo role switching is labeled and returns to the correct context; it is not a security claim.
 
@@ -44,9 +44,9 @@ Confirm consequential send/share/publish/accept/commit/void/bulk actions with ex
 
 ## Feedback and async recovery
 
-Use one toast/status system with accessible live regions and deduplication. Persistent actionable problems remain inline/on the record. A delayed mock can expose real pending state, but a timeout by itself cannot manufacture a successful record.
+Use one toast/status system with accessible live regions and deduplication. Persistent actionable problems remain inline/on the record. A delayed request exposes real pending state; a timeout by itself cannot manufacture a successful record or prove failure after an uncertain commit.
 
-Differentiate initial loading, background refresh and mutation. Preserve layout geometry for fonts/images/errors/loading so controls do not jump. Offer useful retry/cancel where supported. For unknown completion, check/reconcile using the same command key rather than dispatching another external effect. All effects here are local sample effects, but the contract should be ready for a real adapter.
+Differentiate initial loading, background refresh and mutation. Preserve layout geometry for fonts/images/errors/loading so controls do not jump. Offer useful retry/cancel where supported. For unknown completion, check/reconcile using the same command key rather than dispatching another external effect. Connected effects use server-confirmed, versioned commands and provider-backed outcomes. Disabled mode is an explicitly separate local sample.
 
 Error classes: validation, missing record, stale/conflict, disconnected capability, recoverable task failure, file failure and incompatible stored state. Each has a defined correction path. Unsupported free-text intent is saved and clarified; it must not claim fictitious successful work.
 
@@ -68,7 +68,7 @@ One command surface can be scoped to a record; show scope and chosen sources. Cl
 
 English default; central English/Bahasa dictionaries for the implemented interface and accessible labels. Test locale changes without losing forms/context; do not silently change currency or domain timezone when changing language. Sample buyer language and owner language may differ; translation remains sample behavior, no live model needed.
 
-Use the frozen sample clock and IANA Asia/Jakarta business timezone. Show timezone when cross-border timing matters. Keep date-only values separate from instants. Working days, reservation expiry and deadline basis follow DECISIONS.md and data contracts. Currency formatting uses explicit currency/scale; unknown is distinct from zero; totals do not mix currencies.
+Use the frozen clock only in sample mode; connected task elapsed state uses actual time and record timestamps. Honor the agreement’s explicit IANA business timezone (default Asia/Jakarta). Show timezone when cross-border timing matters. Keep date-only values separate from instants. Working days, reservation expiry and deadline basis follow DECISIONS.md and data contracts. Currency formatting uses explicit currency/scale; unknown is distinct from zero; totals do not mix currencies.
 
 ## Accessibility and responsive baseline
 
@@ -90,9 +90,20 @@ Keep mock failure injection useful for verification and discreet in normal produ
 | Table Selection | Domain list selection through native checkboxes | src/views/acquisition.tsx and shared globals.css | Visible-page selection with explicit bulk action | Acquisition tests and review |
 | Select/Listbox | Native select | src/components/ui.tsx Field and globals.css | Single-value form and filter selects | Keyboard and responsive review |
 | Date | Native date/time inputs | Field, engine.ts calendar arithmetic | Date-only and datetime-local with explicit timezone | Engine calendar regression tests |
-| Form | Field and domain submit handlers | src/components/ui.tsx, globals.css | Native required checks plus authored domain validation; server adapter must repeat checks | Typecheck and domain tests |
-| Scrollbar | Browser native scrollbar | globals.css | Document scrolling; contained wide tables and dialog | Responsive DOM geometry and screenshots |
-| Toast | StoreProvider notify | src/lib/store.tsx | Status text with dismiss; persistent record is authoritative | Browser transitions and service tests |
+| Form | Field and domain submit handlers | src/components/ui.tsx, globals.css | Shared Form checks native constraints into authored inline errors; server repeats domain validation | Typecheck and domain tests |
+| Scrollbar | Global tokenized native scrollbar | src/app/globals.css | Document and contained overflow; forced-colors system fallback | Responsive DOM geometry and screenshots |
+| Toast | NotificationToast and StoreProvider.notify | src/components/notification-toast.tsx and src/lib/store.tsx | One dialog-aware polite status with named dismiss; record remains authoritative | Production UI tests |
 | CRUD | Shared command service | src/lib/engine.ts with expected_version | Domain-specific irreversible lifecycle commands; archive/restore | Service regression tests |
 
-Native select/date controls are intentional for a dependency-light frontend and native keyboard/mobile behavior. Field supplies stable labels and errors. Textareas use global resize:none with minimum 112px height. Button forwards handlers and HTML submit semantics. Native input validation and authored domain validation cooperate; successful changes are only acknowledged after local persistence.
+Native select/date controls are intentional for a dependency-light frontend and native keyboard/mobile behavior. Field supplies stable labels and errors. Textareas use global resize:none with minimum 112px height. Button forwards handlers and HTML submit semantics. Native input types/required constraints supply validation metadata, while shared Form suppresses browser bubbles and owns inline error/summary/focus behavior. Connected success means server-confirmed commit; sample success means local persistence. A confirmed receipt and failed projection refresh are separate outcomes.
+
+
+## Release 1.2 shared owners
+
+Form/Field/Button/Confirm/Modal in src/components/ui.tsx own inline validation, pending locks, stable labels, dialog focus/body scroll and close policy. ApplicationFrame in application.tsx owns persistent shell lifetime; connected-store/resource-scope own audience isolation, request lifecycle and session/stale recovery. NotificationToast portals transient feedback into the active dialog when present. Input text is16px and core target policy is44px. Native select/date popup ownership stays deliberate. Runtime palette remains globals.css; no theme replacement was introduced.
+
+Ordinary owner navigation keeps the shell and safe current projection; initial authorized missing data has a route-shaped skeleton. Public/auth/payment resources do not load owner data. Session expiry preserves safe local drafts in the original tab only; reauthentication uses a new tab and explicit reconnect. Account switch clears/remounts private UI.
+
+Dedicated owner commands are task.save, milestone.save, milestone.proposeChange, file.link/file.archive and calendar.proposeCancellation. Existing lifecycle and file.attach commands keep server authority. Do not restore generic edit paths that bypass accepted terms, client/project relations, versions or buyer sharing.
+
+Shared Form intent="read" retains editable query/Clear controls during pending reads; submit stays guarded and superseded knowledge searches abort. Default mutation forms freeze input and modal closure. Field textareas grow with content to360px before using their own visible native scroll.

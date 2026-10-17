@@ -1,78 +1,145 @@
 "use client";
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Context } from "./store";
-import { BackendClient, BackendError } from "./backend-client";
+import { NotificationToast } from "@/components/notification-toast";
+import { BackendClient, BackendError, isDefinitiveFailure } from "./backend-client";
 import { emptyState } from "./workspace-state";
 import { translate } from "./i18n";
 import { a, n, o, s, type Input, type Result, type StoreState } from "./types";
+import { CommandIntents, ownerBindingIsCurrent, ownerCommandBinding, ownerIdentity, projectionForScope, projectionSignature, refreshDelay, resourceScope, ScopedRead, type ResourceScope } from "./resource-scope";
 
 export function ConnectedStoreProvider({ children }: { children: ReactNode }) {
-  const path = usePathname(), params = useSearchParams(), version = params.get("version") || "";
+  const path = usePathname(), params = useSearchParams();
+  const scope = resourceScope(path, params.get("version") || "");
   const [state, setState] = useState<StoreState>(emptyState), [ready, setReady] = useState(false), [storageError, setError] = useState(""), [toast, setToast] = useState("");
-  const ref = useRef(state), queue = useRef<Promise<unknown>>(Promise.resolve()), generation = useRef(0);
-  const keys = useRef(new Map<string, string>());
-  // Signed-in email after the one-time workspace bootstrap; later refreshes only read state.
-  const owner = useRef<string | undefined>(undefined);
+  const [loadedScope, setLoadedScope] = useState(""), [refreshing, setRefreshing] = useState(false), [sessionExpired, setSessionExpired] = useState(false);
+  const ref = useRef(state), activeScope = useRef<ResourceScope>(scope), generation = useRef(0);
+  const reads = useRef(new ScopedRead<void>()), failures = useRef(0), expired = useRef(false), committed = useRef(false);
+  const queues = useRef(new Map<string, Promise<unknown>>()), intents = useRef(new CommandIntents());
+  const buyerExchange = useRef<Promise<unknown>>(Promise.resolve());
+  const signature = useRef(""), identity = useRef("");
   const notify = useCallback((message: string) => setToast(message), []);
-  const apply = useCallback((next: StoreState) => { ref.current = next; setState(next); }, []);
-  const refresh = useCallback(async () => {
-    const current = generation.current;
-    try {
-      const client = new BackendClient();
-      let next = emptyState();
-      if (/^\/u\//.test(path)) {
-        const response = await client.request<{ profile: unknown }>(`/api/public/profile?handle=${encodeURIComponent(path.split("/")[2])}`);
-        next.remote = response;
-      } else if (/^\/(buyer|inquiry)\//.test(path)) {
-        const invite = new URLSearchParams(window.location.hash.slice(1)).get("invite");
-        if (invite) {
-          await client.request("/api/buyer/session", { token: invite });
-          window.history.replaceState(null, "", window.location.pathname + window.location.search);
-        }
-        const remote = await client.request<Record<string, unknown>>(`/api/buyer/state?engagement=${encodeURIComponent(path.split("/")[2])}&version=${encodeURIComponent(version)}`);
-        next.remote = remote;
-        next.revision = n(remote.revision);
-      } else {
-        try {
-          if (owner.current === undefined) {
-            const response = await client.request<{ user: { id: string; email?: string } }>("/api/auth/user");
-            await client.request("/api/workspaces", { name: "My studio" });
-            owner.current = response.user.email || "";
+  const apply = useCallback((next: StoreState) => {
+    const nextSignature = projectionSignature(next);
+    if (signature.current === nextSignature) return;
+    signature.current = nextSignature; ref.current = next; setState(next);
+  }, []);
+  const refresh = useCallback(async (showStatus = false) => {
+    const target = activeScope.current, current = generation.current;
+    if (showStatus) setRefreshing(true);
+    return reads.current.run(target.key, async (signal) => {
+      if (signal.aborted || generation.current !== current) return;
+      try {
+        const client = new BackendClient(), options = { signal };
+        let next = emptyState();
+        if (target.kind === "profile") {
+          next.remote = await client.request<Record<string, unknown>>(`/api/public/profile?handle=${encodeURIComponent(target.id || "")}`, undefined, "GET", options);
+        } else if (target.kind === "buyer") {
+          const invite = new URLSearchParams(window.location.hash.slice(1)).get("invite");
+          if (invite) {
+            // Exchanges set one shared HttpOnly buyer cookie. Keep their order stable across route changes.
+            const exchange = buyerExchange.current.then(() => client.request("/api/buyer/session", { token: invite }));
+            buyerExchange.current = exchange.catch(() => {});
+            await exchange;
+            if (generation.current !== current || signal.aborted) return;
+            window.history.replaceState(null, "", window.location.pathname + window.location.search);
           }
-          next = (await client.request<{ state: StoreState }>("/api/workspace/state")).state;
-          next.session = true;
-          next.remote = undefined;
-          next.ui = { ...next.ui, authenticated_email: owner.current };
-        } catch (error) {
-          if (!(error instanceof BackendError && error.status === 401)) throw error;
-          owner.current = undefined;
+          const remote = await client.request<Record<string, unknown>>(`/api/buyer/state?engagement=${encodeURIComponent(target.id || "")}&version=${encodeURIComponent(target.version || "")}`, undefined, "GET", options);
+          next.remote = remote; next.revision = n(remote.revision);
+        } else if (target.kind === "session") {
+          // Public/auth pages never load private workspace records just to choose a CTA.
+          const response = await client.request<{ user: { id: string; email?: string } }>("/api/auth/user", undefined, "GET", options);
+          next.session = true; next.ui = { authenticated_email: response.user.email || "" };
+        } else if (target.kind === "owner") {
+          try {
+            next = (await client.request<{ state: StoreState }>("/api/workspace/state", undefined, "GET", options)).state;
+          } catch (error) {
+            // Callback normally creates the workspace. Recover only a specifically missing workspace.
+            if (!(error instanceof BackendError && error.code === "WORKSPACE_NOT_FOUND")) throw error;
+            await client.request("/api/workspaces", { name: "My studio" });
+            next = (await client.request<{ state: StoreState }>("/api/workspace/state", undefined, "GET", options)).state;
+          }
+          next.session = true; next.remote = undefined;
+          next.ui = { ...next.ui, authenticated_email: s(Object.values(next.tables.owners || {})[0]?.email) };
+        }
+        if (generation.current !== current || signal.aborted) return;
+        if (target.kind === "owner") {
+          const nextIdentity = ownerIdentity(next);
+          if (identity.current && identity.current !== nextIdentity) { intents.current.clear(); setToast(""); }
+          identity.current = nextIdentity;
+        }
+        if (ownerIdentity(next) !== ownerIdentity(ref.current) || next.revision >= ref.current.revision || !next.session || !!ref.current.remote || !ref.current.session) apply(next);
+        intents.current.reconciled(target.key);
+        failures.current = 0; expired.current = false; committed.current = false;
+        setSessionExpired(false); setError(""); setLoadedScope(target.key); setReady(true);
+      } catch (error) {
+        if (generation.current !== current || signal.aborted) return;
+        if (error instanceof BackendError && error.status === 401) {
+          if (target.kind === "owner" && ref.current.session) {
+            // Keep this page and its local drafts mounted; writes remain blocked until reauthenticated.
+            expired.current = true; setSessionExpired(true); setError("");
+          } else {
+            apply(emptyState()); setError(target.kind === "buyer" ? error.message : ""); setReady(true); setLoadedScope(target.key);
+          }
+        } else {
+          failures.current++;
+          const message = error instanceof Error ? error.message : "The latest view could not be loaded.";
+          setError(committed.current ? `Saved. The latest view could not refresh. ${message}` : message);
         }
       }
-      if (generation.current !== current) return;
-      if (next.revision >= ref.current.revision || !next.session || ref.current.remote || !ref.current.session) apply(next); setError(""); setReady(true);
-    } catch (error) {
-      if (generation.current !== current) return;
-      setError(error instanceof Error ? error.message : "The workspace could not be loaded.");
-    }
-  }, [path, version, apply]);
+    }).finally(() => { if (showStatus && generation.current === current) setRefreshing(false); });
+  }, [apply]);
+  const refreshWorkspace = useCallback(() => refresh(true), [refresh]);
   useEffect(() => {
-    generation.current++;
-    setReady(false);
-    void refresh();
-    const timer = window.setInterval(() => { if (document.visibilityState === "visible") void queue.current.then(refresh); }, 5000);
-    const focus = () => void queue.current.then(refresh);
-    window.addEventListener("focus", focus);
-    return () => { window.clearInterval(timer); window.removeEventListener("focus", focus); };
-  }, [refresh]);
+    const scopeReads = reads.current;
+    generation.current++; scopeReads.cancel(); activeScope.current = scope;
+    // State is also masked synchronously below, before this effect can expose another audience.
+    apply(emptyState()); setLoadedScope(scope.key); setError(""); setToast(""); setRefreshing(false); setSessionExpired(false); expired.current = false; failures.current = 0; committed.current = false;
+    setReady(["session", "passive"].includes(scope.kind));
+    let disposed = false, timer: ReturnType<typeof setTimeout> | undefined;
+    const schedule = () => {
+      if (disposed || !["owner", "buyer"].includes(scope.kind)) return;
+      timer = setTimeout(async () => {
+        if (document.visibilityState === "visible" && navigator.onLine && !expired.current) {
+          await (queues.current.get(scope.key) || Promise.resolve());
+          if (!disposed) await refresh();
+        }
+        schedule();
+      }, refreshDelay(failures.current));
+    };
+    const focus = () => {
+      if (!disposed && document.visibilityState === "visible" && navigator.onLine && !expired.current) void (queues.current.get(scope.key) || Promise.resolve()).then(async () => { if (!disposed) await refresh(); });
+    };
+    if (scope.kind !== "passive") void refresh().then(schedule);
+    window.addEventListener("focus", focus); window.addEventListener("online", focus); window.addEventListener("hashchange", focus); document.addEventListener("visibilitychange", focus);
+    return () => { disposed = true; clearTimeout(timer); scopeReads.cancel(); window.removeEventListener("focus", focus); window.removeEventListener("online", focus); window.removeEventListener("hashchange", focus); document.removeEventListener("visibilitychange", focus); };
+    // Resource identity, rather than pathname, owns the read lifecycle.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scope.key, apply, refresh]);
+  // The callback belongs to the rendered projection, not mutable refs that may advance before
+  // an old form handler finishes. Keep its workspace/owner binding immutable until re-render.
+  const visibleState = projectionForScope(loadedScope, scope.key, state);
+  const renderedBinding = scope.kind === "owner" ? ownerCommandBinding(visibleState) : { identity: "", workspaceId: undefined };
+  const renderedOwnerIdentity = renderedBinding.identity, renderedWorkspaceId = renderedBinding.workspaceId;
   const command = useCallback((type: string, input: Input = {}): Promise<Result> => {
     // A retry of unchanged input reuses its transport key; successful actions discard it.
-    const signature = JSON.stringify([type, input]);
-    const idempotencyKey = keys.current.get(signature) || crypto.randomUUID();
-    keys.current.set(signature, idempotencyKey);
+    const commandScope = scope.key;
+    const commandIdentity = commandScope === "owner" ? renderedOwnerIdentity : "";
+    const signature = JSON.stringify([commandScope, commandIdentity, type, input]);
+    const isCurrentCommand = () => activeScope.current.key === commandScope && (commandScope !== "owner" || ownerBindingIsCurrent({ identity: commandIdentity, workspaceId: renderedWorkspaceId }, identity.current));
+    const existing = intents.current.existing(signature);
+    if (existing) return existing;
+    const idempotencyKey = intents.current.key(signature);
+    let revalidation: Promise<void> | undefined;
     const run = async (): Promise<Result> => {
+      if (!isCurrentCommand()) return { ok: false, code: "SCOPE_CHANGED", message: "This page changed. Review the current record before trying again." };
+      if (expired.current && !["session.set", "session.signOut"].includes(type)) return { ok: false, code: "UNAUTHENTICATED", message: "Your session expired. Sign in, then reconnect before saving. Your draft is still open in this tab." };
+      if (!navigator.onLine && !(["ui.set", "preferences.save"].includes(type) && !ref.current.session)) return { ok: false, code: "OFFLINE", message: "You are offline. Reconnect before saving or sending. Your draft is still open in this tab." };
       try {
-        const client = new BackendClient();
+        // Bind every owner write to the workspace that supplied this form. A cookie/account change
+        // in another tab must fail authorization rather than applying old fields to a new account.
+        const client = new BackendClient(commandScope === "owner" ? renderedWorkspaceId : undefined);
         const clean = { ...input };
         delete clean.idempotency_key; delete clean.command_id; delete clean.grant_id; delete clean.actor;
         const aliases: Record<string, string> = { owner_alya: "owners", workspace_alya: "workspaces", profile_alya: "profiles", preferences_alya: "preferences", onboarding_alya: "onboarding_sessions" };
@@ -91,7 +158,9 @@ export function ConnectedStoreProvider({ children }: { children: ReactNode }) {
         }
         if (type === "session.set" || type === "session.signOut") {
           if (input.authenticated !== false && type !== "session.signOut") return { ok: false, message: "Sign in with your account to continue." };
-          await client.request("/api/auth/sign-out", {}); owner.current = undefined; apply(emptyState());
+          await client.request("/api/auth/sign-out", {});
+          reads.current.cancel(); generation.current++; intents.current.clear(); identity.current = ""; expired.current = false;
+          setSessionExpired(false); setToast(""); apply(emptyState());
           return { ok: true, message: "Signed out." };
         } else if (type === "inquiry.submit") {
           const response = await client.request<{ result: Result }>("/api/public/inquiries", { handle: s(o(input.values).handle), values: input.values, idempotencyKey });
@@ -132,28 +201,42 @@ export function ConnectedStoreProvider({ children }: { children: ReactNode }) {
           const response = await client.request<{ result: Result }>(buyer ? "/api/buyer/commands" : "/api/commands", { type, input: clean, idempotencyKey });
           result = response.result;
         }
-        keys.current.delete(signature);
-        if (type !== "inquiry.submit") await refresh();
-        if (!result.ok) notify(result.message);
+        if (result.ok) intents.current.confirmed(signature);
+        if (isCurrentCommand()) {
+          if (result.ok && type !== "inquiry.submit") {
+            committed.current = true;
+            // Until canonical data catches up, an identical click must reuse this confirmed receipt.
+            intents.current.confirmed(signature, commandScope);
+            // A confirmed write has succeeded even if its follow-up read fails. Never invite a duplicate save.
+            reads.current.cancel(); revalidation = refresh();
+          }
+          if (!result.ok) notify(result.message);
+        }
         return result;
       } catch (error) {
         const code = error instanceof BackendError ? error.code : "CONNECTION_INTERRUPTED";
-        if (error instanceof BackendError && error.status < 500 && !["DISPATCH_REVIEW_REQUIRED", "DISPATCH_FINALIZATION_REQUIRED"].includes(code)) keys.current.delete(signature);
-        if (code === "STALE_VERSION") await refresh();
+        intents.current.rejected(signature, isDefinitiveFailure(error));
+        if (isCurrentCommand() && error instanceof BackendError && error.status === 401 && commandScope === "owner") { expired.current = true; setSessionExpired(true); }
+        if (code === "STALE_VERSION" && isCurrentCommand()) revalidation = refresh();
         const message = error instanceof Error ? error.message : "The connection was interrupted. Retry the same action to check its result.";
-        notify(message); return { ok: false, code, message };
+        if (isCurrentCommand()) notify(message);
+        return { ok: false, code, message, outcomeUnknown: !isDefinitiveFailure(error) };
       }
     };
-    const promise = queue.current.then(run, run);
-    queue.current = promise;
+    const promise = (queues.current.get(commandScope) || Promise.resolve()).then(run, run).finally(() => intents.current.settled(signature));
+    // Following writes use the refreshed versions, while the caller receives the committed receipt immediately.
+    queues.current.set(commandScope, promise.then(async () => { await revalidation; }));
+    intents.current.track(signature, promise);
     return promise;
-  }, [apply, notify, path, refresh]);
-  const prefs = Object.values(state.tables.preferences || {})[0], locale = s(prefs?.locale, "en");
+  }, [apply, notify, path, refresh, scope.key, renderedOwnerIdentity, renderedWorkspaceId]);
+  // Mask synchronously on render: effects must never be relied on to hide private records.
+  const visibleReady = loadedScope === scope.key ? ready : ["session", "passive"].includes(scope.kind);
+  const prefs = Object.values(visibleState.tables.preferences || {})[0], locale = s(prefs?.locale, "en");
   useEffect(() => { document.documentElement.lang = locale; document.documentElement.dataset.backend = "connected"; document.documentElement.dataset.motion = s(prefs?.motion, "system"); return () => { delete document.documentElement.dataset.backend; }; }, [locale, prefs?.motion]);
   useEffect(() => { if (!toast) return; const timer = setTimeout(() => setToast(""), 8000); return () => clearTimeout(timer); }, [toast]);
-  return <Context.Provider value={{ state, ready, connected: true, refresh, rows: (table) => Object.values(state.tables[table] || {}), record: (table, id) => state.tables[table]?.[id] || (["owners", "profiles", "preferences", "onboarding_sessions", "workspaces"].includes(table) ? Object.values(state.tables[table] || {})[0] : undefined), command, notify, t: (text) => translate(text, locale), storageError, resetStorage: () => void refresh() }}>
+  const value = useMemo(() => ({ state: visibleState, ready: visibleReady, connected: true, refresh: refreshWorkspace, refreshing, sessionExpired: loadedScope === scope.key && sessionExpired, refreshError: visibleReady ? storageError : "", rows: (table: string) => Object.values(visibleState.tables[table] || {}), record: (table: string, id: string) => visibleState.tables[table]?.[id] || (["owners", "profiles", "preferences", "onboarding_sessions", "workspaces"].includes(table) ? Object.values(visibleState.tables[table] || {})[0] : undefined), command, notify, t: (text: string) => translate(text, locale), storageError: visibleReady ? "" : storageError, resetStorage: () => void refreshWorkspace() }), [visibleState, visibleReady, refreshWorkspace, refreshing, loadedScope, scope.key, sessionExpired, storageError, command, notify, locale]);
+  return <Context.Provider value={value}>
     {children}
-    {storageError && ready && <div className="toast" role="alert">{storageError}<button onClick={() => void refresh()}>Retry</button></div>}
-    {toast && <div className="toast" role="status">{toast}<button onClick={() => setToast("")}>×</button></div>}
+    {toast && loadedScope === scope.key && <NotificationToast message={toast} dismissLabel={translate("Dismiss notification", locale)} onDismiss={() => setToast("")} />}
   </Context.Provider>;
 }

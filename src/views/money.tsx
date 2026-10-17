@@ -1,7 +1,7 @@
 "use client";
 import { sampleId } from "@/lib/local-crypto";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -26,6 +26,8 @@ import {
   Confirm,
   Tabs,
   useDirtyGuard,
+  SearchBar,
+  Form,
 } from "@/components/ui";
 import {
   attachmentBlob,
@@ -200,9 +202,11 @@ function ErrorText({ value }: { value: string }) {
 function AmountGroups({
   values,
   caption,
+  emptyLabel = "No amounts in this view",
 }: {
   values: Money[];
   caption: string;
+  emptyLabel?: string;
 }) {
   const totals = values.reduce<Record<string, number>>(
     (result, value) => ({
@@ -223,7 +227,7 @@ function AmountGroups({
       ))}
       {!values.length && (
         <div>
-          <strong>—</strong>
+          <span className="money-summary-empty">{emptyLabel}</span>
           <span>{caption}</span>
         </div>
       )}
@@ -234,6 +238,7 @@ function Pager({ count }: { count: number }) {
   const { query, patch } = useQuery();
   const pages = Math.max(1, Math.ceil(count / 10));
   const page = Math.max(1, Math.min(pages, Number(query.get("page")) || 1));
+  if (count <= 10) return count ? <p className="money-record-count">{count} {count === 1 ? "record" : "records"}</p> : null;
   return (
     <div className="money-pager">
       <span className="muted">
@@ -264,7 +269,7 @@ function Unknown({ kind }: { kind: string }) {
       <PageHead title={`${kind} unavailable`} />
       <Empty
         title={`We couldn't find this ${kind.toLowerCase()}.`}
-        description="This link may belong to another sample scenario. No other record has been substituted."
+        description="This record may have moved, been removed, or be unavailable to this account. Return to Money to find the current record."
       >
         <LinkButton href="/app/money/invoices">Back to Money</LinkButton>
       </Empty>
@@ -335,6 +340,7 @@ function InvoicesList() {
   const currency = query.get("currency") || "all";
   const client = query.get("client") || "all";
   const sort = query.get("sort") || "recent";
+  const hasFilters = !!q || status !== "all" || currency !== "all" || client !== "all" || sort !== "recent";
   const invoices = store
     .rows("invoices")
     .filter(
@@ -369,6 +375,7 @@ function InvoicesList() {
       <MoneyTabs />
       <AmountGroups
         caption="Outstanding on issued invoices"
+        emptyLabel={store.rows("invoices").length ? "No issued invoices in this view" : "No issued invoices yet"}
         values={invoices
           .filter((i: Entity) =>
             ["issued", "partially_paid"].includes(s(i.state)),
@@ -376,15 +383,8 @@ function InvoicesList() {
           .map((i: Entity) => amount(invoiceBalance(store, i), s(i.currency)))}
       />
       <Panel>
-        <div className="money-filter">
-          <Field label="Search invoices">
-            <input
-              value={q}
-              maxLength={200}
-              placeholder="Reference or client"
-              onChange={(e) => patch({ q: e.target.value, page: null })}
-            />
-          </Field>
+        {(store.rows("invoices").length > 0 || hasFilters) && <div className="money-filter">
+          <div className="field money-search"><span>Search invoices</span><SearchBar value={q} placeholder="Search invoices by reference or client" onChange={(value) => patch({ q: value, page: null })} /></div>
           <FilterField
             label="Status"
             value={status}
@@ -429,13 +429,13 @@ function InvoicesList() {
             ]}
             onChange={(v) => patch({ sort: v })}
           />
-          <Button
+          {hasFilters && <Button
             variant="secondary"
             onClick={() => router.push("/app/money/invoices")}
           >
             Clear filters
-          </Button>
-        </div>
+          </Button>}
+        </div>}
         {invoices.length ? (
           <div className="money-scroll">
             <table className="money-ledger">
@@ -544,6 +544,8 @@ function InvoiceEditor({
   const initialDue = s(invoice?.due_at).slice(0, 10);
   const [note, setNote] = useState(s(invoice?.buyer_note));
   const [error, setError] = useState("");
+  const savingRef = useRef(false);
+  const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [discard, setDiscard] = useState(false);
   const [changeCurrency, setChangeCurrency] = useState("");
@@ -592,6 +594,7 @@ function InvoiceEditor({
   const totalMinor = lines.reduce((sum, l) => sum + total(l), 0);
   const sampleDay = store.state.sample_clock.slice(0, 10);
   function close() {
+    if (savingRef.current) return;
     if (dirty) setDiscard(true);
     else onClose();
   }
@@ -625,6 +628,10 @@ function InvoiceEditor({
       return setError(
         "Every line needs a description, a positive quantity (up to 10,000, two decimals), and a nonnegative price. The invoice total must be positive.",
       );
+    if (savingRef.current) return;
+    savingRef.current = true;
+    setSaving(true);
+    try {
     const result = (await store.command("invoice.saveDraft", {
       id: invoice?.id,
       idempotency_key: operationId,
@@ -649,19 +656,22 @@ function InvoiceEditor({
     store.notify(result.message);
     onClose();
     if (result.id) router.push(`/app/money/invoices/${result.id}`);
+    } finally { savingRef.current = false; setSaving(false); }
   }
   return (
     <>
       <Modal
         title={invoice ? "Edit invoice draft" : "Create invoice"}
         onClose={close}
+        closeDisabled={saving}
       >
-        <form
+        <Form
+          noValidate
           className="stack"
           onSubmit={(e) => {
             e.preventDefault();
             const submitted = new FormData(e.currentTarget).get("invoice_due");
-            save(typeof submitted === "string" ? submitted : initialDue);
+            return save(typeof submitted === "string" ? submitted : initialDue);
           }}
         >
           <p className="muted">
@@ -844,12 +854,12 @@ function InvoiceEditor({
             />
           </Field>
           <div className="actions money-form-footer">
-            <Button type="submit">Save draft</Button>
-            <Button type="button" variant="secondary" onClick={close}>
+            <Button type="submit" pending={saving} pendingLabel="Saving draft…">Save draft</Button>
+            <Button type="button" variant="secondary" disabled={saving} onClick={close}>
               Cancel
             </Button>
           </div>
-        </form>
+        </Form>
       </Modal>
       {discard && (
         <Confirm
@@ -1432,6 +1442,7 @@ function PaymentsList() {
   const state = query.get("state") || "all";
   const currency = query.get("currency") || "all";
   const sort = query.get("sort") || "recent";
+  const hasFilters = !!q || state !== "all" || currency !== "all" || sort !== "recent";
   const records = [
     ...store
       .rows("payment_requests")
@@ -1493,20 +1504,14 @@ function PaymentsList() {
       <MoneyTabs />
       <AmountGroups
         caption="Observed gross receipts"
+        emptyLabel={records.length ? "No receipts in this view" : "No receipts recorded yet"}
         values={filtered
           .filter((r) => r.record_kind === "receipt")
           .map((r) => o(r.gross) as Money)}
       />
       <Panel>
-        <div className="money-filter">
-          <Field label="Search payments">
-            <input
-              value={q}
-              onChange={(e) => patch({ q: e.target.value, page: null })}
-              maxLength={200}
-              placeholder="Reference or client"
-            />
-          </Field>
+        {(records.length > 0 || hasFilters) && <div className="money-filter">
+          <div className="field money-search"><span>Search payments</span><SearchBar value={q} placeholder="Search payments by reference or client" onChange={(value) => patch({ q: value, page: null })} /></div>
           <FilterField
             label="Payment state"
             value={state}
@@ -1541,13 +1546,13 @@ function PaymentsList() {
             ]}
             onChange={(v) => patch({ sort: v })}
           />
-          <Button
+          {hasFilters && <Button
             variant="secondary"
             onClick={() => router.push("/app/money/payments")}
           >
             Clear filters
-          </Button>
-        </div>
+          </Button>}
+        </div>}
         {filtered.length ? (
           <div className="money-scroll">
             <table className="money-ledger">
@@ -1585,7 +1590,7 @@ function PaymentsList() {
                       </td>
                       <td className="optional-column">
                         {row.record_kind === "receipt"
-                          ? "Sample observation"
+                          ? store.connected ? "Provider observation" : "Sample observation"
                           : "Expected payment"}
                         <small>{date(row.received_at || row.created_at)}</small>
                       </td>
@@ -1608,9 +1613,9 @@ function PaymentsList() {
                 : "An issued invoice creates a payment request. A request is not received money."
             }
           >
-            <LinkButton href="/app/money/invoices" variant="secondary">
+            {records.length ? <Button variant="secondary" onClick={() => router.push("/app/money/payments")}>Clear filters</Button> : <LinkButton href="/app/money/invoices" variant="secondary">
               View invoices
-            </LinkButton>
+            </LinkButton>}
           </Empty>
         )}
         <Pager count={filtered.length} />
@@ -2126,6 +2131,8 @@ function IssueReview({
   const [error, setError] = useState("");
   const [original, setOriginal] = useState("");
   const [checked, setChecked] = useState(receipt?.id || "");
+  const evidenceUploads = useRef(new WeakMap<File, { upload: Awaited<ReturnType<typeof persistUpload>>; attachmentId?: string }>());
+  const confirming = useRef(false);
   if (!issue)
     return (
       <Modal title="Issue unavailable" onClose={onClose}>
@@ -2182,6 +2189,8 @@ function IssueReview({
     setReview(true);
   }
   async function confirm() {
+    if (confirming.current) return;
+    confirming.current = true;
     setBusy(true);
     try {
       if (action === "allocate_checked_receipt") {
@@ -2192,24 +2201,30 @@ function IssueReview({
       const evidenceIds: string[] = [];
       if (action === "attach_evidence") {
         for (const file of files) {
-          const upload = await persistUpload(file);
-          const saved = (await store.command("record.save", {
-            table: "attachments",
+          let cached = evidenceUploads.current.get(file);
+          if (!cached) { cached = { upload: await persistUpload(file) }; evidenceUploads.current.set(file, cached); }
+          const upload = cached.upload;
+          if (!cached.attachmentId) {
+          const saved = (await store.command("file.attach", {
             values: {
+              name: upload.name,
               original_filename: upload.name,
               filename: upload.name,
               media_type: upload.type,
-              byte_size: upload.size,
+              byte_length: upload.size,
               sha256: upload.sha256,
-              storage_kind: "local_blob",
+              storage_kind: store.connected ? "private" : "local_blob",
               storage_locator: upload.id,
               availability: "available",
               origin: "manual_attachment",
               audience: "owner",
+              shared_with_buyer: false,
             },
           }));
           if (!saved.ok || !saved.id) throw new Error(saved.message);
-          evidenceIds.push(saved.id);
+          cached.attachmentId = saved.id;
+          }
+          evidenceIds.push(cached.attachmentId);
         }
       }
       const result = (await store.command("finance.resolveIssue", {
@@ -2231,11 +2246,12 @@ function IssueReview({
           : "The action failed. Your financial records were not marked paid.",
       );
     } finally {
+      confirming.current = false;
       setBusy(false);
     }
   }
   return (
-    <Modal title="Review payment issue" onClose={onClose}>
+    <Modal title="Review payment issue" onClose={onClose} closeDisabled={busy}>
       <div className="stack">
         <ErrorText value={error} />
         <p>{s(issue.summary)}</p>
@@ -2346,7 +2362,7 @@ function IssueReview({
                 </select>
               </Field>
             )}
-            <Button onClick={async () => void (await validate())}>Review resolution</Button>
+            <Button onClick={validate}>Review resolution</Button>
           </>
         ) : (
           <>
@@ -2366,7 +2382,7 @@ function IssueReview({
               </p>
             </div>
             <div className="actions">
-              <Button disabled={busy} onClick={async () => void (await confirm())}>
+              <Button pending={busy} pendingLabel="Saving resolution…" onClick={confirm}>
                 {busy ? "Saving…" : "Confirm resolution"}
               </Button>
               <Button
@@ -2413,6 +2429,7 @@ function ExpensesList() {
   const currency = query.get("currency") || "all";
   const from = query.get("from") || "";
   const to = query.get("to") || "";
+  const hasFilters = !!q || cat !== "all" || state !== "all" || currency !== "all" || !!from || !!to;
   const [period, setPeriod] = useState(false);
   const [fromDraft, setFromDraft] = useState(from);
   const [toDraft, setToDraft] = useState(to);
@@ -2420,6 +2437,7 @@ function ExpensesList() {
   const [undo, setUndo] = useState<Entity | null>(null);
   const [error, setError] = useState("");
   const all = store.rows("expenses");
+  const allArchived = all.length > 0 && all.every((expense) => !!expense.archived_at || expense.archived === true);
   const rows = all
     .filter(
       (e: Entity) =>
@@ -2429,8 +2447,8 @@ function ExpensesList() {
         (cat === "all" || category(e.category) === cat) &&
         (currency === "all" || o(e.amount).currency === currency) &&
         (state === "archived"
-          ? !!e.archived_at
-          : !e.archived_at &&
+          ? !!e.archived_at || e.archived === true
+          : !e.archived_at && !e.archived &&
             (state === "all" || classification(e) === state)) &&
         (!from || effectiveExpenseDate(store, e) >= from) &&
         (!to || effectiveExpenseDate(store, e) <= to),
@@ -2467,7 +2485,7 @@ function ExpensesList() {
         }
       />
       <MoneyTabs />
-      <div
+      {(all.length > 0 || hasFilters) && <div
         className="row"
         style={{
           justifyContent: "space-between",
@@ -2477,6 +2495,7 @@ function ExpensesList() {
       >
         <AmountGroups
           caption="Recorded costs · filtered"
+          emptyLabel="No recorded expenses in this view"
           values={rows
             .filter((e: Entity) => classification(e) === "recorded")
             .map((e: Entity) =>
@@ -2485,13 +2504,14 @@ function ExpensesList() {
         />
         <AmountGroups
           caption="Estimated costs · filtered"
+          emptyLabel="No estimates in this view"
           values={rows
             .filter((e: Entity) => classification(e) === "estimated")
             .map((e: Entity) =>
               amount(effectiveExpense(store, e), s(o(e.amount).currency)),
             )}
         />
-      </div>
+      </div>}
       <ErrorText value={error} />
       {undo && (
         <div className="money-receipt-row" role="status">
@@ -2506,11 +2526,11 @@ function ExpensesList() {
                 );
                 return;
               }
-              const result = (await store.command("record.save", {
+              const result = (await store.command("record.archive", {
                 table: "expenses",
                 id: undo.id,
                 expected_version: current?.version,
-                values: { archived_at: null, archived: false },
+                archived: false,
               }));
               if (!result.ok) setError(result.message);
               else {
@@ -2524,15 +2544,8 @@ function ExpensesList() {
         </div>
       )}
       <Panel>
-        <div className="money-filter">
-          <Field label="Search expenses">
-            <input
-              value={q}
-              onChange={(e) => patch({ q: e.target.value, page: null })}
-              maxLength={200}
-              placeholder="Expense or project"
-            />
-          </Field>
+        {(all.length > 0 || hasFilters) && <div className="money-filter">
+          <div className="field money-search"><span>Search expenses</span><SearchBar value={q} placeholder="Search expenses by name or project" onChange={(value) => patch({ q: value, page: null })} /></div>
           <FilterField
             label="Category"
             value={cat}
@@ -2569,16 +2582,16 @@ function ExpensesList() {
           >
             {from || to ? "Edit date range" : "Date range"}
           </Button>
-          <Button
+          {hasFilters && <Button
             variant="secondary"
             onClick={() => router.push("/app/money/expenses")}
           >
             Clear filters
-          </Button>
-          <Button variant="secondary" onClick={() => patch({ export: "1" })}>
+          </Button>}
+          {rows.length > 0 && <Button variant="secondary" onClick={() => patch({ export: "1" })}>
             <Download size={16} /> Export
-          </Button>
-        </div>
+          </Button>}
+        </div>}
         {from || to ? (
           <p className="money-subtitle">
             {from ? date(from) : "Any start"} to {to ? date(to) : "Any end"}
@@ -2612,7 +2625,7 @@ function ExpensesList() {
                     </td>
                     <td>
                       <Badge>
-                        {e.archived_at ? "Archived" : label(classification(e))}
+                        {e.archived_at || e.archived ? "Archived" : label(classification(e))}
                       </Badge>
                     </td>
                     <td className="optional-column">
@@ -2635,7 +2648,7 @@ function ExpensesList() {
                         >
                           <ArrowUpRight size={16} />
                         </Button>
-                        {!e.archived_at && (
+                        {!e.archived_at && !e.archived && (
                           <Button
                             variant="secondary"
                             aria-label={`Archive expense ${s(e.description)}`}
@@ -2655,25 +2668,25 @@ function ExpensesList() {
           <Empty
             title={
               all.length
-                ? "No expenses match these filters."
+                ? allArchived && !hasFilters ? "Your saved expenses are archived." : "No expenses match these filters."
                 : "A little clarity on business costs."
             }
             description={
               all.length
-                ? "Try a wider date range or another category."
+                ? allArchived && !hasFilters ? "Archived costs stay in your history. Open them to review earlier records." : "Try a wider date range or another category."
                 : "Track estimates separately from manually recorded costs."
             }
           >
-            <Button
+            {all.length > 0 && <Button
               variant="secondary"
               onClick={() =>
                 all.length
-                  ? router.push("/app/money/expenses")
+                  ? allArchived && !hasFilters ? patch({ state: "archived", page: null }) : router.push("/app/money/expenses")
                   : patch({ expense: "new" })
               }
             >
-              {all.length ? "Clear filters" : "Add expense"}
-            </Button>
+              {all.length ? allArchived && !hasFilters ? "View archived expenses" : "Clear filters" : "Add expense"}
+            </Button>}
           </Empty>
         )}
         <Pager count={rows.length} />
@@ -2691,7 +2704,7 @@ function ExpensesList() {
             title="Expense unavailable"
             onClose={() => patch({ expense: null })}
           >
-            <p>No expense with that ID exists in this scenario.</p>
+            <p>This expense is unavailable. Close this view to find the current record.</p>
           </Modal>
         ))}
       {query.get("export") === "1" && (
@@ -2784,6 +2797,9 @@ function ExpenseEditor({
   const [reason, setReason] = useState("");
   const [reviewCorrection, setReviewCorrection] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const savingRef = useRef(false);
+  const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [discard, setDiscard] = useState(false);
   const [newCurrency, setNewCurrency] = useState("");
@@ -2794,18 +2810,21 @@ function ExpenseEditor({
   const attached = expense
     ? store.record("attachments", s(expense.attachment_id))
     : undefined;
-  useDirtyGuard(dirty);
   function close() {
+    if (savingRef.current) return;
     if (dirty) setDiscard(true);
     else onClose();
   }
   function validate(): number | null {
     const minor = parseAmount(value, currency);
+    setFieldErrors({});
     if (!name.trim() || name.length > 160) {
+      setFieldErrors({ name: "Enter an expense name, up to 160 characters." });
       setError("Enter an expense name, up to 160 characters.");
       return null;
     }
     if (minor === null || minor <= 0) {
+      setFieldErrors({ amount: `Enter a positive ${currency} amount${currency === "USD" ? " with no more than two decimals" : " with no decimals"}.` });
       setError(
         `Enter a positive ${currency} amount with ${currency === "USD" ? "at most two decimal places" : "no decimals"}.`,
       );
@@ -2816,16 +2835,19 @@ function ExpenseEditor({
       Number.isNaN(new Date(day).getTime()) ||
       (type === "recorded" && day > sampleDay)
     ) {
+      setFieldErrors({ day: "Choose a valid date. Recorded expenses cannot be future dated." });
       setError(
-        "Recorded expenses need a valid date no later than the sample date. Use an estimate for future costs.",
+        "Recorded expenses need a valid date no later than today. Use an estimate for future costs.",
       );
       return null;
     }
     if (type === "recorded" && !basis.trim() && !recorded) {
+      setFieldErrors({ basis: "Add the evidence or note supporting this manual record." });
       setError("Add the evidence or note supporting this manual record.");
       return null;
     }
     if (correction && reason.trim().length < 3) {
+      setFieldErrors({ reason: "Explain the correction in at least 3 characters." });
       setError("Explain the correction in at least 3 characters.");
       return null;
     }
@@ -2833,12 +2855,16 @@ function ExpenseEditor({
     return minor;
   }
   async function save() {
+    if (savingRef.current) return;
     const minor = validate();
     if (minor === null) return;
     if (correction && !reviewCorrection) {
       setReviewCorrection(true);
       return;
     }
+    savingRef.current = true;
+    setSaving(true);
+    try {
     const result = correction
       ? (await store.command("expense.correct", {
           id: expense?.id,
@@ -2849,8 +2875,7 @@ function ExpenseEditor({
           reason: reason.trim(),
           expense_date: day,
         }))
-      : (await store.command("record.save", {
-          table: "expenses",
+      : (await store.command("expense.save", {
           id: expense?.id,
           idempotency_key: operationId,
           expected_version: baseVersion,
@@ -2872,11 +2897,14 @@ function ExpenseEditor({
     store.notify(result.message);
     setDirty(false);
     onClose();
+    } finally { savingRef.current = false; setSaving(false); }
   }
   function change(setter: (v: string) => void, v: string) {
     setter(v);
     setDirty(true);
     setReviewCorrection(false);
+    setFieldErrors({});
+    setError("");
   }
   return (
     <>
@@ -2889,12 +2917,14 @@ function ExpenseEditor({
               : "Add expense"
         }
         onClose={close}
+        closeDisabled={saving}
       >
-        <form
+        <Form
+          noValidate
           className="stack"
           onSubmit={(e) => {
             e.preventDefault();
-            save();
+            return save();
           }}
         >
           <ErrorText value={error} />
@@ -2931,7 +2961,7 @@ function ExpenseEditor({
               . This changes the ledger only; no refund or payment occurs.
             </div>
           ) : null}
-          <Field label="Expense name">
+          <Field label="Expense name" error={fieldErrors.name}>
             <input
               value={name}
               onChange={(e) => change(setName, e.target.value)}
@@ -2984,6 +3014,7 @@ function ExpenseEditor({
                   ? `Revised amount (${currency})`
                   : `Amount (${currency})`
               }
+              error={fieldErrors.amount}
             >
               <input
                 value={value}
@@ -2993,7 +3024,7 @@ function ExpenseEditor({
                 required
               />
             </Field>
-            <Field label="Expense date">
+            <Field label="Expense date" error={fieldErrors.day}>
               <input
                 value={day}
                 type="date"
@@ -3031,7 +3062,7 @@ function ExpenseEditor({
               ))}
             </select>
           </Field>
-          <Field label="Evidence or note">
+          <Field label="Evidence or note" error={fieldErrors.basis} help={type === "recorded" && !recorded ? "Required for a manually recorded expense." : "Optional context for this cost."}>
             <textarea
               className="resize-none"
               value={basis}
@@ -3042,7 +3073,7 @@ function ExpenseEditor({
             />
           </Field>
           {correction && (
-            <Field label="Correction reason">
+            <Field label="Correction reason" error={fieldErrors.reason}>
               <textarea
                 className="resize-none"
                 value={reason}
@@ -3066,7 +3097,7 @@ function ExpenseEditor({
                 </strong>
                 <p className="money-upload-info">
                   {attached
-                    ? "Local evidence · availability checked on opening"
+                    ? store.connected ? "Stored attachment · availability checked on opening" : "Local evidence · availability checked on opening"
                     : "Add actual evidence when you have it."}
                 </p>
               </div>
@@ -3081,7 +3112,7 @@ function ExpenseEditor({
             </div>
           )}
           <div className="actions money-form-footer">
-            <Button type="submit">
+            <Button type="submit" pending={saving} pendingLabel="Saving expense…">
               {correction
                 ? reviewCorrection
                   ? "Save correction"
@@ -3097,11 +3128,11 @@ function ExpenseEditor({
                 Create correction
               </Button>
             )}
-            <Button type="button" variant="secondary" onClick={close}>
+            <Button type="button" variant="secondary" disabled={saving} onClick={close}>
               Cancel
             </Button>
           </div>
-        </form>
+        </Form>
       </Modal>
       {query.get("receipt") === "1" && expense && (
         <ReceiptAttachment
@@ -3150,6 +3181,9 @@ function ReceiptAttachment({
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [detached, setDetached] = useState("");
+  const upload = useRef<{ file: File; saved: Awaited<ReturnType<typeof persistUpload>>; attachmentId?: string } | null>(null);
+  const inFlight = useRef(false);
+  const [expectedExpense] = useState({ version: expense.version, attachmentId: s(expense.attachment_id) });
   useEffect(() => {
     let active = true;
     setLoading(true);
@@ -3185,6 +3219,7 @@ function ReceiptAttachment({
     return () => URL.revokeObjectURL(next);
   }, [blob]);
   async function choose(next: File | null) {
+    if (inFlight.current) return;
     setFile(next);
     setError("");
     if (next) {
@@ -3193,37 +3228,47 @@ function ReceiptAttachment({
     }
   }
   async function save() {
-    if (!file) return;
+    if (!file || inFlight.current) return;
+    inFlight.current = true;
     setBusy(true);
     try {
-      const upload = await persistUpload(file);
-      const saved = (await store.command("record.save", {
-        table: "attachments",
+      const problem = await validateUpload(file);
+      if (problem) throw new Error(problem);
+      if (expectedExpense.attachmentId !== s(expense.attachment_id) || expectedExpense.version !== expense.version) throw new Error("This expense changed. Close and reopen the receipt to review the current record before replacing its evidence.");
+      const savedUpload = upload.current?.file === file ? upload.current.saved : await persistUpload(file);
+      if (upload.current?.file !== file) upload.current = { file, saved: savedUpload };
+      let attachmentId = upload.current?.attachmentId;
+      if (!attachmentId) {
+      const saved = (await store.command("file.attach", {
         values: {
-          original_filename: upload.name,
-          filename: upload.name,
-          media_type: upload.type,
-          byte_size: upload.size,
-          sha256: upload.sha256,
-          storage_kind: "local_blob",
-          storage_locator: upload.id,
+          name: savedUpload.name,
+          original_filename: savedUpload.name,
+          filename: savedUpload.name,
+          media_type: savedUpload.type,
+          byte_length: savedUpload.size,
+          sha256: savedUpload.sha256,
+          storage_kind: store.connected ? "private" : "local_blob",
+          storage_locator: savedUpload.id,
           availability: "available",
           origin: "manual_attachment",
           audience: "owner",
+          shared_with_buyer: false,
           previous_attachment_id: expense.attachment_id || null,
         },
       }));
       if (!saved.ok || !saved.id) throw new Error(saved.message);
-      const linked = (await store.command("record.save", {
-        table: "expenses",
+      attachmentId = saved.id;
+      if (upload.current) upload.current.attachmentId = attachmentId;
+      }
+      const linked = (await store.command("expense.save", {
         id: expense.id,
-        expected_version: expense.version,
-        values: { attachment_id: saved.id },
+        expected_version: expectedExpense.version,
+        values: { attachment_id: attachmentId },
       }));
       if (!linked.ok) throw new Error(linked.message);
       setFile(null);
       store.notify(
-        "Actual receipt bytes saved locally. Expense settlement is unchanged.",
+        store.connected ? "Receipt saved privately. Expense settlement is unchanged." : "Actual receipt bytes saved locally. Expense settlement is unchanged.",
       );
       onClose();
     } catch (e) {
@@ -3233,11 +3278,12 @@ function ReceiptAttachment({
           : "Could not save the receipt. Retry with this file.",
       );
     } finally {
+      inFlight.current = false;
       setBusy(false);
     }
   }
   return (
-    <Modal title="Expense receipt" onClose={onClose}>
+    <Modal title="Expense receipt" onClose={onClose} closeDisabled={busy}>
       <div className="stack">
         <ErrorText value={error} />
         {attachment && (
@@ -3247,7 +3293,7 @@ function ReceiptAttachment({
               Manual attachment · original bytes
             </p>
             {loading ? (
-              <p>Reading local receipt…</p>
+              <p role="status">{store.connected ? "Opening receipt…" : "Reading local receipt…"}</p>
             ) : blob ? (
               <>
                 {blob.type.startsWith("image/") ? (
@@ -3290,10 +3336,9 @@ function ReceiptAttachment({
             )}
             <Button
               variant="secondary"
-              disabled={!!expense.historical_evidence_locked}
+              disabled={!!expense.historical_evidence_locked || busy}
               onClick={async () => {
-                const result = (await store.command("record.save", {
-                  table: "expenses",
+                const result = (await store.command("expense.save", {
                   id: expense.id,
                   expected_version: expense.version,
                   values: { attachment_id: null },
@@ -3314,10 +3359,10 @@ function ReceiptAttachment({
         {detached && (
           <Button
             variant="secondary"
+            disabled={busy}
             onClick={async () => {
               const current = store.record("expenses", expense.id);
-              const result = (await store.command("record.save", {
-                table: "expenses",
+              const result = (await store.command("expense.save", {
                 id: expense.id,
                 expected_version: current?.version,
                 values: { attachment_id: detached },
@@ -3335,6 +3380,7 @@ function ReceiptAttachment({
         <Field label={attachment ? "Replace receipt" : "Attach receipt"}>
           <input
             type="file"
+            disabled={busy}
             accept=".pdf,.png,.jpg,.jpeg,.txt"
             onChange={async (e) => void (await choose(e.target.files?.[0] || null))}
           />
@@ -3351,7 +3397,9 @@ function ReceiptAttachment({
         <div className="actions">
           <Button
             disabled={!file || !!error || busy}
-            onClick={async () => void (await save())}
+            pending={busy}
+            pendingLabel="Saving receipt…"
+            onClick={save}
           >
             {busy ? "Saving actual file…" : "Save receipt"}
           </Button>
@@ -3538,17 +3586,17 @@ function ExpenseExport({
     }
   }
   return (
-    <Modal title="Export expenses" onClose={onClose}>
+    <Modal title="Export expenses" onClose={onClose} closeDisabled={busy}>
       <div className="stack">
         <ErrorText value={error} />
         <Field label="Export scope">
-          <select value={scope} onChange={(e) => setScope(e.target.value)}>
+          <select value={scope} disabled={busy} onChange={(e) => setScope(e.target.value)}>
             <option value="filtered">Current filtered results</option>
             <option value="all">All expenses including archived</option>
           </select>
         </Field>
         <Field label="Format">
-          <select value={format} onChange={(e) => setFormat(e.target.value)}>
+          <select value={format} disabled={busy} onChange={(e) => setFormat(e.target.value)}>
             <option value="csv">Expenses CSV</option>
             <option value="zip">Receipt ZIP</option>
           </select>
@@ -3556,6 +3604,7 @@ function ExpenseExport({
         <label className="money-inline-checkbox">
           <input
             type="checkbox"
+            disabled={busy}
             checked={estimates}
             onChange={(e) => setEstimates(e.target.checked)}
           />
@@ -3586,7 +3635,9 @@ function ExpenseExport({
         <div className="actions">
           <Button
             disabled={busy || (format === "zip" && !receiptCheck)}
-            onClick={async () => void (await generate())}
+            pending={busy}
+            pendingLabel="Generating download…"
+            onClick={generate}
           >
             {busy
               ? "Generating…"

@@ -1,3 +1,5 @@
+> Historical baseline record. For the 1.2.0 source handoff, read [IMPLEMENTATION_VERIFICATION.md](IMPLEMENTATION_VERIFICATION.md). The earlier results below were not rerun merely by retaining this document.
+
 # Verification of the delivered frontend
 
 Verified 16 October 2026. These are observed results for the source handoff, not a production certification. Runtime checks used Node 24.19.0 and npm 11.9.0.

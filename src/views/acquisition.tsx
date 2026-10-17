@@ -4,11 +4,14 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useStore } from "@/lib/store";
+import { UiText } from "@/components/ui-text";
 import { BackendClient } from "@/lib/backend-client";
 import { Entity, Input, a, b, date, label, money, n, o, s } from "@/lib/types";
 import { downloadPdf } from "@/lib/downloads";
 import { amendmentSchedule } from "@/lib/engine";
-import { zonedDateTime } from "@/lib/business-time";
+import { localDateTime, zonedDateTime } from "@/lib/business-time";
+import { uiMessage } from "@/lib/i18n";
+import { activeScoutRun, buyerInvitationIntent } from "@/lib/acquisition-ux";
 import {
   PageHead,
   Panel,
@@ -17,6 +20,7 @@ import {
   Badge,
   Empty,
   Field,
+  Form,
   Modal,
   Confirm,
   SearchBar,
@@ -118,7 +122,7 @@ function Unknown({ kind }: { kind: string }) {
       title={`${kind} unavailable`}
       description="This record does not exist in the current workspace. Check the link or return to the list."
     >
-      <LinkButton href="/app/opportunities">Back to opportunities</LinkButton>
+      <LinkButton href="/app/opportunities">{"Back to opportunities"}</LinkButton>
     </Empty>
   );
 }
@@ -144,7 +148,7 @@ function Choice({
         value={value}
         onChange={(e) => onChange(e.target.value)}
       >
-        <option value="">All {caption.toLowerCase()}</option>
+        <option value=""><UiText>{"All"}</UiText> {caption.toLowerCase()}</option>
         {options.map((v) => (
           <option value={v} key={v}>
             {label(v)}
@@ -170,8 +174,7 @@ function Pager({
         variant="secondary"
         disabled={page <= 1}
         onClick={() => onChange(page - 1)}
-      >
-        Previous
+      >{"Previous"}
       </Button>
       <span aria-live="polite">
         Page {page} of {total}
@@ -180,8 +183,7 @@ function Pager({
         variant="secondary"
         disabled={page >= total}
         onClick={() => onChange(page + 1)}
-      >
-        Next
+      >{"Next"}
       </Button>
     </nav>
   ) : null;
@@ -190,16 +192,18 @@ function FormClose({
   dirty,
   onClose,
   children,
+  pending = false,
 }: {
   dirty: boolean;
   onClose: () => void;
+  pending?: boolean;
   children: (close: () => void) => React.ReactNode;
 }) {
   const [discard, setDiscard] = useState(false);
   useDirtyGuard(dirty);
   return (
     <>
-      {children(() => (dirty ? setDiscard(true) : onClose()))}
+      {children(() => { if (pending) return; if (dirty) setDiscard(true); else onClose(); })}
       {discard && (
         <Confirm
           title="Discard unsaved changes?"
@@ -281,7 +285,7 @@ function LeadList() {
       <PageHead
         title={t("Good opportunities, thoughtfully chosen.")}
         description="Every request has a source, a next step, and room for your judgment."
-        action={<Button onClick={() => set({ new: "1" })}>Add lead</Button>}
+        action={<Button onClick={() => set({ new: "1" })}>{"Add lead"}</Button>}
       />
       <div className="acq-toolbar">
         <SearchBar
@@ -306,16 +310,15 @@ function LeadList() {
           value={sort}
           onChange={(e) => set({ sort: e.target.value })}
         >
-          <option value="newest">Newest first</option>
-          <option value="client">Client A–Z</option>
+          <option value="newest"><UiText>{"Newest first"}</UiText></option>
+          <option value="client"><UiText>{"Client A–Z"}</UiText></option>
         </select>
         <Button
           variant="ghost"
           onClick={() =>
             set({ q: null, status: null, source: null, sort: null, page: null })
           }
-        >
-          Clear filters
+        >{"Clear filters"}
         </Button>
       </div>
       <div className="row acq-list-meta">
@@ -323,8 +326,7 @@ function LeadList() {
           {filtered.length}{" "}
           {filtered.length === 1 ? "opportunity" : "opportunities"}
         </span>
-        <Button variant="ghost" onClick={() => set({ import: "1" })}>
-          Import request
+        <Button variant="ghost" onClick={() => set({ import: "1" })}>{"Import request"}
         </Button>
       </div>
       {!filtered.length ? (
@@ -406,8 +408,7 @@ function LeadList() {
                   <LinkButton
                     href={`/app/opportunities/${lead.id}?return=${encodeURIComponent(search.toString())}`}
                     variant="ghost"
-                  >
-                    Open lead →
+                  >{"Open lead →"}
                   </LinkButton>
                 </div>
               </article>
@@ -454,6 +455,7 @@ function LeadEditor({ lead, onClose }: { lead?: Entity; onClose: () => void }) {
   const [form, setForm] = useState(initial),
     [error, setError] = useState("");
   const [expectedVersion] = useState(lead?.version);
+  const [saving, setSaving] = useState(false);
   const dirty = JSON.stringify(form) !== JSON.stringify(initial);
   const field = (key: keyof typeof initial, value: string) =>
     setForm((f) => ({ ...f, [key]: value }));
@@ -468,6 +470,8 @@ function LeadEditor({ lead, onClose }: { lead?: Entity; onClose: () => void }) {
       return setError("Use an http or https source URL.");
     if (form.days && (!/^\d+$/.test(form.days) || +form.days < 1))
       return setError("Requested duration must be a positive whole number.");
+    setSaving(true);
+    try {
     const result = (await command("opportunity.save", {
       id: lead?.id,
       expected_version: expectedVersion,
@@ -487,12 +491,13 @@ function LeadEditor({ lead, onClose }: { lead?: Entity; onClose: () => void }) {
     if (!result.ok) return setError(result.message);
     onClose();
     router.push(`/app/opportunities/${result.id || lead?.id}`);
+    } finally { setSaving(false); }
   }
   return (
-    <FormClose dirty={dirty} onClose={onClose}>
+    <FormClose dirty={dirty} onClose={onClose} pending={saving}>
       {(close) => (
-        <Modal title={lead ? "Edit lead" : "Add a lead"} onClose={close}>
-          <form className="stack" noValidate onSubmit={save}>
+        <Modal title={lead ? "Edit lead" : "Add a lead"} onClose={close} closeDisabled={saving}>
+          <Form className="stack" noValidate onSubmit={save}><fieldset className="acq-pending-fields" disabled={saving}>
             <Notice text={error} />
             {!lead && (
               <Field label="Link an existing client (optional)">
@@ -507,7 +512,7 @@ function LeadEditor({ lead, onClose }: { lead?: Entity; onClose: () => void }) {
                     }));
                   }}
                 >
-                  <option value="">Create a separate client</option>
+                  <option value=""><UiText>{"Create a separate client"}</UiText></option>
                   {rows("clients").map((c) => (
                     <option key={c.id} value={c.id}>
                       {s(c.name)}
@@ -581,16 +586,16 @@ function LeadEditor({ lead, onClose }: { lead?: Entity; onClose: () => void }) {
               an offer or reserve your calendar.
             </p>
             <details>
-              <summary>Source details</summary>
+              <summary><UiText>{"Source details"}</UiText></summary>
               <div className="stack">
                 <Field label="Source type">
                   <select
                     value={form.source_kind}
                     onChange={(e) => field("source_kind", e.target.value)}
                   >
-                    <option value="manual_entry">Manual entry</option>
-                    <option value="sample_message">Sample message</option>
-                    <option value="imported_text">Imported text</option>
+                    <option value="manual_entry"><UiText>{"Manual entry"}</UiText></option>
+                    <option value="sample_message"><UiText>{"Sample message"}</UiText></option>
+                    <option value="imported_text"><UiText>{"Imported text"}</UiText></option>
                   </select>
                 </Field>
                 <Field label="Source or reference title">
@@ -609,12 +614,11 @@ function LeadEditor({ lead, onClose }: { lead?: Entity; onClose: () => void }) {
               </div>
             </details>
             <div className="actions">
-              <Button type="submit">Save lead</Button>
-              <Button type="button" variant="secondary" onClick={close}>
-                Cancel
+              <Button type="submit">{"Save lead"}</Button>
+              <Button type="button" variant="secondary" onClick={close}>{"Cancel"}
               </Button>
             </div>
-          </form>
+          </fieldset></Form>
         </Modal>
       )}
     </FormClose>
@@ -770,7 +774,7 @@ function ImportLeads({ onClose }: { onClose: () => void }) {
               />
             </Field>
             <div className="actions">
-              <Button onClick={inspect}>Preview request rows</Button>
+              <Button onClick={inspect}>{"Preview request rows"}</Button>
               {text && (
                 <Button
                   variant="secondary"
@@ -779,8 +783,7 @@ function ImportLeads({ onClose }: { onClose: () => void }) {
                     setPreview([]);
                     setError("");
                   }}
-                >
-                  Remove import
+                >{"Remove import"}
                 </Button>
               )}
             </div>
@@ -837,13 +840,11 @@ function ImportLeads({ onClose }: { onClose: () => void }) {
                     </div>
                   ))}
                 </div>
-                <Button onClick={save}>
-                  Save {preview.length - 1} lead{preview.length > 2 ? "s" : ""}
+                <Button onClick={save}>{"Save"} {preview.length - 1} lead{preview.length > 2 ? "s" : ""}
                 </Button>
               </>
             )}
-            <Button variant="secondary" onClick={close}>
-              Cancel
+            <Button variant="secondary" onClick={close}>{"Cancel"}
             </Button>
           </div>
         </Modal>
@@ -853,7 +854,7 @@ function ImportLeads({ onClose }: { onClose: () => void }) {
 }
 
 function LeadDetail({ id }: { id: string }) {
-  const { record, rows, command, notify } = useStore();
+  const { record, rows, command, notify, t } = useStore();
   const { search, set } = useQuery();
   const lead = record("opportunities", id);
   const [error, setError] = useState(""),
@@ -868,14 +869,7 @@ function LeadDetail({ id }: { id: string }) {
       .filter((x): x is Entity => !!x),
     assessments = rows("assessments").filter((x) => x.opportunity_id === id);
   const source = record("sources", s(lead.source_id)) || sources.at(-1);
-  const activeRun = rows("agent_runs").find(
-    (r) =>
-      r.opportunity_id === id &&
-      r.role_id === "scout" &&
-      ["queued", "running", "paused", "blocked", "waiting_input"].includes(
-        s(r.status),
-      ),
-  );
+  const activeRun = activeScoutRun(rows("agent_runs"), id, rows("artifacts"));
   const blocked = [
     "declined",
     "archived",
@@ -909,12 +903,10 @@ function LeadDetail({ id }: { id: string }) {
         description={`${s(client?.name)} · ${label(lead.status)}`}
         action={
           lead.offer_id ? (
-            <LinkButton href={`/app/offers/${lead.offer_id}`}>
-              Open offer
+            <LinkButton href={`/app/offers/${lead.offer_id}`}>{"Open offer"}
             </LinkButton>
           ) : (
-            <LinkButton href={`/app/offers?new=1&opportunity=${id}`}>
-              Draft offer
+            <LinkButton href={`/app/offers?new=1&opportunity=${id}`}>{"Draft offer"}
             </LinkButton>
           )
         }
@@ -923,12 +915,11 @@ function LeadDetail({ id }: { id: string }) {
       <div className="acq-detail">
         <Panel>
           <div className="row acq-section-head">
-            <h2>The original request</h2>
+            <h2><UiText>{"The original request"}</UiText></h2>
             <Button
               variant="secondary"
               onClick={() => set({ panel: "source" })}
-            >
-              View source
+            >{"View source"}
             </Button>
           </div>
           <p className="acq-request">
@@ -936,13 +927,13 @@ function LeadDetail({ id }: { id: string }) {
           </p>
           <div className="acq-facts">
             <div>
-              <span>Requested budget</span>
+              <span><UiText>{"Requested budget"}</UiText></span>
               <strong>
                 {req?.budget ? money(req.budget) : "Not provided"}
               </strong>
             </div>
             <div>
-              <span>Requested timing</span>
+              <span><UiText>{"Requested timing"}</UiText></span>
               <strong>
                 {req?.delivery_business_days
                   ? `${n(req.delivery_business_days)} business days`
@@ -950,19 +941,18 @@ function LeadDetail({ id }: { id: string }) {
               </strong>
             </div>
             <div>
-              <span>Source</span>
+              <span><UiText>{"Source"}</UiText></span>
               <strong>{source ? label(source.kind) : "Unavailable"}</strong>
             </div>
           </div>
-          <Button variant="secondary" onClick={() => set({ edit: "1" })}>
-            Edit lead
+          <Button variant="secondary" onClick={() => set({ edit: "1" })}>{"Edit lead"}
           </Button>
         </Panel>
         <Panel>
           <div className="row acq-section-head">
             <div>
-              <span className="eyebrow">Scout’s perspective</span>
-              <h2>A closer look</h2>
+              <span className="eyebrow"><UiText>{"Scout’s perspective"}</UiText></span>
+              <h2><UiText>{"A closer look"}</UiText></h2>
             </div>
             <img
               className="acq-avatar"
@@ -984,6 +974,11 @@ function LeadDetail({ id }: { id: string }) {
               .
             </p>
           )}
+          {activeRun && (
+            <p className="acq-task-status" role="status">
+              {uiMessage("acquisition.scout.status", s(record("preferences", "preferences_alya")?.locale, "en"), { status: t(activeRun.status === "completed" ? "Ready for review" : label(activeRun.status || activeRun.state)) })}
+            </p>
+          )}
           <div className="actions">
             <Button
               variant="secondary"
@@ -993,37 +988,35 @@ function LeadDetail({ id }: { id: string }) {
                   role_id: "scout",
                   intent: "assess_opportunity",
                   opportunity_id: id,
+                  input_refs: [{ table: "opportunities", id, version: lead.version }],
                 }))
               }
-            >
-              Ask Scout to assess
+            >{"Ask Scout to assess"}
             </Button>
             {activeRun && (
               <LinkButton
                 variant="secondary"
                 href={`/app/team?task=${activeRun.id}`}
-              >
-                Open Scout task →
+              >{activeRun.status === "completed" ? "Review Scout result" : "Open Scout task →"}
               </LinkButton>
             )}
             {assessments.length > 0 && (
               <Button
                 variant="secondary"
                 onClick={() => set({ panel: "assessment" })}
-              >
-                Inspect assessment
+              >{"Inspect assessment"}
               </Button>
             )}
           </div>
         </Panel>
       </div>
       <Panel>
-        <h2>Your next step</h2>
+        <h2><UiText>{"Your next step"}</UiText></h2>
         <div className="actions">
           {["new", "needs_information", "assessing"].includes(
             s(lead.status),
           ) && (
-            <Button onClick={() => setConfirm("qualify")}>Qualify lead</Button>
+            <Button onClick={() => setConfirm("qualify")}>{"Qualify lead"}</Button>
           )}
           {!blocked && (
             <Button
@@ -1034,25 +1027,21 @@ function LeadDetail({ id }: { id: string }) {
                 );
                 setConfirm("question");
               }}
-            >
-              Request missing information
+            >{"Request missing information"}
             </Button>
           )}
           {!blocked && (
-            <Button variant="danger" onClick={() => setConfirm("decline")}>
-              Decline lead
+            <Button variant="danger" onClick={() => setConfirm("decline")}>{"Decline lead"}
             </Button>
           )}
           {["declined", "archived"].includes(s(lead.status)) && (
-            <Button onClick={async () => (await run("opportunity.restore"))}>
-              Restore lead
+            <Button onClick={async () => (await run("opportunity.restore"))}>{"Restore lead"}
             </Button>
           )}
           <LinkButton
             href={`/app/clients/${lead.client_id}`}
             variant="secondary"
-          >
-            Open client
+          >{"Open client"}
           </LinkButton>
         </div>
       </Panel>
@@ -1067,7 +1056,7 @@ function LeadDetail({ id }: { id: string }) {
                 <article key={src.id}>
                   <div className="row">
                     <h3>{s(src.label)}</h3>
-                    <Badge>Version {src.version}</Badge>
+                    <Badge>{"Version"} {src.version}</Badge>
                   </div>
                   <p className="acq-request">{s(src.content)}</p>
                   <p className="muted">
@@ -1079,8 +1068,7 @@ function LeadDetail({ id }: { id: string }) {
                       href={safeUrl(src.locator || src.url)}
                       target="_blank"
                       rel="noopener noreferrer"
-                    >
-                      Open original link ↗
+                    ><UiText>{"Open original link ↗"}</UiText>
                     </a>
                   ) : (
                     <p className="muted">
@@ -1105,8 +1093,7 @@ function LeadDetail({ id }: { id: string }) {
                     <Button
                       variant="secondary"
                       onClick={() => set({ panel: null, edit: "1" })}
-                    >
-                      Replace request source
+                    >{"Replace request source"}
                     </Button>
                   </div>
                   {!src.connection_id && (
@@ -1195,11 +1182,9 @@ function LeadDetail({ id }: { id: string }) {
                 onClick={async () => {
                   if ((await run("opportunity.decline", { reason })).ok) setConfirm("");
                 }}
-              >
-                Confirm decline
+              >{"Confirm decline"}
               </Button>
-              <Button variant="secondary" onClick={() => setConfirm("")}>
-                Keep lead
+              <Button variant="secondary" onClick={() => setConfirm("")}>{"Keep lead"}
               </Button>
             </div>
           </div>
@@ -1237,14 +1222,12 @@ function LeadDetail({ id }: { id: string }) {
                   setConfirm("");
                 } else setError(result.message);
               }}
-            >
-              Save question draft
+            >{"Save question draft"}
             </Button>
             <LinkButton
               href={`/app/clients/${lead.client_id}?tab=messages`}
               variant="secondary"
-            >
-              Open client messages
+            >{"Open client messages"}
             </LinkButton>
           </div>
         </Modal>
@@ -1294,7 +1277,7 @@ function OfferList() {
       <PageHead
         title="Clear terms. A confident yes."
         description="Shape the right offer, review the details, and share when you are ready."
-        action={<Button onClick={() => set({ new: "1" })}>Create offer</Button>}
+        action={<Button onClick={() => set({ new: "1" })}>{"Create offer"}</Button>}
       />
       <div className="acq-toolbar">
         <SearchBar
@@ -1313,15 +1296,14 @@ function OfferList() {
           value={sort}
           onChange={(e) => set({ sort: e.target.value })}
         >
-          <option value="newest">Recently updated</option>
-          <option value="client">Client A–Z</option>
+          <option value="newest"><UiText>{"Recently updated"}</UiText></option>
+          <option value="client"><UiText>{"Client A–Z"}</UiText></option>
           <option value="amount">Amount by currency</option>
         </select>
         <Button
           variant="ghost"
           onClick={() => set({ q: null, status: null, sort: null })}
-        >
-          Clear filters
+        >{"Clear filters"}
         </Button>
       </div>
       <p className="muted offer-list-count" aria-live="polite">
@@ -1348,8 +1330,7 @@ function OfferList() {
                         {s(version?.title)}
                       </Link>
                     </h3>
-                    <span className="muted">
-                      Version {n(version?.revision)} ·{" "}
+                    <span className="muted"><UiText>{"Version"}</UiText> {n(version?.revision)} ·{" "}
                       {a(version?.deliverables).length} deliverables
                     </span>
                   </div>
@@ -1470,7 +1451,7 @@ function OfferTerms({
           </span>
           <h2>{s(version.title)}</h2>
         </div>
-        <Badge>Version {n(version.revision)}</Badge>
+        <Badge>{"Version"} {n(version.revision)}</Badge>
       </div>
       <ul className="acq-deliverables">
         {a<Record<string, unknown>>(version.deliverables).map((item, i) => (
@@ -1485,7 +1466,7 @@ function OfferTerms({
       </ul>
       <div className="acq-facts">
         <div>
-          <span>Total fee</span>
+          <span><UiText>{"Total fee"}</UiText></span>
           <strong className="acq-price">
             {version.price ? money(version.price) : "To confirm"}
           </strong>
@@ -1499,7 +1480,7 @@ function OfferTerms({
           </strong>
         </div>
         <div>
-          <span>Delivery</span>
+          <span><UiText>{"Delivery"}</UiText></span>
           <strong>
             {terms.delivery_business_days
               ? `${n(terms.delivery_business_days)} business days`
@@ -1530,7 +1511,7 @@ function OfferTerms({
       )}
       <p>{s(version.buyer_note)}</p>
       <div className="acq-term-note">
-        <strong>When the work begins</strong>
+        <strong><UiText>{"When the work begins"}</UiText></strong>
         <p>
           {s(
             terms.acceptance_disclosure,
@@ -1606,6 +1587,8 @@ function OfferEditor({
   const [form, setForm] = useState(initial),
     [error, setError] = useState("");
   const [expectedVersion] = useState(offer?.version);
+  const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
   const dirty = JSON.stringify(form) !== JSON.stringify(initial);
   const change = (key: keyof typeof form, value: string) =>
     setForm((f) => ({ ...f, [key]: value }));
@@ -1616,6 +1599,7 @@ function OfferEditor({
     offer.accepted_version_id === offer.current_version_id;
   async function save(e: FormEvent, review = false) {
     e.preventDefault();
+    if (savingRef.current) return;
     if (
       !form.client_id ||
       !form.opportunity_id ||
@@ -1690,6 +1674,9 @@ function OfferEditor({
       amendment_reason: form.reason,
       assessment_ids: a(current?.assessment_ids),
     };
+    savingRef.current = true;
+    setSaving(true);
+    try {
     const result = (await command(amendment ? "offer.amend" : "offer.saveDraft", {
       id: offer?.id,
       expected_version: expectedVersion,
@@ -1699,9 +1686,15 @@ function OfferEditor({
     if (!result.ok) return setError(result.message);
     onClose();
     router.push(`/app/offers/${result.id || offer?.id}`);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "The offer could not be saved. Your draft is still here.");
+    } finally {
+      savingRef.current = false;
+      setSaving(false);
+    }
   }
   return (
-    <FormClose dirty={dirty} onClose={onClose}>
+    <FormClose dirty={dirty} onClose={onClose} pending={saving}>
       {(close) => (
         <Modal
           title={
@@ -1712,8 +1705,10 @@ function OfferEditor({
                 : "Create an offer"
           }
           onClose={close}
+          closeDisabled={saving}
         >
-          <form className="stack" noValidate onSubmit={save}>
+          <Form className="stack" noValidate onSubmit={save}>
+            <fieldset className="acq-pending-fields" disabled={saving}>
             <Notice text={error} />
             {amendment && (
               <p className="acq-term-note">
@@ -1735,7 +1730,7 @@ function OfferEditor({
                     }))
                   }
                 >
-                  <option value="">Choose a client</option>
+                  <option value=""><UiText>{"Choose a client"}</UiText></option>
                   {rows("clients").map((c) => (
                     <option key={c.id} value={c.id}>
                       {s(c.name)}
@@ -1756,7 +1751,7 @@ function OfferEditor({
                     }));
                   }}
                 >
-                  <option value="">Choose an opportunity</option>
+                  <option value=""><UiText>{"Choose an opportunity"}</UiText></option>
                   {rows("opportunities")
                     .filter(
                       (x) => !form.client_id || x.client_id === form.client_id,
@@ -1812,8 +1807,7 @@ function OfferEditor({
               </Field>
             </div>
             {amount !== null && depositBp !== null && depositBp <= 10000 && (
-              <p className="acq-term-note">
-                Deposit{" "}
+              <p className="acq-term-note"><UiText>{"Deposit"}</UiText>{" "}
                 {money({
                   amount_minor: installment(amount, depositBp),
                   currency: form.currency,
@@ -1875,7 +1869,7 @@ function OfferEditor({
               </Field>
             )}
             <details>
-              <summary>Owner-private planning</summary>
+              <summary><UiText>{"Owner-private planning"}</UiText></summary>
               <div className="stack">
                 <Field label="Estimated owner effort in minutes">
                   <input
@@ -1894,7 +1888,7 @@ function OfferEditor({
               </div>
             </details>
             <div className="actions">
-              <Button type="submit">Save draft</Button>
+              <Button type="submit" pending={saving} pendingLabel="Saving draft…">{"Save draft"}</Button>
               <Button
                 type="button"
                 variant="secondary"
@@ -1904,11 +1898,11 @@ function OfferEditor({
                   ? "Submit amendment for review"
                   : "Submit for review"}
               </Button>
-              <Button type="button" variant="secondary" onClick={close}>
-                Cancel edits
+              <Button type="button" variant="secondary" onClick={close}>{"Cancel edits"}
               </Button>
             </div>
-          </form>
+            </fieldset>
+          </Form>
         </Modal>
       )}
     </FormClose>
@@ -1919,6 +1913,8 @@ function OfferDetail({ id }: { id: string }) {
   const { record, rows, command, notify, state, connected } = useStore();
   const { search, set } = useQuery();
   const offer = record("offers", id);
+  const [acting, setActing] = useState(false);
+  const actionRef = useRef(false);
   const [error, setError] = useState(""),
     [destination, setDestination] = useState(""),
     [revision, setRevision] = useState(""),
@@ -1980,6 +1976,10 @@ function OfferDetail({ id }: { id: string }) {
       ? `/buyer/${engagement.id}/offer?grant=${encodeURIComponent(buyerGrant.id)}&version=${encodeURIComponent(s(offer.shared_version_id, s(offer.accepted_version_id)))}`
       : "";
   const run = async (type: string, values: Input = {}) => {
+    if (actionRef.current) return { ok: false, message: "Wait for the current offer action to finish." };
+    actionRef.current = true;
+    setActing(true);
+    try {
     const result = (await command(type, {
       id,
       expected_version: offer.version,
@@ -1993,14 +1993,16 @@ function OfferDetail({ id }: { id: string }) {
       notify(result.message);
     }
     return result;
+    } finally { actionRef.current = false; setActing(false); }
   };
   const pdf = () => {
     const terms = o(version.terms),
       price = o(version.price);
     downloadPdf(
       `Crewmori_Offer_v${n(version.revision)}.pdf`,
-      `Sample offer — ${s(version.title)}`,
+      `${connected ? "Offer" : "Sample offer"} — ${s(version.title)}`,
       [
+        `Prepared by ${s(rows("profiles")[0]?.public_name, s(rows("owners")[0]?.name, "Freelancer"))}`,
         `Prepared for ${s(client?.name)}`,
         `Version ${n(version.revision)}`,
         ...a<Record<string, unknown>>(version.deliverables).map(
@@ -2018,31 +2020,45 @@ function OfferDetail({ id }: { id: string }) {
     );
     notify("Buyer-safe offer PDF generated.");
   };
+  const copyInvitation = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      notify("Buyer invitation copied. Share it with the intended buyer.");
+    } catch {
+      notify("Select and copy the invitation below.");
+    }
+  };
+  const createInvitation = async () => {
+    if (!connected || !engagement) return;
+    setError("");
+    try {
+      const response = await new BackendClient().request<{ url: string }>("/api/buyer/invitations", { engagementId: engagement.id });
+      // Invitation credentials remain in component memory only. Copying this URL again must never rotate access.
+      setFallback(response.url);
+      setConfirm("");
+      await copyInvitation(response.url);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Invitation could not be created. Check the connection before trying again.");
+      setConfirm("");
+    }
+  };
   const copyLink = async () => {
-    if (connected && engagement) {
-      try {
-        const response = await new BackendClient().request<{ url: string }>("/api/buyer/invitations", { engagementId: engagement.id });
-        setFallback(response.url);
-        try { await navigator.clipboard.writeText(response.url); notify("New invitation copied. Previous buyer sessions have been revoked."); } catch { notify("Copy the invitation below."); }
-      } catch (error) { setError(error instanceof Error ? error.message : "Invitation could not be created."); }
+    if (connected) {
+      if (fallback) await copyInvitation(fallback);
+      else setConfirm("invitation");
       return;
     }
     if (!buyerHref) {
-      setError(
-        "The buyer invitation is missing or expired. Prepare a fresh eligible share.",
-      );
+      setError("The buyer invitation is missing or expired. Prepare a fresh eligible share.");
       return;
     }
     const url = `${window.location.origin}${buyerHref}`;
-    try {
-      await navigator.clipboard.writeText(url);
-      notify("Buyer link copied.");
-    } catch {
-      setFallback(url);
-    }
+    setFallback(url);
+    await copyInvitation(url);
   };
   return (
     <>
+      <fieldset className="acq-pending-fields" disabled={acting}>
       <Link
         className="acq-back"
         href={`/app/offers${search.get("return") ? `?${search.get("return")}` : ""}`}
@@ -2073,8 +2089,7 @@ function OfferDetail({ id }: { id: string }) {
           <Button
             variant="secondary"
             onClick={() => set({ version: null, compare: null })}
-          >
-            Return to current version
+          >{"Return to current version"}
           </Button>
         </div>
       )}
@@ -2089,7 +2104,7 @@ function OfferDetail({ id }: { id: string }) {
           <OfferTerms version={version} />
         </Panel>
         <Panel>
-          <span className="eyebrow">Your decision</span>
+          <span className="eyebrow"><UiText>{"Your decision"}</UiText></span>
           <h2>
             {activeStatus === "awaiting_review"
               ? "Ready for your review"
@@ -2105,33 +2120,30 @@ function OfferDetail({ id }: { id: string }) {
             {activeStatus === "awaiting_review"
               ? "Your crew has prepared the terms. Check the exact version and destination before approving."
               : activeStatus === "approved"
-                ? "Approval is saved. Preview the buyer’s document and deliberately share it in the sample."
+                ? connected ? "Approval is saved. Preview the buyer’s document and share the reviewed terms." : "Approval is saved. Preview the buyer’s document and deliberately share it in the sample."
                 : activeStatus === "shared"
-                  ? "This exact offer has been shared in the sample. Acceptance, payment, and delivery remain separate steps."
+                  ? connected ? "This exact offer is available to the buyer. Acceptance, payment, and delivery remain separate steps." : "This exact offer has been shared in the sample. Acceptance, payment, and delivery remain separate steps."
                   : activeStatus === "accepted"
                     ? "Accepted terms are preserved. Any change needs a separately reviewed amendment."
                     : "Save your scope, price, and timing. Only complete, current terms can be approved."}
           </p>
           <div className="stack">
             {!historical && activeStatus === "awaiting_review" && (
-              <Button onClick={() => set({ review: "1" })}>
-                Review & approve
+              <Button onClick={() => set({ review: "1" })}>{"Review & approve"}
               </Button>
             )}
             {!historical && activeStatus === "draft" && (
-              <Button onClick={async () => (await run("offer.requestReview"))}>
-                Submit for review
+              <Button onClick={async () => (await run("offer.requestReview"))}>{"Submit for review"}
               </Button>
             )}
             {!historical && activeStatus === "approved" && (
-              <Button onClick={() => set({ preview: "1" })}>
-                Preview & share
+              <Button onClick={() => set({ preview: "1" })}>{"Preview & share"}
               </Button>
             )}
             {!historical &&
               ["shared", "accepted"].includes(activeStatus) &&
               buyerHref && (
-                <LinkButton href={buyerHref}>Open buyer offer</LinkButton>
+                <LinkButton href={buyerHref}>{"Open buyer offer"}</LinkButton>
               )}
             {!historical && (
               <Button variant="secondary" onClick={() => set({ edit: "1" })}>
@@ -2143,40 +2155,38 @@ function OfferDetail({ id }: { id: string }) {
               </Button>
             )}
             {["approved", "shared", "accepted"].includes(s(version.state)) && (
-              <Button variant="secondary" onClick={pdf}>
-                Download offer PDF
+              <Button variant="secondary" onClick={pdf}>{"Download offer PDF"}
               </Button>
             )}
             {!historical && ["shared", "accepted"].includes(activeStatus) && (
               <Button variant="secondary" onClick={copyLink}>
-                Copy buyer link
+                {connected ? fallback ? "Copy current invitation" : buyerInvitationIntent.label : "Copy buyer link"}
               </Button>
             )}
             {!historical &&
               !["accepted", "withdrawn", "expired"].includes(activeStatus) && (
-                <Button variant="danger" onClick={() => setConfirm("withdraw")}>
-                  Withdraw offer
+                <Button variant="danger" onClick={() => setConfirm("withdraw")}>{"Withdraw offer"}
                 </Button>
               )}
           </div>
           {fallback && (
-            <Field label="Copy this buyer link">
-              <input
-                readOnly
-                value={fallback}
-                onFocus={(e) => e.target.select()}
-              />
-            </Field>
+            <div className="acq-invitation" role="region" aria-label="Buyer invitation">
+              <p role="status">{connected ? "New invitation ready. Earlier links and buyer sessions have been revoked. This single-use link expires in two days." : "Buyer link ready to share."}</p>
+              <Field label="Select and copy this invitation" help="Share privately with the intended buyer. Anyone holding this link can open the client space.">
+                <input readOnly value={fallback} onFocus={(e) => e.target.select()} />
+              </Field>
+              {connected && <Button variant="ghost" onClick={() => setConfirm("invitation")}>{"Replace this invitation"}</Button>}
+            </div>
           )}
           <div className="acq-small-links">
-            <Link href={`/app/clients/${offer.client_id}`}>Open client →</Link>
+            <Link href={`/app/clients/${offer.client_id}`}><UiText>{"Open client →"}</UiText></Link>
             {!!offer.opportunity_id && (
               <Link href={`/app/opportunities/${offer.opportunity_id}`}>
                 Original request →
               </Link>
             )}
             {!!offer.accepted_version_id && project && (
-              <Link href={`/app/projects/${project.id}`}>Open project →</Link>
+              <Link href={`/app/projects/${project.id}`}><UiText>{"Open project →"}</UiText></Link>
             )}
           </div>
         </Panel>
@@ -2186,16 +2196,14 @@ function OfferDetail({ id }: { id: string }) {
           <Button
             variant="secondary"
             onClick={() => set({ panel: "evidence" })}
-          >
-            Why this offer?
+          >{"Why this offer?"}
           </Button>
-          <Button variant="secondary" onClick={() => set({ panel: "history" })}>
-            Version history
+          <Button variant="secondary" onClick={() => set({ panel: "history" })}>{"Version history"}
           </Button>
         </div>
         {s(version.internal_notes) && (
           <details>
-            <summary>Internal notes · owner only</summary>
+            <summary><UiText>{"Internal notes · owner only"}</UiText></summary>
             <p>{s(version.internal_notes)}</p>
           </details>
         )}
@@ -2212,8 +2220,7 @@ function OfferDetail({ id }: { id: string }) {
             {versions.map((v) => (
               <div className="list-row" key={v.id}>
                 <div>
-                  <strong>
-                    Version {n(v.revision)} · {s(v.title)}
+                  <strong><UiText>{"Version"}</UiText> {n(v.revision)} · {s(v.title)}
                   </strong>
                   <p className="muted">
                     {date(v.created_at)} ·{" "}
@@ -2227,8 +2234,7 @@ function OfferDetail({ id }: { id: string }) {
                 <Button
                   variant="secondary"
                   onClick={() => set({ version: v.id, panel: null })}
-                >
-                  View version
+                >{"View version"}
                 </Button>
               </div>
             ))}
@@ -2237,12 +2243,11 @@ function OfferDetail({ id }: { id: string }) {
                 value={search.get("compare") || ""}
                 onChange={(e) => set({ compare: e.target.value })}
               >
-                <option value="">Choose a previous version</option>
+                <option value=""><UiText>{"Choose a previous version"}</UiText></option>
                 {versions
                   .filter((v) => v.id !== current.id)
                   .map((v) => (
-                    <option key={v.id} value={v.id}>
-                      Version {n(v.revision)}
+                    <option key={v.id} value={v.id}><UiText>{"Version"}</UiText> {n(v.revision)}
                     </option>
                   ))}
               </select>
@@ -2320,15 +2325,13 @@ function OfferDetail({ id }: { id: string }) {
                 onClick={async () => {
                   if ((await run("offer.approve")).ok) set({ review: null });
                 }}
-              >
-                Approve exact version
+              >{"Approve exact version"}
               </Button>
-              <Button variant="secondary" onClick={() => set({ review: null })}>
-                Cancel review
+              <Button variant="secondary" onClick={() => set({ review: null })}>{"Cancel review"}
               </Button>
             </div>
             <details>
-              <summary>Return for revision</summary>
+              <summary><UiText>{"Return for revision"}</UiText></summary>
               <div className="stack">
                 <Field label="Revision instruction">
                   <textarea
@@ -2350,8 +2353,7 @@ function OfferDetail({ id }: { id: string }) {
                     )
                       set({ review: null });
                   }}
-                >
-                  Request revision
+                >{"Request revision"}
                 </Button>
               </div>
             </details>
@@ -2381,21 +2383,29 @@ function OfferDetail({ id }: { id: string }) {
               >
                 {connected ? "Share offer with buyer" : "Share offer in sample"}
               </Button>
-              <Button variant="secondary" onClick={pdf}>
-                Download offer PDF
+              <Button variant="secondary" onClick={pdf}>{"Download offer PDF"}
               </Button>
               <Button
                 variant="secondary"
                 onClick={() => set({ preview: null, review: "1" })}
-              >
-                Change destination
+              >{"Change destination"}
               </Button>
             </div>
             <p className="muted">
-              {connected ? "This makes the reviewed terms available in the buyer portal. Copy an invitation to give the buyer access." : "This records a sample share. No real email or external message is sent."}
+              {connected ? "This makes the reviewed terms available in the buyer portal. Create a buyer invitation to give the buyer access." : "This records a sample share. No real email or external message is sent."}
             </p>
           </div>
         </Modal>
+      )}
+      {confirm === "invitation" && (
+        <Confirm
+          title={buyerInvitationIntent.title}
+          description={buyerInvitationIntent.description}
+          confirmLabel={buyerInvitationIntent.confirm}
+          danger
+          onClose={() => setConfirm("")}
+          onConfirm={createInvitation}
+        />
       )}
       {confirm === "withdraw" && (
         <Confirm
@@ -2407,6 +2417,7 @@ function OfferDetail({ id }: { id: string }) {
           }}
         />
       )}
+      </fieldset>
     </>
   );
 }
@@ -2449,14 +2460,13 @@ function VersionComparison({
   return (
     <div className="acq-compare">
       <table>
-        <caption>
-          Version {n(first.revision)} compared with version {n(second.revision)}
+        <caption><UiText>{"Version"}</UiText> {n(first.revision)} compared with version {n(second.revision)}
         </caption>
         <thead>
           <tr>
-            <th>Term</th>
-            <th>Previous</th>
-            <th>Current</th>
+            <th><UiText>{"Term"}</UiText></th>
+            <th><UiText>{"Previous"}</UiText></th>
+            <th><UiText>{"Current"}</UiText></th>
           </tr>
         </thead>
         <tbody>
@@ -2504,7 +2514,7 @@ function PromotionList() {
         title="Put your good work out there."
         description="Thoughtful promotion, grounded in what you actually offer."
         action={
-          <Button onClick={() => set({ draft: "new" })}>New promotion</Button>
+          <Button onClick={() => set({ draft: "new" })}>{"New promotion"}</Button>
         }
       />
       <div className="acq-toolbar">
@@ -2538,8 +2548,7 @@ function PromotionList() {
         <Button
           variant="ghost"
           onClick={() => set({ q: null, status: null, channel: null })}
-        >
-          Clear filters
+        >{"Clear filters"}
         </Button>
       </div>
       <p className="muted promotion-list-count" aria-live="polite">
@@ -2563,9 +2572,8 @@ function PromotionList() {
                 </h2>
                 <p className="acq-promo-copy">{s(version?.content)}</p>
                 <div className="row acq-section-head">
-                  <span className="muted">Version {n(version?.revision)}</span>
-                  <Button variant="ghost" onClick={() => set({ draft: p.id })}>
-                    Open draft →
+                  <span className="muted"><UiText>{"Version"}</UiText> {n(version?.revision)}</span>
+                  <Button variant="ghost" onClick={() => set({ draft: p.id })}>{"Open draft →"}
                   </Button>
                 </div>
               </Panel>
@@ -2581,7 +2589,7 @@ function PromotionList() {
           }
           description="Start with an approved service, shape a short message, and choose where it belongs."
         >
-          <Button onClick={() => set({ draft: "new" })}>New promotion</Button>
+          <Button onClick={() => set({ draft: "new" })}>{"New promotion"}</Button>
         </Empty>
       )}
       {selected &&
@@ -2612,8 +2620,11 @@ function PromotionEditor({
   promotion?: Entity;
   onClose: () => void;
 }) {
-  const { rows, record, command, notify, state } = useStore();
+  const { rows, record, command, notify, state, connected } = useStore();
+  const publicationTimezone = s(rows("policies")[0]?.timezone, "Asia/Jakarta");
   const [expectedVersion, setExpectedVersion] = useState(promotion?.version);
+  const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
   const current = record(
     "promotion_versions",
     s(promotion?.current_version_id),
@@ -2630,7 +2641,7 @@ function PromotionEditor({
     [mode, setMode] = useState(""),
     [evidence, setEvidence] = useState(""),
     [publishedAt, setPublishedAt] = useState(
-      s(state.sample_clock).slice(0, 10),
+      localDateTime(s(state.sample_clock), publicationTimezone).slice(0, 10),
     ),
     [copyFallback, setCopyFallback] = useState(false);
   const dirty = JSON.stringify(form) !== JSON.stringify(initial);
@@ -2644,6 +2655,10 @@ function PromotionEditor({
   const field = (key: keyof typeof form, value: string) =>
     setForm((f) => ({ ...f, [key]: value }));
   const act = async (type: string, values: Input = {}) => {
+    if (savingRef.current) return { ok: false, message: "Wait for the current action to finish." };
+    savingRef.current = true;
+    setSaving(true);
+    try {
     const result = (await command(type, {
       id: promotion?.id,
       expected_version: expectedVersion,
@@ -2657,6 +2672,7 @@ function PromotionEditor({
       notify(result.message);
     }
     return result;
+    } finally { savingRef.current = false; setSaving(false); }
   };
   async function save(e?: FormEvent) {
     e?.preventDefault();
@@ -2693,27 +2709,28 @@ function PromotionEditor({
     }
   }
   return (
-    <FormClose dirty={dirty} onClose={onClose}>
+    <FormClose dirty={dirty} onClose={onClose} pending={saving}>
       {(close) => (
         <Modal
           title={promotion ? "Promotion draft" : "Create a promotion"}
           onClose={close}
+          closeDisabled={saving}
         >
           <div className="stack">
             <Notice text={error} />
             {promotion && (
               <div className="row">
-                <Badge>Version {n(current?.revision)}</Badge>
+                <Badge>{"Version"} {n(current?.revision)}</Badge>
                 <Status value={activeStatus} />
               </div>
             )}
-            <form noValidate onSubmit={save} className="stack">
+            <Form noValidate onSubmit={save} className="stack"><fieldset className="acq-pending-fields" disabled={saving}>
               <Field label="Approved service">
                 <select
                   value={form.service_id}
                   onChange={(e) => field("service_id", e.target.value)}
                 >
-                  <option value="">Choose a published service</option>
+                  <option value=""><UiText>{"Choose a published service"}</UiText></option>
                   {rows("services")
                     .filter((x) => b(x.published))
                     .map((x) => (
@@ -2729,14 +2746,11 @@ function PromotionEditor({
                     value={form.destination}
                     onChange={(e) => field("destination", e.target.value)}
                   >
-                    <option value="sample_professional_network">
-                      Sample professional network
+                    <option value="sample_professional_network"><UiText>{connected ? "Professional network (manual publication)" : "Sample professional network"}</UiText>
                     </option>
-                    <option value="sample_public_profile">
-                      Sample public profile
+                    <option value="sample_public_profile"><UiText>{connected ? "Public profile (manual publication)" : "Sample public profile"}</UiText>
                     </option>
-                    <option value="sample_email_draft">
-                      Sample email draft
+                    <option value="sample_email_draft"><UiText>{connected ? "Email draft (manual delivery)" : "Sample email draft"}</UiText>
                     </option>
                   </select>
                 </Field>
@@ -2768,7 +2782,7 @@ function PromotionEditor({
                 changed message or destination needs fresh approval.
               </p>
               <div className="actions">
-                <Button type="submit">Save promotion draft</Button>
+                <Button type="submit">{"Save promotion draft"}</Button>
                 <Button
                   type="button"
                   variant="secondary"
@@ -2787,18 +2801,16 @@ function PromotionEditor({
                   Ask Promoter for a draft
                 </Button>
               </div>
-            </form>
+            </fieldset></Form>
             {promotion &&
               !dirty &&
               ["draft", "awaiting_review"].includes(activeStatus) && (
-                <Button onClick={() => setMode("review")}>
-                  Review promotion
+                <Button onClick={() => setMode("review")}>{"Review promotion"}
                 </Button>
               )}
             {approved && (
               <div className="actions">
-                <Button variant="secondary" onClick={copy}>
-                  Copy approved text
+                <Button variant="secondary" onClick={copy}>{"Copy approved text"}
                 </Button>
                 {safeUrl(current?.destination_url) && (
                   <a
@@ -2811,8 +2823,7 @@ function PromotionEditor({
                   </a>
                 )}
                 {activeStatus !== "published_confirmed" && (
-                  <Button onClick={() => setMode("publish")}>
-                    Record sample publication
+                  <Button onClick={() => setMode("publish")}>{connected ? "Record manual publication" : "Record sample publication"}
                   </Button>
                 )}
               </div>
@@ -2830,14 +2841,14 @@ function PromotionEditor({
             )}
             {mode === "review" && (
               <section className="acq-review-box">
-                <h3>Review exact content & destination</h3>
+                <h3><UiText>{"Review exact content & destination"}</UiText></h3>
                 <p className="acq-promo-copy">{s(current?.content)}</p>
                 <p>
                   {label(current?.destination)} ·{" "}
                   {s(current?.target_audience, "Prospective clients")}
                 </p>
                 <details>
-                  <summary>Approved claim references</summary>
+                  <summary><UiText>{"Approved claim references"}</UiText></summary>
                   {a<Record<string, unknown>>(current?.public_claim_refs).map(
                     (ref, i) => (
                       <p key={i}>
@@ -2856,22 +2867,18 @@ function PromotionEditor({
                     onClick={async () => {
                       if ((await act("promotion.approve")).ok) setMode("");
                     }}
-                  >
-                    Approve exact promotion
+                  >{"Approve exact promotion"}
                   </Button>
-                  <Button variant="secondary" onClick={() => setMode("")}>
-                    Cancel review
+                  <Button variant="secondary" onClick={() => setMode("")}>{"Cancel review"}
                   </Button>
                 </div>
               </section>
             )}
             {mode === "publish" && (
               <section className="acq-review-box">
-                <h3>Record sample publication</h3>
+                <h3><UiText>{connected ? "Record manual publication" : "Record sample publication"}</UiText></h3>
                 <p>
-                  This records an explicit sample outcome for version{" "}
-                  {n(current?.revision)} at {label(current?.destination)}. No
-                  real post is published.
+                  {connected ? <UiText>{"Record the publication you completed outside Crewmori. This saves your report for this exact version; it does not publish or send the content for you."}</UiText> : <>This records an explicit sample outcome for version {n(current?.revision)} at {label(current?.destination)}. No real post is published.</>}
                 </p>
                 <p className="acq-promo-copy">{s(current?.content)}</p>
                 <Field label="Publication reference (optional)">
@@ -2880,7 +2887,7 @@ function PromotionEditor({
                     onChange={(e) => setEvidence(e.target.value)}
                   />
                 </Field>
-                <Field label="Sample publication date">
+                <Field label={connected ? `Publication date · ${publicationTimezone}` : "Sample publication date"}>
                   <input
                     type="date"
                     value={publishedAt}
@@ -2904,23 +2911,21 @@ function PromotionEditor({
                           confirmed: true,
                           evidence,
                           publication_reference: evidence,
-                          published_at: `${publishedAt}T12:00:00+07:00`,
+                          published_at: zonedDateTime(publishedAt, "12:00", publicationTimezone),
                         })).ok
                       )
                         setMode("");
                     }}
-                  >
-                    Confirm sample publication
+                  >{connected ? "Confirm publication record" : "Confirm sample publication"}
                   </Button>
-                  <Button variant="secondary" onClick={() => setMode("")}>
-                    Cancel confirmation
+                  <Button variant="secondary" onClick={() => setMode("")}>{"Cancel confirmation"}
                   </Button>
                 </div>
               </section>
             )}
             {activeStatus === "published_confirmed" && (
               <div className="acq-term-note">
-                <strong>Published in sample</strong>
+                <strong><UiText>{connected ? "Publication recorded" : "Published in sample"}</UiText></strong>
                 <p>
                   This version’s publication evidence remains saved. Editing
                   creates a separate version for a fresh review.
@@ -2931,14 +2936,13 @@ function PromotionEditor({
                       "publication_evidence",
                       s(current?.publication_evidence_id),
                     )?.publication_reference,
-                    "Sample confirmation recorded.",
+                    connected ? "Owner-reported publication recorded." : "Sample confirmation recorded.",
                   )}
                 </p>
                 <Button
                   variant="secondary"
                   onClick={async () => (await act("promotion.pause"))}
-                >
-                  Pause follow-up promotion
+                >{"Pause follow-up promotion"}
                 </Button>
               </div>
             )}
@@ -2957,7 +2961,7 @@ function PromotionEditor({
                       return (
                         <article className="acq-assessment" key={v.id}>
                           <div className="row">
-                            <strong>Version {n(v.revision)}</strong>
+                            <strong><UiText>{"Version"}</UiText> {n(v.revision)}</strong>
                             <Status value={v.state} />
                           </div>
                           <p>{s(v.content)}</p>
@@ -2966,11 +2970,11 @@ function PromotionEditor({
                           </p>
                           {proof && (
                             <p className="muted">
-                              Published in sample on{" "}
+                              <UiText>{connected ? "Publication reported on" : "Published in sample on"}</UiText>{" "}
                               {date(proof.published_at || proof.recorded_at)} ·{" "}
                               {s(
                                 proof.publication_reference,
-                                "Explicit sample confirmation",
+                                connected ? "Owner-reported publication" : "Explicit sample confirmation",
                               )}
                             </p>
                           )}
@@ -2982,8 +2986,7 @@ function PromotionEditor({
             )}
             {promotion &&
               !["published_confirmed", "archived"].includes(activeStatus) && (
-                <Button variant="danger" onClick={() => setMode("archive")}>
-                  Archive draft
+                <Button variant="danger" onClick={() => setMode("archive")}>{"Archive draft"}
                 </Button>
               )}
             {promotion && activeStatus === "archived" && (
@@ -2995,12 +2998,10 @@ function PromotionEditor({
                     archived: false,
                   }))
                 }
-              >
-                Restore draft
+              >{"Restore draft"}
               </Button>
             )}
-            <Button variant="secondary" onClick={close}>
-              Close draft
+            <Button variant="secondary" onClick={close}>{"Close draft"}
             </Button>
             {mode === "archive" && (
               <Confirm

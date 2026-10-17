@@ -1,5 +1,5 @@
 "use client";
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -40,9 +40,11 @@ import {
   RecordLink,
   Tabs,
   useQuery,
+  Form,
 } from "@/components/ui";
 import { downloadCsv } from "@/lib/downloads";
 import { halfUp } from "@/lib/engine";
+import { manualRunHref, runWaitingMessage, selectHomePriority } from "@/lib/home-priority";
 export const roles = [
   {
     id: "scout",
@@ -111,6 +113,10 @@ function taskSummary(run: Entity): string {
   const intent = s(run.intent) || s(run.task_kind);
   const text = /^[a-z0-9_]+$/.test(intent) ? label(intent).replace(/^./, (c) => c.toUpperCase()) : intent.trim();
   return text ? (/[.!?]$/.test(text) ? text : text + ".") : "";
+}
+function taskTimestamp(value: unknown): string {
+  const instant = new Date(s(value));
+  return Number.isNaN(instant.getTime()) ? "Not recorded" : new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta", timeZoneName: "short" }).format(instant);
 }
 export function recordHref(
   table: string,
@@ -212,7 +218,7 @@ export function AskBar({ onAsk }: { onAsk: (text?: string) => void }) {
   const [text, setText] = useState("");
   const { t } = useStore();
   return (
-    <form
+    <Form
       className="ask-bar"
       noValidate
       onSubmit={(e) => {
@@ -231,34 +237,35 @@ export function AskBar({ onAsk }: { onAsk: (text?: string) => void }) {
         {t("Delegate")}
         <ArrowRight size={16} />
       </Button>
-    </form>
+    </Form>
   );
 }
 export function PriorityCard() {
-  const { record, rows, t } = useStore();
-  const priority = [
-    "awaiting_review",
-    "approved",
-    "change_requested",
-    "shared",
-    "draft",
-    "accepted",
-    "expired",
-    "withdrawn",
-  ];
-  const offer = rows("offers").sort(
-    (x, y) =>
-      (priority.includes(s(x.status)) ? priority.indexOf(s(x.status)) : 99) -
-        (priority.includes(s(y.status)) ? priority.indexOf(s(y.status)) : 99) ||
-      s(y.updated_at).localeCompare(s(x.updated_at)),
-  )[0];
+  const { state, record, rows, t } = useStore();
+  const priority = selectHomePriority(state);
+  if (priority && priority.kind !== "offer") {
+    const item = priority.record;
+    const client = record("clients", s(item.client_id));
+    const invoice = priority.kind === "invoice";
+    const task = priority.kind === "task";
+    const reschedule = priority.reason === "reschedule";
+    const taskReview = task && priority.reason === "review";
+    const title = invoice ? "An invoice needs a follow-up." : taskReview ? "Your team prepared something to review." : task ? "Your team needs a little direction." : reschedule ? "Your project needs a new plan." : "Check what this project needs before it starts.";
+    const description = invoice ? "Its due date has passed and an outstanding balance remains. Review the invoice and recorded receipts before deciding how to follow up." : taskReview ? "Open the prepared output and review it before saving a business draft. Nothing is sent by reviewing it." : task ? "This request is saved and waiting for your input. Open it to clarify the next step." : reschedule ? "The saved schedule needs attention. Review the current scope, prerequisites and dates before committing to new timing." : "An agreement is in place, but prerequisites are still open. Check the deposit and buyer inputs before starting professional delivery.";
+    return <Panel className="priority-card home-next-decision" aria-label={t("Your next decision")}>
+      <div className="decision-meta"><Badge tone="warning">{t(invoice ? "Past due" : taskReview ? "Ready for review" : task ? "Needs your input" : reschedule ? "Needs attention" : "Prerequisites open")}</Badge><span className="muted">{s(client?.name)}</span></div>
+      <h2>{t(title)}</h2><p className="home-decision-record">{s(item.number) || s(item.title) || s(item.name) || (task ? label(item.role_id) + " task" : "Saved project")}</p>
+      <p>{t(description)}</p><div className="actions"><LinkButton href={invoice ? `/app/money/invoices/${item.id}` : task ? `/app/team?task=${item.id}` : `/app/projects/${item.id}`}>{t(invoice ? "Review invoice" : task ? "Open task" : "Open project checklist")}<ArrowRight size={16} /></LinkButton></div>
+    </Panel>;
+  }
+  const offer = priority?.record;
   const v = record("offer_versions", s(offer?.current_version_id));
   if (!offer || !v)
     return (
-      <Panel>
+      <Panel className="priority-card">
         <Empty
-          title="A little space for your next opportunity"
-          description="Your team is ready when you are."
+          title="No decisions waiting here."
+          description="Your saved work is available whenever you need it. Explore opportunities when you are ready for something new."
         >
           <LinkButton href="/app/opportunities">
             Explore opportunities
@@ -444,28 +451,25 @@ export function Home({ onAsk }: { onAsk: (text?: string) => void }) {
     ["awaiting_review", "draft"].includes(s(x.status)),
   ).length;
   const receipts = rows("receipts"),
-    accepted = rows("acceptances").length > 0,
     hasLeads = rows("opportunities").length > 0;
+  const hasWork = hasLeads || rows("projects").length > 0 || rows("invoices").length > 0;
   return (
     <>
       <AskBar onAsk={onAsk} />
-      <Panel className="home-hero">
+      <Panel className={`home-hero${hasWork ? " home-hero-returning" : ""}`}>
         <div>
           <div className="eyebrow">{t("Studio briefing")}</div>
           <h1>
-            {t("Welcome back")}, {s(owner?.display_name, "Alya")}.
+            {t("Welcome back")}, {s(owner?.display_name, "there")}.
           </h1>
           <p className="intro">
-            {accepted
-              ? "Your projects are moving. Here’s what needs your attention."
-              : hasLeads
-                ? "Your current requests and saved decisions are ready to pick up."
+            {hasWork
+                ? "Your saved work, and the next decision that needs you."
                 : "A fresh workspace, and a team ready to help you begin."}
           </p>
           <div className="hero-stats">
             <span>
-              <strong>{n(policy?.available_effort_minutes) / 60}h</strong>{" "}
-              studio capacity
+              {typeof policy?.available_effort_minutes === "number" ? <><strong>{n(policy.available_effort_minutes) / 60}h</strong> studio capacity</> : "Studio capacity not set"}
             </span>
             <span>
               <strong>{reviewCount}</strong>{" "}
@@ -592,7 +596,7 @@ export function Home({ onAsk }: { onAsk: (text?: string) => void }) {
   );
 }
 export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
-  const { state, record, rows, command, t, connected } = useStore();
+  const { state, record, rows, command, t, connected, refresh } = useStore();
   const router = useRouter(),
     query = useSearchParams();
   const [list, setList] = useState(false),
@@ -624,6 +628,24 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
   const selectedRun = task
     ? record("agent_runs", task)
     : runs.filter((r) => r.role_id === agent).at(-1);
+  const [taskClock, setTaskClock] = useState("");
+  const activeRunId = selectedRun?.id;
+  const activeRunStatus = s(selectedRun?.status);
+  useEffect(() => {
+    if (!connected || !activeRunId || !["queued", "running"].includes(activeRunStatus)) return;
+    const tick = () => setTaskClock(new Date().toISOString());
+    tick();
+    const timer = window.setInterval(tick, 30000);
+    return () => window.clearInterval(timer);
+  }, [connected, activeRunId, activeRunStatus]);
+  const runMessage = selectedRun ? runWaitingMessage(selectedRun, connected ? taskClock || state.sample_clock : state.sample_clock) : undefined;
+  const blockedCopy: Record<string, string> = {
+    WORKER_INTERRUPTED: "This attempt stopped before finishing. Check the latest state before deciding whether to retry.",
+    BUDGET_EXHAUSTED: "The workspace’s daily AI allowance cannot cover this task. You can continue manually or try again after the allowance resets.",
+    UNKNOWN_MODEL_OUTCOME: "The previous attempt has no confirmed result. Review its saved activity before retrying; another attempt can use additional allowance.",
+    PROVIDER_UNAVAILABLE: "The AI service could not finish this request. Check the status, or continue manually while it is unavailable.",
+    STALE_VERSION: "A source changed while this task was being prepared. Open the current record before retrying.",
+  };
   const prefs = record("preferences", "preferences_alya");
   const motionPaused =
     !!prefs?.team_animation_paused ||
@@ -932,9 +954,9 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
             ))}
         </div>
       </section>
-      <div className="team-below">
+      <div className={`team-below${artifacts.length ? "" : " team-below-single"}`}>
         <PriorityCard />
-        <Panel className="artifact-list">
+        {artifacts.length > 0 && <Panel className="artifact-list">
           <div className="eyebrow">
             Ready to open · {artifacts.length} artifacts
           </div>
@@ -960,7 +982,7 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
               </span>
             </RecordLink>
           ))}
-        </Panel>
+        </Panel>}
       </div>
       {(agent || task) && (
         <Modal
@@ -979,11 +1001,11 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
                   alt=""
                 />
                 <div>
-                  <h3>{s(selectedRun.title)}</h3>
+                  <h3>{s(selectedRun.title) || (roles.find((role) => role.id === selectedRun.role_id)?.name || "Team") + " request"}</h3>
                   <Badge
                     tone={selectedRun.status === "failed" ? "error" : "info"}
                   >
-                    {label(selectedRun.status)}
+                    {runMessage?.title || label(selectedRun.status)}
                   </Badge>
                 </div>
               </div>
@@ -991,20 +1013,20 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
                 {taskSummary(selectedRun)} This task supports your business;
                 professional delivery remains yours.
               </p>
+              <p className={runMessage?.delayed ? "feedback warning" : "team-task-status"}>{runMessage?.description}</p>
               {selectedRun.blocked_reason ? (
-                <p className="feedback error">
-                  {s(selectedRun.blocked_reason)}
-                </p>
+                <div className="feedback error"><p>{blockedCopy[s(selectedRun.blocked_reason)] || "This task needs attention before it can continue. Review the saved details or continue manually."}</p><details><summary>Technical details</summary><code>{s(selectedRun.blocked_reason)}</code></details></div>
               ) : null}
               <div className="row">
                 <small>
                   {/* Connected runs report state and timestamps, not sample step counters. */}
                   {selectedRun.progress_total !== undefined
                     ? `Step ${n(selectedRun.progress_step)} of ${n(selectedRun.progress_total, 3)} · Attempt ${n(selectedRun.attempt, 1)}`
-                    : `Requested ${date(selectedRun.created_at)} · Updated ${date(selectedRun.updated_at)}`}
+                    : `Requested ${taskTimestamp(selectedRun.created_at)} · Last activity ${taskTimestamp(selectedRun.updated_at)}`}
                 </small>
               </div>
               <div className="actions">
+                {connected && ["queued", "running", "blocked", "failed"].includes(s(selectedRun.status)) && <Button variant="secondary" onClick={async () => { await refresh(); }}>Check status</Button>}
                 {["queued", "running"].includes(s(selectedRun.status)) && (
                   <>
                     {!connected && <Button onClick={async () => (await action("checkpoint"))}>Run next sample step</Button>}
@@ -1027,6 +1049,7 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
                   </Button>
                 )}
               </div>
+              {["queued", "running", "blocked", "failed"].includes(s(selectedRun.status)) && <p><RecordLink href={manualRunHref(selectedRun, state)}>Continue in the workspace manually</RecordLink><small className="muted"> Your saved request stays available. Cancel it if you no longer need its result.</small></p>}
               {selectedRun.status === "waiting_input" && (
                 <div className="stack">
                   <p>
@@ -1068,8 +1091,8 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
                     >
                       Continue task
                     </Button>
-                    <LinkButton href="/app/offers?new=1" variant="secondary">
-                      Create a manual draft
+                    <LinkButton href={manualRunHref(selectedRun, state)} variant="secondary">
+                      Continue manually
                     </LinkButton>
                     <Button variant="ghost" onClick={close}>
                       Decide later

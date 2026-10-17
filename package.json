@@ -1,6 +1,6 @@
 {
   "name": "crewmori-frontend",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "private": true,
   "scripts": {
     "dev": "node scripts/dev.mjs",
@@ -16,7 +16,9 @@
     "backend:check": "node --env-file-if-exists=.env.local --import tsx scripts/check-backend.ts",
     "storage:setup": "node --env-file-if-exists=.env.local --import tsx scripts/setup-storage.ts",
     "test:api": "node scripts/smoke-api.mjs",
-    "test:e2e": "node scripts/test-e2e.mjs"
+    "test:e2e": "node scripts/test-e2e.mjs",
+    "test:ux": "node scripts/test-ux.mjs",
+    "verify:build-assets": "node scripts/check-build-assets.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.135.0",

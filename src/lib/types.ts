@@ -20,6 +20,8 @@ export type Result = {
   ids?: Record<string, string>;
   code?: string;
   replayed?: boolean;
+  /** The transport did not establish whether the submitted write committed. Retry the same intent. */
+  outcomeUnknown?: boolean;
 };
 export const s = (v: unknown, fallback = ""): string =>
   typeof v === "string" ? v : fallback;

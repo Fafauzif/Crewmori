@@ -13,9 +13,11 @@ import { useStore } from "@/lib/store";
 import KnowledgeSearch from "./knowledge-search";
 import IntegrationTools, { ConnectedConnections } from "./integration-tools";
 import { sampleId } from "@/lib/local-crypto";
+import { sourceCount } from "@/lib/i18n";
 import { s, n, b, o, a, date, label, type Entity } from "@/lib/types";
 import {
   Field,
+  Form,
   PageHead,
   Panel,
   Button,
@@ -32,6 +34,7 @@ import {
   downloadBlob,
   downloadText,
   validateUpload,
+  parseAmount,
 } from "@/lib/downloads";
 import "./settings.css";
 
@@ -127,12 +130,16 @@ function ActionBar({
 
 export default function Settings({ path }: { path: string }) {
   const { t } = useStore();
+  const section = path.endsWith("/knowledge") ? { title: "Knowledge", description: "Give your team reliable context. Sources stay private until you review their audience." }
+    : path.endsWith("/rules") ? { title: "Team rules", description: "Choose what each teammate can prepare. Sharing, sending, and commitments still need your review." }
+    : path.endsWith("/preferences") ? { title: "Workspace preferences", description: "Set your language, display timezone, and motion without changing accepted agreements." }
+    : { title: "Business profile", description: "Manage your public profile, services, and availability. Save drafts before reviewing publication." };
   if (path.startsWith("/app/connections")) return <Connections />;
   return (
     <div className="settings-content">
       <PageHead
-        title={t("Make it your own.")}
-        description={t("Your business, your boundaries, your way of working.")}
+        title={t(section.title)}
+        description={t(section.description)}
       />
       <SettingsTabs path={path} />
       {path.endsWith("/rules") ? (
@@ -368,7 +375,7 @@ function Profile() {
       ) : (
         <div className="settings-grid">
           <Panel>
-            <form noValidate className="settings-form" onSubmit={save}>
+            <Form noValidate className="settings-form" onSubmit={save}>
               <div>
                 <h2>{t("Your business profile")}</h2>
                 <p>{t("Introduce the person behind the work.")}</p>
@@ -461,7 +468,7 @@ function Profile() {
                   {t("Save profile draft")}
                 </Button>
               </ActionBar>
-            </form>
+            </Form>
           </Panel>
           <aside className="settings-aside">
             <Panel>
@@ -713,7 +720,7 @@ function ServiceEditor({
     deliverables: a<string>(service?.deliverables).join("\n"),
     pricing_label: s(service?.pricing_label, "Custom quote after a brief"),
     category: s(service?.category),
-    amount: service?.price ? String(n(o(service.price).amount_minor)) : "",
+    amount: service?.price ? String(n(o(service.price).amount_minor) / (s(o(service.price).currency) === "IDR" ? 1 : 100)) : "",
     currency: s(o(service?.price).currency, "USD"),
   };
   const [draft, setDraft] = useState(initial);
@@ -740,13 +747,9 @@ function ServiceEditor({
       setError(t("Another service already uses this slug."));
       return;
     }
-    if (
-      draft.amount &&
-      (!/^\d+$/.test(draft.amount) ||
-        Number(draft.amount) < 1 ||
-        !Number.isSafeInteger(Number(draft.amount)))
-    ) {
-      setError(t("Use a positive whole-number amount in minor units."));
+    const amount = draft.amount ? parseAmount(draft.amount, draft.currency) : null;
+    if (draft.amount && (amount === null || amount <= 0)) {
+      setError(t("Enter a positive price in the selected currency. USD allows two decimal places; IDR uses whole rupiah."));
       return;
     }
     const r = (await command("record.save", {
@@ -763,7 +766,7 @@ function ServiceEditor({
         category: draft.category,
         price: draft.amount
           ? {
-              amount_minor: Number(draft.amount),
+              amount_minor: amount,
               currency: draft.currency,
               scale: draft.currency === "IDR" ? 0 : 2,
             }
@@ -783,7 +786,7 @@ function ServiceEditor({
       onClose={onClose}
       dirty={dirty}
     >
-      <form noValidate onSubmit={save} className="settings-form">
+      <Form noValidate onSubmit={save} className="settings-form">
         <ErrorMessage message={error} />
         <Field label={t("Service title")}>
           <input
@@ -825,9 +828,9 @@ function ServiceEditor({
         <details>
           <summary>{t("Optional fixed pricing")}</summary>
           <div className="settings-fields">
-            <Field label={t("Amount in minor units")}>
+            <Field label={t("Price")} help={t(draft.currency === "IDR" ? "Enter whole rupiah, for example 500000." : "Enter dollars, for example 450.00.")}>
               <input
-                inputMode="numeric"
+                inputMode="decimal"
                 value={draft.amount}
                 onChange={(e) => update("amount", e.target.value)}
               />
@@ -843,7 +846,7 @@ function ServiceEditor({
             </Field>
           </div>
           <p>
-            {t("For USD, 100 minor units equals 1.00. IDR uses whole rupiah.")}
+            {t("This is a starting price. Each offer keeps its separately reviewed amount and terms.")}
           </p>
         </details>
         <div className="settings-modal-actions">
@@ -854,7 +857,7 @@ function ServiceEditor({
             {t("Save service draft")}
           </Button>
         </div>
-      </form>
+      </Form>
     </Modal>
   );
 }
@@ -942,7 +945,7 @@ function Availability({ onSaved }: { onSaved: (version: number) => void }) {
   };
   return (
     <Panel>
-      <form noValidate className="settings-form" onSubmit={save}>
+      <Form noValidate className="settings-form" onSubmit={save}>
         <h2>{t("Make room for the right work")}</h2>
         <p>
           {t(
@@ -1088,7 +1091,7 @@ function Availability({ onSaved }: { onSaved: (version: number) => void }) {
             {t("Save availability & defaults")}
           </Button>
         </ActionBar>
-      </form>
+      </Form>
     </Panel>
   );
 }
@@ -1100,7 +1103,7 @@ type RoleDraft = {
   max_concurrent: number;
 };
 function Rules() {
-  const { rows, t } = useStore();
+  const { rows, t, connected } = useStore();
   const [role, setRole] = useState("scout");
   const [roleDirty, setRoleDirty] = useState(false);
   const [pendingRole, setPendingRole] = useState<string | null>(null);
@@ -1162,7 +1165,7 @@ function Rules() {
             <h3>{t("Only people can decide")}</h3>
             <p>
               {t(
-                "The buyer accepts their offer. You deliver the professional work. This sample does not move real money.",
+                connected ? "The buyer accepts their offer. You deliver the professional work. Payment checkout is currently limited to test transactions." : "The buyer accepts their offer. You deliver the professional work. This sample does not move real money.",
               )}
             </p>
           </div>
@@ -1261,7 +1264,7 @@ function RuleForm({
     setRestore(false);
   };
   return (
-    <form noValidate className="settings-form" onSubmit={save}>
+    <Form noValidate className="settings-form" onSubmit={save}>
       <ErrorMessage message={error} />
       <label className="settings-check">
         <input
@@ -1355,7 +1358,7 @@ function RuleForm({
           onClose={() => setRestore(false)}
         />
       )}
-    </form>
+    </Form>
   );
 }
 
@@ -1380,7 +1383,7 @@ function preferenceDraft(x: Entity): PreferenceDraft {
   };
 }
 function Preferences() {
-  const { record, command, notify, t } = useStore();
+  const { record, command, notify, t, connected } = useStore();
   const saved = record("preferences", "preferences_alya")!;
   const [d, setD] = useState(() => preferenceDraft(saved));
   const [base, setBase] = useState(saved.version);
@@ -1421,7 +1424,7 @@ function Preferences() {
   };
   return (
     <Panel>
-      <form noValidate className="settings-form" onSubmit={save}>
+      <Form noValidate className="settings-form" onSubmit={save}>
         <div>
           <h2>{t("A workspace that feels like you")}</h2>
           <p>
@@ -1516,15 +1519,16 @@ function Preferences() {
           <input
             type="checkbox"
             checked={d.notification_email}
+            disabled={connected}
             onChange={(e) =>
               setD({ ...d, notification_email: e.target.checked })
             }
           />
-          {t("Email notifications — sample preference only")}
+          {t(connected ? "Email notification digests — not available yet" : "Email notifications — sample preference only")}
         </label>
         <p>
           {t(
-            "Required decisions remain on Home and their records. This sample does not send real email.",
+            connected ? "Required decisions remain on Home and their records. Email digests are not sent; reviewed client email uses your separately connected mail service." : "Required decisions remain on Home and their records. This sample does not send real email.",
           )}
         </p>
         <ActionBar
@@ -1545,7 +1549,7 @@ function Preferences() {
         >
           {t("Restore display defaults")}
         </Button>
-      </form>
+      </Form>
       {restore && (
         <Confirm
           title={t("Restore display defaults?")}
@@ -2081,7 +2085,7 @@ function Knowledge() {
           ? !b(x.archived) && x.status !== "archived"
           : status === "archived"
             ? b(x.archived) || x.status === "archived"
-            : s(x.status, "ready") === status)),
+            : status === "failed" ? x.status === "failed" || x.indexing_state === "failed" : s(x.status, "ready") === status)),
   );
   const setQuery = (key: string, value: string) => {
     const p = new URLSearchParams(params);
@@ -2226,6 +2230,7 @@ function Knowledge() {
           </Button>
         </div>
       )}
+      {connected && <p className="settings-note">{t("Search by meaning finds indexed source text. The source list below filters titles and saved text. New or failed uploads may need processing before semantic search can find them.")}</p>}
       <KnowledgeSearch />
       <div className="settings-upload">
         <h3>
@@ -2291,6 +2296,7 @@ function Knowledge() {
           </Button>
         )}
       </div>
+      <p className="settings-meta" role="status">{sourceCount(sources.length, s(record("preferences", "preferences_alya")?.locale, "en"))}</p>
       <Panel>
         {sources.length ? (
           <div className="settings-list">
@@ -2302,7 +2308,7 @@ function Knowledge() {
                     {t(label(x.kind))} · {date(x.observed_at || x.created_at)} ·
                     v{x.version}
                   </p>
-                  <Badge tone={x.status === "failed" ? "error" : "neutral"}>
+                  <Badge tone={x.status === "failed" || x.indexing_state === "failed" ? "error" : "neutral"}>
                     {t(
                       b(x.archived)
                         ? "Archived"
@@ -2311,6 +2317,7 @@ function Knowledge() {
                           : s(x.status, "Ready"),
                     )}
                   </Badge>{" "}
+                  {connected && !b(x.archived) && !!x.indexing_state && <Badge tone={x.indexing_state === "failed" ? "error" : "neutral"}>{t(x.indexing_state === "queued" ? "Indexing queued" : x.indexing_state === "running" ? "Indexing text…" : x.indexing_state === "ready" || x.indexing_state === "completed" ? "Search ready" : x.indexing_state === "failed" ? "Indexing failed" : label(x.indexing_state))}</Badge>}{" "}
                   <Badge>
                     {t(
                       x.audience === "owner"
@@ -2434,7 +2441,7 @@ function ManualSource({ onClose }: { onClose: () => void }) {
       onClose={onClose}
       dirty={!!(title || content || url)}
     >
-      <form noValidate className="settings-form" onSubmit={save}>
+      <Form noValidate className="settings-form" onSubmit={save}>
         <ErrorMessage message={error} />
         <Field label={t("Title")}>
           <input
@@ -2473,7 +2480,7 @@ function ManualSource({ onClose }: { onClose: () => void }) {
           </Button>
           <Button type="submit">{t("Save source")}</Button>
         </div>
-      </form>
+      </Form>
     </Modal>
   );
 }

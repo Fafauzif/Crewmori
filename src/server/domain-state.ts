@@ -2,6 +2,7 @@ import type { PoolClient } from "pg";
 import { emptyState, workspaceState } from "../lib/workspace-state";
 import { o, s, type StoreState, type Entity } from "../lib/types";
 import { appendEvent } from "./repository";
+import { googleAccessFromScopes, GOOGLE_ACCESS } from "../lib/google-capabilities";
 
 const transient = new Set(["events", "command_receipts", "connections", "agent_runs", "model_calls", "local_accounts", "recovery_grants", "sample_sessions", "external_dispatches"]);
 export async function initializeWorkspace(client: PoolClient, workspace: { id: string; owner_id: string; name: string }, email = "") {
@@ -29,13 +30,16 @@ export async function loadDomain(client: PoolClient, workspaceId: string): Promi
   state.tables.events = Object.fromEntries(loaded.events.map((row: Entity) => [row.id, { id: row.id, version: 1, sequence: Number(row.sequence), kind: row.kind, summary: row.summary, record_refs: row.record_refs, occurred_at: iso(s(row.created_at)), visibility: "owner" }]));
   const connection = loaded.connection;
   state.tables.connections = {};
-  for (const [id, scope, capabilities] of [
-    ["gmail", "gmail.compose", ["draft_message", "simulate_send"]],
-    ["calendar", "calendar.events", ["draft_event", "simulate_invite", "read_sample_events"]],
-    ["drive", "drive.file", ["read_sample_files", "attach_sample_reference"]],
+  const grantedScopes: string[] = connection?.state === "active" ? connection.scopes : [];
+  const access = googleAccessFromScopes(grantedScopes);
+  for (const [id, capabilities, approved] of [
+    ["gmail", ["draft_message", "simulate_send"], access.includes("gmail") ? ["draft_message", "simulate_send"] : []],
+    ["calendar", ["draft_event", "simulate_invite", "read_sample_events"], [...(access.includes("calendar_write") ? ["draft_event", "simulate_invite"] : []), ...(access.includes("calendar_read") ? ["read_sample_events"] : [])]],
+    ["drive", ["read_sample_files", "attach_sample_reference"], access.includes("drive") ? ["read_sample_files", "attach_sample_reference"] : []],
   ] as const) {
-    const active = connection?.state === "active" && connection.scopes.some((item: string) => item.includes(scope));
-    state.tables.connections[id] = { id, version: connection?.version || 1, label: id === "gmail" ? "Gmail" : id === "calendar" ? "Calendar" : "Drive", mode: "connected", state: active ? "connected" : "disconnected", capabilities, approved_capabilities: active ? capabilities : [], account_label: active ? "Google account" : "" };
+    const active = approved.length > 0;
+    const toolScopes = grantedScopes.filter((scope) => id === "calendar" ? [GOOGLE_ACCESS.calendar_read.scope, GOOGLE_ACCESS.calendar_write.scope].includes(scope as typeof GOOGLE_ACCESS.calendar_read.scope) : scope === GOOGLE_ACCESS[id].scope);
+    state.tables.connections[id] = { id, version: connection?.version || 1, label: id === "gmail" ? "Gmail" : id === "calendar" ? "Calendar" : "Drive", mode: "connected", state: active ? "connected" : "disconnected", capabilities, approved_capabilities: approved, granted_scopes: toolScopes, granted_capabilities: googleAccessFromScopes(toolScopes), account_label: active ? "Google account" : "" };
   }
   state.tables.external_dispatches = Object.fromEntries(loaded.dispatches.map((row: Entity) => [row.id, { ...row, created_at: iso(s(row.created_at)), version: 1 }]));
   for (const transcript of Object.values(state.tables.voice_transcripts || {})) {

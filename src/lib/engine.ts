@@ -3,6 +3,8 @@ import { localDateTime, zonedDateTime } from "./business-time";
 import fixture from "./fixture.json";
 import scenarioFile from "./scenarios.json";
 import { sampleId } from "./local-crypto";
+import { recordsTeamActivity } from "./notifications";
+import { runWorkCommand } from "./work-commands";
 import {
   a,
   n,
@@ -1857,6 +1859,8 @@ function issueInvoice(st: StoreState, invoice: Entity) {
   });
 }
 function runCommand(st: StoreState, type: string, input: Input): Result {
+  const workResult = runWorkCommand(st, type, input, { get, put, expect, need, identifier });
+  if (workResult) return workResult;
   const ok = (
     message: string,
     id?: string,
@@ -3994,6 +3998,8 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
         target || identifier(st, "attachment"),
         {
           ...vals,
+          uploaded_by_kind: existing?.uploaded_by_kind || (input.grant_id ? "buyer" : "owner"),
+          uploaded_by_engagement_id: existing?.uploaded_by_engagement_id || (input.grant_id ? get(st, "buyer_grants", input.grant_id).engagement_id : null),
           name: s(vals.name, s(vals.filename)),
           media_type: mime,
           byte_length: size,
@@ -4045,7 +4051,13 @@ function runCommand(st: StoreState, type: string, input: Input): Result {
       );
     }
     case "ui.set": {
-      st.ui = { ...st.ui, ...o(input.values) };
+      const values = o(input.values);
+      // Read markers are monotonic: two views marking different updates must not undo each other.
+      const readEvents = Array.isArray(values.read_events)
+        ? [...new Set([...a<string>(st.ui.read_events), ...a<string>(values.read_events)])]
+          .filter((id) => typeof id === "string" && !!st.tables.events?.[id])
+        : undefined;
+      st.ui = { ...st.ui, ...values, ...(readEvents ? { read_events: readEvents } : {}) };
       return ok("View preferences saved.");
     }
     case "setup.saveStep": {
@@ -4972,7 +4984,7 @@ export function execute(
     if (st.mode !== "connected") settleApprovedRuns(st);
     st.revision = state.revision + 1;
     st.dirty = true;
-    if (!result.replayed) {
+    if (!result.replayed && recordsTeamActivity(type, input)) {
       const changed = Object.keys(st.tables)
         .filter((t) => !["events", "command_receipts"].includes(t))
         .flatMap((t) =>

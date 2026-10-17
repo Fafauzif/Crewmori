@@ -1,3 +1,5 @@
+> Historical baseline record. For the 1.2.0 source handoff, read [IMPLEMENTATION_VERIFICATION.md](IMPLEMENTATION_VERIFICATION.md). The earlier results below were not rerun merely by retaining this document.
+
 # Crewmori build status
 
 Updated 16 October 2026. This document distinguishes implemented local behavior from simulated external effects and verification evidence. It supersedes the input pack's “no frontend implemented yet” status. It does not supersede retained product/flow requirements by silently declaring them tested.

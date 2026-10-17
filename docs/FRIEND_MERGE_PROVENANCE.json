@@ -1,0 +1,22 @@
+{
+  "release": "1.2.1",
+  "incoming_source_files": 428,
+  "changed_from_original_baseline": [
+    {
+      "path": "src/app/api/auth/[action]/route.ts",
+      "incoming_sha256": "839e3a5d86fac1c1b37273497bf4e35e293678fc1612b27c771068b474bc069d"
+    },
+    {
+      "path": "tests/e2e/mock-services.mjs",
+      "incoming_sha256": "a4cae416a7544053f4e2d48f3e86df2a177f2841856408bdb68cb6840ba40681"
+    }
+  ],
+  "unchanged_from_original_baseline": 426,
+  "new_incoming_source_files": 0,
+  "missing_original_source_files": 0,
+  "incoming_git_entries_excluded": 526,
+  "merge": "Preserve completed UX source; integrate only the two incoming changed files. Settings helper extracted for testing; unknown responses do not become cached disabled state. Mock line endings normalized.",
+  "new_regressions": 8,
+  "previous_ux_input_preservation": "Only auth route, service mock and package version fields changed among previous 161 source/test/script/config inputs.",
+  "original_baseline_reference": "The prior source baseline and prior 1.2.0 source ZIPs remain separate from this combined package."
+}

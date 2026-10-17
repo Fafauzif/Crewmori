@@ -238,3 +238,12 @@ Public benefit sections and opportunity records use open sections or shared rule
 
 
 Token mapping: runtime CSS variables in `src/app/globals.css` remain the implemented palette owner; this frontmatter mirrors their accepted primitive values. `docs/design-tokens.json` is the retained machine-readable companion, updated with the component-specific refinement. `--scout-surface` derives from 24% `--scout` mixed with `--surface`; no independent palette is introduced. Local Newsreader/Inter font-face declarations feed all shared and domain components.
+
+
+## UX continuity refinement — 1.2.0
+
+The original visual identity remains the governing reference. Returning Home has a more compact greeting and a deterministic next-owner-decision selector so operational work appears sooner; first-use retains the welcoming Scout composition. Team retains six teammates and its studio concept. Working forms, money and auth/error states use restrained, readable hierarchy, without extra mascot animation or a new palette.
+
+Shared input text now follows the documented16px baseline. Runtime globals.css adds stable pending labels, field-error/summary treatments, route skeleton geometry, sticky transactional footers, visible tokenized scrollbars and reduced-motion progress. Shell-specific responsiveness lives in components/shell.css; Home density lives in views/home-team.css. Existing CSS variables remain the palette owner. Decorative skeletons are static; meaningful loading status is written and announced.
+
+Character consistency does not require interface complexity. Keep illustrations secondary to contract/payment/error decisions; do not add streaks, gamification or decorative wait loops.44px targets, keyboard access and readable status remain functional requirements.

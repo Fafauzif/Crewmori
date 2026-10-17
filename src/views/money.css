@@ -18,6 +18,11 @@
   font-size: 13px;
   color: var(--muted, #566159);
 }
+.money-summary .money-summary-empty { display: block; color: var(--ink, #202A25); font-size: 16px; margin-bottom: 4px; }
+.money-record-count { font-size: 13px; color: var(--muted, #566159); margin: 20px 0 0; }
+.money-filter .money-search .search-field { width: 100%; min-width: 0; }
+.money-filter .money-search > span { font-size: 13px; color: var(--muted, #566159); }
+.money-filter .money-search .search-field input { min-width: 0; }
 .money-filter {
   display: flex;
   gap: 12px;

@@ -13,7 +13,7 @@ import { loadDomain, persistDomain, ownerProjection } from "./domain-state";
 
 export const commandSchema = z.object({ type: z.string().min(1).max(80), input: z.record(z.string(), z.unknown()).default({}), idempotencyKey: z.uuid(), expectedRevision: z.number().int().nonnegative().optional() }).strict();
 export const buyerCommands = new Set(["offer.accept", "offer.requestChanges", "conversation.send", "conversation.requestOwner", "inquiry.updateBrief", "project.provideInput", "project.acceptDelivery", "project.requestRevision", "file.attach", "file.remove"]);
-const ownerCommands = new Set(`record.save record.archive opportunity.save opportunity.create opportunity.import opportunity.update opportunity.qualify opportunity.decline opportunity.archive opportunity.restore offer.saveDraft offer.returnRevision offer.amend offer.requestReview offer.approve offer.share offer.withdraw finance.allocateReceipt finance.reverseAllocation finance.resolveIssue project.requestInputChanges project.proposeReschedule project.commitStart project.reschedule project.reportDelivery project.complete project.cancel project.archive project.reopen project.create project.update task.completeMany project.reviewInput project.updateTask task.complete task.reopen task.archive invoice.saveDraft invoice.save invoice.issue invoice.void expense.save expense.archive expense.correct client.save client.create client.update message.saveDraft message.approve message.deliver promotion.saveDraft promotion.approve promotion.recordPublication promotion.pause calendar.saveProposal calendar.approve profile.save policy.save preferences.save service.save profile.publish service.publish knowledge.save knowledge.remove file.attach file.remove settings.availability ui.set setup.saveStep setup.complete activity.markRead activity.catchUp source.refresh`.split(" "));
+const ownerCommands = new Set(`task.save milestone.save milestone.proposeChange calendar.proposeCancellation file.link file.archive record.save record.archive opportunity.save opportunity.create opportunity.import opportunity.update opportunity.qualify opportunity.decline opportunity.archive opportunity.restore offer.saveDraft offer.returnRevision offer.amend offer.requestReview offer.approve offer.share offer.withdraw finance.allocateReceipt finance.reverseAllocation finance.resolveIssue project.requestInputChanges project.proposeReschedule project.commitStart project.reschedule project.reportDelivery project.complete project.cancel project.archive project.reopen project.create project.update task.completeMany project.reviewInput project.updateTask task.complete task.reopen task.archive task.restore invoice.saveDraft invoice.save invoice.issue invoice.void expense.save expense.archive expense.correct client.save client.create client.update message.saveDraft message.approve message.deliver promotion.saveDraft promotion.approve promotion.recordPublication promotion.pause calendar.saveProposal calendar.approve profile.save policy.save preferences.save service.save profile.publish service.publish knowledge.save knowledge.remove file.attach file.remove settings.availability ui.set setup.saveStep setup.complete activity.markRead activity.catchUp source.refresh`.split(" "));
 // Explicit editable fields prevent generic saves from manufacturing financial, approval or delivery authority.
 const fields: Record<string, string[]> = {
   clients: ["name", "status", "next_action", "website", "industry", "archived"],
@@ -30,8 +30,6 @@ const fields: Record<string, string[]> = {
   preferences: ["locale", "timezone", "motion", "focus_mode", "team_animation_paused", "notification_email", "notification_in_app", "last_seen_event_sequence", "recap_dismissed_sequence", "recap_enabled"],
   sources: ["title", "kind", "content", "summary", "url", "visibility", "published", "approved", "file_id", "attachment_id", "archived", "label", "audience", "visibility_approved_version", "visibility_reviewed", "status", "extraction_status", "processing_attempts"],
   projects: ["client_id", "title", "brief", "professional_delivery_state", "next_action"],
-  milestones: ["project_id", "title", "label", "due_at", "state"],
-  work_tasks: ["project_id", "title", "description", "state", "assignee_id", "due_at", "effort_minutes", "milestone_id"],
   calendar_events: ["project_id", "title", "description", "starts_at", "ends_at", "timezone", "attendee_contact_ids", "attendee_ids", "kind", "state", "external_invitation_state", "shared_with_buyer", "connection_id"],
   expenses: ["description", "amount", "incurred_at", "project_id", "category", "payment_state", "notes"],
   private_notes: ["client_id", "project_id", "content", "title"],
@@ -130,13 +128,18 @@ export async function runDomainCommand(actor: Actor, raw: unknown) {
       if (command.type === "file.attach") assertService(locator, "FILE_UNAVAILABLE", "Upload a file before attaching it.", 422);
       if (locator) {
         const file = await client.query("select * from crewmori.files where workspace_id=$1 and id::text=$2 and state='available'", [actor.workspaceId, locator]);
-        assertService(file.rowCount && (actor.kind === "owner" || file.rows[0].engagement_id === actor.engagementId), "FILE_UNAVAILABLE", "Upload a file for this workspace first.", 422);
+        assertService(file.rowCount && (actor.kind === "owner" || (file.rows[0].engagement_id === actor.engagementId && file.rows[0].audience === "buyer")), "FILE_UNAVAILABLE", "Upload a file available to this session first.", 422);
+        if (command.type === "file.attach") {
+          const bound = Object.values(before.tables.attachments || {}).find((attachment) => attachment.storage_kind === "private" && attachment.storage_locator === locator && attachment.availability !== "removed" && attachment.id !== input.id);
+          assertService(!bound, "FILE_ALREADY_ATTACHED", "This upload is already attached. Keep its existing file reference or upload a new version.", 409);
+        }
         Object.assign(values, { storage_kind: "private", storage_locator: locator, mime_type: file.rows[0].mime_type, media_type: file.rows[0].mime_type, byte_length: file.rows[0].byte_size, size_bytes: file.rows[0].byte_size, sha256: file.rows[0].sha256 });
         input.values = values;
       }
     }
     const execution = execute(before, command.type === "message.deliver" ? "message.send" : command.type, input);
-    assertService(execution.result.ok, execution.result.code || "VALIDATION_ERROR", execution.result.message, 422);
+    const failureStatus = execution.result.code === "STALE_VERSION" ? 409 : execution.result.code === "NOT_AUTHORIZED" ? 403 : execution.result.code === "NOT_FOUND" ? 404 : 422;
+    assertService(execution.result.ok, execution.result.code || "VALIDATION_ERROR", execution.result.message, failureStatus);
     const after = execution.state;
     for (const source of Object.values(after.tables.sources || {})) {
       const priorSource = before.tables.sources?.[source.id];
@@ -148,7 +151,11 @@ export async function runDomainCommand(actor: Actor, raw: unknown) {
     for (const file of Object.values(after.tables.attachments || {})) {
       if (file.version === before.tables.attachments?.[file.id]?.version) continue;
       const engagement = Object.values(after.tables.engagements || {}).find((e) => e.id === file.engagement_id || e.conversation_id === file.conversation_id || (e.project_id && e.project_id === file.project_id));
-      if (file.storage_kind === "private" && file.availability === "removed") await client.query("update crewmori.files set state='deleted' where workspace_id=$1 and id::text=$2", [actor.workspaceId, file.storage_locator]);
+      if (file.storage_kind === "private" && file.availability === "removed") {
+        const survivingReference = Object.values(after.tables.attachments || {}).some((other) => other.id !== file.id && other.storage_kind === "private" && other.storage_locator === file.storage_locator && other.availability !== "removed");
+        if (!survivingReference) await client.query("update crewmori.files set state='deleted' where workspace_id=$1 and id::text=$2", [actor.workspaceId, file.storage_locator]);
+        continue;
+      }
       if (file.storage_kind === "private" && engagement) await client.query("update crewmori.files set engagement_id=$3,audience=$4 where workspace_id=$1 and id::text=$2", [actor.workspaceId, file.storage_locator, engagement.id, file.shared_with_buyer || actor.kind === "buyer" ? "buyer" : "owner"]);
     }
     const changedReferences = Object.entries(after.tables).flatMap(([table, records]) => Object.values(records).filter((record) => record.version !== before.tables[table]?.[record.id]?.version).map((record) => `${table}:${record.id}`));

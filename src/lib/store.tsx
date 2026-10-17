@@ -10,6 +10,7 @@ import {
 } from "react";
 import { createState, execute } from "./engine";
 import { translate } from "./i18n";
+import { NotificationToast } from "@/components/notification-toast";
 import {
   type Entity,
   type StoreState,
@@ -24,6 +25,9 @@ export interface StoreContext {
   ready: boolean;
   connected: boolean;
   refresh: () => Promise<void>;
+  refreshing?: boolean;
+  sessionExpired?: boolean;
+  refreshError?: string;
   rows: (table: string) => Entity[];
   record: (table: string, id: string) => Entity | undefined;
   command: (type: string, input?: Input) => Promise<Result>;
@@ -188,17 +192,7 @@ function SampleStoreProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
-      {toast && (
-        <div className="toast" role="status">
-          <span>{toast}</span>
-          <button
-            aria-label="Dismiss notification"
-            onClick={() => setToast("")}
-          >
-            ×
-          </button>
-        </div>
-      )}
+      {toast && <NotificationToast message={toast} dismissLabel={translate("Dismiss notification", locale)} onDismiss={() => setToast("")} />}
     </Context.Provider>
   );
 }

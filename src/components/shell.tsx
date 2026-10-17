@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
@@ -22,13 +22,13 @@ import {
   Pause,
   ArrowRight,
   LogOut,
-  X,
 } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { s, n, a, o, label, date, type Entity, type Result } from "@/lib/types";
 import {
   Button,
   Modal,
+  Form,
   Confirm,
   SearchBar,
   Field,
@@ -40,6 +40,9 @@ import {
 } from "./ui";
 import { roles, recordHref, eventHref } from "@/views/home-team";
 import scenarios from "@/lib/scenarios.json";
+import { searchWorkspace } from "@/lib/workspace-search";
+import { isTeamUpdate } from "@/lib/notifications";
+import "./shell.css";
 import { persistUpload, downloadText } from "@/lib/downloads";
 const nav = [
   { name: "Home", path: "/app/home", icon: Home, match: /^\/app\/home/ },
@@ -89,6 +92,7 @@ export function Shell({
     storageError,
     resetStorage,
     connected,
+    refresh,
   } = useStore();
   const [menu, setMenu] = useState(false),
     [search, setSearch] = useState(false),
@@ -103,14 +107,23 @@ export function Shell({
     [query, setQuery] = useState(""),
     [type, setType] = useState(""),
     [unread, setUnread] = useState(false),
-    [pendingScenario, setPendingScenario] = useState("");
+    [pendingScenario, setPendingScenario] = useState(""),
+    [visibleResults, setVisibleResults] = useState(30);
   const prefs = record("preferences", "preferences_alya"),
     owner = record("owners", "owner_alya");
   const read = a<string>(state.ui.read_events);
-  const events = rows("events").sort((a, b) => n(b.sequence) - n(a.sequence));
+  const events = rows("events").filter(isTeamUpdate).sort((a, b) => n(b.sequence) - n(a.sequence));
   const count = events.filter((e) => !read.includes(e.id)).length;
   const focus = s(prefs?.focus_mode) === "focus";
   const active = nav.find((x) => x.match.test(path));
+  useEffect(() => {
+    setVisibleResults(30);
+  }, [query, type]);
+  useEffect(() => {
+    const closeOnDesktop = () => { if (window.innerWidth > 1024) setMenu(false); };
+    window.addEventListener("resize", closeOnDesktop);
+    return () => window.removeEventListener("resize", closeOnDesktop);
+  }, []);
   useEffect(() => {
     setMenu(false);
     setSearch(false);
@@ -191,43 +204,18 @@ export function Shell({
         s(e.display_name) ||
         s(e.number) ||
         label(e.id);
-  const results = [
-    "opportunities",
-    "offers",
-    "projects",
-    "clients",
-    "work_tasks",
-    "invoices",
-    "receipts",
-    "sources",
-  ]
-    .filter((x) => !type || x === type)
-    .flatMap((table) => rows(table).map((e) => ({ table, e })))
-    .filter(
-      ({ table, e }) =>
-        !query ||
-        [recordTitle(table, e), e.summary, e.content].some((v) =>
-          s(v).toLowerCase().includes(query.toLowerCase()),
-        ),
-    )
-    .slice(0, 30);
-  return (
+  const results = useMemo(() => search ? searchWorkspace(state, query, type) : [], [search, state, query, type]);
+  const shownResults = results.slice(0, visibleResults);
+  const navigation = (
     <>
-      <a className="skip-link" href="#main-content">
-        Skip to content
-      </a>
-      <aside
-        className={`sidebar ${menu ? "open" : ""}`}
-        aria-label="Main navigation"
-      >
         <Link
           href="/app/home"
           className="brand-link"
-          aria-label="Crewmori home"
+          aria-label={t("Crewmori home")}
         >
           <img src="/assets/brand/crewmori-primary-green.svg" alt="Crewmori" />
         </Link>
-        <div className="sample-label">{connected ? "Your workspace" : "Your sample workspace"}</div>
+        <div className="sample-label">{t(connected ? "Your workspace" : "Your sample workspace")}</div>
         <nav className="primary-nav">
           {nav.map(({ name, path: href, icon: Icon, match }) => (
             <Link
@@ -242,7 +230,7 @@ export function Shell({
           ))}
         </nav>
         <div className="sidebar-tools">
-          <div className="eyebrow">{connected ? "Connections" : "Sample connections"}</div>
+          <div className="eyebrow">{t(connected ? "Connections" : "Sample connections")}</div>
           {connectionLinks.map(({ id, label, icon: Icon, size }) => {
             const active =
               path.startsWith("/app/connections") &&
@@ -272,30 +260,57 @@ export function Shell({
             <span className="owner-avatar">
               {s(owner?.display_name, "A").slice(0, 1)}
             </span>
-            <div>
-              <strong>{s(owner?.display_name, "Alya")}</strong>
-              <small>{s(owner?.profession, "Independent freelancer")}</small>
+            <div className="owner-chip-copy">
+              <strong>{s(owner?.display_name, "Your profile")}</strong>
+              <small>{t("Profile and workspace")}</small>
             </div>
           </Link>
         </div>
-        {menu && (
-          <Button
-            className="mobile-menu"
-            variant="ghost"
-            onClick={() => setMenu(false)}
-          >
-            Close menu
-            <X size={15} />
-          </Button>
-        )}
+    </>
+  );
+  return (
+    <>
+      <a className="skip-link" href="#main-content">
+        {t("Skip to content")}
+      </a>
+      <aside className="sidebar" aria-label={t("Main navigation")}>
+        {navigation}
       </aside>
+      {menu && (
+        <Modal title="Navigation" className="shell-nav-dialog" onClose={() => setMenu(false)}>
+          <div id="mobile-navigation" className="shell-mobile-nav" onClick={(event) => {
+            if ((event.target as HTMLElement).closest("a")) setMenu(false);
+          }}>
+            {navigation}
+            <Button variant="secondary" onClick={() => { setMenu(false); onAsk(); }}>
+              {t("Ask your team")}
+            </Button>
+            <Button variant="secondary" aria-pressed={focus} onClick={async () => await command("record.save", {
+              table: "preferences", id: "preferences_alya", expected_version: prefs?.version,
+              values: { focus_mode: focus ? "normal" : "focus" },
+            })}>
+              <Focus size={16} />{t("Focus")}: {t(focus ? "On" : "Off")}
+            </Button>
+            <Button variant="ghost" onClick={async () => { setMenu(false); await openRecap(); }}>
+              <Play size={16} />{t("Catch me up")}
+            </Button>
+            {connected && <Button variant="ghost" onClick={async () => {
+              const result = await command("session.signOut");
+              if (result.ok) { setMenu(false); router.replace("/auth/sign-in"); }
+            }}>{t("Sign out")}</Button>}
+          </div>
+        </Modal>
+      )}
       <div className="workspace">
         <header className="topbar">
           <div className="topbar-title">
             <Button
               variant="icon"
               className="mobile-menu"
-              aria-label="Open navigation menu"
+              aria-label={t("Open navigation menu")}
+              aria-expanded={menu}
+              aria-controls="mobile-navigation"
+              aria-haspopup="dialog"
               onClick={() => setMenu(!menu)}
             >
               <Menu size={18} />
@@ -308,7 +323,7 @@ export function Shell({
             </span>
           </div>
           <div className="topbar-actions">
-            {connected ? <Button variant="secondary" onClick={async () => { const result = await command("session.signOut"); if (result.ok) router.replace("/auth/sign-in"); }}>Sign out</Button> : <>
+            {connected ? <Button variant="ghost" className="shell-sign-out" onClick={async () => { const result = await command("session.signOut"); if (result.ok) router.replace("/auth/sign-in"); }}>Sign out</Button> : <>
             <button
               className="sample-trigger"
               aria-label={t("Sample workspace")}
@@ -323,20 +338,12 @@ export function Shell({
               <ChevronDown size={12} />
             </button>
             </>}
-            <Button
-              variant="secondary"
-              className="desktop-only"
-              onClick={
-                path.includes("/team")
-                  ? openRecap
-                  : () => onAsk("Assess a lead")
-              }
-            >
-              <Play size={13} />
-              {path.includes("/team")
-                ? t("Catch me up")
-                : t(connected ? "Ask your team" : "Run a sample task")}
-            </Button>
+            {path.includes("/team") && (
+              <Button variant="secondary" className="desktop-only" onClick={openRecap}>
+                <Play size={14} />
+                {t("Catch me up")}
+              </Button>
+            )}
             <Button
               variant="secondary"
               className="desktop-only"
@@ -351,18 +358,18 @@ export function Shell({
               }
             >
               <Focus size={15} />
-              {t("Focus")}: {focus ? "On" : "Off"}
+              {t("Focus")}: {t(focus ? "On" : "Off")}
             </Button>
             <Button
               variant="icon"
-              aria-label="Search workspace"
+              aria-label={t("Search workspace")}
               onClick={() => setSearch(true)}
             >
               <Search size={17} />
             </Button>
             <Button
               variant="icon"
-              aria-label={`Notifications, ${count} unread`}
+              aria-label={`${t("Notifications")}, ${count} ${t("unread")}`}
               onClick={() => setNotifications(true)}
             >
               <Bell size={17} />
@@ -371,7 +378,7 @@ export function Shell({
             {!["/app/home", "/app/team"].includes(path) && (
               <Button
                 variant="secondary"
-                className="desktop-only"
+                className="shell-ask"
                 onClick={() => onAsk()}
               >
                 {t("Ask your team")}
@@ -384,36 +391,33 @@ export function Shell({
             <div className="feedback error" role="alert">
               <p>{storageError}</p>
               <div className="actions">
-                <Button
-                  variant="secondary"
-                  onClick={() =>
-                    downloadText(
-                      "Crewmori_recovery.json",
+                {connected ? (
+                  <Button variant="secondary" onClick={refresh}>{t("Try again")}</Button>
+                ) : (
+                  <>
+                    <Button variant="secondary" onClick={() => downloadText(
+                      "Crewmori_local_sample_recovery.json",
                       localStorage.getItem("crewmori.workspace.v1") || "{}",
                       "application/json",
-                    )
-                  }
-                >
-                  Export saved data
-                </Button>
-                <Button
-                  variant="danger"
-                  onClick={() => setPendingScenario("recovery")}
-                >
-                  Reset sample
-                </Button>
+                    )}>Export local sample data</Button>
+                    <Button variant="danger" onClick={() => setPendingScenario("recovery")}>
+                      Reset sample
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           )}
           {children}
         </main>
       </div>
-      <nav className="bottom-nav" aria-label="Primary mobile navigation">
+      <nav className="bottom-nav" aria-label={t("Primary mobile navigation")}>
         {nav.map(({ name, path: href, icon: Icon, match }) => (
           <Link
             key={name}
             href={href}
             className={match.test(path) ? "active" : ""}
+            aria-current={match.test(path) ? "page" : undefined}
           >
             <Icon />
             {t(name)}
@@ -430,7 +434,7 @@ export function Shell({
             />
             <Field label="Record type">
               <select value={type} onChange={(e) => setType(e.target.value)}>
-                <option value="">All records</option>
+                <option value="">{t("All records")}</option>
                 {[
                   "opportunities",
                   "offers",
@@ -442,29 +446,41 @@ export function Shell({
                   "sources",
                 ].map((x) => (
                   <option key={x} value={x}>
-                    {label(x)}
+                    {t(label(x))}
                   </option>
                 ))}
               </select>
             </Field>
-            {!query && <small className="muted">Your saved records</small>}
-            {results.map(({ table, e }) => (
+            <p className="muted shell-search-count" role="status">
+              {results.length === 0
+                ? t(query || type ? "No matching records" : "No saved records yet")
+                : `${t("Showing")} ${Math.min(visibleResults, results.length)} ${t("of")} ${results.length} ${t("saved records")}${query.trim() ? ` ${t("for")} “${query.trim()}”` : ""}`}
+            </p>
+            <div className="shell-search-results" aria-label={t("Search results")}>
+            {shownResults.map(({ table, e }) => (
               <RecordLink
                 key={table + e.id}
                 href={recordHref(table, e.id, state)}
               >
                 <span>
                   {recordTitle(table, e)}
+                  {e.archived === true && <Badge>Archived</Badge>}
                   <small className="muted" style={{ display: "block" }}>
                     {label(table)}
                   </small>
                 </span>
               </RecordLink>
             ))}
+            </div>
+            {results.length > visibleResults && (
+              <Button variant="secondary" onClick={() => setVisibleResults((count) => count + 30)}>
+                {t("Show more results")}
+              </Button>
+            )}
             {!results.length && (
               <Empty
-                title="No matching records"
-                description="Try a different term or clear the filters."
+                title={query || type ? "No matching records" : "No saved records yet"}
+                description={query || type ? "Try a different term or clear the filters." : "Your leads, projects, clients and invoices will appear here as you add them."}
               />
             )}
             {(query || type) && (
@@ -561,21 +577,24 @@ export function Shell({
             <div className="actions">
               <Button
                 variant={unread ? "secondary" : "primary"}
+                aria-pressed={!unread}
                 onClick={() => setUnread(false)}
               >
                 All
               </Button>
               <Button
                 variant={unread ? "primary" : "secondary"}
+                aria-pressed={unread}
                 onClick={() => setUnread(true)}
               >
-                Unread ({count})
+                {t("Unread")} ({count})
               </Button>
               <Button
                 variant="ghost"
+                disabled={count === 0}
                 onClick={async () =>
                   (await command("ui.set", {
-                    values: { read_events: events.map((e) => e.id) },
+                    values: { read_events: [...new Set([...read, ...events.map((e) => e.id)])] },
                   }))
                 }
               >
@@ -619,7 +638,10 @@ export function Shell({
                   </div>
                 </div>
               ))}
-            {unread && !count && <Empty title="You’re all caught up" />}
+            {((unread && !count) || !events.length) && <Empty
+              title="You’re all caught up"
+              description="New activity from your team will appear here."
+            />}
           </div>
         </Modal>
       )}
@@ -699,7 +721,7 @@ export function Delegate({
   initial: string;
   onClose: () => void;
 }) {
-  const { state, rows, command, record, notify } = useStore();
+  const { state, rows, command, record, notify, connected, t } = useStore();
   const router = useRouter();
   const draft = o(state.ui.delegate_draft);
   const leads = rows("opportunities").filter(
@@ -718,7 +740,9 @@ export function Delegate({
       s(draft.service_id, services[0]?.id || ""),
     ),
     [result, setResult] = useState<Result | null>(null),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [submitting, setSubmitting] = useState(false);
+  const submitLock = useRef(false);
   const value = {
     text,
     role,
@@ -748,6 +772,7 @@ export function Delegate({
     setResult(r);
   };
   const submit = async () => {
+    if (submitLock.current || busy) return;
     if (!text.trim()) {
       setResult({
         ok: false,
@@ -771,6 +796,9 @@ export function Delegate({
       });
       return;
     }
+    submitLock.current = true;
+    setSubmitting(true);
+    try {
     const lead = record("opportunities", opportunityId),
       requirement = record("requirements", s(lead?.requirements_id));
     const refs = sourceIds
@@ -807,10 +835,17 @@ export function Delegate({
       router.push("/app/team?task=" + r.id);
       onClose();
     }
+    } catch (error) {
+      setResult({ ok: false, message: error instanceof Error ? error.message : "Your request could not be started. Your draft is still here." });
+    } finally {
+      submitLock.current = false;
+      setSubmitting(false);
+    }
   };
   return (
-    <Modal title="Ask your team" onClose={onClose} dirty={dirty}>
-      <div className="stack">
+    <Modal title="Ask your team" onClose={onClose} closeDisabled={submitting || busy} dirty={dirty}>
+      <Form className="stack" noValidate aria-busy={submitting || busy} onSubmit={async (event) => { event.preventDefault(); await submit(); }}>
+        <fieldset className="shell-delegate-fields" disabled={submitting || busy}>
         <p className="muted">
           A little help with the business around your work.
         </p>
@@ -820,6 +855,7 @@ export function Delegate({
         >
           <textarea
             className="resize-none"
+            required
             value={text}
             autoFocus
             onChange={(e) => setText(e.target.value)}
@@ -946,7 +982,9 @@ export function Delegate({
                 });
                 return;
               }
+              const input = e.currentTarget;
               setBusy(true);
+              setResult(null);
               const ids = [...sourceIds];
               for (const file of files) {
                 try {
@@ -975,7 +1013,7 @@ export function Delegate({
                       id: attachmentId,
                       name: file.name,
                       media_type: file.type,
-                      storage_kind: "browser_blob",
+                      storage_kind: connected ? "private" : "indexeddb",
                       storage_locator: uploaded.id,
                       content_ref: uploaded.id,
                       blob_id: uploaded.id,
@@ -1003,25 +1041,30 @@ export function Delegate({
               }
               setSourceIds(ids);
               setBusy(false);
-              e.target.value = "";
+              input.value = "";
             }}
           />
         </Field>
         <small className="muted">
-          Up to 5 files, 10 MiB each. Files are retained locally; arbitrary
-          content is not interpreted by a live AI.
+          {t(connected
+            ? "Up to 5 files, 10 MiB each. Files are saved privately to your workspace and can be used as context for this request."
+            : "Up to 5 files, 10 MiB each. Files stay in this browser. Sample tasks do not interpret arbitrary file content.")}
         </small>
+        </fieldset>
+        {(busy || submitting) && <p className="shell-pending-status" role="status">
+          {t(busy ? "Saving your context files…" : "Starting your team’s task. Please wait…")}
+        </p>}
         <Feedback result={result} />
         <div className="actions dialog-actions">
-          <Button variant="secondary" onClick={save} disabled={busy}>
+          <Button variant="secondary" onClick={save} disabled={busy || submitting}>
             Save request draft
           </Button>
-          <Button onClick={submit} disabled={busy || !text.trim()}>
-            {busy ? "Saving file…" : "Delegate"}
+          <Button type="submit" disabled={busy || submitting || !text.trim()}>
+            {t(busy ? "Saving files…" : submitting ? "Starting task…" : "Start task")}
             <ArrowRight size={15} />
           </Button>
         </div>
-      </div>
+      </Form>
     </Modal>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useStore } from "@/lib/store";
@@ -13,6 +13,7 @@ import {
   Badge,
   Empty,
   Field,
+  Form,
   Modal,
   Confirm,
   SearchBar,
@@ -27,6 +28,8 @@ import {
 } from "@/lib/downloads";
 import { amendmentSchedule } from "@/lib/engine";
 import { localDateTime, zonedDateTime } from "@/lib/business-time";
+import { calendarOverlapFingerprint } from "@/lib/work-commands";
+import type { UploadedFile } from "@/lib/downloads";
 import "./work.css";
 
 const terminal = ["completed", "cancelled", "archived"];
@@ -55,10 +58,14 @@ const safeHref = (value: unknown) => {
   }
 };
 const due = (x: Entity) => s(x.committed_due_at, s(x.due_at));
+const projectTimezone = (rows: (table: string) => Entity[], project: Entity) => {
+  const acceptance = rows("acceptances").find((item) => item.id === (project.latest_amendment_acceptance_id || project.acceptance_id));
+  return s(o(acceptance?.terms_snapshot).timezone, s(rows("policies")[0]?.timezone, "Asia/Jakarta"));
+};
 const when = (x: unknown) => {
   const value = s(x);
-  return value
-    ? `${date(value)} · ${value.slice(11, 16)} WIB`
+  return value && Number.isFinite(Date.parse(value))
+    ? `${date(value)} · ${localDateTime(value, "Asia/Jakarta").slice(11, 16)} WIB`
     : "Not scheduled";
 };
 
@@ -110,38 +117,45 @@ function Editor({
   title: string;
   onClose: () => void;
   children: React.ReactNode;
-  onSave: () => void;
+  onSave: () => void | Promise<unknown>;
   saveLabel?: string;
   error?: string;
   busy?: boolean;
 }) {
   const [dirty, setDirty] = useState(false),
-    [discard, setDiscard] = useState(false);
+    [discard, setDiscard] = useState(false),
+    [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
+  const pending = busy || saving;
   useDirtyGuard(dirty);
-  const close = () => (dirty ? setDiscard(true) : onClose());
+  const close = () => { if (!pending) { if (dirty) setDiscard(true); else onClose(); } };
   return (
     <>
       <Modal title={title} onClose={close}>
-        <form
+        <Form
           noValidate
           className="work-form"
           onChangeCapture={() => setDirty(true)}
-          onSubmit={(e) => {
+          aria-busy={pending}
+          onSubmit={async (e) => {
             e.preventDefault();
-            onSave();
+            if (savingRef.current || busy) return;
+            savingRef.current = true;
+            setSaving(true);
+            try { await onSave(); } finally { savingRef.current = false; setSaving(false); }
           }}
         >
-          {children}
+          <fieldset className="work-editor-fields" disabled={pending}>{children}</fieldset>
           <ErrorText message={error} />
           <div className="work-form-footer">
-            <Button variant="secondary" type="button" onClick={close}>
+            <Button variant="secondary" type="button" onClick={close} disabled={pending}>
               Cancel
             </Button>
-            <Button type="submit" disabled={busy}>
-              {busy ? "Saving…" : saveLabel}
+            <Button type="submit" disabled={pending}>
+              {pending ? "Saving…" : saveLabel}
             </Button>
           </div>
-        </form>
+        </Form>
       </Modal>
       {discard && (
         <Confirm
@@ -255,6 +269,7 @@ function ProjectEditor({
       >
         <Field label="Project name">
           <input
+          required
             value={name}
             maxLength={120}
             onChange={(e) => setName(e.target.value)}
@@ -466,12 +481,14 @@ function ProjectList() {
           </span>
           <div className="actions">
             <Button
+              aria-pressed={view === "list"}
               variant={view === "list" ? undefined : "secondary"}
               onClick={() => update("view", "list")}
             >
               List
             </Button>
             <Button
+              aria-pressed={view === "board"}
               variant={view === "board" ? undefined : "secondary"}
               onClick={() => update("view", "board")}
             >
@@ -584,6 +601,9 @@ function TaskEditor({
   onClose: () => void;
 }) {
   const { rows, command } = useStore();
+  const ownerRecord = rows("owners")[0];
+  const ownerId = ownerRecord?.id || "owner_alya";
+  const ownerName = s(ownerRecord?.display_name, "You");
   const [name, setName] = useState(s(task?.title)),
     [notes, setNotes] = useState(s(task?.notes)),
     [kind, setKind] = useState(
@@ -592,7 +612,7 @@ function TaskEditor({
         s(task?.assignee_kind) === "agent" ? "administrative" : "professional",
       ),
     ),
-    [owner, setOwner] = useState(s(task?.assignee_id, "owner_alya")),
+    [owner, setOwner] = useState(s(task?.assignee_id, ownerId)),
     [target, setTarget] = useState(isoDay(task?.due_at)),
     [milestone, setMilestone] = useState(s(task?.milestone_id)),
     [shared, setShared] = useState(b(task?.shared_with_buyer)),
@@ -600,10 +620,9 @@ function TaskEditor({
   const [expectedVersion] = useState(task?.version);
   async function save() {
     if (!name.trim()) return setError("Enter a task name.");
-    if (kind === "professional" && owner !== "owner_alya")
+    if (kind === "professional" && owner !== ownerId)
       return setError("Professional work must be assigned to you.");
-    const result = (await command("record.save", {
-      table: "work_tasks",
+    const result = (await command("task.save", {
       id: task?.id,
       expected_version: expectedVersion,
       values: {
@@ -611,14 +630,10 @@ function TaskEditor({
         title: name.trim(),
         notes,
         kind,
-        task_kind: kind,
-        assignee_kind: owner === "owner_alya" ? "owner" : "agent",
         assignee_id: owner,
-        due_at: target ? `${target}T17:00:00+07:00` : null,
+        due_at: target ? zonedDateTime(target, "17:00", projectTimezone(rows, project)) : null,
         milestone_id: milestone || null,
         shared_with_buyer: shared,
-        audience: shared ? "buyer" : "owner",
-        state: s(task?.state, "not_started"),
       },
     }));
     if (result.ok) onClose();
@@ -635,6 +650,7 @@ function TaskEditor({
       <Field label="Task name">
         <input
           value={name}
+          required
           maxLength={160}
           onChange={(e) => setName(e.target.value)}
           autoFocus
@@ -655,7 +671,7 @@ function TaskEditor({
             value={kind}
             onChange={(e) => {
               setKind(e.target.value);
-              if (e.target.value === "professional") setOwner("owner_alya");
+              if (e.target.value === "professional") setOwner(ownerId);
             }}
           >
             <option value="professional">Professional deliverable</option>
@@ -668,7 +684,7 @@ function TaskEditor({
             disabled={kind === "professional"}
             onChange={(e) => setOwner(e.target.value)}
           >
-            <option value="owner_alya">Alya — you</option>
+            <option value={ownerId}>{ownerName} — you</option>
             {[
               "scout",
               "promoter",
@@ -766,72 +782,24 @@ function MilestoneEditor({
       target < isoDay(project.committed_start_at)
     )
       return setError("The target must be on or after the committed start.");
-    if (contractual && target !== isoDay(milestone?.due_at)) {
-      if (reason.trim().length < 5)
-        return setError("Describe why the agreed target needs to change.");
-      const result = (await command("record.save", {
-        table: "change_requests",
+    if (contractual && target !== isoDay(milestone?.due_at) && reason.trim().length < 5)
+      return setError("Describe why the agreed target needs to change.");
+    const result = await command(
+      contractual && target !== isoDay(milestone?.due_at) ? "milestone.proposeChange" : "milestone.save",
+      {
+        id: milestone?.id,
+        expected_version: expectedVersion,
+        expected_task_versions: taskVersions,
         values: {
           project_id: project.id,
-          offer_id: project.offer_id,
-          type: "schedule",
-          proposed_due_at: `${target}T17:00:00+07:00`,
-          reason,
-          state: "draft",
-          audience: "owner",
+          title: name.trim(),
+          due_at: milestone && target === isoDay(milestone.due_at) ? milestone.due_at : zonedDateTime(target, "17:00", projectTimezone(rows, project)),
+          notes: reason,
+          task_ids: selected,
         },
-      }));
-      if (result.ok) onClose();
-      else setError(result.message);
-      return;
-    }
-    if (
-      selected.some(
-        (id) =>
-          !rows("work_tasks").some(
-            (t) => t.id === id && s(t.project_id) === project.id,
-          ),
-      )
-    )
-      return setError(
-        "A selected task is no longer available. Reopen the milestone to compare changes.",
-      );
-    if (
-      rows("work_tasks")
-        .filter(
-          (t) => selected.includes(t.id) || s(t.milestone_id) === milestone?.id,
-        )
-        .some((t) => taskVersions[t.id] !== t.version)
-    )
-      return setError(
-        "A linked task changed. Reopen the milestone and compare the current task assignments.",
-      );
-    const result = (await command("record.save", {
-      table: "milestones",
-      id: milestone?.id,
-      expected_version: expectedVersion,
-      values: {
-        project_id: project.id,
-        title: name.trim(),
-        due_at: `${target}T17:00:00+07:00`,
-        state: s(milestone?.state, "not_started"),
-        notes: reason,
-        shared_with_buyer: b(milestone?.shared_with_buyer),
       },
-    }));
+    );
     if (!result.ok) return setError(result.message);
-    const id = result.id || milestone?.id;
-    for (const task of rows("work_tasks").filter(
-      (x) => s(x.project_id) === project.id,
-    )) {
-      if (selected.includes(task.id) || s(task.milestone_id) === milestone?.id)
-        (await command("record.save", {
-          table: "work_tasks",
-          id: task.id,
-          expected_version: taskVersions[task.id],
-          values: { milestone_id: selected.includes(task.id) ? id : null },
-        }));
-    }
     onClose();
   }
   return (
@@ -849,6 +817,7 @@ function MilestoneEditor({
       <Field label="Milestone name">
         <input
           value={name}
+          required
           maxLength={120}
           onChange={(e) => setName(e.target.value)}
           autoFocus
@@ -857,6 +826,7 @@ function MilestoneEditor({
       <Field label="Target date">
         <input
           type="date"
+          required
           value={target}
           onChange={(e) => setTarget(e.target.value)}
         />
@@ -1074,7 +1044,7 @@ function ProjectTasks({ project }: { project: Entity }) {
               <h3>{titleOf(x)}</h3>
               <p className="muted">
                 {s(x.assignee_kind) === "owner"
-                  ? "Alya — professional work"
+                  ? `${s(rows("owners")[0]?.display_name, "You")} — professional work`
                   : label(x.assignee_id)}{" "}
                 · {date(x.due_at)} ·{" "}
                 {b(x.shared_with_buyer) ? "Shared with buyer" : "Owner only"}
@@ -1113,10 +1083,8 @@ function ProjectTasks({ project }: { project: Entity }) {
                   variant="secondary"
                   disabled={!enabled}
                   onClick={async () => {
-                    const result = (await command("record.archive", {
-                      table: "work_tasks",
+                    const result = (await command("task.restore", {
                       id: x.id,
-                      archived: false,
                       expected_version: x.version,
                     }));
                     if (!result.ok) setError(result.message);
@@ -1236,7 +1204,9 @@ function FilePreview({ file, onClose }: { file: Entity; onClose: () => void }) {
 }
 
 function Files({ project, clientId }: { project?: Entity; clientId?: string }) {
-  const { rows, command, notify } = useStore();
+  const { rows, command, notify, connected } = useStore();
+  const uploaded = useRef(new WeakMap<File, UploadedFile>());
+  const [uploadStatus, setUploadStatus] = useState("");
   const [adding, setAdding] = useState(false),
     [files, setFiles] = useState<File[]>([]),
     [link, setLink] = useState(""),
@@ -1282,21 +1252,20 @@ function Files({ project, clientId }: { project?: Entity; clientId?: string }) {
         }
       }
       for (const file of files) {
-        const saved = await persistUpload(file);
-        const result = (await command("record.save", {
-          table: "attachments",
+        setUploadStatus(`Adding ${file.name}…`);
+        const saved = uploaded.current.get(file) || await persistUpload(file);
+        uploaded.current.set(file, saved);
+        const result = (await command("file.attach", {
           values: {
             name: file.name,
             project_id: project?.id,
             client_id: project?.client_id || clientId,
             media_type: saved.type,
-            storage_kind: "local_blob",
+            storage_kind: connected ? "private" : "local_blob",
             storage_locator: saved.id,
             byte_length: saved.size,
             sha256: saved.sha256,
-            availability: "available",
             shared_with_buyer: shared,
-            audience: shared ? "buyer" : "owner",
             replaces_attachment_id: replace?.id || null,
           },
         }));
@@ -1304,8 +1273,7 @@ function Files({ project, clientId }: { project?: Entity; clientId?: string }) {
         setFiles((pending) => pending.filter((item) => item !== file));
       }
       if (link) {
-        const result = (await command("record.save", {
-          table: "attachments",
+        const result = (await command("file.link", {
           values: {
             name: name.trim(),
             project_id: project?.id,
@@ -1313,9 +1281,7 @@ function Files({ project, clientId }: { project?: Entity; clientId?: string }) {
             media_type: "application/octet-stream",
             storage_kind: "external_link",
             storage_locator: safeHref(link),
-            availability: "external",
             shared_with_buyer: shared,
-            audience: shared ? "buyer" : "owner",
             byte_length: 0,
           },
         }));
@@ -1326,7 +1292,7 @@ function Files({ project, clientId }: { project?: Entity; clientId?: string }) {
       setLink("");
       setName("");
       setReplace(null);
-      notify("Files saved to this sample workspace.");
+      notify(connected ? "Files saved to your project." : "Files saved to this browser’s demo workspace.");
     } catch (e) {
       setError(
         e instanceof Error
@@ -1335,6 +1301,7 @@ function Files({ project, clientId }: { project?: Entity; clientId?: string }) {
       );
     } finally {
       setBusy(false);
+      setUploadStatus("");
     }
   }
   async function download(file: Entity) {
@@ -1436,8 +1403,7 @@ function Files({ project, clientId }: { project?: Entity; clientId?: string }) {
                           "buyer_accepted" && b(x.shared_with_buyer)
                       }
                       onClick={async () => {
-                        const result = (await command("record.archive", {
-                          table: "attachments",
+                        const result = (await command("file.archive", {
                           id: x.id,
                           expected_version: x.version,
                           archived: active(x),
@@ -1468,7 +1434,7 @@ function Files({ project, clientId }: { project?: Entity; clientId?: string }) {
             setReplace(null);
             setError("");
           }}
-          onSave={async () => void (await save())}
+          onSave={save}
           saveLabel="Add files"
           error={error}
           busy={busy}
@@ -1483,8 +1449,9 @@ function Files({ project, clientId }: { project?: Entity; clientId?: string }) {
           </Field>
           <p className="work-field-hint">
             PDF, PNG, JPEG or TXT. Up to 10 MiB per file and five files at a
-            time. Files are stored in this browser’s sample workspace.
+            time. {connected ? "Files are stored privately in your account." : "Files stay in this browser’s demo workspace."}
           </p>
+          {busy && <p role="status" className="muted">{uploadStatus || "Saving file references…"}</p>}
           {files.map((x) => (
             <p key={`${x.name}-${x.size}`}>
               {x.name} · {(x.size / 1024 / 1024).toFixed(2)} MiB
@@ -1632,6 +1599,7 @@ function InputChecklist({
         >
           <Field label="What is needed?">
             <textarea
+          required
               className="resize-none"
               rows={5}
               value={reason}
@@ -1764,6 +1732,7 @@ function Delivery({
           </fieldset>
           <Field label="Delivery note">
             <textarea
+          required
               className="resize-none"
               rows={4}
               maxLength={3000}
@@ -1838,7 +1807,7 @@ function ProjectDetail({ id }: { id: string }) {
         : `Your delivery: ${titleOf(project)}`;
     const content =
       kind === "cancellation"
-        ? `Hi ${s(contact.display_name, "there")},\n\n${titleOf(project)} is now cancelled. Your accepted terms and existing payment records remain available in the project portal. Please get in touch if you would like to discuss the next steps or any outstanding invoice.\n\nThank you,\nAlya`
+        ? `Hi ${s(contact.display_name, "there")},\n\n${titleOf(project)} is now cancelled. Your accepted terms and existing payment records remain available in the project portal. Please get in touch if you would like to discuss the next steps or any outstanding invoice.\n\nThank you,\n${s(rows("owners")[0]?.display_name, "Your project owner")}`
         : s(project.delivery_message);
     const previous =
       kind === "delivery" && project.delivery_message_id
@@ -2172,6 +2141,7 @@ function ProjectDetail({ id }: { id: string }) {
           {!review ? (
             <Field label="Reason for cancelling — owner only">
               <textarea
+          required
                 className="resize-none"
                 rows={4}
                 maxLength={1000}
@@ -2286,6 +2256,7 @@ function ClientEditor({
     >
       <Field label="Client name">
         <input
+          required
           value={name}
           maxLength={120}
           onChange={(e) => setName(e.target.value)}
@@ -2358,7 +2329,7 @@ function ClientEditor({
       </Field>
       <p className="work-field-hint">
         Private notes are visible only to you. Changing an email requires a
-        fresh review before a sample message is sent.
+        fresh review before a message is sent.
       </p>
     </Editor>
   );
@@ -2373,6 +2344,10 @@ function Messages({
 }) {
   const { rows, record, command, notify, connected } = useStore();
   const q = useSearchParams();
+  const sendingRef = useRef(false);
+  const [sending, setSending] = useState(false);
+  const [draftBusy, setDraftBusy] = useState(false);
+  const [errorCode, setErrorCode] = useState("");
   const contact = rows("contacts").find((x) => s(x.client_id) === clientId);
   const conversation = rows("conversations").find(
     (x) => s(x.client_id) === clientId,
@@ -2397,7 +2372,7 @@ function Messages({
               )
               .map(titleOf)
               .join(" and ") || "the remaining required inputs"
-          } through your project portal. This will help us prepare the next step.\n\nThank you,\nAlya`
+          } through your project portal. This will help us prepare the next step.\n\nThank you,\n${s(rows("owners")[0]?.display_name, "Your project owner")}`
         : s(specified?.content),
     ),
     [selected, setSelected] = useState<string[]>(
@@ -2486,7 +2461,12 @@ function Messages({
     };
   }
   async function send(channel = "email") {
-    if (!review || !contact) return;
+    if (!review || !contact || sendingRef.current) return;
+    sendingRef.current = true;
+    setSending(true);
+    setError("");
+    setErrorCode("");
+    try {
     const current = record("messages", review.id);
     if (!current)
       return setError(
@@ -2506,14 +2486,14 @@ function Messages({
         expected_version: current.version,
         destination_contact_id: contact.id,
       }));
-      if (!approval.ok) return setError(approval.message);
+      if (!approval.ok) { setErrorCode(approval.code || ""); return setError(approval.message); }
       setReview({ ...review, version: current.version + 1 });
     }
     const result = (await command(connected && channel === "portal" ? "message.deliver" : "message.send", {
       id: current.id,
       destination_contact_id: contact.id,
     }));
-    if (!result.ok) return setError(result.message);
+    if (!result.ok) { setErrorCode(result.code || ""); return setError(result.message); }
     setReview(null);
     setBody("");
     setSubject("");
@@ -2522,6 +2502,10 @@ function Messages({
     setSelected([]);
     setComposing(false);
     notify(result.message);
+    } finally {
+      sendingRef.current = false;
+      setSending(false);
+    }
   }
   return (
     <Panel>
@@ -2546,7 +2530,7 @@ function Messages({
               <strong>
                 {s(x.sender_kind) === "buyer"
                   ? s(contact?.display_name, "Client")
-                  : "Alya"}
+                  : s(rows("owners")[0]?.display_name, "You")}
               </strong>
               <span>{date(x.created_at)}</span>
               <span>{label(x.delivery_state)}</span>
@@ -2600,10 +2584,18 @@ function Messages({
       )}
       <ErrorText message={error} />
       {composing && (
-        <div className="work-form">
+        <Form noValidate className="work-form" onSubmit={async (event) => {
+          event.preventDefault();
+          const submitter = (event.nativeEvent as SubmitEvent).submitter;
+          const reviewAfter = submitter instanceof HTMLButtonElement && submitter.value === "review";
+          setDraftBusy(true);
+          try { const saved = await saveDraft(); if (saved && reviewAfter) setReview(saved); }
+          finally { setDraftBusy(false); }
+        }}>
+          <fieldset className="work-editor-fields" disabled={draftBusy}>
           <h3>Draft to {s(contact?.email, "client contact")}</h3>
           <Field label="Subject">
-            <input
+            <input required
               maxLength={200}
               value={subject}
               onChange={(e) => {
@@ -2613,7 +2605,7 @@ function Messages({
             />
           </Field>
           <Field label="Message">
-            <textarea
+            <textarea required
               className="resize-none"
               rows={7}
               value={body}
@@ -2647,25 +2639,21 @@ function Messages({
             </details>
           )}
           <div className="actions">
-            <Button
-              onClick={async () => {
-                const saved = (await saveDraft());
-                if (saved) setReview(saved);
-              }}
-            >
+            <Button type="submit" name="intent" value="review" pendingLabel="Saving draft…">
               Review message
             </Button>
-            <Button variant="secondary" onClick={async () => (await saveDraft())}>
+            <Button type="submit" name="intent" value="save" variant="secondary">
               Save draft
             </Button>
           </div>
           <p className="work-field-hint">
             Review the exact recipient and content before sending.
           </p>
-        </div>
+          </fieldset>
+        </Form>
       )}
       {review && (
-        <Modal title={connected ? "Review message" : "Review sample message"} onClose={() => setReview(null)}>
+        <Modal title={connected ? "Review message" : "Review sample message"} onClose={() => { if (!sendingRef.current) setReview(null); }}>
           <div className="work-form">
             <p>
               <strong>To:</strong> {s(contact?.display_name)} &lt;
@@ -2688,13 +2676,13 @@ function Messages({
             </div>
             <ErrorText message={error} />
             <div className="actions">
-              <Button onClick={() => void send("email")}>{connected ? "Approve and send email" : "Approve and send sample message"}</Button>
-              {connected && <Button variant="secondary" onClick={() => void send("portal")}>Approve and deliver to portal</Button>}
-              <Button variant="secondary" onClick={() => setReview(null)}>
+              <Button disabled={sending} pendingLabel="Sending…" onClick={() => send("email")}>{connected ? "Approve and send email" : "Approve and send sample message"}</Button>
+              {connected && <Button disabled={sending} pendingLabel="Delivering…" variant="secondary" onClick={() => send("portal")}>Approve and deliver to portal</Button>}
+              <Button disabled={sending} variant="secondary" onClick={() => setReview(null)}>
                 Back to editing
               </Button>
             </div>
-            {error.toLowerCase().includes("connect") && (
+            {["CONNECTION_REQUIRED", "CONNECTION_UNAVAILABLE", "CONNECTION_EXPIRED", "CAPABILITY_MISSING", "CONFIGURATION_REQUIRED"].includes(errorCode) && (
               <LinkButton
                 variant="secondary"
                 href="/app/connections?connection=gmail"
@@ -3140,7 +3128,7 @@ function EventEditor({
     [project, setProject] = useState(s(event?.project_id)),
     [contact, setContact] = useState(a<string>(event?.attendee_ids)[0] || ""),
     [error, setError] = useState(""),
-    [overlapAccepted, setOverlapAccepted] = useState(false);
+    [acceptedOverlap, setAcceptedOverlap] = useState("");
   const [expectedVersion] = useState(event?.version);
   const locked =
     !!event &&
@@ -3159,6 +3147,8 @@ function EventEditor({
       Date.parse(s(x.starts_at)) < instant(end) &&
       Date.parse(s(x.ends_at)) > instant(start),
   );
+  const overlapFingerprint = calendarOverlapFingerprint({ start, end, timezone, project, contact, kind }, overlap);
+  const overlapAccepted = acceptedOverlap === overlapFingerprint;
   async function save() {
     if (!name.trim()) return setError("Enter an event name.");
     let startAt: string, endAt: string;
@@ -3178,7 +3168,7 @@ function EventEditor({
     if (kind === "client_meeting" && !contact)
       return setError("Choose a known client attendee.");
     if (overlap.length && !overlapAccepted) {
-      setOverlapAccepted(true);
+      setAcceptedOverlap(overlapFingerprint);
       return setError(
         `This overlaps ${overlap.map(titleOf).join(", ")}. Save again to keep both blocks.`,
       );
@@ -3238,29 +3228,30 @@ function EventEditor({
       <Field label="Event name">
         <input
           value={name}
+          required
           maxLength={120}
           onChange={(e) => setName(e.target.value)}
           autoFocus
         />
       </Field>
       <div className="grid2">
-        <Field label="Start — Asia/Jakarta">
+        <Field label={`Start — ${timezone}`}>
           <input
             type="datetime-local"
             value={start}
             onChange={(e) => {
               setStart(e.target.value);
-              setOverlapAccepted(false);
+              setAcceptedOverlap("");
             }}
           />
         </Field>
-        <Field label="End — Asia/Jakarta">
+        <Field label={`End — ${timezone}`}>
           <input
             type="datetime-local"
             value={end}
             onChange={(e) => {
               setEnd(e.target.value);
-              setOverlapAccepted(false);
+              setAcceptedOverlap("");
             }}
           />
         </Field>
@@ -3297,7 +3288,7 @@ function EventEditor({
       )}
       <p className="work-field-hint">
         {kind === "client_meeting"
-          ? "This saves an unsent proposal. Review the exact invitation before a sample send."
+          ? state.mode === "connected" ? "This saves an unsent proposal. Review the exact invitation before sending." : "This saves an unsent proposal. Review the exact invitation before a demo send."
           : "An internal work block does not invite anyone or change accepted project dates."}
       </p>
     </Editor>
@@ -3319,6 +3310,8 @@ function EventDetail({
     [reviewRecipients, setReviewRecipients] = useState<string[]>([]),
     [error, setError] = useState(""),
     [archive, setArchive] = useState(false);
+  const invitingRef = useRef(false);
+  const [inviting, setInviting] = useState(false);
   const recipientIds = a<string>(event.attendee_ids);
   const recipients = recipientIds
     .map((id) => s(record("contacts", id)?.email))
@@ -3329,6 +3322,10 @@ function EventDetail({
     "provisional",
   ].includes(s(event.kind));
   async function invite() {
+    if (invitingRef.current) return;
+    invitingRef.current = true;
+    setInviting(true);
+    try {
     if (
       event.version !== reviewVersion ||
       JSON.stringify(recipients) !== JSON.stringify(reviewRecipients)
@@ -3347,9 +3344,10 @@ function EventDetail({
       setReview(false);
       onClose();
     } else setError(sent.message);
+    } finally { invitingRef.current = false; setInviting(false); }
   }
   return (
-    <Modal title={titleOf(event)} onClose={onClose}>
+    <Modal title={titleOf(event)} onClose={() => { if (!invitingRef.current) onClose(); }}>
       <div className="stack">
         <p>
           <Badge>{label(event.state)}</Badge> · {label(event.kind)}
@@ -3362,7 +3360,7 @@ function EventDetail({
           <dt>Timezone</dt>
           <dd>{s(event.timezone, "Asia/Jakarta")}</dd>
           <dt>Invitation</dt>
-          <dd>{label(event.external_invitation_state) || "Not requested"}</dd>
+          <dd>{connected && event.external_invitation_state === "sample_invited" ? "Invitation sent" : label(event.external_invitation_state) || "Not requested"}</dd>
         </dl>
         {event.project_id ? (
           <LinkButton
@@ -3391,10 +3389,10 @@ function EventDetail({
               {connected ? "Send this exact title, time, timezone and attendee list through Google Calendar. Attendance remains pending until the buyer responds." : "Send this exact title, time, timezone and attendee list as a sample invitation. Attendance remains pending until the buyer responds."}
             </div>
             <div className="actions">
-              <Button onClick={invite}>
+              <Button disabled={inviting} pendingLabel="Sending invitation…" onClick={invite}>
                 {connected ? "Approve and send invitation" : "Approve and send sample invitation"}
               </Button>
-              <Button variant="secondary" onClick={() => setReview(false)}>
+              <Button disabled={inviting} variant="secondary" onClick={() => setReview(false)}>
                 Cancel review
               </Button>
             </div>
@@ -3443,13 +3441,9 @@ function EventDetail({
             onConfirm={async () => {
               const result =
                 s(event.external_invitation_state) === "sample_invited"
-                  ? (await command("record.save", {
-                      table: "change_requests",
-                      values: {
-                        calendar_event_id: event.id,
-                        type: "invitation_cancellation",
-                        state: "draft",
-                      },
+                  ? (await command("calendar.proposeCancellation", {
+                      id: event.id,
+                      expected_version: event.version,
                     }))
                   : (await command("record.archive", {
                       table: "calendar_events",
@@ -3857,6 +3851,7 @@ function Calendar() {
             {["week", "month", "agenda"].map((x) => (
               <Button
                 key={x}
+                aria-pressed={view === x}
                 variant={view === x ? undefined : "secondary"}
                 onClick={() => update({ view: x })}
               >

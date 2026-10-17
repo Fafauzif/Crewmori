@@ -1,6 +1,8 @@
 {
   "profile": "product-admin",
-  "sourceRoots": ["src"],
+  "sourceRoots": [
+    "src"
+  ],
   "canonicalMap": "UX-CONTRACT.md",
   "requiredCapabilities": [
     "Table Selection",
@@ -14,5 +16,27 @@
   "ownership": {
     "Select/Listbox": "native",
     "Date": "native"
-  }
+  },
+  "requiredCommands": [
+    "typecheck",
+    "lint",
+    "unit",
+    "build",
+    "ux"
+  ],
+  "commands": {
+    "typecheck": "npm run typecheck",
+    "lint": "npm run lint",
+    "unit": "npm test",
+    "build": "npm run build && npm run verify:build-assets",
+    "ux": "npm run test:ux",
+    "httpSmoke": "npm run test:api",
+    "connectedDb": "npm run test:db",
+    "connectedE2e": "npm run test:e2e"
+  },
+  "evidence": {
+    "crudFullFlow": "tests/e2e/ux-work.spec.ts",
+    "failurePaths": "tests/e2e/ux-forms.spec.ts"
+  },
+  "verificationRecord": "docs/IMPLEMENTATION_VERIFICATION.md"
 }

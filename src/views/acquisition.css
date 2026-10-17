@@ -453,3 +453,10 @@
     padding: 18px;
   }
 }
+
+/* Keep the exact submitted draft stable while a consequential intent is pending. */
+.acq-pending-fields { display: contents; border: 0; margin: 0; padding: 0; min-width: 0; }
+.acq-task-status { padding: 12px 16px; border-left: 3px solid var(--forest); background: var(--selected); border-radius: 0 12px 12px 0; font-size: 14px; }
+.acq-invitation { display: grid; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); min-width: 0; }
+.acq-invitation p { margin: 0; font-size: 14px; }
+.acq-invitation input { min-width: 0; width: 100%; }

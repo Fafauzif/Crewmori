@@ -29,7 +29,7 @@
       "path": "/auth/sign-in",
       "actor": "public",
       "nav_owner": null,
-      "job": "Simulated account sign in",
+      "job": "Google-only real account sign-in or creation in connected mode; labelled local account sample when disabled",
       "required": true
     },
     {
@@ -37,7 +37,7 @@
       "path": "/auth/sign-up",
       "actor": "public",
       "nav_owner": null,
-      "job": "Simulated account sign up",
+      "job": "Google-only real account sign-in or creation in connected mode; labelled local account sample when disabled",
       "required": true
     },
     {
@@ -45,7 +45,7 @@
       "path": "/auth/recover",
       "actor": "public",
       "nav_owner": null,
-      "job": "Simulated account recover",
+      "job": "Explain Google account recovery in connected mode; local demo lifecycle when disabled",
       "required": true
     },
     {
@@ -53,7 +53,15 @@
       "path": "/auth/reset",
       "actor": "public",
       "nav_owner": null,
-      "job": "Simulated account reset",
+      "job": "Explain Google account recovery in connected mode; local demo lifecycle when disabled",
+      "required": true
+    },
+    {
+      "id": "auth.verify",
+      "path": "/auth/verify",
+      "actor": "public",
+      "nav_owner": null,
+      "job": "Readable Google handoff and actual session/workspace preparation, bounded error and retry",
       "required": true
     },
     {

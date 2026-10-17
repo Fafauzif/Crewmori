@@ -1,0 +1,97 @@
+/* Shell-only refinements preserve Crewmori's shared brand and domain layouts. */
+.sidebar .sample-label,
+.shell-mobile-nav .sample-label {
+  font-size: 12px;
+  letter-spacing: .03em;
+  text-transform: none;
+  margin: 0 0 16px;
+}
+.sidebar .sidebar-tools {
+  margin-top: 20px;
+  padding-top: 16px;
+}
+.sidebar-tools .nav-item {
+  min-height: 44px;
+  font-size: 13px;
+}
+.owner-chip-copy { min-width: 0; }
+.owner-chip-copy strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+.owner-chip-copy small { font-size: 12px; line-height: 18px; }
+.owner-chip { min-height: 64px; padding-inline: 8px; }
+.topbar .btn,
+.topbar .sample-trigger {
+  min-height: 44px;
+  font-size: 13px;
+}
+.topbar .btn.icon {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  padding: 12px;
+}
+.topbar-title { min-width: 0; }
+.topbar-title > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topbar .shell-sign-out { font-size: 12px; }
+.shell-search-count { margin: 0; font-size: 14px; }
+.shell-search-results { display: grid; gap: 8px; }
+.shell-search-results .record-link > span { min-width: 0; overflow-wrap: anywhere; }
+.shell-search-results .badge { margin-left: 8px; }
+.shell-delegate-fields {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  display: grid;
+  gap: 16px;
+}
+.shell-delegate-fields .source-chip button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.shell-pending-status {
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: var(--forest);
+  background: var(--selected);
+  margin: 0;
+}
+.dialog.shell-nav-dialog {
+  width: min(340px, calc(100vw - 24px));
+  max-width: none;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  border-radius: 0 24px 24px 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+.shell-nav-dialog .dialog-head {
+  min-height: 72px;
+  padding: 16px 20px;
+}
+.shell-nav-dialog .dialog-head h2 { font-size: 24px; }
+.shell-nav-dialog .dialog-body { padding: 16px 20px 24px; }
+.shell-mobile-nav { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+.shell-mobile-nav .brand-link { margin-bottom: 0; }
+.shell-mobile-nav .sidebar-tools { margin-top: 8px; padding-top: 16px; }
+.shell-mobile-nav .sidebar-footer { margin-top: 8px; }
+.shell-mobile-nav .owner-chip { margin-top: 0; }
+@media (max-width: 1024px) {
+  .topbar { gap: 12px; }
+  .topbar-actions { gap: 6px; }
+  .topbar .desktop-only { display: none; }
+}
+@media (max-width: 768px) {
+  .topbar { padding-inline: 12px; }
+  .topbar .shell-sign-out,
+  .topbar .shell-ask { display: none; }
+  .topbar .sample-trigger { min-height: 44px; font-size: 12px; }
+  .bottom-nav a { font-size: 12px; letter-spacing: -.02em; }
+  .bottom-nav a > svg { flex-shrink: 0; }
+}

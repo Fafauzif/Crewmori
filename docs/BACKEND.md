@@ -1,10 +1,10 @@
 # Connected backend
 
-Updated 17 October 2026. Crewmori uses one TypeScript repository: Next.js web/API, a persistent Node worker, and Supabase PostgreSQL/Auth/private Storage. Set `CREWMORI_BACKEND_ENABLED=true` to select the connected frontend. Disabled mode retains the independent browser demo. Connected accounts start with empty workspaces; demo fixtures are never imported.
+Updated 18 October 2026 (release 1.2.1). Crewmori uses one TypeScript repository: Next.js web/API, a persistent Node worker, and Supabase PostgreSQL/Auth/private Storage. Set `CREWMORI_BACKEND_ENABLED=true` to select the connected frontend. Disabled mode retains the independent browser demo. Connected accounts start with empty workspaces; demo fixtures are never imported.
 
 ## What is connected
 
-- Accounts sign up and sign in only with Google through Supabase Auth (PKCE, HTTP-only cookies); password sign-up, sign-in and recovery endpoints return `GOOGLE_SIGN_IN_REQUIRED`. The first callback creates the empty workspace. Onboarding saves real profile, services, availability and policy records.
+- Accounts sign up and sign in only with Google through Supabase Auth (PKCE, HTTP-only cookies); password sign-up, sign-in and recovery endpoints return `GOOGLE_SIGN_IN_REQUIRED`. The callback returns through /auth/verify; POST /api/auth/complete prepares the empty workspace with readable progress and retry. Onboarding saves real profile, services, availability and policy records.
 - Owner commands run the shared business rules inside serialized PostgreSQL transactions. Stable transport keys, expected record versions and workspace revisions protect retries and concurrent decisions. Browser roles cannot write the private domain schema.
 - Public profiles expose reviewed publication snapshots. Inquiries create scoped engagements. Owner-issued invitations exchange a single-use token for an expiring HTTP-only buyer session; the invitation token travels in a URL fragment and is removed after exchange. Buyer responses contain explicit projections, never the owner's store.
 - Six AI roles (Gemini by default, Claude optional) run through pg-boss, an outbox and LangGraph PostgreSQL checkpoints. Sources are versioned and rechecked before publication/application. The owner reviews an artifact before saving an assessment, offer draft, message draft, promotional draft or team note. Business approval and external delivery remain separate actions.
@@ -103,7 +103,7 @@ Responses use `no-store`. Except verified callbacks/webhooks/provider tools, mut
 | --- | --- |
 | `GET /api/health` | Liveness and mode; no database/provider health claim |
 | `GET /api/backend/status` | Authenticated configuration presence |
-| `/api/auth/{sign-up,sign-in,sign-out,recover,reset,user,callback}` | Auth/session lifecycle |
+| `/api/auth/{sign-up,sign-in,sign-out,recover,reset,user,callback,complete}` | Auth/session lifecycle |
 | `GET/POST /api/workspaces`, `GET /api/workspace/state` | Empty workspace bootstrap and owner projection |
 | `POST /api/commands`, `POST /api/buyer/commands` | Versioned domain commands with idempotency |
 | `GET /api/public/profile`, `POST /api/public/inquiries` | Reviewed public profile and bounded intake |

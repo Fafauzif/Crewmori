@@ -9,7 +9,7 @@ import { database, transaction } from "./db";
 import { assertService } from "./errors";
 import { loadDomain, persistDomain } from "./domain-state";
 import { bindBuyer, lockActor, rateLimit } from "./domain";
-import { lockWorkspace, previousCommand, saveCommand } from "./repository";
+import { appendEvent, lockWorkspace, previousCommand, saveCommand } from "./repository";
 import { hashToken, randomToken } from "./security";
 
 export async function publicWorkspace(handle: string) {
@@ -38,6 +38,7 @@ export async function createInvitation(actor: OwnerActor, engagementId: string) 
     await client.query("update crewmori.buyer_invitations set consumed_at=now() where workspace_id=$1 and engagement_id=$2 and consumed_at is null", [actor.workspaceId, engagementId]);
     const token = randomToken();
     await client.query("insert into crewmori.buyer_invitations(token_hash,workspace_id,engagement_id,expires_at) values($1,$2,$3,now()+interval '2 days')", [hashToken(token), actor.workspaceId, engagementId]);
+    await appendEvent(client, actor.workspaceId, "buyer.invitation_replaced", "Buyer access replaced with a new single-use invitation. Previous links and sessions were revoked.", [{ table: "engagements", id: engagementId }]);
     return { token, engagementId };
   });
 }

@@ -666,11 +666,500 @@ Service updated|Layanan diperbarui
 Public availability|Ketersediaan publik
 Profile text is unchanged. Review the approved portfolio and full service list below.|Teks profil tidak berubah. Tinjau portofolio disetujui dan daftar layanan lengkap di bawah.
 Preview limited to 30,000 characters. Download the original for the complete source.|Pratinjau dibatasi 30.000 karakter. Unduh berkas asli untuk sumber lengkap.
+Business profile|Profil bisnis
+Team rules|Aturan tim
+Workspace preferences|Preferensi ruang kerja
+Give your team reliable context. Sources stay private until you review their audience.|Berikan konteks yang dapat dipercaya untuk tim. Sumber tetap pribadi sampai Anda meninjau audiensnya.
+Choose what each teammate can prepare. Sharing, sending, and commitments still need your review.|Pilih hal yang dapat disiapkan tiap anggota tim. Pembagian, pengiriman, dan komitmen tetap perlu Anda tinjau.
+Set your language, display timezone, and motion without changing accepted agreements.|Atur bahasa, zona waktu tampilan, dan gerakan tanpa mengubah kesepakatan yang sudah diterima.
+Manage your public profile, services, and availability. Save drafts before reviewing publication.|Kelola profil publik, layanan, dan ketersediaan. Simpan draf sebelum meninjau publikasi.
+Enter whole rupiah, for example 500000.|Masukkan rupiah bulat, misalnya 500000.
+Enter dollars, for example 450.00.|Masukkan dolar, misalnya 450.00.
+Enter a positive price in the selected currency. USD allows two decimal places; IDR uses whole rupiah.|Masukkan harga positif sesuai mata uang. USD menerima dua angka desimal; IDR memakai rupiah bulat.
+This is a starting price. Each offer keeps its separately reviewed amount and terms.|Ini adalah harga awal. Setiap penawaran memiliki jumlah dan ketentuan yang ditinjau tersendiri.
+Email notification digests — not available yet|Ringkasan notifikasi email — belum tersedia
+Required decisions remain on Home and their records. Email digests are not sent; reviewed client email uses your separately connected mail service.|Keputusan tetap tersedia di Beranda dan catatannya. Ringkasan email belum dikirim; email klien yang disetujui memakai layanan email yang Anda hubungkan terpisah.
+The buyer accepts their offer. You deliver the professional work. Payment checkout is currently limited to test transactions.|Pembeli menerima penawaran. Anda mengerjakan pekerjaan profesionalnya. Pembayaran saat ini terbatas pada transaksi uji coba.
+Search by meaning finds indexed source text. The source list below filters titles and saved text. New or failed uploads may need processing before semantic search can find them.|Pencarian makna menemukan teks sumber yang sudah diindeks. Daftar sumber di bawah menyaring judul dan teks tersimpan. Unggahan baru atau gagal mungkin perlu diproses sebelum dapat ditemukan.
+Indexing queued|Menunggu pengindeksan
+Indexing text…|Mengindeks teks…
+Search ready|Siap dicari
+Indexing failed|Pengindeksan gagal
+Create new buyer invitation|Buat undangan pembeli baru
+Replace buyer access with a new invitation?|Ganti akses pembeli dengan undangan baru?
+Replace access & create invitation|Ganti akses & buat undangan
+Existing invitation links and signed-in buyer sessions for this engagement will stop working. Create a new single-use link, valid for two days, then share it with the intended buyer. No email is sent automatically.|Tautan undangan lama dan sesi pembeli yang sedang masuk untuk urusan ini akan berhenti berfungsi. Buat tautan sekali pakai yang berlaku dua hari, lalu bagikan kepada pembeli yang dituju. Email tidak dikirim otomatis.
+Copy current invitation|Salin undangan saat ini
+Replace this invitation|Ganti undangan ini
+Select and copy this invitation|Pilih dan salin undangan ini
+Buyer invitation|Undangan pembeli
+Share privately with the intended buyer. Anyone holding this link can open the client space.|Bagikan secara pribadi kepada pembeli yang dituju. Siapa pun yang memiliki tautan ini dapat membuka ruang klien.
+Buyer invitation copied. Share it with the intended buyer.|Undangan pembeli disalin. Bagikan kepada pembeli yang dituju.
+Select and copy the invitation below.|Pilih dan salin undangan di bawah.
+New invitation ready. Earlier links and buyer sessions have been revoked. This single-use link expires in two days.|Undangan baru siap. Tautan dan sesi pembeli sebelumnya sudah dicabut. Tautan sekali pakai ini kedaluwarsa dalam dua hari.
+Buyer link ready to share.|Tautan pembeli siap dibagikan.
+A closer look|Tinjau lebih dekat
+Add lead|Tambah prospek
+Assessment & evidence|Penilaian & bukti
+Assessment needed|Perlu penilaian
+Ask Scout to assess|Minta Scout menilai
+Back to opportunities|Kembali ke peluang
+Buyer-safe offer preview|Pratinjau penawaran untuk pembeli
+Buyer-safe question|Pertanyaan untuk pembeli
+Buyer destination|Tujuan pembeli
+Cancel confirmation|Batalkan konfirmasi
+Cancel edits|Batalkan edit
+Cancel review|Batalkan tinjauan
+Change destination|Ubah tujuan
+Choose a client|Pilih klien
+Choose an opportunity|Pilih peluang
+Choose a published service|Pilih layanan yang dipublikasikan
+Client or lead name|Nama klien atau prospek
+Contact email (optional)|Email kontak (opsional)
+Create a separate client|Buat klien terpisah
+Draft offer|Buat draf penawaran
+Edit lead|Edit prospek
+Lead title|Judul prospek
+Link an existing client (optional)|Tautkan klien yang ada (opsional)
+Original request|Permintaan asli
+The original request|Permintaan asli
+Requested budget|Anggaran yang diminta
+Requested budget (optional)|Anggaran yang diminta (opsional)
+Requested business days|Hari kerja yang diminta
+Requested timing|Jadwal yang diminta
+Requested scope|Lingkup yang diminta
+Requested timing is not a confirmed deadline.|Jadwal yang diminta belum menjadi tenggat yang disepakati.
+Source type|Jenis sumber
+Source details|Detail sumber
+Source or reference title|Judul sumber atau referensi
+Source URL (metadata only)|URL sumber (hanya referensi)
+Save lead|Simpan prospek
+Import request|Impor permintaan
+Import requests|Impor permintaan
+Import text file|Impor berkas teks
+Imported text|Teks yang diimpor
+Request or CSV text|Teks permintaan atau CSV
+Preview request rows|Pratinjau baris permintaan
+Remove import|Hapus impor
+Inspect assessment|Periksa penilaian
+Open Scout task →|Buka tugas Scout →
+Open lead →|Buka prospek →
+Open offer|Buka penawaran
+Open client|Buka klien
+Open client messages|Buka pesan klien
+Open client →|Buka klien →
+Open project →|Buka proyek →
+Open draft →|Buka draf →
+Open buyer offer|Buka penawaran pembeli
+Open original link ↗|Buka tautan asli ↗
+No source attached|Belum ada sumber terlampir
+Your next step|Langkah berikutnya
+Your decision|Keputusan Anda
+Scout’s perspective|Sudut pandang Scout
+Qualify lead|Tandai prospek sesuai
+Qualify this lead?|Tandai prospek ini sesuai?
+Decline lead|Tolak prospek
+Decline this lead?|Tolak prospek ini?
+Decline reason (optional)|Alasan penolakan (opsional)
+Confirm decline|Konfirmasi penolakan
+Keep lead|Pertahankan prospek
+Restore lead|Pulihkan prospek
+Request missing information|Minta informasi yang belum ada
+Save question draft|Simpan draf pertanyaan
+Request source|Sumber permintaan
+Replace request source|Ganti sumber permintaan
+Search leads|Cari prospek
+Sort leads|Urutkan prospek
+Sort offers|Urutkan penawaran
+Recently updated|Terakhir diperbarui
+Client A–Z|Klien A–Z
+Offer title|Judul penawaran
+Offer status|Status penawaran
+Linked opportunity|Peluang terkait
+Deliverables · one per line, optional quantity × description|Hasil kerja · satu per baris, dapat diawali jumlah × deskripsi
+Total price|Harga total
+Total fee|Biaya total
+Deposit percentage|Persentase uang muka
+Delivery business days|Hari kerja penyelesaian
+Required client inputs · one per line|Masukan klien yang diperlukan · satu per baris
+Offer expires on|Penawaran kedaluwarsa pada
+Estimated owner effort in minutes|Perkiraan waktu kerja Anda dalam menit
+Internal notes · never shown to the buyer|Catatan internal · tidak ditampilkan kepada pembeli
+Internal notes · owner only|Catatan internal · hanya pemilik
+Owner-private planning|Perencanaan pribadi pemilik
+Buyer message and terms|Pesan dan ketentuan untuk pembeli
+When the work begins|Kapan pekerjaan dimulai
+Submit for review|Ajukan untuk ditinjau
+Review & approve|Tinjau & setujui
+Approve exact version|Setujui versi ini
+Preview & share|Pratinjau & bagikan
+Request revision|Minta revisi
+Revision instruction|Petunjuk revisi
+Return for revision|Kembalikan untuk direvisi
+Withdraw offer|Tarik penawaran
+Download offer PDF|Unduh PDF penawaran
+Version history|Riwayat versi
+Offer version history|Riwayat versi penawaran
+View version|Lihat versi
+Return to current version|Kembali ke versi terkini
+Compare current version with|Bandingkan versi terkini dengan
+Choose a previous version|Pilih versi sebelumnya
+Why this offer?|Mengapa penawaran ini?
+New promotion|Promosi baru
+Promotion text|Teks promosi
+Search drafts|Cari draf
+Approved service|Layanan disetujui
+Channel|Saluran
+Destination URL (optional)|URL tujuan (opsional)
+Channel and destination|Saluran dan tujuan
+Save promotion draft|Simpan draf promosi
+Review promotion|Tinjau promosi
+Review exact content & destination|Tinjau konten & tujuan ini
+Approve exact promotion|Setujui promosi ini
+Approved claim references|Referensi klaim yang disetujui
+Copy approved text|Salin teks yang disetujui
+Select and copy the approved text|Pilih dan salin teks yang disetujui
+Archive draft|Arsipkan draf
+Restore draft|Pulihkan draf
+Close draft|Tutup draf
+Pause follow-up promotion|Jeda promosi tindak lanjut
+Record sample publication|Catat publikasi sampel
+Published in sample|Dipublikasikan dalam sampel
+Sample publication date|Tanggal publikasi sampel
+Publication reference (optional)|Referensi publikasi (opsional)
+Confirm sample publication|Konfirmasi publikasi sampel
+Sample professional network|Jejaring profesional sampel
+Sample public profile|Profil publik sampel
+Sample email draft|Draf email sampel
+Term|Ketentuan
+Current|Terkini
+Your name|Nama Anda
+What do you need?|Apa yang Anda butuhkan?
+Budget (optional)|Anggaran (opsional)
+Desired date (optional, Asia/Jakarta)|Tanggal yang diinginkan (opsional, Asia/Jakarta)
+Tell us what you have in mind|Ceritakan kebutuhan Anda
+Send inquiry|Kirim permintaan
+Sending inquiry…|Mengirim permintaan…
+Cancel inquiry|Batalkan permintaan
+Discard inquiry draft?|Buang draf permintaan?
+Your unsent details will be cleared. No inquiry has been created.|Detail yang belum dikirim akan dihapus. Belum ada permintaan yang dibuat.
+Share your request with the freelancer. You can continue the conversation and review proposed terms in your private client space.|Bagikan permintaan kepada pekerja lepas. Anda dapat melanjutkan percakapan dan meninjau penawaran di ruang klien pribadi.
+Message the freelancer|Kirim pesan kepada pekerja lepas
+Attach a file|Lampirkan berkas
+Remove attachment|Hapus lampiran
+Send message|Kirim pesan
+Sending message…|Mengirim pesan…
+Retry message|Coba kirim pesan lagi
+Tell us a little more…|Ceritakan lebih lanjut…
+Share a little more about your project to begin.|Ceritakan proyek Anda untuk memulai.
+Conversation unavailable for this link.|Percakapan tidak tersedia untuk tautan ini.
+Review your brief|Tinjau ringkasan permintaan
+Correct brief|Perbaiki ringkasan
+Save brief|Simpan ringkasan
+Cancel brief edits|Batalkan perubahan ringkasan
+Continue by text|Lanjutkan lewat teks
+Play voice sample|Putar sampel suara
+View offer →|Lihat penawaran →
+Inputs to get started|Masukan untuk memulai
+Input details|Detail masukan
+Submit inputs|Kirim masukan
+Saving inputs…|Menyimpan masukan…
+Cancel input edits|Batalkan edit masukan
+Remove draft attachment|Hapus draf lampiran
+Attach file (PDF, PNG, JPEG, TXT; up to 10 MB)|Lampirkan berkas (PDF, PNG, JPEG, TXT; maksimal 10 MB)
+Accepted terms|Ketentuan yang diterima
+Required deposit|Uang muka yang diperlukan
+Required inputs|Masukan yang diperlukan
+Delivery basis|Dasar jadwal penyelesaian
+Delivery and next steps|Penyelesaian dan langkah berikutnya
+Delivery period|Durasi penyelesaian
+Project total|Total proyek
+Review acceptance|Tinjau penerimaan
+You are accepting|Anda menerima
+Keep reviewing|Lanjutkan tinjauan
+Send change request|Kirim permintaan perubahan
+Send revision request|Kirim permintaan revisi
+Revision request|Permintaan revisi
+Changes to scope, price, or deadline require a separate agreement.|Perubahan lingkup, harga, atau tenggat memerlukan kesepakatan terpisah.
+Your project starts with an agreement.|Proyek Anda dimulai dengan kesepakatan.
+A clear next step.|Langkah berikutnya yang jelas.
+Your work is ready to review.|Pekerjaan Anda siap ditinjau.
+Accept delivered work|Terima hasil kerja
+Review delivered work|Tinjau hasil kerja
+Accept this delivered work?|Terima hasil kerja ini?
+This records your acceptance of the current delivery. It does not make a payment or change your remaining balance.|Ini mencatat penerimaan Anda atas hasil kerja saat ini. Tindakan ini tidak melakukan pembayaran atau mengubah sisa tagihan.
+Files shared with you.|Berkas yang dibagikan kepada Anda.
+Search shared files|Cari berkas bersama
+No matching files|Tidak ada berkas yang cocok
+Clear file filters|Hapus filter berkas
+Shared files will appear here|Berkas bersama akan tampil di sini
+The freelancer will share the files relevant to your project.|Pekerja lepas akan membagikan berkas terkait proyek Anda.
+Download file|Unduh berkas
+View shared files|Lihat berkas bersama
+No payment request yet|Belum ada permintaan pembayaran
+An authorized request will appear here when it is ready.|Permintaan yang sudah disahkan akan tampil setelah siap.
+I have a payment question|Saya ingin bertanya tentang pembayaran
+Check latest status|Periksa status terkini
+Showing the latest saved project state.|Menampilkan status proyek terakhir yang tersimpan.
+Your checklist →|Daftar periksa Anda →
+Return to conversation|Kembali ke percakapan
+Continue to project →|Lanjutkan ke proyek →
+This offer is not available|Penawaran ini tidak tersedia
+The offer may not be shared yet, or this link is no longer active. Ask the freelancer for a current link.|Penawaran mungkin belum dibagikan atau tautan ini sudah tidak aktif. Minta tautan terkini kepada pekerja lepas.
+This service is not available|Layanan ini tidak tersedia
+Freelancer not found|Pekerja lepas tidak ditemukan
+This section is unavailable|Bagian ini tidak tersedia
+Page not found|Halaman tidak ditemukan
+This address does not match an available Crewmori page.|Alamat ini tidak sesuai dengan halaman Crewmori yang tersedia.
+Back to Crewmori|Kembali ke Crewmori
+Skip to content|Langsung ke konten
+Navigation|Navigasi
+Main navigation|Navigasi utama
+Open navigation menu|Buka menu navigasi
+Primary mobile navigation|Navigasi utama seluler
+Crewmori home|Beranda Crewmori
+Profile and workspace|Profil dan ruang kerja
+Your workspace|Ruang kerja Anda
+Your sample workspace|Ruang kerja sampel Anda
+Sample connections|Koneksi sampel
+Notifications|Notifikasi
+unread|belum dibaca
+Unread|Belum dibaca
+Showing|Menampilkan
+of|dari
+saved records|catatan tersimpan
+for|untuk
+Show more results|Tampilkan hasil lainnya
+Search results|Hasil pencarian
+All records|Semua catatan
+No saved records yet|Belum ada catatan tersimpan
+Your leads, projects, clients and invoices will appear here as you add them.|Prospek, proyek, klien, dan faktur akan tampil di sini setelah ditambahkan.
+Export local sample data|Ekspor data sampel lokal
+New activity from your team will appear here.|Aktivitas baru dari tim akan tampil di sini.
+Saving your context files…|Menyimpan berkas konteks…
+Starting your team’s task. Please wait…|Memulai tugas tim. Mohon tunggu…
+Starting task…|Memulai tugas…
+Start task|Mulai tugas
+Saving files…|Menyimpan berkas…
+Up to 5 files, 10 MiB each. Files are saved privately to your workspace and can be used as context for this request.|Maksimal 5 berkas, masing-masing 10 MiB. Berkas disimpan secara pribadi di ruang kerja dan dapat digunakan sebagai konteks permintaan ini.
+Up to 5 files, 10 MiB each. Files stay in this browser. Sample tasks do not interpret arbitrary file content.|Maksimal 5 berkas, masing-masing 10 MiB. Berkas tetap di peramban ini. Tugas sampel tidak menafsirkan isi berkas sembarang.
+Check the highlighted fields.|Periksa kolom yang ditandai.
+Complete this field.|Lengkapi kolom ini.
+Select this option to continue.|Pilih opsi ini untuk melanjutkan.
+Enter a valid email address.|Masukkan alamat email yang valid.
+Enter a complete, valid web address.|Masukkan alamat web lengkap yang valid.
+Enter a value at or above the minimum.|Masukkan nilai sesuai atau di atas batas minimum.
+Enter a value at or below the maximum.|Masukkan nilai sesuai atau di bawah batas maksimum.
+Add more detail to this field.|Tambahkan detail pada kolom ini.
+Shorten this value.|Persingkat isian ini.
+Choose a value in the allowed increments.|Pilih nilai sesuai kelipatan yang diizinkan.
+Use the format shown for this field.|Gunakan format yang ditunjukkan pada kolom ini.
+Check this value and try again.|Periksa isian ini dan coba lagi.
+Field|Kolom
+This action could not finish.|Tindakan ini belum selesai.
+This action could not finish. Your entries are still here.|Tindakan ini belum selesai. Isian Anda tetap tersedia.
+Saving…|Menyimpan…
+Sending…|Mengirim…
+Adding…|Menambahkan…
+Creating…|Membuat…
+Approving…|Menyetujui…
+Sharing…|Membagikan…
+Publishing…|Memublikasikan…
+Deleting…|Menghapus…
+Archiving…|Mengarsipkan…
+Searching…|Mencari…
+Retrying…|Mencoba lagi…
+Connecting…|Menghubungkan…
+Disconnecting…|Memutuskan koneksi…
+Uploading…|Mengunggah…
+Importing…|Mengimpor…
+Checking…|Memeriksa…
+Confirming…|Mengonfirmasi…
+Replacing…|Mengganti…
+Cancelling…|Membatalkan…
+Pausing…|Menjeda…
+Resuming…|Melanjutkan…
+Applying…|Menerapkan…
+Working…|Memproses…
+Your next decision|Keputusan berikutnya
+An invoice needs a follow-up.|Ada faktur yang perlu ditindaklanjuti.
+Your team prepared something to review.|Tim menyiapkan sesuatu untuk ditinjau.
+Your team needs a little direction.|Tim memerlukan arahan Anda.
+Your project needs a new plan.|Proyek memerlukan rencana baru.
+Check what this project needs before it starts.|Periksa kebutuhan proyek sebelum dimulai.
+Past due|Melewati jatuh tempo
+Ready for review|Siap ditinjau
+Needs your input|Memerlukan masukan Anda
+Needs attention|Perlu perhatian
+Prerequisites open|Prasyarat belum lengkap
+Review invoice|Tinjau faktur
+Open task|Buka tugas
+Open project checklist|Buka daftar periksa proyek
+No decisions waiting here.|Tidak ada keputusan yang menunggu.
+Continue manually|Lanjutkan secara manual
+Continue in the workspace manually|Lanjutkan secara manual di ruang kerja
+Taking longer than expected|Lebih lama dari biasanya
+Waiting to start|Menunggu dimulai
+In progress|Sedang berjalan
+Saving draft…|Menyimpan draf…
+Saving expense…|Menyimpan pengeluaran…
+No amounts in this view|Tidak ada jumlah dalam tampilan ini
+No issued invoices yet|Belum ada faktur diterbitkan
+No receipts recorded yet|Belum ada penerimaan tercatat
+No recorded expenses in this view|Tidak ada pengeluaran tercatat dalam tampilan ini
+No estimates in this view|Tidak ada perkiraan dalam tampilan ini
+Search invoices|Cari faktur
+Search payments|Cari pembayaran
+Search expenses|Cari pengeluaran
+Open external link|Buka tautan eksternal
+Talk to the AI representative|Bicara dengan perwakilan AI
+This private conversation helps organize your brief. The freelancer reviews proposed terms and makes the decisions.|Percakapan pribadi ini membantu menyusun kebutuhan Anda. Pekerja lepas meninjau usulan ketentuan dan mengambil keputusan.
+This conversation is a local sample. A representative helps collect your brief; the freelancer makes the decisions.|Percakapan ini adalah sampel lokal. Perwakilan membantu mengumpulkan kebutuhan; pekerja lepas mengambil keputusan.
+Shared tasks|Tugas bersama
+Shared milestones|Tahapan bersama
+External reference|Referensi eksternal
+Tasks the freelancer has chosen to share with you. Accepted scope and dates remain in your agreement.|Tugas yang dipilih pekerja lepas untuk dibagikan kepada Anda. Lingkup dan tanggal yang diterima tetap sesuai kesepakatan.
+This action could not finish. Please try again.|Tindakan ini belum selesai. Silakan coba lagi.
+
+Professional network (manual publication)|Jejaring profesional (publikasi manual)
+Public profile (manual publication)|Profil publik (publikasi manual)
+Email draft (manual delivery)|Draf email (pengiriman manual)
+Record manual publication|Catat publikasi manual
+Confirm publication record|Konfirmasi catatan publikasi
+Publication recorded|Publikasi tercatat
+Publication reported on|Publikasi dilaporkan pada
+Record the publication you completed outside Crewmori. This saves your report for this exact version; it does not publish or send the content for you.|Catat publikasi yang Anda lakukan di luar Crewmori. Tindakan ini menyimpan laporan untuk versi ini; konten tidak dipublikasikan atau dikirim untuk Anda.
+
+, then connect Google.|, lalu hubungkan Google.
+, then update Google access.|, lalu perbarui akses Google.
+. Indexing continues in Knowledge.|. Pengindeksan berlanjut di Pengetahuan.
+. These actions will stop working until access is granted again.|. Tindakan ini tidak tersedia sampai akses diberikan kembali.
+Access to request|Akses yang diminta
+Approved email and calendar sends will appear here.|Pengiriman email dan kalender yang disetujui akan tampil di sini.
+Attempt created|Percobaan dibuat
+Automatic checks have paused. You can check again later or return to your project; no new payment will be started.|Pemeriksaan otomatis dijeda. Periksa lagi nanti atau kembali ke proyek; pembayaran baru tidak akan dimulai.
+Back to sign in|Kembali untuk masuk
+Calendar availability|Ketersediaan kalender
+Check busy periods in your primary Google calendar. Times use your device’s local timezone (|Periksa waktu sibuk di kalender Google utama. Waktu mengikuti zona waktu perangkat Anda (
+Check status again|Periksa status lagi
+Checked|Diperiksa
+Checking the verified payment record…|Memeriksa catatan pembayaran terverifikasi…
+Checking your primary calendar…|Memeriksa kalender utama Anda…
+Choose supported Drive files to import into private knowledge. Crewmori can only open the files shared with this application.|Pilih berkas Drive yang didukung untuk diimpor ke pengetahuan pribadi. Crewmori hanya dapat membuka berkas yang dibagikan kepada aplikasi ini.
+Clear search|Hapus pencarian
+Confirm test payment|Konfirmasi pembayaran uji coba
+Continue to Stripe test checkout|Lanjutkan ke pembayaran uji coba Stripe
+Continue to your workspace|Lanjutkan ke ruang kerja Anda
+Crewmori uses your Google account, so there is no separate password to recover.|Crewmori memakai akun Google Anda, sehingga tidak ada kata sandi terpisah yang perlu dipulihkan.
+Disconnect Google|Putuskan Google
+Disconnect Google from Crewmori? Email sends, calendar tools and Drive imports will stop. Existing records and files stay in your workspace. You can also review provider-side access in your Google account settings.|Putuskan Google dari Crewmori? Pengiriman email, alat kalender, dan impor Drive akan berhenti. Catatan dan berkas yang ada tetap tersimpan di ruang kerja. Anda juga dapat meninjau akses melalui pengaturan akun Google.
+Drive access is not connected.|Akses Drive belum terhubung.
+External sends|Pengiriman eksternal
+Find opportunity sources|Cari sumber peluang
+Finish recording confirmed delivery|Selesaikan pencatatan pengiriman terkonfirmasi
+First check the provider account for this exact message or invitation. Releasing an uncertain attempt does not resend it.|Periksa dahulu pesan atau undangan ini pada akun penyedia. Melepaskan percobaan yang belum pasti tidak akan mengirimnya kembali.
+Google Drive|Google Drive
+Google access has been saved. The available permissions are listed below; external sends still require your approval.|Akses Google tersimpan. Izin yang tersedia tercantum di bawah; pengiriman eksternal tetap memerlukan persetujuan Anda.
+Google account|Akun Google
+I checked the provider; release this attempt|Saya sudah memeriksa penyedia; lepaskan percobaan ini
+Import to knowledge|Impor ke pengetahuan
+Imported|Diimpor
+Invoice payment|Pembayaran faktur
+Keep connected|Tetap hubungkan
+Keep this page open. Crewmori will continue only after the session is verified.|Biarkan halaman ini terbuka. Crewmori akan melanjutkan setelah sesi terverifikasi.
+List accessible files|Tampilkan berkas yang dapat diakses
+No files are shared with Crewmori yet. Choose files from Drive to grant access to specific files.|Belum ada berkas yang dibagikan kepada Crewmori. Pilih berkas dari Drive untuk memberikan akses ke berkas tertentu.
+No payment is requested for this project right now.|Saat ini tidak ada pembayaran yang diminta untuk proyek ini.
+Open knowledge|Buka pengetahuan
+Opening Google. Choose your account, then Crewmori will prepare your workspace.|Membuka Google. Pilih akun Anda, lalu Crewmori akan menyiapkan ruang kerja.
+Opening or importing the selected Drive files. Keep this page open.|Membuka atau mengimpor berkas Drive terpilih. Biarkan halaman ini terbuka.
+Payment received|Pembayaran diterima
+Payment, clearly laid out.|Pembayaran yang jelas.
+Reading availability needs its own permission.|Membaca ketersediaan memerlukan izin tersendiri.
+Removing:|Menghapus:
+Requesting:|Meminta:
+Return to your project|Kembali ke proyek Anda
+Review the invoice before continuing. Payment status updates after the provider confirms it.|Tinjau faktur sebelum melanjutkan. Status pembayaran diperbarui setelah penyedia mengonfirmasinya.
+Review uncertain deliveries in the provider account before changing their local status. These controls never resend a message.|Tinjau pengiriman yang belum pasti pada akun penyedia sebelum mengubah status lokalnya. Kontrol ini tidak mengirim ulang pesan.
+Sandbox: this test records a receipt without charging money.|Simulasi: uji coba ini mencatat penerimaan tanpa menagih uang.
+Search selected websites for sources to review. Results are external claims until you verify them.|Cari sumber pada situs web terpilih untuk ditinjau. Hasilnya tetap berupa klaim eksternal sampai Anda memverifikasinya.
+Search the sources that have finished indexing. New uploads may need a moment before they appear.|Cari sumber yang sudah selesai diindeks. Unggahan baru mungkin memerlukan waktu sebelum tampil.
+Search your knowledge|Cari pengetahuan Anda
+Searching the selected websites…|Mencari di situs web terpilih…
+Searching your indexed sources…|Mencari di sumber yang sudah diindeks…
+Select Drive access above|Pilih akses Drive di atas
+Select Read calendar availability above|Pilih Baca ketersediaan kalender di atas
+The provider result is uncertain. Check your provider account before paying again. Retrying above keeps this same invoice request.|Hasil dari penyedia belum pasti. Periksa akun penyedia sebelum membayar lagi. Mencoba lagi di atas tetap memakai permintaan faktur yang sama.
+The verified payment is recorded.|Pembayaran terverifikasi sudah dicatat.
+This is taking longer than usual. You can retry or return to sign in; you don’t need to create another account.|Proses ini lebih lama dari biasanya. Anda dapat mencoba lagi atau kembali untuk masuk; tidak perlu membuat akun lain.
+Try a client name, service, or phrase from one of your sources.|Coba nama klien, layanan, atau frasa dari salah satu sumber.
+Try again|Coba lagi
+Use a different Google account only if you want to switch workspaces.|Gunakan akun Google lain hanya jika ingin berpindah ruang kerja.
+Use domain names without https:// or page paths. Discovery is powered by Exa.|Gunakan nama domain tanpa https:// atau jalur halaman. Pencarian didukung Exa.
+Your current permissions are selected. Changing access replaces the saved permission set after Google confirms it.|Izin Anda saat ini sudah dipilih. Perubahan akses mengganti kumpulan izin tersimpan setelah dikonfirmasi Google.
+Your work. Your business. Your team.|Pekerjaan Anda. Bisnis Anda. Tim Anda.
+You’re already signed in to Crewmori.|Anda sudah masuk ke Crewmori.
+accessible files|berkas yang dapat diakses
+Google sign-in was cancelled. Try again when you are ready.|Proses masuk Google dibatalkan. Coba lagi saat Anda siap.
+This sign-in link expired or was already used. Start again.|Tautan masuk sudah kedaluwarsa atau digunakan. Mulai lagi.
+Google did not complete the sign-in. Try again.|Google belum menyelesaikan proses masuk. Coba lagi.
+Google sign-in is unavailable right now. Try again shortly.|Proses masuk Google belum tersedia. Coba lagi sebentar lagi.
+Create your workspace|Buat ruang kerja Anda
+Welcome back|Selamat datang kembali
+Sign in with Google|Masuk dengan Google
+Opening secure sign-in…|Membuka proses masuk yang aman…
+Use another Google account|Gunakan akun Google lain
+Continue with Google|Lanjutkan dengan Google
+Your workspace is created the first time you continue.|Ruang kerja dibuat saat Anda melanjutkan untuk pertama kali.
+New here? Continuing with Google creates your workspace.|Baru di sini? Melanjutkan dengan Google akan membuat ruang kerja Anda.
+Your workspace could not be prepared. Try again.|Ruang kerja belum dapat disiapkan. Coba lagi.
+We couldn’t finish signing you in|Proses masuk Anda belum selesai
+Opening Google securely|Membuka Google dengan aman
+Preparing your workspace|Menyiapkan ruang kerja Anda
+You can retry opening your existing workspace or return to sign in.|Anda dapat mencoba membuka ruang kerja yang ada atau kembali untuk masuk.
+Choose your Google account on the next screen. You’ll return here to finish signing in.|Pilih akun Google pada layar berikutnya. Anda akan kembali ke sini untuk menyelesaikan proses masuk.
+Google has returned you to Crewmori. We’re checking your session and opening your business workspace.|Google sudah mengembalikan Anda ke Crewmori. Kami memeriksa sesi dan membuka ruang kerja bisnis Anda.
+Payment confirmed|Pembayaran terkonfirmasi
+The verified receipt has been recorded against your invoice.|Penerimaan terverifikasi sudah dicatat pada faktur Anda.
+Payment not completed|Pembayaran belum selesai
+This payment request is open. Returning from checkout does not confirm a charge; review your invoice before trying again.|Permintaan pembayaran masih terbuka. Kembali dari halaman pembayaran tidak membuktikan adanya tagihan; tinjau faktur sebelum mencoba lagi.
+Waiting for payment confirmation|Menunggu konfirmasi pembayaran
+The provider has not yet confirmed this payment to Crewmori. Keep your provider receipt and avoid paying again while the status is uncertain.|Penyedia belum mengonfirmasi pembayaran kepada Crewmori. Simpan bukti dari penyedia dan hindari membayar lagi selama status belum pasti.
+Payment needs a status check|Status pembayaran perlu diperiksa
+Crewmori could not confirm the provider result. Check your provider account before trying again, and contact the business if a charge appears.|Crewmori belum dapat mengonfirmasi hasil penyedia. Periksa akun penyedia sebelum mencoba lagi, dan hubungi bisnis jika ada tagihan.
+Payment request cancelled|Permintaan pembayaran dibatalkan
+This request is no longer available for payment. Ask the business for a current invoice if you still need to pay.|Permintaan ini tidak lagi tersedia untuk dibayar. Minta faktur terkini jika masih perlu membayar.
+Payment link expired|Tautan pembayaran kedaluwarsa
+Ask the business to review the invoice and provide a current payment link. An expired link does not confirm a charge.|Minta bisnis meninjau faktur dan memberikan tautan pembayaran terkini. Tautan kedaluwarsa tidak membuktikan adanya tagihan.
+Payment was not confirmed|Pembayaran belum terkonfirmasi
+Check the provider result before retrying. No payment is recorded as confirmed in Crewmori.|Periksa hasil penyedia sebelum mencoba lagi. Belum ada pembayaran terkonfirmasi yang dicatat di Crewmori.
+Payment is under review|Pembayaran sedang ditinjau
+The business needs to review this payment before it can be confirmed against the invoice. Keep your receipt; do not make a second payment to resolve this status.|Bisnis perlu meninjau pembayaran sebelum dapat mengonfirmasinya pada faktur. Simpan bukti; jangan membuat pembayaran kedua untuk menyelesaikan status ini.
+Payment status unavailable|Status pembayaran tidak tersedia
+This payment state needs review. Return to the project or ask the business to check the invoice; do not assume a payment succeeded.|Status pembayaran perlu ditinjau. Kembali ke proyek atau minta bisnis memeriksa faktur; jangan menganggap pembayaran sudah selesai.
+This link is still unavailable in the saved records. Ask the freelancer for a current invitation.|Tautan ini masih tidak tersedia dalam catatan tersimpan. Minta undangan terkini kepada pekerja lepas.
+Showing saved project details.|Menampilkan detail proyek tersimpan.
+Your current permissions are selected. Choose what Crewmori should request; after reconnecting, this page shows the access Google actually granted.|Izin saat ini sudah dipilih. Pilih akses yang perlu diminta Crewmori; setelah terhubung kembali, halaman ini menampilkan akses yang benar-benar diberikan Google.
+Review the returned permissions after reconnecting. Disconnect Google here to stop all Crewmori tool access.|Tinjau izin yang diterima setelah menghubungkan kembali. Putuskan Google di sini untuk menghentikan semua akses alat Crewmori.
+
+Review Scout result|Tinjau hasil Scout
+
+Retry original send|Coba kembali pengiriman semula
+The send result is not confirmed. Retry the original send to check it before editing or sending another copy. Your original message and reviewed version are retained.|Hasil pengiriman belum terkonfirmasi. Coba kembali pengiriman semula sebelum mengedit atau mengirim salinan lain. Pesan asli dan versi yang ditinjau tetap dipertahankan.
+
+Retry original inquiry|Coba kembali permintaan semula
+Retrying original inquiry…|Mencoba kembali permintaan semula…
+Retrying original send…|Mencoba kembali pengiriman semula…
+The inquiry result is not confirmed. Retry the original inquiry before editing or starting another one. Your request is retained.|Hasil permintaan belum terkonfirmasi. Coba kembali permintaan semula sebelum mengedit atau memulai yang lain. Permintaan Anda tetap dipertahankan.
+
+Close and check later|Tutup dan periksa nanti
+
 `;
 export const ID: Record<string, string> = Object.fromEntries(
   pairs
     .trim()
     .split("\n")
+    .filter((row) => row.indexOf("|") > 0)
     .map((row) => {
       const p = row.indexOf("|");
       return [row.slice(0, p), row.slice(p + 1)];
@@ -679,8 +1168,29 @@ export const ID: Record<string, string> = Object.fromEntries(
 const normalized: Record<string, string> = Object.fromEntries(
   Object.entries(ID).map(([key, value]) => [key.toLowerCase(), value]),
 );
-export function translate(text: string, locale: string): string {
-  return locale === "id"
-    ? ID[text] || normalized[text.toLowerCase()] || text
-    : text;
+export type MessageParameters = Record<string, string | number>;
+function interpolate(text: string, parameters: MessageParameters): string {
+  return text.replace(/\{([a-zA-Z][\w]*)\}/g, (token, key: string) =>
+    Object.prototype.hasOwnProperty.call(parameters, key) ? String(parameters[key]) : token,
+  );
+}
+export function translate(text: string, locale: string, parameters: MessageParameters = {}): string {
+  const translated = locale === "id" ? ID[text] || normalized[text.toLowerCase()] || text : text;
+  return interpolate(translated, parameters);
+}
+
+const messages = {
+  "knowledge.sources.one": { en: "{count} source", id: "{count} sumber" },
+  "knowledge.sources.other": { en: "{count} sources", id: "{count} sumber" },
+  "acquisition.scout.status": { en: "Scout assessment · {status}. You can keep working and return to this task.", id: "Penilaian Scout · {status}. Anda dapat melanjutkan pekerjaan dan kembali ke tugas ini." },
+  "buyer.message.draft": { en: "Enter sends · Shift+Enter adds a line · Draft stays on this device until sent", id: "Enter untuk mengirim · Shift+Enter untuk baris baru · Draf tetap di perangkat ini sampai dikirim" },
+} as const;
+export type MessageId = keyof typeof messages;
+/** Stable IDs and named parameters for dynamic chrome; never translate authored business content. */
+export function uiMessage(id: MessageId, locale: string, parameters: MessageParameters = {}): string {
+  return interpolate(messages[id][locale === "id" ? "id" : "en"], parameters);
+}
+export function sourceCount(count: number, locale: string): string {
+  const rule = new Intl.PluralRules(locale === "id" ? "id" : "en").select(count);
+  return uiMessage(rule === "one" ? "knowledge.sources.one" : "knowledge.sources.other", locale, { count });
 }

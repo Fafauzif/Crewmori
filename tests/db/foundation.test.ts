@@ -32,6 +32,60 @@ before(async () => {
 });
 after(closeDatabase);
 
+test("connected work workflows persist exact task fields, atomic milestone assignments and scoped file references", async () => {
+  const { initializeWorkspace } = await import("../../src/server/domain-state");
+  const { runDomainCommand, ownerState } = await import("../../src/server/domain");
+  const workspace = (await database().query("insert into crewmori.workspaces(owner_id,name) values($1,'Workflows test') returning *", [randomUUID()])).rows[0];
+  const actor: OwnerActor = { kind: "owner", workspaceId: workspace.id, userId: workspace.owner_id };
+  await transaction((client) => initializeWorkspace(client, workspace));
+  for (const [collection, id, data] of [
+    ["clients", "workflow-client", { name: "Workflow client" }],
+    ["projects", "workflow-project", { client_id: "workflow-client", title: "Source review", state: "active", professional_delivery_state: "in_progress" }],
+  ] as const) await database().query("insert into crewmori.records(workspace_id,collection,id,version,data) values($1,$2,$3,1,$4)", [workspace.id, collection, id, JSON.stringify(data)]);
+  const send = (type: string, input: Record<string, unknown>, key = randomUUID()) => runDomainCommand(actor, { type, input, idempotencyKey: key });
+  const values = { project_id: "workflow-project", title: "Analyze the inputs", notes: "Keep the original assumptions", kind: "professional", assignee_id: actor.userId, due_at: null, milestone_id: null, shared_with_buyer: false };
+  await assert.rejects(send("record.save", { table: "work_tasks", values }), /dedicated workflow/);
+  const key = randomUUID();
+  const task = await send("task.save", { values }, key);
+  assert.equal((await send("task.save", { values }, key)).result.id, task.result.id);
+  let state = await ownerState(actor);
+  assert.equal(state.tables.work_tasks[task.result.id!].notes, values.notes);
+  assert.equal(state.tables.work_tasks[task.result.id!].assignee_id, actor.userId);
+  const milestoneValues = { project_id: "workflow-project", title: "First review", due_at: "2026-10-25T17:00:00+07:00", notes: "", task_ids: [task.result.id] };
+  await assert.rejects(send("milestone.save", { values: milestoneValues, expected_task_versions: { [task.result.id!]: 0 } }), /changed in another view/);
+  state = await ownerState(actor);
+  assert.equal(Object.keys(state.tables.milestones || {}).length, 0);
+  assert.equal(state.tables.work_tasks[task.result.id!].milestone_id, null);
+  const milestone = await send("milestone.save", { values: milestoneValues, expected_task_versions: { [task.result.id!]: 1 } });
+  state = await ownerState(actor);
+  assert.equal(state.tables.work_tasks[task.result.id!].milestone_id, milestone.result.id);
+  const reference = await send("file.link", { values: { project_id: "workflow-project", client_id: "workflow-client", name: "Reference brief", storage_locator: "https://example.com/brief", shared_with_buyer: true } });
+  state = await ownerState(actor);
+  assert.equal(state.tables.attachments[reference.result.id!].storage_kind, "external_link");
+  assert.ok((state.tables.projects["workflow-project"].shared_attachment_ids as string[]).includes(reference.result.id!));
+  await assert.rejects(send("file.link", { values: { project_id: "workflow-project", client_id: "private-b", name: "Wrong client", storage_locator: "https://example.com/brief", shared_with_buyer: true } }), /project's client/);
+  const fileId = randomUUID();
+  await database().query("insert into crewmori.files(id,workspace_id,owner_id,name,mime_type,byte_size,sha256,object_path,state) values($1,$2,$3,'Evidence.txt','text/plain',20,'verified-hash',$4,'available')", [fileId, actor.workspaceId, actor.userId, `workflows/${fileId}`]);
+  const attached = await send("file.attach", { values: { project_id: "workflow-project", name: "Evidence.txt", storage_locator: fileId, media_type: "image/png", byte_length: 1, shared_with_buyer: false } });
+  state = await ownerState(actor);
+  assert.equal(state.tables.attachments[attached.result.id!].media_type, "text/plain", "File metadata comes from the verified server upload");
+  assert.equal(state.tables.attachments[attached.result.id!].byte_length, 20);
+  assert.equal(state.tables.attachments[attached.result.id!].storage_kind, "private");
+  await assert.rejects(send("file.attach", { values: { project_id: "workflow-project", name: "Duplicate bytes", storage_locator: fileId, shared_with_buyer: false } }), /already attached/);
+  const engagementId = `workflow-engagement-${randomUUID()}`;
+  await database().query("insert into crewmori.records(workspace_id,collection,id,version,data) values($1,'engagements',$2,1,$3)", [actor.workspaceId, engagementId, JSON.stringify({ project_id: "workflow-project", client_id: "workflow-client", conversation_id: "workflow-conversation" })]);
+  const grant = (await database().query("insert into crewmori.buyer_grants(workspace_id,engagement_id,token_hash,expires_at) values($1,$2,$3,now()+interval '1 hour') returning id", [actor.workspaceId, engagementId, randomUUID()])).rows[0];
+  await database().query("update crewmori.files set engagement_id=$2,audience='owner' where id=$1", [fileId, engagementId]);
+  const buyer = { kind: "buyer" as const, workspaceId: actor.workspaceId, engagementId, grantId: grant.id };
+  await assert.rejects(runDomainCommand(buyer, { type: "file.attach", input: { values: { project_id: "workflow-project", name: "Previously unshared bytes", storage_locator: fileId, shared_with_buyer: true } }, idempotencyKey: randomUUID() }), /available to this session/);
+  assert.equal((await database().query("select audience from crewmori.files where id=$1", [fileId])).rows[0].audience, "owner");
+  const buyerFileId = randomUUID();
+  await database().query("insert into crewmori.files(id,workspace_id,owner_id,engagement_id,name,mime_type,byte_size,sha256,object_path,state,audience) values($1,$2,$3,$4,'Buyer.txt','text/plain',20,'buyer-verified-hash',$5,'available','buyer')", [buyerFileId, actor.workspaceId, actor.userId, engagementId, `workflows/${buyerFileId}`]);
+  await assert.rejects(runDomainCommand(buyer, { type: "file.attach", input: { values: { project_id: "workflow-project", conversation_id: "foreign-conversation", name: "Mixed relations", storage_locator: buyerFileId, shared_with_buyer: true } }, idempotencyKey: randomUUID() }), /current client space/);
+  assert.equal((await database().query("select engagement_id from crewmori.files where id=$1", [buyerFileId])).rows[0].engagement_id, engagementId);
+  await assert.rejects(send("file.attach", { values: { project_id: "workflow-project", name: "Missing upload", storage_locator: randomUUID(), shared_with_buyer: false } }), /Upload a file/);
+});
+
 test("RLS excludes another owner's records even with its exact workspace ID", async () => {
   await transaction(async (client) => {
     await client.query("SET LOCAL ROLE authenticated");
@@ -271,6 +325,21 @@ test("public inquiries are durable and buyer sessions cannot read or change anot
   const session = await exchangeInvitation(invitation.token);
   assert.ok(session.token);
   await assert.rejects(exchangeInvitation(invitation.token), /already opened/);
+  const firstSession = { ...actor, grantId: session.grantId };
+  await buyerState(firstSession);
+  const owner = { kind: "owner" as const, workspaceId: actor.workspaceId, userId: ownerId };
+  const replacedLink = await createInvitation(owner, actor.engagementId);
+  await assert.rejects(buyerState(firstSession), /expired or was revoked/);
+  const currentLink = await createInvitation(owner, actor.engagementId);
+  await assert.rejects(exchangeInvitation(replacedLink.token), /already opened/);
+  const currentSession = await exchangeInvitation(currentLink.token);
+  await buyerState({ ...actor, grantId: currentSession.grantId });
+  const events = (await database().query("select summary,record_refs from crewmori.events where workspace_id=$1 and kind='buyer.invitation_replaced' and record_refs @> $2::jsonb", [actor.workspaceId, JSON.stringify([{ table: "engagements", id: actor.engagementId }])])).rows;
+  assert.equal(events.length, 3, "Each deliberate access replacement must have an owner audit record");
+  for (const event of events) {
+    assert.match(event.summary, /Previous links and sessions were revoked/);
+    for (const token of [invitation.token, replacedLink.token, currentLink.token]) assert.equal(JSON.stringify(event).includes(token), false, "Access credentials must never enter activity records");
+  }
 });
 
 test("connected offer acceptance and verified payment settle one project without duplicate receipts", async () => {
