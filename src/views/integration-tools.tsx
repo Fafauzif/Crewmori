@@ -6,12 +6,19 @@ import { BackendClient } from "@/lib/backend-client";
 import { useStore } from "@/lib/store";
 import { o, s } from "@/lib/types";
 import { Button, Field, Panel, PageHead, Badge } from "@/components/ui";
+const googleTools = [
+  { id: "gmail", label: "Gmail", ready: "Approved client emails can be sent from your Gmail address.", where: "Open client messages", href: "/app/clients" },
+  { id: "calendar", label: "Google Calendar", ready: "Check busy times and send approved invitations.", where: "Check availability", href: "/app/connections?connection=calendar" },
+  { id: "drive", label: "Google Drive", ready: "Import files shared with Crewmori into private knowledge.", where: "Import from Drive", href: "/app/connections?connection=drive" },
+];
 // Sidebar shortcuts open the panel that holds each tool's controls.
 const focusTargets: Record<string, string> = { gmail: "connection-google", calendar: "connection-calendar", drive: "connection-drive" };
 const focused = (focus: string, id: string) => (focusTargets[focus] === id ? "panel-focused" : "");
 export function ConnectedConnections() {
   const { rows, refresh } = useStore();
-  const focus = useSearchParams().get("connection") || "";
+  const params = useSearchParams(), focus = params.get("connection") || "", justConnected = params.get("connected") === "google";
+  const status = (id: string) => rows("connections").find((connection) => connection.id === id)?.state === "connected";
+  const anyConnected = ["gmail", "calendar", "drive"].some(status);
   useEffect(() => {
     const target = document.getElementById(focusTargets[focus] || "");
     if (!target) { window.scrollTo({ top: 0 }); return; }
@@ -32,10 +39,12 @@ export function ConnectedConnections() {
   };
   return <div className="settings-content"><PageHead title="Your tools, working together." description="Connect the Google capabilities your business needs." />
     {error && <p role="alert">{error}</p>}
-    <Panel id="connection-google" tabIndex={-1} aria-label="Google account" className={focused(focus, "connection-google")}><h2>Google account</h2><div className="public-actions">{rows("connections").map((connection) => <Badge key={connection.id}>{s(connection.label)} · {s(connection.state)}</Badge>)}</div>
+    {justConnected && <p className="feedback success" role="status">Google is connected. The tools below are ready; every external send still waits for your approval.</p>}
+    <Panel id="connection-google" tabIndex={-1} aria-label="Google account" className={focused(focus, "connection-google")}><h2>Google account</h2>
+      <ul className="connection-status">{googleTools.map(({ id, label, ready, where, href }) => <li key={id}><Badge tone={status(id) ? "success" : "neutral"}>{status(id) ? "Connected" : "Not connected"}</Badge><div><strong>{label}</strong><p className="muted">{status(id) ? ready : "Select this access below, then connect Google."}</p>{status(id) && <Link href={href}>{where}</Link>}</div></li>)}</ul>
       <p>Select access before continuing to Google. Reconnecting replaces the saved permission set.</p>
       {[["gmail", "Send reviewed email"], ["calendar_read", "Read calendar availability"], ["calendar_write", "Send approved calendar invitations"], ["drive", "Import files accessible to this application"]].map(([capability, title]) => <label className="settings-permission" key={capability}><input type="checkbox" checked={selected.includes(capability)} onChange={(event) => setSelected((values) => event.target.checked ? [...values, capability] : values.filter((value) => value !== capability))} />{title}</label>)}
-      <div className="public-actions"><Button disabled={busy || !selected.length} onClick={() => void manage()}>Connect or update Google</Button><Button variant="secondary" disabled={busy || !rows("connections").some((connection) => connection.state === "connected")} onClick={() => void manage(true)}>Disconnect Google</Button></div>
+      <div className="public-actions"><Button disabled={busy || !selected.length} onClick={() => void manage()}>{anyConnected ? "Update Google access" : "Connect Google"}</Button><Button variant="secondary" disabled={busy || !rows("connections").some((connection) => connection.state === "connected")} onClick={() => void manage(true)}>Disconnect Google</Button></div>
     </Panel><IntegrationTools focus={focus} /></div>;
 }
 export default function IntegrationTools({ focus = "" }: { focus?: string }) {

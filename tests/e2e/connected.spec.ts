@@ -46,6 +46,8 @@ test("connected owner and buyer complete an AI-reviewed commercial workflow", as
     await expect(page.locator(".sidebar-tools").getByRole("link", { name: label, exact: true })).toHaveAttribute("aria-current", "page");
     await expect(page.getByRole("region", { name: panel, exact: true })).toHaveClass(/panel-focused/);
   }
+  await expect(page.locator(".connection-status li")).toHaveCount(3);
+  await expect(page.getByRole("button", { name: "Connect Google", exact: true })).toBeVisible();
   await page.locator(".sidebar-tools").getByRole("link", { name: "Manage connections" }).click();
   await expect(page.locator(".sidebar-tools [aria-current=page]")).toHaveText("Manage connections");
   await expect(page.locator(".panel-focused")).toHaveCount(0);

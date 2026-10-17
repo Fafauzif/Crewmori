@@ -235,6 +235,21 @@ button.primary:focus-visible {
   padding: 32px;
   min-width: 0;
 }
+.connection-status {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: grid;
+  gap: 16px;
+}
+.connection-status li {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.connection-status p {
+  margin: 4px 0;
+}
 .panel-focused {
   border-color: var(--forest);
   box-shadow: 0 0 0 3px var(--selected);
