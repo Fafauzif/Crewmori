@@ -27,3 +27,10 @@ test("a clean rollback returns the connection to the pool", async () => {
   await assert.rejects(transaction(async () => { throw Error("work failed"); }, pool), /work failed/);
   assert.deepEqual(released, [undefined]);
 });
+
+test("file locators only reach the uuid key when they are UUIDs", async () => {
+  const { uuidOrNull } = await import("../src/server/repository");
+  assert.equal(uuidOrNull("6f1c2b8e-3a4d-4e5f-8a9b-0c1d2e3f4a5b"), "6f1c2b8e-3a4d-4e5f-8a9b-0c1d2e3f4a5b");
+  assert.equal(uuidOrNull("https://example.com/brief"), null);
+  assert.equal(uuidOrNull(undefined), null);
+});

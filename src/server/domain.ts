@@ -7,7 +7,7 @@ import { o, s, type Input, type Result, type StoreState } from "../lib/types";
 import type { Actor, OwnerActor, BuyerActor } from "./contracts";
 import { transaction } from "./db";
 import { assertService } from "./errors";
-import { lockWorkspace, previousCommand, saveCommand } from "./repository";
+import { lockWorkspace, previousCommand, saveCommand, uuidOrNull } from "./repository";
 import { enqueueKnowledge } from "./knowledge";
 import { loadDomain, persistDomain, ownerProjection } from "./domain-state";
 
@@ -112,7 +112,7 @@ export async function runDomainCommand(actor: Actor, raw: unknown) {
     }
     if (command.type === "knowledge.save" && input.attachment) {
       const attachment = o(input.attachment), locator = s(attachment.content_ref, s(attachment.storage_locator));
-      const file = (await client.query("select * from crewmori.files where workspace_id=$1 and id::text=$2 and state='available'", [actor.workspaceId, locator])).rows[0];
+      const file = (await client.query("select * from crewmori.files where workspace_id=$1 and id=$2::uuid and state='available'", [actor.workspaceId, uuidOrNull(locator)])).rows[0];
       assertService(file, "FILE_UNAVAILABLE", "Upload this source file before indexing it.", 422);
       input.attachment = { ...attachment, mime_type: file.mime_type, media_type: file.mime_type, byte_length: file.byte_size, size_bytes: file.byte_size, content_ref: file.id, storage_locator: file.id, sha256: file.sha256, audience: "owner", shared_with_buyer: false };
     }
@@ -127,7 +127,7 @@ export async function runDomainCommand(actor: Actor, raw: unknown) {
       const locator = s(values.storage_locator, s(values.file_id, s(values.blob_id)));
       if (command.type === "file.attach") assertService(locator, "FILE_UNAVAILABLE", "Upload a file before attaching it.", 422);
       if (locator) {
-        const file = await client.query("select * from crewmori.files where workspace_id=$1 and id::text=$2 and state='available'", [actor.workspaceId, locator]);
+        const file = await client.query("select * from crewmori.files where workspace_id=$1 and id=$2::uuid and state='available'", [actor.workspaceId, uuidOrNull(locator)]);
         assertService(file.rowCount && (actor.kind === "owner" || (file.rows[0].engagement_id === actor.engagementId && file.rows[0].audience === "buyer")), "FILE_UNAVAILABLE", "Upload a file available to this session first.", 422);
         if (command.type === "file.attach") {
           const bound = Object.values(before.tables.attachments || {}).find((attachment) => attachment.storage_kind === "private" && attachment.storage_locator === locator && attachment.availability !== "removed" && attachment.id !== input.id);
@@ -153,10 +153,10 @@ export async function runDomainCommand(actor: Actor, raw: unknown) {
       const engagement = Object.values(after.tables.engagements || {}).find((e) => e.id === file.engagement_id || e.conversation_id === file.conversation_id || (e.project_id && e.project_id === file.project_id));
       if (file.storage_kind === "private" && file.availability === "removed") {
         const survivingReference = Object.values(after.tables.attachments || {}).some((other) => other.id !== file.id && other.storage_kind === "private" && other.storage_locator === file.storage_locator && other.availability !== "removed");
-        if (!survivingReference) await client.query("update crewmori.files set state='deleted' where workspace_id=$1 and id::text=$2", [actor.workspaceId, file.storage_locator]);
+        if (!survivingReference) await client.query("update crewmori.files set state='deleted' where workspace_id=$1 and id=$2::uuid", [actor.workspaceId, uuidOrNull(file.storage_locator)]);
         continue;
       }
-      if (file.storage_kind === "private" && engagement) await client.query("update crewmori.files set engagement_id=$3,audience=$4 where workspace_id=$1 and id::text=$2", [actor.workspaceId, file.storage_locator, engagement.id, file.shared_with_buyer || actor.kind === "buyer" ? "buyer" : "owner"]);
+      if (file.storage_kind === "private" && engagement) await client.query("update crewmori.files set engagement_id=$3,audience=$4 where workspace_id=$1 and id=$2::uuid", [actor.workspaceId, uuidOrNull(file.storage_locator), engagement.id, file.shared_with_buyer || actor.kind === "buyer" ? "buyer" : "owner"]);
     }
     const changedReferences = Object.entries(after.tables).flatMap(([table, records]) => Object.values(records).filter((record) => record.version !== before.tables[table]?.[record.id]?.version).map((record) => `${table}:${record.id}`));
     const pendingDispatch = await client.query("select 1 from crewmori.external_dispatches where workspace_id=$1 and state in ('dispatching','unknown') and reference_ids && $2::text[] limit 1", [actor.workspaceId, changedReferences]);

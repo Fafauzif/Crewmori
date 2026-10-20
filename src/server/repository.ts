@@ -24,3 +24,7 @@ export async function previousCommand(client: PoolClient, actor: OwnerActor, ope
 export async function saveCommand(client: PoolClient, actor: OwnerActor, operation: string, key: string, input: unknown, result: unknown) {
   await client.query("insert into crewmori.command_receipts(workspace_id,actor_id,operation,key,fingerprint,result) values($1,$2,$3,$4,$5,$6)", [actor.workspaceId, actor.userId, operation, key, fingerprint(input), JSON.stringify(result)]);
 }
+// File locators are stored as text; compare against the uuid primary key without casting the column,
+// which would bypass its index. Non-UUID locators (such as external links) match nothing.
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+export const uuidOrNull = (value: unknown): string | null => typeof value === "string" && uuidPattern.test(value) ? value : null;

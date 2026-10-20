@@ -4,7 +4,7 @@ import type { OwnerActor } from "./contracts";
 import { a, s, type Entity } from "../lib/types";
 import { database, transaction } from "./db";
 import { assertService } from "./errors";
-import { appendEvent, lockWorkspace } from "./repository";
+import { appendEvent, lockWorkspace, uuidOrNull } from "./repository";
 import { privateStorage } from "./files";
 import { embedText } from "./providers/embeddings";
 import { rateLimit } from "./domain";
@@ -27,7 +27,7 @@ async function extractSource(workspaceId: string, source: Entity): Promise<strin
   const attachmentId = a<string>(source.attachment_ids)[0];
   assertService(attachmentId, "SOURCE_TEXT_REQUIRED", "Add source text or upload a text-based PDF or TXT file.", 422);
   const attachment = (await database().query("select data from crewmori.records where workspace_id=$1 and collection='attachments' and id=$2", [workspaceId, attachmentId])).rows[0];
-  const file = (await database().query("select * from crewmori.files where workspace_id=$1 and id::text=$2 and state='available'", [workspaceId, s(attachment?.data?.storage_locator)])).rows[0];
+  const file = (await database().query("select * from crewmori.files where workspace_id=$1 and id=$2::uuid and state='available'", [workspaceId, uuidOrNull(attachment?.data?.storage_locator)])).rows[0];
   assertService(file, "FILE_UNAVAILABLE", "This source file is unavailable.", 404);
   const downloaded = await privateStorage().bucket.download(file.object_path);
   assertService(!downloaded.error && downloaded.data, "FILE_UNAVAILABLE", "This source file could not be read.", 502);
