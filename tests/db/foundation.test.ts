@@ -121,6 +121,20 @@ test("knowledge search reads while an owner command holds the workspace write lo
     holder.release();
   }
 });
+test("deleting a workspace removes its runs, payments and voice sessions", async () => {
+  const workspace = (await database().query("insert into crewmori.workspaces(owner_id,name) values($1,'Delete me') returning id", [randomUUID()])).rows[0];
+  const run = (await database().query("insert into crewmori.agent_runs(workspace_id,role,instruction,input_refs) values($1,'scout','x','[]') returning id", [workspace.id])).rows[0];
+  await database().query("insert into crewmori.usage_budgets(workspace_id,day) values($1,current_date)", [workspace.id]);
+  await database().query("insert into crewmori.model_calls(workspace_id,run_id,control_version,reserved_tokens,budget_day,state) values($1,$2,1,10,current_date,'reserved')", [workspace.id, run.id]);
+  const grant = (await database().query("insert into crewmori.buyer_grants(workspace_id,engagement_id,token_hash,expires_at) values($1,'e',$2,now()+interval '1 day') returning id", [workspace.id, randomUUID()])).rows[0];
+  await database().query("insert into crewmori.voice_sessions(workspace_id,grant_id,engagement_id,binding_hash,expires_at) values($1,$2,'e',$3,now()+interval '1 hour')", [workspace.id, grant.id, randomUUID()]);
+  const request = (await database().query("insert into crewmori.payment_requests(workspace_id,invoice_id,engagement_id,provider,expected_minor,currency) values($1,'i','e','sandbox',100,'USD') returning id", [workspace.id])).rows[0];
+  await recordPaymentObservation("sandbox", { eventId: `delete-${randomUUID()}`, requestId: request.id, currency: "USD", grossMinor: 100, feeMinor: null, occurredAt: new Date().toISOString() }, null);
+  await database().query("delete from crewmori.workspaces where id=$1", [workspace.id]);
+  for (const table of ["agent_runs", "model_calls", "voice_sessions", "payment_requests", "payment_observations"]) {
+    assert.equal((await database().query(`select count(*)::int as count from crewmori.${table} where workspace_id=$1`, [workspace.id])).rows[0].count, 0, table);
+  }
+});
 test("RLS excludes another owner's records even with its exact workspace ID", async () => {
   await transaction(async (client) => {
     await client.query("SET LOCAL ROLE authenticated");
