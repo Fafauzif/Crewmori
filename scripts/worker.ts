@@ -3,8 +3,7 @@ import { PostgresSaver } from "@langchain/langgraph-checkpoint-postgres";
 import { z } from "zod";
 import { database, transaction, closeDatabase } from "../src/server/db";
 import { integrationStatus, requireConfiguration, runtimeConfig } from "../src/server/config";
-import { agentGraph, recordRunFailure } from "../src/server/agent-runtime";
-import { ServiceError } from "../src/server/errors";
+import { agentGraph, runAgentJob } from "../src/server/agent-runtime";
 
 import { ingestKnowledge } from "../src/server/knowledge";
 import { privateStorage } from "../src/server/files";
@@ -34,15 +33,11 @@ async function main() {
   await boss.schedule("maintenance.sweep", "*/5 * * * *");
   const graph = agentGraph(checkpointer);
   await boss.work("agent.run", { localConcurrency: 2 }, async (jobs) => {
-    for (const job of jobs) {
-      const input = z.object({ workspaceId: z.string().uuid(), runId: z.string().uuid(), controlVersion: z.number().int().positive() }).parse(job.data);
-      try {
-        await graph.invoke(input, { configurable: { thread_id: `${input.workspaceId}:${input.runId}:${input.controlVersion}` } });
-      } catch (error) {
-        await recordRunFailure(input, error);
-        if (error instanceof ServiceError && error.code === "WORKSPACE_BUSY") throw error;
-      }
-    }
+    for (const job of jobs) await runAgentJob(
+      job.data,
+      (ref) => graph.invoke(ref, { configurable: { thread_id: `${ref.workspaceId}:${ref.runId}:${ref.controlVersion}` } }),
+      (data, delay) => boss.send("agent.run", data, { startAfter: delay, singletonKey: `agent:${data.runId}:${data.controlVersion}:busy:${data.busyAttempt}`, singletonSeconds: 86400 }),
+    );
   });
   let relaying = false, stopping = false;
   const relay = async () => {

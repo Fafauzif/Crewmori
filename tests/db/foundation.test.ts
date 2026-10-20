@@ -6,7 +6,8 @@ import { spawn } from "node:child_process";
 import { once } from "node:events";
 import { database, transaction, closeDatabase } from "../../src/server/db";
 import { startTask, controlTask } from "../../src/server/tasks";
-import { agentGraph, runReasoning, saveRunArtifact, recordRunFailure } from "../../src/server/agent-runtime";
+import { agentGraph, runReasoning, saveRunArtifact, recordRunFailure, runAgentJob, BUSY_RETRY_LIMIT, BUSY_RETRY_SECONDS } from "../../src/server/agent-runtime";
+import { ServiceError } from "../../src/server/errors";
 import { PostgresSaver } from "@langchain/langgraph-checkpoint-postgres";
 import { PgBoss } from "pg-boss";
 import { recordPaymentObservation } from "../../src/server/webhooks";
@@ -215,6 +216,18 @@ test("an uncertain model attempt is retained and cannot silently call the provid
   await assert.rejects(runReasoning(ref, adapter), /no confirmed response/);
   assert.equal(calls, 1);
   await recordRunFailure(ref, new Error("network timeout"));
+});
+test("a run rejected by a busy workspace is rescheduled, then blocked with a reason instead of staying queued", async () => {
+  const run = await startTask(actorA(), { role: "scout", instruction: "Find a second lead", idempotencyKey: randomUUID() });
+  const busy = async () => { throw new ServiceError("WORKSPACE_BUSY", "Two tasks are already running.", 409); };
+  const requeued: Array<{ busyAttempt: number; delay: number }> = [];
+  const job = { workspaceId: workspaceA, runId: String(run.id), controlVersion: 1 };
+  await runAgentJob(job, busy, async (data, delay) => { requeued.push({ busyAttempt: data.busyAttempt, delay }); });
+  assert.deepEqual(requeued, [{ busyAttempt: 1, delay: BUSY_RETRY_SECONDS }]);
+  assert.equal((await database().query("select state from crewmori.agent_runs where id=$1", [run.id])).rows[0].state, "queued");
+  await runAgentJob({ ...job, busyAttempt: BUSY_RETRY_LIMIT }, busy, async () => assert.fail("The final attempt must not requeue"));
+  const blocked = (await database().query("select state,error_code from crewmori.agent_runs where id=$1", [run.id])).rows[0];
+  assert.deepEqual(blocked, { state: "blocked", error_code: "WORKSPACE_BUSY" });
 });
 test("concurrent retries of one blocked run start a single new attempt", async () => {
   const run = await startTask(actorA(), { role: "operations", instruction: "Check the delivery window", idempotencyKey: randomUUID() });

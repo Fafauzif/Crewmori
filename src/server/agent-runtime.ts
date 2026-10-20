@@ -103,9 +103,28 @@ export function agentGraph(checkpointer?: BaseCheckpointSaver, adapter: Reasonin
 export async function recordRunFailure(ref: RunReference, error: unknown) {
   const code = error instanceof ServiceError ? error.code : "PROVIDER_UNAVAILABLE";
   if (["RUN_INTERRUPTED", "WORKSPACE_BUSY"].includes(code)) return;
+  await blockRun(ref, code);
+}
+async function blockRun(ref: RunReference, code: string) {
   await transaction(async (client) => {
     await client.query("select id from crewmori.workspaces where id=$1 for update", [ref.workspaceId]);
     const result = await client.query("update crewmori.agent_runs set state='blocked',error_code=$3,updated_at=now() where workspace_id=$1 and id=$2 and control_version=$4 and state in ('queued','running') returning id", [ref.workspaceId, ref.runId, code, ref.controlVersion]);
     if (result.rowCount) await appendEvent(client, ref.workspaceId, "run.blocked", "Task needs attention before another attempt.", [{ table: "agent_runs", id: ref.runId }]);
   });
+}
+
+// A busy workspace is a scheduling condition, not a failure: wait for a free slot,
+// then block with a readable reason instead of leaving the run queued forever.
+export const BUSY_RETRY_SECONDS = 30;
+export const BUSY_RETRY_LIMIT = 30;
+export const agentJobSchema = z.object({ workspaceId: z.string().uuid(), runId: z.string().uuid(), controlVersion: z.number().int().positive(), busyAttempt: z.number().int().nonnegative().default(0) });
+export async function runAgentJob(data: unknown, invoke: (ref: RunReference) => Promise<unknown>, requeue: (data: z.infer<typeof agentJobSchema>, delaySeconds: number) => Promise<unknown>) {
+  const { busyAttempt, ...ref } = agentJobSchema.parse(data);
+  try {
+    await invoke(ref);
+  } catch (error) {
+    if (!(error instanceof ServiceError && error.code === "WORKSPACE_BUSY")) return recordRunFailure(ref, error);
+    if (busyAttempt < BUSY_RETRY_LIMIT) return requeue({ ...ref, busyAttempt: busyAttempt + 1 }, BUSY_RETRY_SECONDS);
+    await blockRun(ref, "WORKSPACE_BUSY");
+  }
 }
