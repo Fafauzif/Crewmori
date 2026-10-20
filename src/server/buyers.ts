@@ -17,13 +17,15 @@ export async function publicWorkspace(handle: string) {
   assertService(row, "NOT_FOUND", "This freelancer is unavailable.", 404);
   return row.workspace_id as string;
 }
+const PUBLIC_PROFILE_COLLECTIONS = ["owners", "profiles", "services", "portfolio_items", "publication_snapshots", "attachments"];
 export async function getPublicProfile(handle: string) {
   const id = await publicWorkspace(handle);
+  // Anonymous traffic reads only the published collections, without the owner's activity or a write lock.
   return transaction(async (client) => {
-    const profile = publicProfile(await loadDomain(client, id), handle);
+    const profile = publicProfile(await loadDomain(client, id, { collections: PUBLIC_PROFILE_COLLECTIONS, eventLimit: 0, activity: false }), handle);
     assertService(profile, "NOT_FOUND", "This freelancer is unavailable.", 404);
     return profile;
-  });
+  }, database(), true);
 }
 async function sessionGrant(client: PoolClient, workspaceId: string, engagementId: string) {
   const token = randomToken(), id = randomUUID();

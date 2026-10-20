@@ -10,18 +10,22 @@ export async function initializeWorkspace(client: PoolClient, workspace: { id: s
   const state = workspaceState(workspace, email);
   await persistDomain(client, emptyState(), state, workspace.id);
 }
-// One round trip loads the whole projection; hosted databases add latency to every query.
+// One round trip loads the projection; hosted databases add latency to every query.
+// Events are an append-only log, so only the most recent window is loaded; /api/activity pages the rest.
+// $2 limits record collections (null loads all), $3 bounds events, $4 includes runs, jobs and dispatches.
 const domainQuery = `select
   (select revision from crewmori.workspaces where id=$1) as revision,
-  (select coalesce(json_agg(json_build_object('collection',collection,'id',id,'version',version,'data',data)),'[]') from crewmori.records where workspace_id=$1) as records,
-  (select coalesce(json_agg(e order by e.sequence),'[]') from (select id,sequence,kind,summary,record_refs,created_at from crewmori.events where workspace_id=$1) e) as events,
-  (select row_to_json(c) from (select scopes,state,version from crewmori.connections where workspace_id=$1 and provider='google') c) as connection,
-  (select coalesce(json_agg(d order by d.created_at desc),'[]') from (select id,operation,state,provider_reference,created_at,payload from crewmori.external_dispatches where workspace_id=$1 order by created_at desc limit 100) d) as dispatches,
-  (select coalesce(json_agg(j),'[]') from (select distinct on (source_id) source_id,state,error_code from crewmori.knowledge_jobs where workspace_id=$1 order by source_id,created_at desc) j) as jobs,
-  (select coalesce(json_agg(r order by r.created_at),'[]') from (select id,role,instruction,state,control_version,input_refs,artifact,error_code,applied_at,applied_result,created_at,updated_at from crewmori.agent_runs where workspace_id=$1) r) as runs`;
+  (select coalesce(json_agg(json_build_object('collection',collection,'id',id,'version',version,'data',data)),'[]') from crewmori.records where workspace_id=$1 and ($2::text[] is null or collection=any($2))) as records,
+  (select coalesce(json_agg(e order by e.sequence),'[]') from (select id,sequence,kind,summary,record_refs,created_at from crewmori.events where workspace_id=$1 order by sequence desc limit $3) e) as events,
+  (select row_to_json(c) from (select scopes,state,version from crewmori.connections where workspace_id=$1 and provider='google' and $4) c) as connection,
+  (select coalesce(json_agg(d order by d.created_at desc),'[]') from (select id,operation,state,provider_reference,created_at,payload from crewmori.external_dispatches where workspace_id=$1 and $4 order by created_at desc limit 100) d) as dispatches,
+  (select coalesce(json_agg(j),'[]') from (select distinct on (source_id) source_id,state,error_code from crewmori.knowledge_jobs where workspace_id=$1 and $4 order by source_id,created_at desc) j) as jobs,
+  (select coalesce(json_agg(r order by r.created_at),'[]') from (select id,role,instruction,state,control_version,input_refs,artifact,error_code,applied_at,applied_result,created_at,updated_at from crewmori.agent_runs where workspace_id=$1 and $4) r) as runs`;
 const iso = (value: string) => new Date(value).toISOString();
-export async function loadDomain(client: PoolClient, workspaceId: string): Promise<StoreState> {
-  const loaded = (await client.query(domainQuery, [workspaceId])).rows[0];
+export const EVENT_WINDOW = 1000;
+export interface LoadOptions { collections?: string[]; eventLimit?: number; activity?: boolean }
+export async function loadDomain(client: PoolClient, workspaceId: string, options: LoadOptions = {}): Promise<StoreState> {
+  const loaded = (await client.query(domainQuery, [workspaceId, options.collections ?? null, options.eventLimit ?? EVENT_WINDOW, options.activity ?? true])).rows[0];
   const state = emptyState();
   state.session = true;
   state.revision = Number(loaded.revision);

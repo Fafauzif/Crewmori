@@ -87,6 +87,26 @@ test("connected work workflows persist exact task fields, atomic milestone assig
   await assert.rejects(send("file.attach", { values: { project_id: "workflow-project", name: "Missing upload", storage_locator: randomUUID(), shared_with_buyer: false } }), /Upload a file/);
 });
 
+test("domain loads keep a bounded recent event window and commands continue the sequence", async () => {
+  const { initializeWorkspace, loadDomain, EVENT_WINDOW } = await import("../../src/server/domain-state");
+  const { runDomainCommand } = await import("../../src/server/domain");
+  const workspace = (await database().query("insert into crewmori.workspaces(owner_id,name) values($1,'Event window') returning *", [randomUUID()])).rows[0];
+  await transaction((client) => initializeWorkspace(client, workspace));
+  const start = Number((await database().query("select event_sequence from crewmori.workspaces where id=$1", [workspace.id])).rows[0].event_sequence);
+  await database().query("insert into crewmori.events(workspace_id,sequence,kind,summary) select $1,$2+g,'test.event','Historic event' from generate_series(1,$3) g", [workspace.id, start, EVENT_WINDOW + 50]);
+  await database().query("update crewmori.workspaces set event_sequence=$2 where id=$1", [workspace.id, start + EVENT_WINDOW + 50]);
+  const state = await transaction((client) => loadDomain(client, workspace.id));
+  const sequences = Object.values(state.tables.events).map((event) => Number(event.sequence));
+  assert.equal(sequences.length, EVENT_WINDOW);
+  assert.equal(Math.max(...sequences), start + EVENT_WINDOW + 50);
+  const actor: OwnerActor = { kind: "owner", workspaceId: workspace.id, userId: workspace.owner_id };
+  await runDomainCommand(actor, { type: "record.save", input: { table: "clients", values: { name: "After the window" } }, idempotencyKey: randomUUID() });
+  const latest = (await database().query("select max(sequence)::int as max, count(*)::int as count from crewmori.events where workspace_id=$1", [workspace.id])).rows[0];
+  assert.ok(latest.max > start + EVENT_WINDOW + 50);
+  const slim = await transaction((client) => loadDomain(client, workspace.id, { collections: ["owners"], eventLimit: 0, activity: false }));
+  assert.deepEqual(Object.keys(slim.tables.events), []);
+  assert.ok(!slim.tables.clients, "Only the requested collections load");
+});
 test("RLS excludes another owner's records even with its exact workspace ID", async () => {
   await transaction(async (client) => {
     await client.query("SET LOCAL ROLE authenticated");
