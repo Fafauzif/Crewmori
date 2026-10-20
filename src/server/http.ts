@@ -41,7 +41,11 @@ export async function api(request: Request, action: () => Promise<Response>, opt
     if (!["GET", "HEAD", "OPTIONS"].includes(request.method) && !options.webhook) assertSameOrigin(request, config.APP_URL);
     return await action();
   } catch (error) {
-    if (error instanceof ConfigurationError) return json({ error: { code: "NOT_CONFIGURED", message: error.message, missing: error.keys } }, 503);
+    // Variable names stay in server logs; anonymous callers only learn that the capability is unavailable.
+    if (error instanceof ConfigurationError) {
+      process.stderr.write(`${JSON.stringify({ level: "warn", event: "config.missing", route: new URL(request.url).pathname, keys: error.keys })}\n`);
+      return json({ error: { code: "NOT_CONFIGURED", message: "This capability is not set up in this deployment yet." } }, 503);
+    }
     if (error instanceof ServiceError) return json({ error: { code: error.code, message: error.message } }, error.status);
     if (error instanceof z.ZodError) return json({ error: { code: "VALIDATION_ERROR", message: "Check the submitted fields.", fields: error.issues.map((issue) => ({ path: issue.path.join("."), message: issue.message })) } }, 422);
     // Malformed identifiers that slip past route validation are client errors, not server faults.

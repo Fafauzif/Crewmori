@@ -41,3 +41,15 @@ test("malformed identifiers and encodings are reported as validation errors, not
     if (prior === undefined) delete process.env.CREWMORI_BACKEND_ENABLED; else process.env.CREWMORI_BACKEND_ENABLED = prior;
   }
 });
+test("missing configuration is reported without naming environment variables", async () => {
+  const prior = process.env.CREWMORI_BACKEND_ENABLED;
+  try {
+    process.env.CREWMORI_BACKEND_ENABLED = "true";
+    const { ConfigurationError } = await import("../src/server/config");
+    const response = await api(new Request("http://localhost:4173/api/webhooks/stripe"), async () => { throw new ConfigurationError(["STRIPE_WEBHOOK_SECRET"]); });
+    assert.equal(response.status, 503);
+    assert.ok(!(await response.text()).includes("STRIPE_WEBHOOK_SECRET"));
+  } finally {
+    if (prior === undefined) delete process.env.CREWMORI_BACKEND_ENABLED; else process.env.CREWMORI_BACKEND_ENABLED = prior;
+  }
+});
