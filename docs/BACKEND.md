@@ -31,7 +31,7 @@ Fill the core variables first:
 | Variable | Purpose |
 | --- | --- |
 | `APP_URL` | Exact application origin; HTTPS when hosted, HTTP on localhost |
-| `DATABASE_URL` | Privileged server PostgreSQL connection; direct/session pooler for persistent workers |
+| `DATABASE_URL` | Privileged server PostgreSQL connection. Use the session pooler or a direct connection for the worker, and the transaction pooler (port 6543) for Vercel web functions. On Vercel the pool defaults to 2 connections per instance and releases idle connections before suspension. |
 | `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` | Auth project and publishable key |
 | `SUPABASE_SECRET_KEY` | Server-only Auth/Storage access |
 | `STORAGE_BUCKET` | Private bucket, default `crewmori-private` |

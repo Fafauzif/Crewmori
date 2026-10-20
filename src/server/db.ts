@@ -1,13 +1,19 @@
 import { Pool, type PoolClient } from "pg";
+import { attachDatabasePool } from "@vercel/functions";
 import { requireConfiguration, runtimeConfig } from "./config";
 
 let pool: Pool | undefined;
 export function database(): Pool {
   if (!pool) {
     const { DATABASE_URL } = requireConfiguration(["DATABASE_URL"]);
-    pool = new Pool({ connectionString: DATABASE_URL, max: runtimeConfig().DATABASE_POOL_SIZE, connectionTimeoutMillis: 10000, idleTimeoutMillis: 30000, application_name: "crewmori" });
+    // Serverless instances scale out, so each keeps a small pool unless DATABASE_POOL_SIZE says otherwise.
+    const max = process.env.VERCEL && !process.env.DATABASE_POOL_SIZE ? 2 : runtimeConfig().DATABASE_POOL_SIZE;
+    // statement_timeout also bounds queries that run outside transaction(), which sets its own tighter limit.
+    pool = new Pool({ connectionString: DATABASE_URL, max, connectionTimeoutMillis: 10000, idleTimeoutMillis: 30000, statement_timeout: 30000, application_name: "crewmori" });
     // Do not print connection errors: provider messages can contain credentials.
     pool.on("error", () => process.stderr.write("Crewmori database connection interrupted.\n"));
+    // Fluid compute: release idle connections before an instance is suspended.
+    if (process.env.VERCEL) attachDatabasePool(pool);
   }
   return pool;
 }
