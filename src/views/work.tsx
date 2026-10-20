@@ -78,7 +78,7 @@ function ErrorText({ message }: { message: string }) {
 }
 function WorkNav({ path }: { path: string }) {
   return (
-    <nav className="work-subnav" aria-label="Work sections">
+    <nav className="tabs" aria-label="Work sections">
       {[
         ["Projects", "/app/projects"],
         ["Clients", "/app/clients"],
@@ -3855,7 +3855,7 @@ function Calendar() {
                 variant={view === x ? undefined : "secondary"}
                 onClick={() => update({ view: x })}
               >
-                {label(x)}
+                {x[0].toUpperCase() + x.slice(1)}
               </Button>
             ))}
           </div>

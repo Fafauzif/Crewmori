@@ -1437,7 +1437,9 @@ export function Activity() {
                     >
                       <p>{s(e.summary)}</p>
                       <small className="muted">
-                        {label(e.kind)} · {label(e.role_id)}
+                        {[label(e.kind), label(e.role_id)]
+                          .filter(Boolean)
+                          .join(" · ")}
                       </small>
                     </button>
                   </div>

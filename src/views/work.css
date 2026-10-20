@@ -1,21 +1,3 @@
-.work-subnav {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
-}
-.work-subnav a {
-  padding: 10px 16px;
-  border-radius: 999px;
-  text-decoration: none;
-  color: var(--muted, #566159);
-  font-size: 14px;
-}
-.work-subnav a[aria-current="page"] {
-  background: var(--selected, #e5efe7);
-  color: var(--forest, #245c47);
-  font-weight: 600;
-}
 .work-toolbar {
   display: flex;
   gap: 12px;
@@ -220,6 +202,7 @@
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
+  margin-bottom: 24px;
 }
 .work-calendar-grid {
   display: grid;
@@ -446,12 +429,6 @@
   }
   .work-board {
     grid-template-columns: 1fr;
-  }
-  .work-subnav {
-    gap: 4px;
-  }
-  .work-subnav a {
-    padding: 10px 14px;
   }
 }
 .work-editor-fields {

@@ -204,9 +204,14 @@ export function Badge({
   className?: string;
 }) {
   const { t } = useStore();
+  // Status values arrive as lowercase identifiers; show them in sentence case.
+  const sentence = (value: string) =>
+    value.charAt(0).toLocaleUpperCase() + value.slice(1);
   return (
     <span className={`badge ${tone} ${className}`}>
-      {translateChildren(children, t)}
+      {React.Children.map(children, (child) =>
+        typeof child === "string" ? sentence(t(child)) : child,
+      )}
     </span>
   );
 }
@@ -324,21 +329,21 @@ export function Tabs({
   const { t } = useStore();
   const pathname = usePathname(),
     query = useSearchParams();
+  // Detail routes keep their section tab active; the most specific href wins.
+  const matches = (href: string) =>
+    href.includes("?")
+      ? `${pathname}?${query}` === href
+      : pathname === href || pathname.startsWith(`${href}/`);
+  const active = items
+    .filter((item) => matches(item.href))
+    .sort((a, b) => b.href.length - a.href.length)[0]?.href;
   return (
     <nav className="tabs" aria-label={t("Section navigation")}>
       {items.map((item) => (
         <Link
           key={item.href}
           href={item.href}
-          aria-current={
-            (
-              item.href.includes("?")
-                ? `${pathname}?${query}` === item.href
-                : pathname === item.href
-            )
-              ? "page"
-              : undefined
-          }
+          aria-current={item.href === active ? "page" : undefined}
         >
           {t(item.label)}
         </Link>

@@ -363,6 +363,7 @@ function InvoicesList() {
     );
   return (
     <>
+      <MoneyTabs />
       <PageHead
         title="Invoices"
         description="Clear terms, a clear next step."
@@ -372,7 +373,6 @@ function InvoicesList() {
           </Button>
         }
       />
-      <MoneyTabs />
       <AmountGroups
         caption="Outstanding on issued invoices"
         emptyLabel={store.rows("invoices").length ? "No issued invoices in this view" : "No issued invoices yet"}
@@ -1492,6 +1492,7 @@ function PaymentsList() {
     );
   return (
     <>
+      <MoneyTabs />
       <PageHead
         title="Payments"
         description="Understand what arrived, and where it belongs."
@@ -1501,7 +1502,6 @@ function PaymentsList() {
           </LinkButton>
         }
       />
-      <MoneyTabs />
       <AmountGroups
         caption="Observed gross receipts"
         emptyLabel={records.length ? "No receipts in this view" : "No receipts recorded yet"}
@@ -2475,6 +2475,7 @@ function ExpensesList() {
   }
   return (
     <>
+      <MoneyTabs />
       <PageHead
         title="Expenses"
         description="Keep the cost of your business in view."
@@ -2484,7 +2485,6 @@ function ExpensesList() {
           </Button>
         }
       />
-      <MoneyTabs />
       {(all.length > 0 || hasFilters) && <div
         className="row"
         style={{

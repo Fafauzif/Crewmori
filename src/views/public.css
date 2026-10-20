@@ -1,13 +1,15 @@
 .public-frame {
+  --public-gutter: 40px;
   min-height: 100vh;
   background: var(--canvas, #f5f3ec);
   color: var(--ink, #202a25);
 }
 .public-header {
-  max-width: 1320px;
+  width: calc(100% - 2 * var(--public-gutter));
+  max-width: 1160px;
   margin: auto;
   min-height: 96px;
-  padding: 16px 40px;
+  padding: 16px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -38,11 +40,12 @@
   max-width: 160px;
 }
 .public-main {
-  max-width: 1240px;
-  padding: 40px;
+  max-width: calc(1160px + 2 * var(--public-gutter));
+  padding: 40px var(--public-gutter);
   margin: auto;
 }
 .public-footer {
+  width: calc(100% - 2 * var(--public-gutter));
   max-width: 1160px;
   margin: 40px auto 0;
   padding: 24px 0;
@@ -724,8 +727,11 @@
   min-width: 0;
 }
 @media (max-width: 1024px) {
+  .public-frame {
+    --public-gutter: 32px;
+  }
   .public-main {
-    padding: 32px;
+    padding: 32px var(--public-gutter);
   }
   .public-hero {
     gap: 40px;
@@ -747,10 +753,6 @@
   .public-value-grid {
     gap: 24px;
   }
-  .public-footer {
-    margin-left: 32px;
-    margin-right: 32px;
-  }
   .auth-layout {
     gap: 32px;
   }
@@ -765,8 +767,11 @@
   }
 }
 @media (max-width: 768px) {
+  .public-frame {
+    --public-gutter: 16px;
+  }
   .public-header {
-    padding: 16px;
+    padding: 16px 0;
     gap: 12px;
     min-height: 88px;
     flex-wrap: wrap;
@@ -785,7 +790,7 @@
     max-width: 140px;
   }
   .public-main {
-    padding: 24px 16px;
+    padding: 24px var(--public-gutter);
   }
   .public-hero {
     grid-template-columns: 1fr;
@@ -848,7 +853,7 @@
     margin-top: 12px;
   }
   .public-footer {
-    margin: 32px 16px 0;
+    margin: 32px auto 0;
     flex-direction: column;
     gap: 8px;
   }

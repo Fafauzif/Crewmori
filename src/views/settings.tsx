@@ -89,7 +89,7 @@ function ErrorMessage({ message }: { message: string }) {
 function SettingsTabs({ path }: { path: string }) {
   const { t } = useStore();
   return (
-    <nav className="settings-tabs" aria-label={t("Settings sections")}>
+    <nav className="tabs" aria-label={t("Settings sections")}>
       {NAV.map(([name, id]) => (
         <Link
           key={id}
@@ -137,11 +137,11 @@ export default function Settings({ path }: { path: string }) {
   if (path.startsWith("/app/connections")) return <Connections />;
   return (
     <div className="settings-content">
+      <SettingsTabs path={path} />
       <PageHead
         title={t(section.title)}
         description={t(section.description)}
       />
-      <SettingsTabs path={path} />
       {path.endsWith("/rules") ? (
         <Rules />
       ) : path.endsWith("/preferences") ? (
@@ -278,7 +278,7 @@ function Profile() {
   };
   return (
     <>
-      <div className="settings-tabs" aria-label={t("Profile sections")}>
+      <nav className="subtabs" aria-label={t("Profile sections")}>
         {[
           ["Profile", "profile"],
           ["Services", "services"],
@@ -292,7 +292,7 @@ function Profile() {
             {t(name)}
           </Link>
         ))}
-      </div>
+      </nav>
       <ErrorMessage message={error} />
       {undoService && (
         <div className="settings-success" role="status">
