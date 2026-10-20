@@ -28,3 +28,16 @@ test("request limits apply without trusting content-length and reject malformed 
   await assert.rejects(jsonBody(new Request("http://localhost/api", { method: "POST", headers: { "content-type": "application/json" }, body: "{" }), z.object({})), /valid JSON/);
   await assert.rejects(jsonBody(new Request("http://localhost/api", { method: "POST", headers: { "content-type": "text/plain" }, body: "{}" }), z.object({})), /application\/json/);
 });
+test("malformed identifiers and encodings are reported as validation errors, not server faults", async () => {
+  const prior = process.env.CREWMORI_BACKEND_ENABLED;
+  try {
+    process.env.CREWMORI_BACKEND_ENABLED = "true";
+    const request = () => new Request("http://localhost:4173/api/runs/not-a-uuid");
+    const invalidUuid = Object.assign(Error("invalid input syntax for type uuid"), { code: "22P02" });
+    assert.equal((await api(request(), async () => { throw invalidUuid; })).status, 422);
+    assert.equal((await api(request(), async () => { decodeURIComponent("%E0%A4%A"); return json({}); })).status, 422);
+    assert.equal((await api(request(), async () => { throw Error("unexpected"); })).status, 500);
+  } finally {
+    if (prior === undefined) delete process.env.CREWMORI_BACKEND_ENABLED; else process.env.CREWMORI_BACKEND_ENABLED = prior;
+  }
+});

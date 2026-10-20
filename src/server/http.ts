@@ -43,6 +43,8 @@ export async function api(request: Request, action: () => Promise<Response>, opt
     if (error instanceof ConfigurationError) return json({ error: { code: "NOT_CONFIGURED", message: error.message, missing: error.keys } }, 503);
     if (error instanceof ServiceError) return json({ error: { code: error.code, message: error.message } }, error.status);
     if (error instanceof z.ZodError) return json({ error: { code: "VALIDATION_ERROR", message: "Check the submitted fields.", fields: error.issues.map((issue) => ({ path: issue.path.join("."), message: issue.message })) } }, 422);
+    // Malformed identifiers that slip past route validation are client errors, not server faults.
+    if (error instanceof URIError || (error as { code?: unknown })?.code === "22P02") return json({ error: { code: "VALIDATION_ERROR", message: "Check the submitted fields." } }, 422);
     const requestId = randomUUID();
     process.stderr.write(`Crewmori request failed (${requestId}).\n`);
     return json({ error: { code: "INTERNAL_ERROR", message: "The request could not be completed.", requestId } }, 500);
