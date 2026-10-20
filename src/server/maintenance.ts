@@ -61,12 +61,27 @@ export async function purgeExpiredRecords(client: PoolClient) {
   return { oauthStates: oauth.rowCount ?? 0, invitations: invitations.rowCount ?? 0, requestLimits: limits.rowCount ?? 0 };
 }
 
+// Bookkeeping that has done its job is removed in bounded batches. Domain records and the
+// event log are business history and are never deleted here.
+export const RETENTION = { outboxDays: 7, receiptDays: 30, inboxDays: 90, grantDays: 90, batch: 5000 } as const;
+export async function purgeRetainedHistory(client: PoolClient) {
+  const { outboxDays, receiptDays, inboxDays, grantDays, batch } = RETENTION;
+  const outbox = await client.query("delete from crewmori.outbox where id in (select id from crewmori.outbox where dispatched_at < now()-($1 * interval '1 day') limit $2)", [outboxDays, batch]);
+  // Idempotency keys only matter while a client may still retry the same request.
+  const receipts = await client.query("delete from crewmori.command_receipts where ctid in (select ctid from crewmori.command_receipts where created_at < now()-($1 * interval '1 day') limit $2)", [receiptDays, batch]);
+  // Providers stop retrying within days; quarantined events stay until someone reviews them.
+  const inbox = await client.query("delete from crewmori.provider_inbox where ctid in (select ctid from crewmori.provider_inbox where state='processed' and created_at < now()-($1 * interval '1 day') limit $2)", [inboxDays, batch]);
+  const grants = await client.query("delete from crewmori.buyer_grants where id in (select g.id from crewmori.buyer_grants g where g.expires_at < now()-($1 * interval '1 day') and not exists (select 1 from crewmori.voice_sessions v where v.grant_id=g.id) limit $2)", [grantDays, batch]);
+  return { outbox: outbox.rowCount ?? 0, commandReceipts: receipts.rowCount ?? 0, providerInbox: inbox.rowCount ?? 0, buyerGrants: grants.rowCount ?? 0 };
+}
+
 // One sweep runs every recovery step independently; a failing step does not block the others.
 export async function runMaintenance(remove?: RemoveObjects) {
   const steps: Record<string, () => Promise<unknown>> = {
     knowledge: () => transaction((client) => recoverStaleKnowledgeJobs(client)),
     runs: () => transaction((client) => recoverStaleRuns(client)),
     records: () => transaction((client) => purgeExpiredRecords(client)),
+    retention: () => transaction((client) => purgeRetainedHistory(client)),
   };
   if (remove) steps.uploads = () => removeAbandonedUploads(database(), remove);
   const failed: string[] = [];

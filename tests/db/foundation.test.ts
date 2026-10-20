@@ -640,6 +640,19 @@ test("expired authorization state and stale rate-limit windows are purged", asyn
   assert.deepEqual((await database().query("select key from crewmori.request_limits where key like 'purge-%'")).rows.map((row) => row.key), ["purge-live"]);
 });
 
+test("retention removes finished bookkeeping and keeps anything still needed", async () => {
+  const { purgeRetainedHistory } = await import("../../src/server/maintenance");
+  const ref = randomUUID();
+  await database().query("insert into crewmori.outbox(workspace_id,kind,reference_id,deduplication_key,dispatched_at) values($1,'agent.run',$2,'retention-old',now()-interval '8 days'),($1,'agent.run',$2,'retention-recent',now()-interval '1 day'),($1,'agent.run',$2,'retention-pending',null)", [workspaceA, ref]);
+  await database().query("insert into crewmori.command_receipts(workspace_id,actor_id,operation,key,fingerprint,result,created_at) values($1,'retention','test',$2,'x','{}',now()-interval '31 days'),($1,'retention','test',$3,'x','{}',now())", [workspaceA, randomUUID(), randomUUID()]);
+  await database().query("insert into crewmori.provider_inbox(provider,event_id,fingerprint,payload,state,created_at) values('sandbox','retention-old','x','{}','processed',now()-interval '91 days'),('sandbox','retention-quarantined','x','{}','quarantined',now()-interval '91 days')");
+  await database().query("insert into crewmori.buyer_grants(workspace_id,engagement_id,token_hash,expires_at) values($1,'retention','retention-old',now()-interval '91 days'),($1,'retention','retention-live',now()+interval '1 day')", [workspaceA]);
+  await transaction((client) => purgeRetainedHistory(client));
+  assert.deepEqual((await database().query("select deduplication_key from crewmori.outbox where deduplication_key like 'retention-%' order by 1")).rows.map((row) => row.deduplication_key), ["retention-pending", "retention-recent"]);
+  assert.equal((await database().query("select count(*)::int as count from crewmori.command_receipts where actor_id='retention'")).rows[0].count, 1);
+  assert.deepEqual((await database().query("select event_id from crewmori.provider_inbox where event_id like 'retention-%'")).rows.map((row) => row.event_id), ["retention-quarantined"]);
+  assert.deepEqual((await database().query("select token_hash from crewmori.buyer_grants where token_hash like 'retention-%'")).rows.map((row) => row.token_hash), ["retention-live"]);
+});
 test("a maintenance sweep runs every recovery step against the live schema", async () => {
   const { runMaintenance } = await import("../../src/server/maintenance");
   let removals = 0;
