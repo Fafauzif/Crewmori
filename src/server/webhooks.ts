@@ -10,9 +10,10 @@ import { appendEvent } from "./repository";
 export async function recordPaymentObservation(provider: "sandbox" | "stripe_test", raw: Receipt, reference: string | null) {
   const receipt = receiptSchema.parse(raw);
   return transaction(async (client) => {
-    const requestResult = await client.query("select * from crewmori.payment_requests where id=$1 and provider=$2", [receipt.requestId, provider]);
-    const request = requestResult.rows[0];
-    if (request) await client.query("select id from crewmori.workspaces where id=$1 for update", [request.workspace_id]);
+    // Lock the workspace first, then read the request, so a concurrent checkout update cannot slip between.
+    const owner = (await client.query("select workspace_id from crewmori.payment_requests where id=$1 and provider=$2", [receipt.requestId, provider])).rows[0];
+    if (owner) await client.query("select id from crewmori.workspaces where id=$1 for update", [owner.workspace_id]);
+    const request = owner ? (await client.query("select * from crewmori.payment_requests where id=$1 and provider=$2 for update", [receipt.requestId, provider])).rows[0] : undefined;
     const payload = { ...receipt, reference };
     const hash = fingerprint(payload);
     const inserted = await client.query("insert into crewmori.provider_inbox(provider,event_id,fingerprint,workspace_id,payload) values($1,$2,$3,$4,$5) on conflict do nothing returning event_id", [provider, receipt.eventId, hash, request?.workspace_id ?? null, JSON.stringify(payload)]);
@@ -23,8 +24,8 @@ export async function recordPaymentObservation(provider: "sandbox" | "stripe_tes
     }
     // A signed event can arrive before the Checkout-create response is persisted.
     if (request && provider === "stripe_test" && !request.provider_reference && reference && request.domain_request_id && request.currency === receipt.currency && Number(request.expected_minor) === receipt.grossMinor) {
-      await client.query("update crewmori.payment_requests set provider_reference=$2 where id=$1 and provider_reference is null", [request.id, reference]);
-      request.provider_reference = reference;
+      const bound = await client.query("update crewmori.payment_requests set provider_reference=$2 where id=$1 and provider_reference is null", [request.id, reference]);
+      if (bound.rowCount === 1) request.provider_reference = reference;
     }
     if (!request || (provider === "stripe_test" && (!reference || request.provider_reference !== reference))) {
       await client.query("update crewmori.provider_inbox set state='quarantined' where provider=$1 and event_id=$2", [provider, receipt.eventId]);
