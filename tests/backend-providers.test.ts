@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { z } from "zod";
-import { GoogleAdapter, googleScopes, mimeMessage } from "../src/server/providers/google";
+import { GoogleAdapter, googleScopes, mimeMessage, revokeGoogleToken } from "../src/server/providers/google";
 import { providerJson } from "../src/server/providers/http";
 import { roleInstructions, validateArtifact } from "../src/server/providers/reasoning";
 import { domainAmount, normalizeStripeEvent, stripeAmount, stripeClient } from "../src/server/providers/payments";
@@ -96,4 +96,13 @@ test("Drive Picker configuration derives the project number and requires a brows
     process.env.GOOGLE_PICKER_API_KEY = "";
     assert.throws(() => pickerConfig(), /GOOGLE_PICKER_API_KEY/);
   } finally { process.env = previous; }
+});
+test("Google revocation posts the token and treats an already-invalid token as revoked", async () => {
+  const sent: string[] = [];
+  const reply = (status: number) => (async (_url: string | URL | Request, init?: RequestInit) => { sent.push(String(init?.body)); return new Response(null, { status }); }) as typeof fetch;
+  assert.equal(await revokeGoogleToken("refresh-token", reply(200)), true);
+  assert.equal(sent[0], "token=refresh-token");
+  assert.equal(await revokeGoogleToken("refresh-token", reply(400)), true);
+  assert.equal(await revokeGoogleToken("refresh-token", reply(503)), false);
+  assert.equal(await revokeGoogleToken("refresh-token", (async () => { throw Error("offline"); }) as typeof fetch), false);
 });

@@ -11,5 +11,5 @@ export async function POST(request: Request) {
   });
 }
 export async function DELETE(request: Request) {
-  return api(request, async () => { await revokeGoogleConnection(await ownerActor(request)); return json({ disconnected: true }); });
+  return api(request, async () => json({ disconnected: true, ...(await revokeGoogleConnection(await ownerActor(request))) }));
 }

@@ -5,7 +5,8 @@ import { requireConfiguration } from "./config";
 import { assertService } from "./errors";
 import { decryptSecret, encryptSecret, hashToken, randomToken } from "./security";
 import { appendEvent, lockWorkspace } from "./repository";
-import { exchangeGoogleCode, googleAuthorizationUrl, googleScopes, refreshGoogleToken, GoogleAdapter, type GoogleCapability, type GoogleToken } from "./providers/google";
+import { logError } from "./log";
+import { exchangeGoogleCode, googleAuthorizationUrl, googleScopes, refreshGoogleToken, revokeGoogleToken, GoogleAdapter, type GoogleCapability, type GoogleToken } from "./providers/google";
 
 type SavedGoogleToken = GoogleToken & { expiresAt: number };
 export async function beginGoogleConnection(actor: OwnerActor, capabilities: GoogleCapability[]) {
@@ -58,12 +59,26 @@ export async function googleForWorkspace(workspaceId: string) {
   }
   return new GoogleAdapter(token.access_token, token.scope.split(" "));
 }
-export async function revokeGoogleConnection(actor: OwnerActor) {
-  await transaction(async (client) => {
+export async function revokeGoogleConnection(actor: OwnerActor, revoke = revokeGoogleToken) {
+  const ciphertext = await transaction(async (client) => {
     await lockWorkspace(client, actor);
+    const saved = (await client.query("select credential_ciphertext from crewmori.connections where workspace_id=$1 and provider='google' for update", [actor.workspaceId])).rows[0];
     await client.query("update crewmori.connections set state='revoked',credential_ciphertext='',version=version+1,updated_at=now() where workspace_id=$1 and provider='google'", [actor.workspaceId]);
     await appendEvent(client, actor.workspaceId, "connection.revoked", "Google access disabled and local credentials removed.");
+    return saved?.credential_ciphertext as string | undefined;
   });
+  // Local removal is authoritative; the grant is also ended at Google so the refresh token stops working.
+  if (!ciphertext) return { remoteRevoked: true };
+  try {
+    const { TOKEN_ENCRYPTION_KEY } = requireConfiguration(["TOKEN_ENCRYPTION_KEY"]);
+    const token = JSON.parse(decryptSecret(ciphertext, TOKEN_ENCRYPTION_KEY, `${actor.workspaceId}:google`)) as SavedGoogleToken;
+    const remoteRevoked = await revoke(token.refresh_token || token.access_token);
+    if (!remoteRevoked) logError("connection.remote_revoke_failed", Error("Google did not confirm token revocation."), { workspaceId: actor.workspaceId });
+    return { remoteRevoked };
+  } catch (error) {
+    logError("connection.remote_revoke_failed", error, { workspaceId: actor.workspaceId });
+    return { remoteRevoked: false };
+  }
 }
 
 // Picker runs in the browser: the client ID and a referrer-restricted browser key are public by design.

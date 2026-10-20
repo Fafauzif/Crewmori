@@ -28,6 +28,14 @@ export async function refreshGoogleToken(refreshToken: string, transport?: Fetch
   return providerJson("Google OAuth", "https://oauth2.googleapis.com/token", { method: "POST", body: new URLSearchParams({ client_id: GOOGLE_CLIENT_ID, client_secret: GOOGLE_CLIENT_SECRET, refresh_token: refreshToken, grant_type: "refresh_token" }) }, googleTokenSchema, { fetch: transport });
 }
 
+// Revoking the refresh token ends the whole grant at Google. A 400 means the token is already invalid.
+export async function revokeGoogleToken(token: string, transport: Fetch = fetch): Promise<boolean> {
+  try {
+    const response = await transport("https://oauth2.googleapis.com/revoke", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ token }), redirect: "error", signal: AbortSignal.timeout(10000) });
+    await response.body?.cancel();
+    return response.ok || response.status === 400;
+  } catch { return false; }
+}
 export const emailDraftSchema = z.object({ to: z.email().max(254), subject: z.string().min(1).max(200).refine((s) => !/[\r\n]/.test(s)), text: z.string().min(1).max(50000) }).strict();
 export function mimeMessage(input: z.infer<typeof emailDraftSchema>): string {
   const message = emailDraftSchema.parse(input);
