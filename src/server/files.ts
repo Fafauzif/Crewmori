@@ -7,10 +7,12 @@ import { transaction } from "./db";
 import { assertService } from "./errors";
 import { appendEvent } from "./repository";
 import { lockActor, rateLimit } from "./domain";
+import { fetchWithTimeout } from "./providers/http";
 
 export function privateStorage() {
   const { SUPABASE_URL, SUPABASE_SECRET_KEY, STORAGE_BUCKET } = requireConfiguration(["SUPABASE_URL", "SUPABASE_SECRET_KEY", "STORAGE_BUCKET"]);
-  const client = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
+  // Storage calls get a deadline like every other provider call, so a stalled transfer cannot hold a worker slot.
+  const client = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false }, global: { fetch: fetchWithTimeout(30_000) } });
   return { client, bucket: client.storage.from(STORAGE_BUCKET), name: STORAGE_BUCKET };
 }
 export async function uploadFile(actor: Actor, file: File) {

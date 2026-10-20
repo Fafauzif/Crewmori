@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { z } from "zod";
 import { GoogleAdapter, googleScopes, mimeMessage, revokeGoogleToken } from "../src/server/providers/google";
-import { providerJson } from "../src/server/providers/http";
+import { fetchWithTimeout, providerJson } from "../src/server/providers/http";
 import { roleInstructions, validateArtifact } from "../src/server/providers/reasoning";
 import { domainAmount, normalizeStripeEvent, stripeAmount, stripeClient } from "../src/server/providers/payments";
 import type Stripe from "stripe";
@@ -105,4 +105,12 @@ test("Google revocation posts the token and treats an already-invalid token as r
   assert.equal(await revokeGoogleToken("refresh-token", reply(400)), true);
   assert.equal(await revokeGoogleToken("refresh-token", reply(503)), false);
   assert.equal(await revokeGoogleToken("refresh-token", (async () => { throw Error("offline"); }) as typeof fetch), false);
+});
+test("storage transport aborts a stalled request at its deadline", async () => {
+  const stalled = ((_url: string | URL | Request, init?: RequestInit) => new Promise<Response>((_resolve, reject) => {
+    init?.signal?.addEventListener("abort", () => reject(init.signal!.reason));
+  })) as typeof fetch;
+  const started = Date.now();
+  await assert.rejects(fetchWithTimeout(50, stalled)("https://storage.example/object"), /timeout|abort/i);
+  assert.ok(Date.now() - started < 2000);
 });

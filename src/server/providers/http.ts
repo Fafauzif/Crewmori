@@ -2,6 +2,13 @@ import { z } from "zod";
 import { ServiceError } from "../errors";
 
 export type Fetch = typeof fetch;
+// Wraps a fetch so every request ends after a deadline, keeping any caller-provided signal.
+export function fetchWithTimeout(timeoutMs: number, transport: Fetch = fetch): Fetch {
+  return (input, init = {}) => {
+    const deadline = AbortSignal.timeout(timeoutMs);
+    return transport(input, { ...init, signal: init.signal ? AbortSignal.any([init.signal, deadline]) : deadline });
+  };
+}
 export async function providerJson<T>(provider: string, url: string, init: RequestInit, schema: z.ZodType<T>, options: { fetch?: Fetch; mutation?: boolean; timeoutMs?: number } = {}): Promise<T> {
   let response: Response;
   try {
