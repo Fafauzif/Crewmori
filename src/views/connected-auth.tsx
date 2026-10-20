@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { workspaceReturnPath } from "@/lib/auth-experience";
 import { Panel } from "@/components/ui";
+import { AuthShowcase } from "./auth-showcase";
 
 const failures: Record<string, string> = {
   cancelled: "Google sign-in was cancelled. Try again when you are ready.",
@@ -22,7 +23,8 @@ export default function ConnectedAuth({ mode }: { mode: string }) {
   const returnTo = workspaceReturnPath(params.get("returnTo"));
   const href = `/auth/verify?phase=google&returnTo=${encodeURIComponent(returnTo)}`;
   const title = mode === "sign-up" ? "Create your workspace" : mode === "sign-in" ? "Welcome back" : "Sign in with Google";
-  return <main className="public-main"><div className="auth-layout"><div className="auth-aside"><Link href="/"><img src="/assets/brand/crewmori-primary-green.svg" alt="Crewmori" /></Link><h2><UiText>{"Your work. Your business. Your team."}</UiText></h2></div><Panel className="auth-panel"><h1>{t(title)}</h1>
+  return <div className="auth-layout"><AuthShowcase /><Panel className="auth-panel"><p className="public-eyebrow"><UiText>{"YOUR CREWMORI WORKSPACE"}</UiText></p><h1>{t(title)}</h1>
+    {!["recover", "reset"].includes(mode) && <p className="public-muted"><UiText>{"One Google account opens your workspace. No separate password to remember."}</UiText></p>}
     {state.session && <><p><UiText>{"You’re already signed in to Crewmori."}</UiText></p><Link className="btn primary" href={returnTo}><UiText>{"Continue to your workspace"}</UiText></Link><p className="muted"><UiText>{"Use a different Google account only if you want to switch workspaces."}</UiText></p></>}
     {error && <p role="alert" className="public-error">{t(error)}</p>}
     {["recover", "reset"].includes(mode) && <p className="muted"><UiText>{"Crewmori uses your Google account, so there is no separate password to recover."}</UiText></p>}
@@ -32,5 +34,5 @@ export default function ConnectedAuth({ mode }: { mode: string }) {
     </a>
     {opening && <p className="feedback" role="status"><UiText>{"Opening Google. Choose your account, then Crewmori will prepare your workspace."}</UiText></p>}
     <p className="muted auth-note">{t(mode === "sign-up" ? "Your workspace is created the first time you continue." : "New here? Continuing with Google creates your workspace.")}</p>
-  </Panel></div></main>;
+  </Panel></div>;
 }

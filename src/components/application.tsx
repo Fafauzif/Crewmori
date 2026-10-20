@@ -32,10 +32,12 @@ function WorkspaceFrame({ children }: { children: ReactNode }) {
     update(); window.addEventListener("online", update); window.addEventListener("offline", update);
     return () => { window.removeEventListener("online", update); window.removeEventListener("offline", update); };
   }, []);
+  // Auth pages carry their own recovery actions; workspace banners would duplicate them.
+  const banners = connected && !path.startsWith("/auth");
   const body = <>
-    {connected && sessionExpired ? <div className="resource-status error" role="alert"><div><strong>Your session expired.</strong><p>Keep this tab open to preserve your draft. Sign in in a new tab, then reconnect here.</p></div><div className="actions"><a className="btn primary" href={`/auth/sign-in?returnTo=${encodeURIComponent(returnTo)}`} target="_blank" rel="noopener noreferrer">Sign in in a new tab</a><button className="btn secondary" onClick={() => void refresh()} disabled={refreshing}>{refreshing ? "Reconnecting…" : "Reconnect"}</button></div></div>
-      : connected && offline ? <div className="resource-status warning" role="status"><div><strong>You appear to be offline.</strong><p>Keep this tab open to preserve your draft. Reconnect before saving or sending.</p></div></div>
-        : connected && refreshError && ready ? <div className="resource-status warning" role="status"><div><strong>Latest updates are unavailable.</strong><p>{refreshError}</p></div><button className="btn secondary" onClick={() => void refresh()} disabled={refreshing}>{refreshing ? "Checking…" : "Try again"}</button></div> : null}
+    {banners && sessionExpired ? <div className="resource-status error" role="alert"><div><strong>Your session expired.</strong><p>Keep this tab open to preserve your draft. Sign in in a new tab, then reconnect here.</p></div><div className="actions"><a className="btn primary" href={`/auth/sign-in?returnTo=${encodeURIComponent(returnTo)}`} target="_blank" rel="noopener noreferrer">Sign in in a new tab</a><button className="btn secondary" onClick={() => void refresh()} disabled={refreshing}>{refreshing ? "Reconnecting…" : "Reconnect"}</button></div></div>
+      : banners && offline ? <div className="resource-status warning" role="status"><div><strong>You appear to be offline.</strong><p>Keep this tab open to preserve your draft. Reconnect before saving or sending.</p></div></div>
+        : banners && refreshError && ready ? <div className="resource-status warning" role="status"><div><strong>Latest updates are unavailable.</strong><p>{refreshError}</p></div><button className="btn secondary" onClick={() => void refresh()} disabled={refreshing}>{refreshing ? "Checking…" : "Try again"}</button></div> : null}
     {children}
   </>;
   return <AskContext.Provider value={onAsk}>{path.startsWith("/app") && ready && state.session

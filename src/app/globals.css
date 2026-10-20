@@ -288,6 +288,18 @@ button.primary:focus-visible {
   gap: 10px;
   margin-top: 8px;
 }
+/* Google's light sign-in button: white fill, neutral outline, full-color mark. */
+.btn.google-sign-in,
+.btn.google-sign-in.primary {
+  background: #fff;
+  color: #1f1f1f;
+  border-color: #747775;
+  font-weight: 500;
+}
+.btn.google-sign-in:hover:not(:disabled) {
+  background: #f6f8f6;
+  border-color: var(--forest);
+}
 .auth-note {
   margin-top: 16px;
   font-size: 13px;
@@ -964,10 +976,14 @@ hr {
   height: 155px;
 }
 .scout-portrait p {
-  font-size: 12px;
+  font-family: Newsreader, Georgia, serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink);
   text-align: center;
-  max-width: 17ch;
-  line-height: 1.5;
+  max-width: 24ch;
+  line-height: 1.4;
+  text-wrap: balance;
   margin-top: 8px;
 }
 .scout-portrait .eyebrow {

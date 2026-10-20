@@ -285,7 +285,13 @@ function LeadList() {
       <PageHead
         title={t("Good opportunities, thoughtfully chosen.")}
         description="Every request has a source, a next step, and room for your judgment."
-        action={<Button onClick={() => set({ new: "1" })}>{"Add lead"}</Button>}
+        action={
+          <>
+            <Button variant="secondary" onClick={() => set({ import: "1" })}>{"Import request"}
+            </Button>
+            <Button onClick={() => set({ new: "1" })}>{"Add lead"}</Button>
+          </>
+        }
       />
       <div className="acq-toolbar">
         <SearchBar
@@ -326,8 +332,6 @@ function LeadList() {
           {filtered.length}{" "}
           {filtered.length === 1 ? "opportunity" : "opportunities"}
         </span>
-        <Button variant="ghost" onClick={() => set({ import: "1" })}>{"Import request"}
-        </Button>
       </div>
       {!filtered.length ? (
         <Empty

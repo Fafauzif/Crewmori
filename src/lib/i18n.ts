@@ -478,6 +478,7 @@ Search projects|Cari proyek
 Search offers|Cari penawaran
 Search invoices|Cari faktur
 Search expenses|Cari pengeluaran
+Name or project|Nama atau proyek
 Search payments|Cari pembayaran
 No opportunities yet|Belum ada peluang
 No projects yet|Belum ada proyek
@@ -1098,6 +1099,15 @@ Use a different Google account only if you want to switch workspaces.|Gunakan ak
 Use domain names without https:// or page paths. Discovery is powered by Exa.|Gunakan nama domain tanpa https:// atau jalur halaman. Pencarian didukung Exa.
 Your current permissions are selected. Changing access replaces the saved permission set after Google confirms it.|Izin Anda saat ini sudah dipilih. Perubahan akses mengganti kumpulan izin tersimpan setelah dikonfirmasi Google.
 Your work. Your business. Your team.|Pekerjaan Anda. Bisnis Anda. Tim Anda.
+A little support.|Sedikit dukungan.
+A lot of possibility.|Banyak kemungkinan.
+Your crew helps run the business around the work you love.|Kru Anda membantu menjalankan bisnis di sekitar pekerjaan yang Anda cintai.
+Six specialists prepare leads, offers, projects and money.|Enam spesialis menyiapkan prospek, penawaran, proyek, dan keuangan.
+Nothing is sent or shared without your approval.|Tidak ada yang dikirim atau dibagikan tanpa persetujuan Anda.
+The professional work stays yours.|Pekerjaan profesional tetap milik Anda.
+One Google account opens your workspace. No separate password to remember.|Satu akun Google membuka ruang kerja Anda. Tidak perlu mengingat kata sandi terpisah.
+YOUR CREWMORI WORKSPACE|RUANG KERJA CREWMORI ANDA
+or|atau
 You’re already signed in to Crewmori.|Anda sudah masuk ke Crewmori.
 accessible files|berkas yang dapat diakses
 Google sign-in was cancelled. Try again when you are ready.|Proses masuk Google dibatalkan. Coba lagi saat Anda siap.

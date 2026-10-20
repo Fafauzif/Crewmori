@@ -1,4 +1,5 @@
-.settings-content {
+/* Section tabs span the workspace like other routes; settings forms stay readable. */
+.settings-content > :not(.tabs):not(.page-head) {
   max-width: 1040px;
 }
 .settings-grid {

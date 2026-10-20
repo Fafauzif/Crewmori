@@ -56,6 +56,7 @@ import {
 } from "@/lib/downloads";
 import "./public.css";
 import ConnectedAuth from "./connected-auth";
+import { AuthShowcase } from "./auth-showcase";
 import ConnectedVoice from "./connected-voice";
 import { ConnectedBuyerPayment, PaymentReturn } from "./connected-payments";
 
@@ -452,18 +453,11 @@ function Auth({ mode }: { mode: string }) {
   return (
     <Frame>
       <div className="auth-layout">
-        <div className="auth-aside">
-          <img src="/assets/characters/sales.svg" alt="Your Sales teammate" />
-          <h2>
-            A little support.
-            <br />A lot of possibility.
-          </h2>
-          <p>Your crew helps run the business around the work you love.</p>
-        </div>
+        <AuthShowcase />
         <Panel className="auth-panel">
           <p className="public-eyebrow">YOUR CREWMORI WORKSPACE</p>
           <h1>{t(title)}</h1>
-          <p className="public-muted">
+          <p className="auth-sample-note">
             This is a local sample. Use a made-up password; it is never stored
             or sent.
           </p>
@@ -594,8 +588,11 @@ function Auth({ mode }: { mode: string }) {
             )}
           </div>
           {!["reset", "recover"].includes(mode) && (
-            <Button variant="secondary" onClick={enter}>{"Use sample workspace"}
-            </Button>
+            <>
+              <div className="auth-divider"><UiText>{"or"}</UiText></div>
+              <Button variant="secondary" className="auth-sample" onClick={enter}>{"Use sample workspace"}
+              </Button>
+            </>
           )}
         </Panel>
       </div>
@@ -3708,7 +3705,7 @@ export default function PublicViews({ path }: { path: string }) {
     segments[0] === "auth" &&
     ["sign-in", "sign-up", "recover", "reset"].includes(segments[1])
   )
-    return connected ? <ConnectedAuth key={clean} mode={segments[1]} /> : <Auth key={clean} mode={segments[1]} />;
+    return connected ? <Frame><ConnectedAuth key={clean} mode={segments[1]} /></Frame> : <Auth key={clean} mode={segments[1]} />;
   if (clean === "/onboarding") return <Onboarding />;
   if (
     segments[0] === "u" &&

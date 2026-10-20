@@ -286,18 +286,13 @@
   overflow-wrap: anywhere;
 }
 .promotion-list {
-  column-gap: 40px;
-  row-gap: 8px;
+  gap: 24px;
 }
 .promotion-draft {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 24px 0;
-  background: transparent;
-  border: 0;
-  border-top: 1px solid var(--border);
-  border-radius: 0;
+  padding: 24px 28px;
 }
 .promotion-draft > h2 {
   margin: 0;

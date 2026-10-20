@@ -52,40 +52,40 @@ export const roles = [
     name: "Scout",
     job: "Find & assess",
     color: "#F2C983",
-    x: 49,
-    y: 43,
+    x: 42,
+    y: 42,
   },
   {
     id: "promoter",
     name: "Promoter",
     job: "Grow your presence",
     color: "#EFAF9B",
-    x: 51,
-    y: 65,
+    x: 36,
+    y: 68,
   },
   {
     id: "sales",
     name: "Sales",
     job: "Shape the offer",
     color: "#B9D8EC",
-    x: 29,
-    y: 59,
+    x: 17,
+    y: 66,
   },
   {
     id: "account_manager",
     name: "Account Manager",
     job: "Keep clients close",
     color: "#D3C6E7",
-    x: 77,
-    y: 69,
+    x: 73,
+    y: 68,
   },
   {
     id: "operations",
     name: "Operations",
     job: "Plan your work",
     color: "#C6D4B5",
-    x: 70,
-    y: 45,
+    x: 64,
+    y: 42,
   },
   {
     id: "finance",
@@ -93,7 +93,7 @@ export const roles = [
     job: "Make money clear",
     color: "#B6D9C6",
     x: 89,
-    y: 59,
+    y: 66,
   },
 ];
 export const roleAsset = (id: string) =>
@@ -768,28 +768,28 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
             aria-hidden="true"
           >
             <path
-              d="M220 160 C370 130 350 320 580 258"
+              d="M220 170 C330 150 380 250 460 252"
               fill="none"
               stroke="#F2C983"
               strokeWidth="2"
               strokeDasharray="4 6"
             />
             <path
-              d="M590 280 C730 350 720 250 840 280 S1030 290 1060 355"
+              d="M550 252 C620 300 680 300 720 252 S1000 290 1050 350"
               fill="none"
               stroke="#B6D9C6"
               strokeWidth="2"
               strokeDasharray="4 6"
             />
             <path
-              d="M840 300 C900 380 920 450 650 500"
+              d="M873 478 C866 500 830 500 778 497"
               fill="none"
               stroke="#245C47"
               strokeWidth="2"
               strokeDasharray="4 7"
             />
             <path
-              d="M390 380 C500 480 530 440 650 500"
+              d="M212 470 C260 520 420 508 515 497"
               fill="none"
               stroke="#EFAF9B"
               strokeWidth="2"
@@ -830,7 +830,7 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
           {scoutFinding && (
             <div
               className="studio-bubble"
-              style={{ left: "49%", top: "25%", borderColor: "var(--scout)" }}
+              style={{ left: "42%", top: "24%", borderColor: "var(--scout)" }}
             >
               <div className="eyebrow">
                 Saved ·{" "}
@@ -846,8 +846,8 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
             <div
               className="studio-bubble"
               style={{
-                left: "71%",
-                top: "28%",
+                left: "64%",
+                top: "24%",
                 borderColor: "var(--operations)",
               }}
             >

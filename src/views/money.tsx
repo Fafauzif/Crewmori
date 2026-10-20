@@ -2545,7 +2545,7 @@ function ExpensesList() {
       )}
       <Panel>
         {(all.length > 0 || hasFilters) && <div className="money-filter">
-          <div className="field money-search"><span>Search expenses</span><SearchBar value={q} placeholder="Search expenses by name or project" onChange={(value) => patch({ q: value, page: null })} /></div>
+          <div className="field money-search"><span>Search expenses</span><SearchBar value={q} placeholder="Name or project" onChange={(value) => patch({ q: value, page: null })} /></div>
           <FilterField
             label="Category"
             value={cat}
