@@ -8,6 +8,7 @@ import { agentGraph, runAgentJob } from "../src/server/agent-runtime";
 import { ingestKnowledge } from "../src/server/knowledge";
 import { privateStorage } from "../src/server/files";
 import { runMaintenance } from "../src/server/maintenance";
+import { logError } from "../src/server/log";
 
 let activeBoss: PgBoss | undefined;
 
@@ -16,7 +17,7 @@ async function main() {
   const { DATABASE_URL } = requireConfiguration(["DATABASE_URL"]);
   const boss = new PgBoss({ connectionString: DATABASE_URL, schema: "crewmori_jobs", max: 3 });
   activeBoss = boss;
-  boss.on("error", () => process.stderr.write("Crewmori queue error. Inspect worker health and database access.\n"));
+  boss.on("error", (error) => logError("worker.queue_error", error));
   const checkpointer = new PostgresSaver(database(), undefined, { schema: "crewmori_checkpoints" });
   await checkpointer.setup();
   await boss.start();
@@ -57,7 +58,7 @@ async function main() {
           await client.query("update crewmori.outbox set dispatched_at=now() where id=$1", [item.id]);
         }
       });
-    } catch { process.stderr.write("Crewmori outbox relay will retry.\n"); }
+    } catch (error) { logError("worker.relay_failed", error); }
     finally { relaying = false; }
   };
   const timer = setInterval(() => void relay(), 1000);
@@ -73,8 +74,8 @@ async function main() {
   process.once("SIGTERM", () => void stop());
   process.once("SIGINT", () => void stop());
 }
-main().catch(async () => {
-  process.stderr.write("Worker startup failed. Check backend configuration and migrations.\n");
+main().catch(async (error) => {
+  logError("worker.startup_failed", error);
   await activeBoss?.stop({ graceful: false }).catch(() => {});
   await closeDatabase(); process.exitCode = 1;
 });

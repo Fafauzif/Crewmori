@@ -1,6 +1,7 @@
 import type { Pool, PoolClient } from "pg";
 import { database, transaction } from "./db";
 import { appendEvent } from "./repository";
+import { logError } from "./log";
 
 // Ingestion jobs expire in the queue after 600 seconds; a longer lease avoids racing live work.
 export const KNOWLEDGE_LEASE_SECONDS = 900;
@@ -69,6 +70,6 @@ export async function runMaintenance(remove?: RemoveObjects) {
   };
   if (remove) steps.uploads = () => removeAbandonedUploads(database(), remove);
   const failed: string[] = [];
-  for (const [name, step] of Object.entries(steps)) await step().catch(() => { failed.push(name); });
+  for (const [name, step] of Object.entries(steps)) await step().catch((error) => { failed.push(name); logError("maintenance.step_failed", error, { step: name }); });
   return { failed };
 }

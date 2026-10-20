@@ -3,6 +3,7 @@ import { z } from "zod";
 import { ConfigurationError, runtimeConfig } from "./config";
 import { ServiceError, assertService } from "./errors";
 import { assertSameOrigin } from "./security";
+import { logError } from "./log";
 
 export async function rawBody(request: Request, limit = 1_000_000): Promise<string> {
   const bytes = await bodyBytes(request, limit);
@@ -46,7 +47,7 @@ export async function api(request: Request, action: () => Promise<Response>, opt
     // Malformed identifiers that slip past route validation are client errors, not server faults.
     if (error instanceof URIError || (error as { code?: unknown })?.code === "22P02") return json({ error: { code: "VALIDATION_ERROR", message: "Check the submitted fields." } }, 422);
     const requestId = randomUUID();
-    process.stderr.write(`Crewmori request failed (${requestId}).\n`);
+    logError("request.failed", error, { requestId, method: request.method, route: new URL(request.url).pathname });
     return json({ error: { code: "INTERNAL_ERROR", message: "The request could not be completed.", requestId } }, 500);
   }
 }

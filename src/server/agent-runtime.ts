@@ -5,6 +5,7 @@ import { database, transaction } from "./db";
 import { runtimeConfig } from "./config";
 import { assertService, ServiceError } from "./errors";
 import { appendEvent } from "./repository";
+import { logError } from "./log";
 import { resolveReferences } from "./tasks";
 import { reasoningAdapter, type ReasoningAdapter, type ReasoningOutput } from "./providers/reasoning";
 
@@ -123,7 +124,10 @@ export async function runAgentJob(data: unknown, invoke: (ref: RunReference) => 
   try {
     await invoke(ref);
   } catch (error) {
-    if (!(error instanceof ServiceError && error.code === "WORKSPACE_BUSY")) return recordRunFailure(ref, error);
+    if (!(error instanceof ServiceError && error.code === "WORKSPACE_BUSY")) {
+      if (!(error instanceof ServiceError)) logError("agent.run_failed", error, { workspaceId: ref.workspaceId, runId: ref.runId });
+      return recordRunFailure(ref, error);
+    }
     if (busyAttempt < BUSY_RETRY_LIMIT) return requeue({ ...ref, busyAttempt: busyAttempt + 1 }, BUSY_RETRY_SECONDS);
     await blockRun(ref, "WORKSPACE_BUSY");
   }
