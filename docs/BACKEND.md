@@ -102,6 +102,7 @@ Responses use `no-store`. Except verified callbacks/webhooks/provider tools, mut
 | Endpoint | Purpose |
 | --- | --- |
 | `GET /api/health` | Liveness and mode; no database/provider health claim |
+| `GET /api/health?check=ready` | Readiness: database round trip and worker relay; 503 when the database is unavailable or an outbox row has waited over 5 minutes |
 | `GET /api/backend/status` | Authenticated configuration presence |
 | `/api/auth/{sign-up,sign-in,sign-out,recover,reset,user,callback,complete}` | Auth/session lifecycle |
 | `GET/POST /api/workspaces`, `GET /api/workspace/state` | Empty workspace bootstrap and owner projection |

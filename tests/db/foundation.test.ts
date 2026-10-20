@@ -653,6 +653,19 @@ test("retention removes finished bookkeeping and keeps anything still needed", a
   assert.deepEqual((await database().query("select event_id from crewmori.provider_inbox where event_id like 'retention-%'")).rows.map((row) => row.event_id), ["retention-quarantined"]);
   assert.deepEqual((await database().query("select token_hash from crewmori.buyer_grants where token_hash like 'retention-%'")).rows.map((row) => row.token_hash), ["retention-live"]);
 });
+test("readiness reports the database and flags a worker that stopped relaying jobs", async () => {
+  const { readiness, OUTBOX_STALL_SECONDS } = await import("../../src/server/health");
+  const healthy = await readiness();
+  assert.equal(healthy.database, "ok");
+  await database().query("insert into crewmori.outbox(workspace_id,kind,reference_id,deduplication_key,created_at) values($1,'agent.run',$2,'readiness-stalled',now()-($3 * interval '1 second'))", [workspaceA, randomUUID(), OUTBOX_STALL_SECONDS + 60]);
+  try {
+    const stalled = await readiness();
+    assert.equal(stalled.ok, false);
+    assert.equal("worker" in stalled && stalled.worker, "stalled");
+  } finally {
+    await database().query("delete from crewmori.outbox where deduplication_key='readiness-stalled'");
+  }
+});
 test("a maintenance sweep runs every recovery step against the live schema", async () => {
   const { runMaintenance } = await import("../../src/server/maintenance");
   let removals = 0;
