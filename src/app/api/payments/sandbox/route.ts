@@ -9,7 +9,7 @@ import { recordPaymentObservation } from "@/server/webhooks";
 export const runtime = "nodejs";
 export async function POST(request: Request) {
   return api(request, async () => {
-    assertService(runtimeConfig().PAYMENT_PROVIDER === "sandbox", "SANDBOX_DISABLED", "Sandbox payments are disabled.", 403);
+    assertService(runtimeConfig().sandboxPayments, "SANDBOX_DISABLED", "Sandbox payments are disabled.", 403);
     const input = await jsonBody(request, z.object({ requestId: z.uuid(), buyer: z.boolean().default(false), confirmed: z.literal(true) }).strict());
     const actor = input.buyer ? await buyerActor(request) : await ownerActor(request);
     const payment = await transaction(async (client) => {

@@ -55,7 +55,7 @@ export function verifyStripeWebhook(raw: string, signature: string | null) {
 }
 export function verifySandboxWebhook(raw: string, signature: string | null, now?: number): Receipt {
   const { PAYMENT_SANDBOX_SECRET } = requireConfiguration(["PAYMENT_SANDBOX_SECRET"]);
-  assertService(runtimeConfig().PAYMENT_PROVIDER === "sandbox", "SANDBOX_DISABLED", "Sandbox receipts are disabled.", 403);
+  assertService(runtimeConfig().sandboxPayments, "SANDBOX_DISABLED", "Sandbox receipts are disabled.", 403);
   verifyHmac(raw, signature, PAYMENT_SANDBOX_SECRET, now);
   return receiptSchema.parse(JSON.parse(raw));
 }

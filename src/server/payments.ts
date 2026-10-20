@@ -35,7 +35,8 @@ export async function startPayment(actor: Actor, domainRequestId: string, idempo
     assertService(execution.result.ok, execution.result.code || "INVALID_INVOICE", execution.result.message, 422);
     const outstanding = invoiceOutstanding(execution.state, invoice.id);
     assertService(outstanding > 0, "ALREADY_PAID", "This invoice has no outstanding balance.", 409);
-    const id = randomUUID(), provider = runtimeConfig().PAYMENT_PROVIDER;
+    const config = runtimeConfig(), id = randomUUID(), provider = config.PAYMENT_PROVIDER;
+    assertService(provider !== "sandbox" || config.sandboxPayments, "PAYMENTS_NOT_CONFIGURED", "Online payment is not available yet. Contact the freelancer to arrange payment.", 503);
     const saved = (await client.query("insert into crewmori.payment_requests(id,workspace_id,domain_request_id,invoice_id,engagement_id,provider,expected_minor,currency) values($1,$2,$3,$4,$5,$6,$7,$8) returning *", [id, actor.workspaceId, domainRequestId, invoice.id, engagement.id, provider, outstanding, invoice.currency])).rows[0];
     await persistDomain(client, before, execution.state, actor.workspaceId);
     await saveCommand(client, receiptActor, "payment.start", idempotencyKey, input, { id });

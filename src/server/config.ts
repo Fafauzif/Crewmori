@@ -46,6 +46,7 @@ export function runtimeConfig(env: Environment = process.env) {
     MAIL_PROVIDER: z.enum(["google", "resend"]).default("google"),
     REASONING_PROVIDER: z.enum(["gemini", "anthropic"]).default("gemini"),
     PAYMENT_PROVIDER: z.enum(["sandbox", "stripe_test"]).default("sandbox"),
+    ALLOW_HOSTED_SANDBOX_PAYMENTS: z.enum(["true", "false"]).default("false"),
     DATABASE_POOL_SIZE: z.coerce.number().int().min(1).max(20).default(5),
     AGENT_MAX_OUTPUT_TOKENS: z.coerce.number().int().min(256).max(4096).default(1500),
     AGENT_DAILY_TOKEN_BUDGET: z.coerce.number().int().min(1).max(1000000).default(20000),
@@ -54,8 +55,11 @@ export function runtimeConfig(env: Environment = process.env) {
   if (!value.success) throw new ConfigurationError(value.error.issues.map((issue) => issue.path.join(".")));
   const config = value.data;
   const url = new URL(config.APP_URL);
-  if ((url.protocol !== "https:" && !(url.protocol === "http:" && ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname))) || url.username || url.password || url.pathname !== "/" || url.search || url.hash) {
+  const local = ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
+  if ((url.protocol !== "https:" && !(url.protocol === "http:" && local)) || url.username || url.password || url.pathname !== "/" || url.search || url.hash) {
     throw new ConfigurationError(["APP_URL (HTTPS origin, or local HTTP origin)"]);
   }
-  return { ...config, APP_URL: url.origin, enabled: config.CREWMORI_BACKEND_ENABLED === "true" };
+  // Sandbox payments let a buyer mark an invoice paid; a hosted deployment must opt in explicitly.
+  const sandboxPayments = config.PAYMENT_PROVIDER === "sandbox" && (local || config.ALLOW_HOSTED_SANDBOX_PAYMENTS === "true");
+  return { ...config, APP_URL: url.origin, enabled: config.CREWMORI_BACKEND_ENABLED === "true", sandboxPayments };
 }

@@ -9,6 +9,9 @@ test("backend is opt-in and capabilities expose missing names without credential
   assert.equal(runtimeConfig({}).enabled, false);
   assert.equal(runtimeConfig({}).PAYMENT_PROVIDER, "sandbox");
   assert.throws(() => runtimeConfig({ PAYMENT_PROVIDER: "live" }));
+  assert.equal(runtimeConfig({}).sandboxPayments, true, "Local development keeps sandbox payments");
+  assert.equal(runtimeConfig({ APP_URL: "https://crewmori.example" }).sandboxPayments, false, "Hosted sandbox payments fail closed");
+  assert.equal(runtimeConfig({ APP_URL: "https://crewmori.example", ALLOW_HOSTED_SANDBOX_PAYMENTS: "true" }).sandboxPayments, true);
   assert.throws(() => runtimeConfig({ APP_URL: "http://public.example" }));
   assert.throws(() => runtimeConfig({ APP_URL: "ftp://localhost" }));
   const status = JSON.stringify(integrationStatus({ ANTHROPIC_API_KEY: "private-secret" }));

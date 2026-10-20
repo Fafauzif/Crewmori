@@ -89,7 +89,7 @@ Use schemas in `src/server/voice-tools.ts`: `capture_requirements`, `get_public_
 
 ### Payments
 
-Start with `PAYMENT_PROVIDER=sandbox` and a `PAYMENT_SANDBOX_SECRET`. Buyers explicitly confirm a labelled test payment; no money is charged. The signed external sandbox webhook also accepts `receiptSchema` from `src/server/contracts.ts`. Its header is `X-Crewmori-Signature: t=<unix-seconds>,v1=<hex-hmac-sha256>` over `<timestamp>.<raw-body>`, within five minutes.
+Start with `PAYMENT_PROVIDER=sandbox` and a `PAYMENT_SANDBOX_SECRET`. Buyers explicitly confirm a labelled test payment; no money is charged. Because a sandbox confirmation marks an invoice paid, it only works on a localhost `APP_URL` unless `ALLOW_HOSTED_SANDBOX_PAYMENTS=true` is set; otherwise payment start returns `PAYMENTS_NOT_CONFIGURED`. The signed external sandbox webhook also accepts `receiptSchema` from `src/server/contracts.ts`. Its header is `X-Crewmori-Signature: t=<unix-seconds>,v1=<hex-hmac-sha256>` over `<timestamp>.<raw-body>`, within five minutes.
 
 For Stripe use `PAYMENT_PROVIDER=stripe_test`, a **test** secret key and `STRIPE_WEBHOOK_SECRET`. Register `/api/webhooks/stripe`, forwarding the unchanged body and `Stripe-Signature`. Live keys/events are rejected. A paid Checkout session must map to a server-authorized request. USD cents map directly to Stripe minor units; IDR rupiah multiply by 100 at the Stripe boundary. Unknown events/references are quarantined, not settled. Checkout return UI is `/payment/return`.
 
