@@ -4,7 +4,7 @@ import { execute } from "../lib/engine";
 import { a, s, type Input, type Result } from "../lib/types";
 import type { OwnerActor } from "./contracts";
 import { transaction, database } from "./db";
-import { assertService } from "./errors";
+import { assertService, ServiceError } from "./errors";
 import { loadDomain, persistDomain } from "./domain-state";
 import { appendEvent, lockWorkspace } from "./repository";
 import { fingerprint } from "./security";
@@ -72,13 +72,13 @@ export async function dispatchApproved(actor: OwnerActor, raw: unknown, transpor
   });
   if (prepared.replay) return { result: { ...prepared.replay, replayed: true } };
   let delivered: { id: string };
-  try { delivered = prepared.delivered || await transport(input.type, prepared.payload!, prepared.id!);
-    await database().query("update crewmori.external_dispatches set provider_reference=$2,updated_at=now() where id=$1", [prepared.id, delivered.id]);
-  }
+  // Only the provider call is uncertain. Once it confirms, a database hiccup must not turn a sent message into "unknown".
+  try { delivered = prepared.delivered || await transport(input.type, prepared.payload!, prepared.id!); }
   catch (error) {
     await database().query("update crewmori.external_dispatches set state='unknown',updated_at=now() where id=$1 and state='dispatching'", [prepared.id]);
     throw error;
   }
+  if (!prepared.delivered) await saveProviderReference(prepared.id!, delivered.id);
   return transaction(async (client) => {
     await lockWorkspace(client, actor);
     const saved = (await client.query("select state,result from crewmori.external_dispatches where workspace_id=$1 and id=$2 for update", [actor.workspaceId, prepared.id])).rows[0];
@@ -96,6 +96,19 @@ export async function dispatchApproved(actor: OwnerActor, raw: unknown, transpor
     await appendEvent(client, actor.workspaceId, "dispatch.completed", result.message, [{ table: "external_dispatches", id: prepared.id }]);
     return { result };
   });
+}
+async function saveProviderReference(id: string, reference: string) {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      await database().query("update crewmori.external_dispatches set provider_reference=$2,updated_at=now() where id=$1", [id, reference]);
+      return;
+    } catch {
+      if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, attempt * 250));
+    }
+  }
+  // Keep the confirmed reference recoverable from logs; the attempt stays "dispatching" and is never resent automatically.
+  process.stderr.write(`${JSON.stringify({ event: "dispatch.reference_unsaved", dispatchId: id, providerReference: reference })}\n`);
+  throw new ServiceError("DISPATCH_FINALIZATION_REQUIRED", "The provider confirmed delivery, but recording it needs review.", 503);
 }
 export async function reviewUnknownDispatch(actor: OwnerActor, id: string) {
   return transaction(async (client) => {
