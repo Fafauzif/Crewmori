@@ -216,6 +216,15 @@ test("an uncertain model attempt is retained and cannot silently call the provid
   assert.equal(calls, 1);
   await recordRunFailure(ref, new Error("network timeout"));
 });
+test("concurrent retries of one blocked run start a single new attempt", async () => {
+  const run = await startTask(actorA(), { role: "operations", instruction: "Check the delivery window", idempotencyKey: randomUUID() });
+  const blocked = (await database().query("update crewmori.agent_runs set state='blocked',control_version=control_version+1 where id=$1 returning control_version", [run.id])).rows[0];
+  const retry = () => controlTask(actorA(), String(run.id), { action: "retry", expectedVersion: blocked.control_version, idempotencyKey: randomUUID() });
+  const results = await Promise.allSettled([retry(), retry()]);
+  assert.equal(results.filter((result) => result.status === "fulfilled").length, 1);
+  assert.equal((await database().query("select count(*)::int as count from crewmori.agent_runs where previous_attempt_id=$1", [run.id])).rows[0].count, 1);
+  await assert.rejects(controlTask(actorA(), String(run.id), { action: "retry", expectedVersion: blocked.control_version + 1, idempotencyKey: randomUUID() }), /already retried/);
+});
 test("receipt replays, changed payloads and mismatched amounts preserve a single observation without settlement", async () => {
   const request = (await database().query("insert into crewmori.payment_requests(workspace_id,invoice_id,engagement_id,provider,expected_minor,currency) values($1,'invoice-a','engagement-a','sandbox',27000,'USD') returning id", [workspaceA])).rows[0];
   const receipt = { eventId: "sandbox-event-1", requestId: request.id, currency: "USD" as const, grossMinor: 10000, feeMinor: 200, occurredAt: "2026-10-16T00:00:00Z" };

@@ -79,6 +79,10 @@ export async function controlTask(actor: OwnerActor, id: string, raw: unknown) {
         refs.push({ ...ref, version: current.version });
       }
       await resolveReferences(client, actor.workspaceId, refs, run.role === "promoter");
+      // One retry per attempt: a double click or a second tab must not start parallel paid runs.
+      const retried = await client.query("select id from crewmori.agent_runs where workspace_id=$1 and previous_attempt_id=$2", [actor.workspaceId, run.id]);
+      assertService(!retried.rowCount, "ALREADY_RETRIED", "This task was already retried. Open the newest attempt.", 409);
+      await client.query("update crewmori.agent_runs set control_version=control_version+1,updated_at=now() where id=$1", [run.id]);
       const inserted = await client.query("insert into crewmori.agent_runs(workspace_id,role,instruction,input_refs,previous_attempt_id) values($1,$2,$3,$4,$5) returning id,state,control_version", [actor.workspaceId, run.role, run.instruction, JSON.stringify(refs), run.id]);
       updated = inserted.rows[0];
     } else {
