@@ -107,6 +107,20 @@ test("domain loads keep a bounded recent event window and commands continue the 
   assert.deepEqual(Object.keys(slim.tables.events), []);
   assert.ok(!slim.tables.clients, "Only the requested collections load");
 });
+test("knowledge search reads while an owner command holds the workspace write lock", async () => {
+  const { searchKnowledge } = await import("../../src/server/knowledge");
+  const holder = await database().connect();
+  try {
+    await holder.query("begin");
+    await holder.query("select id from crewmori.workspaces where id=$1 for update", [workspaceA]);
+    const started = Date.now();
+    assert.deepEqual(await searchKnowledge(actorA(), "launch scope", false), []);
+    assert.ok(Date.now() - started < 5000, "A read must not wait for the write lock");
+  } finally {
+    await holder.query("rollback");
+    holder.release();
+  }
+});
 test("RLS excludes another owner's records even with its exact workspace ID", async () => {
   await transaction(async (client) => {
     await client.query("SET LOCAL ROLE authenticated");

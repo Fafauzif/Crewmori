@@ -39,7 +39,17 @@ const fields: Record<string, string[]> = {
 };
 export async function lockActor(client: PoolClient, actor: Actor) {
   if (actor.kind === "owner") return lockWorkspace(client, actor);
-  const workspace = (await client.query("select * from crewmori.workspaces where id=$1 for update", [actor.workspaceId])).rows[0];
+  return verifyBuyer(client, actor, true);
+}
+// Reads verify the same authority without the workspace write lock, so polling never queues behind commands.
+export async function checkActor(client: PoolClient, actor: Actor) {
+  if (actor.kind === "buyer") return verifyBuyer(client, actor, false);
+  const result = await client.query("select * from crewmori.workspaces where id=$1 and owner_id=$2", [actor.workspaceId, actor.userId]);
+  assertService(result.rowCount, "WORKSPACE_NOT_FOUND", "This workspace is unavailable.", 404);
+  return result.rows[0];
+}
+async function verifyBuyer(client: PoolClient, actor: BuyerActor, lock: boolean) {
+  const workspace = (await client.query(`select * from crewmori.workspaces where id=$1${lock ? " for update" : ""}`, [actor.workspaceId])).rows[0];
   const grant = await client.query("select 1 from crewmori.buyer_grants where id=$1 and workspace_id=$2 and engagement_id=$3 and revoked_at is null and expires_at>now()", [actor.grantId, actor.workspaceId, actor.engagementId]);
   assertService(workspace && grant.rowCount, "UNAUTHENTICATED", "This buyer session expired or was revoked.", 401);
   return workspace;

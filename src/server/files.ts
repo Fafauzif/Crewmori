@@ -3,10 +3,10 @@ import { createClient } from "@supabase/supabase-js";
 import { validateUpload, safeFilename } from "../lib/downloads";
 import type { Actor } from "./contracts";
 import { requireConfiguration } from "./config";
-import { transaction } from "./db";
+import { database, transaction } from "./db";
 import { assertService } from "./errors";
 import { appendEvent } from "./repository";
-import { lockActor, rateLimit } from "./domain";
+import { checkActor, lockActor, rateLimit } from "./domain";
 import { fetchWithTimeout } from "./providers/http";
 
 export function privateStorage() {
@@ -40,7 +40,7 @@ export async function uploadFile(actor: Actor, file: File) {
   return { id, name: safeFilename(file.name), type: file.type, size: file.size, sha256: hash };
 }
 export async function downloadFile(actor: Actor, id: string) {
-  const record = await transaction(async (client) => { await lockActor(client, actor); return client.query("select object_path,name from crewmori.files where workspace_id=$1 and id=$2 and state='available' and ($3::text is null or (engagement_id=$3 and audience='buyer'))", [actor.workspaceId, id, actor.kind === "buyer" ? actor.engagementId : null]); });
+  const record = await transaction(async (client) => { await checkActor(client, actor); return client.query("select object_path,name from crewmori.files where workspace_id=$1 and id=$2 and state='available' and ($3::text is null or (engagement_id=$3 and audience='buyer'))", [actor.workspaceId, id, actor.kind === "buyer" ? actor.engagementId : null]); }, database(), true);
   assertService(record.rowCount, "FILE_UNAVAILABLE", "This file is unavailable for this session.", 404);
   const signed = await privateStorage().bucket.createSignedUrl(record.rows[0].object_path, 60, { download: record.rows[0].name });
   assertService(!signed.error && signed.data, "FILE_UNAVAILABLE", "The file could not be opened.", 502);

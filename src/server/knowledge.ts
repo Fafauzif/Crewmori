@@ -4,10 +4,10 @@ import type { OwnerActor } from "./contracts";
 import { a, s, type Entity } from "../lib/types";
 import { database, transaction } from "./db";
 import { assertService } from "./errors";
-import { appendEvent, lockWorkspace, uuidOrNull } from "./repository";
+import { appendEvent, uuidOrNull } from "./repository";
 import { privateStorage } from "./files";
 import { embedText } from "./providers/embeddings";
-import { rateLimit } from "./domain";
+import { checkActor, rateLimit } from "./domain";
 
 export function chunkText(text: string, size = 1600, overlap = 200): string[] {
   const cleaned = text.replace(/\u0000/g, "").trim();
@@ -94,11 +94,14 @@ export function cosine(a: number[], b: number[]): number {
 }
 export async function searchKnowledge(actor: OwnerActor, query: string, semantic = true) {
   assertService(query.trim().length >= 2 && query.length <= 2000, "INVALID_QUERY", "Enter a search of 2–2,000 characters.", 422);
-  const rows = await transaction(async (client) => {
-    await lockWorkspace(client, actor);
+  // The quota counter is its own short write; the search itself is a lock-free snapshot read.
+  await transaction(async (client) => {
+    await checkActor(client, actor);
     await rateLimit(client, `search:${actor.workspaceId}`, 200, 86400);
-    return (await client.query("select c.*,r.data->>'label' as title,ts_rank(to_tsvector('simple',c.content),plainto_tsquery('simple',$2)) as lexical from crewmori.knowledge_chunks c join crewmori.records r on r.workspace_id=c.workspace_id and r.collection='sources' and r.id=c.source_id and r.version=c.source_version where c.workspace_id=$1 and coalesce((r.data->>'archived')::boolean,false)=false order by lexical desc limit 2000", [actor.workspaceId, query])).rows;
   });
+  const rows = await transaction(async (client) => {
+    return (await client.query(`select c.source_id,c.source_version,c.content,c.model,c.dimensions${semantic ? ",c.embedding" : ""},r.data->>'label' as title,ts_rank(to_tsvector('simple',c.content),plainto_tsquery('simple',$2)) as lexical from crewmori.knowledge_chunks c join crewmori.records r on r.workspace_id=c.workspace_id and r.collection='sources' and r.id=c.source_id and r.version=c.source_version where c.workspace_id=$1 and coalesce((r.data->>'archived')::boolean,false)=false order by lexical desc limit 2000`, [actor.workspaceId, query])).rows;
+  }, database(), true);
   if (!rows.length) return [];
   const vector = semantic ? await embedText(query) : null;
   return rows.filter((row) => !vector || (row.model === vector.model && row.dimensions === vector.dimensions)).map((row) => ({ sourceId: row.source_id as string, version: row.source_version as number, title: s(row.title), text: row.content as string, score: vector ? cosine(vector.values, row.embedding) : Number(row.lexical) })).sort((a, b) => b.score - a.score).slice(0, 6);

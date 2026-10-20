@@ -8,7 +8,7 @@ import type { BuyerActor, OwnerActor } from "./contracts";
 import { database, transaction } from "./db";
 import { assertService } from "./errors";
 import { loadDomain, persistDomain } from "./domain-state";
-import { bindBuyer, lockActor, rateLimit } from "./domain";
+import { bindBuyer, checkActor, rateLimit } from "./domain";
 import { appendEvent, lockWorkspace, previousCommand, saveCommand } from "./repository";
 import { hashToken, randomToken } from "./security";
 
@@ -87,7 +87,7 @@ export async function submitInquiry(raw: unknown, anonymousId: string) {
 }
 export async function buyerState(actor: BuyerActor, versionId?: string) {
   return transaction(async (client) => {
-    await lockActor(client, actor);
+    await checkActor(client, actor);
     const state = await loadDomain(client, actor.workspaceId);
     bindBuyer(state, actor);
     const offer = buyerOffer(state, actor.engagementId, actor.grantId, versionId);
@@ -101,5 +101,5 @@ export async function buyerState(actor: BuyerActor, versionId?: string) {
       }
     }
     return { engagementId: actor.engagementId, grantId: actor.grantId, revision: state.revision, offer, latestOffer: buyerOffer(state, actor.engagementId, actor.grantId), portal, inquiry: inquiryProjection(state, actor.engagementId, actor.grantId) };
-  });
+  }, database(), true);
 }
