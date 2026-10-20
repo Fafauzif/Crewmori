@@ -58,7 +58,7 @@ const inquirySchema = z.object({
   handle: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/).max(100), idempotencyKey: z.uuid(),
   values: z.object({ name: z.string().trim().min(1).max(120), email: z.email(), request: z.string().trim().min(5).max(10000), handle: z.string().optional(), service_id: z.string().max(160).optional(), organization: z.string().max(160).optional(), budget: z.object({ amount_minor: z.number().int().nonnegative(), currency: z.enum(["USD", "IDR"]), scale: z.union([z.literal(0), z.literal(2)]) }).nullable().optional(), desired_timing: z.string().max(500).nullable().optional(), consent: z.literal(true) }).strict(),
 }).strict();
-export async function submitInquiry(raw: unknown, anonymousId: string) {
+export async function submitInquiry(raw: unknown, anonymousId: string, address: string | null = null) {
   const input = inquirySchema.parse(raw), workspaceId = await publicWorkspace(input.handle);
   return transaction(async (client) => {
     await client.query("select id from crewmori.workspaces where id=$1 for update", [workspaceId]);
@@ -69,6 +69,8 @@ export async function submitInquiry(raw: unknown, anonymousId: string) {
     else {
       await rateLimit(client, `inquiry:${workspaceId}`, 100, 86400);
       await rateLimit(client, `inquiry:${workspaceId}:${hashToken(anonymousId)}`, 5, 3600);
+      // The browser cookie is easy to clear, so the network address carries its own hourly allowance.
+      if (address) await rateLimit(client, `inquiry:${workspaceId}:address:${hashToken(address)}`, 10, 3600);
       const before = await loadDomain(client, workspaceId);
       const profile = publicProfile(before, input.handle);
       assertService(profile && profile.public_availability !== "unavailable", "INQUIRIES_CLOSED", "This freelancer is not accepting inquiries.", 422);

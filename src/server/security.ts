@@ -10,6 +10,11 @@ export function stableJson(value: unknown): string {
   return JSON.stringify(value) ?? "null";
 }
 export const fingerprint = (value: unknown) => hashToken(stableJson(value));
+// The hosting proxy (Vercel or a configured reverse proxy) sets these headers; null means no trustworthy address.
+export function clientAddress(request: Request): string | null {
+  const address = request.headers.get("x-real-ip") || request.headers.get("x-forwarded-for")?.split(",")[0];
+  return address?.trim() || null;
+}
 
 function encryptionKey(key: string) {
   const bytes = Buffer.from(key, "base64");

@@ -27,6 +27,8 @@ export async function uploadFile(actor: Actor, file: File) {
   await transaction(async (client) => {
     const workspace = await lockActor(client, actor);
     await rateLimit(client, `upload:${actor.workspaceId}`, 100, 86400);
+    // One buyer session cannot spend the whole workspace upload allowance.
+    if (actor.kind === "buyer") await rateLimit(client, `upload:${actor.workspaceId}:${actor.engagementId}`, 20, 86400);
     await client.query("insert into crewmori.files(id,workspace_id,owner_id,name,mime_type,byte_size,sha256,object_path,engagement_id,audience) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)", [id, actor.workspaceId, workspace.owner_id, safeFilename(file.name), file.type, file.size, hash, path, actor.kind === "buyer" ? actor.engagementId : null, actor.kind === "buyer" ? "buyer" : "owner"]);
   });
   const upload = await bucket.upload(path, bytes, { contentType: file.type, upsert: false });

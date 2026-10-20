@@ -407,6 +407,13 @@ test("public inquiries are durable and buyer sessions cannot read or change anot
   }
 });
 
+test("clearing the inquiry cookie does not reset the per-address inquiry allowance", async () => {
+  const { submitInquiry } = await import("../../src/server/buyers");
+  const send = () => submitInquiry({ handle: "rani-test", values: { name: "Repeat sender", email: "repeat@example.test", request: "Please quote a landing page", consent: true }, idempotencyKey: randomUUID() }, randomToken(), "203.0.113.7");
+  for (let i = 0; i < 10; i++) await send();
+  await assert.rejects(send(), /Too many requests/);
+  await submitInquiry({ handle: "rani-test", values: { name: "Other sender", email: "other@example.test", request: "Please quote a logo refresh", consent: true }, idempotencyKey: randomUUID() }, randomToken(), "198.51.100.4");
+});
 test("connected offer acceptance and verified payment settle one project without duplicate receipts", async () => {
   const { submitInquiry, buyerState } = await import("../../src/server/buyers");
   const { runDomainCommand, ownerState } = await import("../../src/server/domain");

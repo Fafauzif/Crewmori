@@ -16,6 +16,8 @@ export async function startVoiceSession(actor: BuyerActor, consent: boolean) {
     assertService(grant.rowCount, "UNAUTHENTICATED", "This buyer invitation is no longer active.", 401);
     const count = await client.query("select count(*)::int as count from crewmori.voice_sessions where workspace_id=$1 and created_at>now()-interval '24 hours'", [actor.workspaceId]);
     assertService(count.rows[0].count < 10, "VOICE_LIMIT", "The workspace daily voice-session limit was reached.", 429);
+    const own = await client.query("select count(*)::int as count from crewmori.voice_sessions where workspace_id=$1 and engagement_id=$2 and created_at>now()-interval '24 hours'", [actor.workspaceId, actor.engagementId]);
+    assertService(own.rows[0].count < 3, "VOICE_LIMIT", "This conversation reached its daily voice-session limit. Continue in text.", 429);
     return (await client.query("insert into crewmori.voice_sessions(workspace_id,grant_id,engagement_id,binding_hash,expires_at) values($1,$2,$3,$4,now()+interval '1 hour') returning id", [actor.workspaceId, actor.grantId, actor.engagementId, hashToken(binding)])).rows[0];
   });
   const provider = await createVoiceSession();

@@ -53,3 +53,9 @@ test("missing configuration is reported without naming environment variables", a
     if (prior === undefined) delete process.env.CREWMORI_BACKEND_ENABLED; else process.env.CREWMORI_BACKEND_ENABLED = prior;
   }
 });
+test("client address comes from the proxy headers and is absent without them", async () => {
+  const { clientAddress } = await import("../src/server/security");
+  assert.equal(clientAddress(new Request("http://localhost/", { headers: { "x-forwarded-for": "203.0.113.7, 10.0.0.1" } })), "203.0.113.7");
+  assert.equal(clientAddress(new Request("http://localhost/", { headers: { "x-real-ip": "198.51.100.4" } })), "198.51.100.4");
+  assert.equal(clientAddress(new Request("http://localhost/")), null);
+});
