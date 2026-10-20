@@ -7,7 +7,7 @@ import { appendEvent } from "./repository";
 
 // Observation is deliberately separate from invoice allocation. A valid signature
 // proves provenance; amount, beneficiary and commercial authority need reconciliation.
-export async function recordPaymentObservation(provider: "sandbox" | "stripe_test", raw: Receipt, reference: string | null) {
+export async function recordPaymentObservation(provider: "sandbox" | "stripe_test", raw: Receipt, reference: string | null, reconcile = reconcileObservation) {
   const receipt = receiptSchema.parse(raw);
   return transaction(async (client) => {
     // Lock the workspace first, then read the request, so a concurrent checkout update cannot slip between.
@@ -43,7 +43,16 @@ export async function recordPaymentObservation(provider: "sandbox" | "stripe_tes
     const result = await client.query("insert into crewmori.payment_observations(workspace_id,request_id,provider,event_id,provider_reference,gross_minor,fee_minor,currency,occurred_at,state) values($1,$2,$3,$4,$5,$6,$7,$8,$9,'review_required') returning id", [request.workspace_id, receipt.requestId, provider, receipt.eventId, reference, receipt.grossMinor, receipt.feeMinor, receipt.currency, receipt.occurredAt]);
     await client.query("update crewmori.provider_inbox set state='processed' where provider=$1 and event_id=$2", [provider, receipt.eventId]);
     await appendEvent(client, request.workspace_id, "receipt.observed", "A verified receipt observation is awaiting allocation review.", [{ table: "payment_observations", id: result.rows[0].id }]);
-    const state = await reconcileObservation(client, result.rows[0].id);
+    // A verified receipt must survive an allocation failure; otherwise every provider retry fails the same way.
+    await client.query("savepoint reconcile");
+    let state = "review_required";
+    try {
+      state = await reconcile(client, result.rows[0].id);
+      await client.query("release savepoint reconcile");
+    } catch {
+      await client.query("rollback to savepoint reconcile");
+      await appendEvent(client, request.workspace_id, "payment.reconcile_failed", "The verified receipt is kept for review because it could not be allocated automatically.", [{ table: "payment_observations", id: result.rows[0].id }]);
+    }
     return { replayed: false, state, observationId: result.rows[0].id };
   });
 }

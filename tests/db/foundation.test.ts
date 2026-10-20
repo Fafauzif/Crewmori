@@ -235,6 +235,15 @@ test("different Stripe event IDs for one checkout cannot duplicate a receipt", a
   assert.equal((await database().query("select * from crewmori.payment_observations where request_id=$1", [request.id])).rowCount, 1);
   assert.equal((await recordPaymentObservation("stripe_test", { ...receipt, eventId: "unknown-ref" }, "cs_test_other")).state, "quarantined");
 });
+test("a failed reconciliation keeps the verified receipt for review instead of rolling it back", async () => {
+  const request = (await database().query("insert into crewmori.payment_requests(workspace_id,invoice_id,engagement_id,provider,expected_minor,currency) values($1,'invoice-c','engagement-c','sandbox',27000,'USD') returning id", [workspaceA])).rows[0];
+  const receipt = { eventId: "sandbox-reconcile-fails", requestId: request.id, currency: "USD" as const, grossMinor: 27000, feeMinor: null, occurredAt: "2026-10-16T00:00:00Z" };
+  const result = await recordPaymentObservation("sandbox", receipt, null, async () => { throw Error("allocation failed"); });
+  assert.equal(result.state, "review_required");
+  assert.equal((await database().query("select state from crewmori.payment_observations where request_id=$1", [request.id])).rows[0].state, "review_required");
+  assert.equal((await database().query("select state from crewmori.provider_inbox where provider='sandbox' and event_id=$1", [receipt.eventId])).rows[0].state, "processed");
+  assert.equal((await recordPaymentObservation("sandbox", receipt, null)).replayed, true, "A provider retry is a replay, not a second failure");
+});
 test("voice tools bind their writes to a current buyer grant and reject arbitrary tools", async () => {
   const grant = (await database().query("insert into crewmori.buyer_grants(workspace_id,engagement_id,token_hash,expires_at) values($1,'engagement-voice',$2,now()+interval '1 hour') returning id", [workspaceA, hashToken(randomToken())])).rows[0];
   const token = randomToken();
