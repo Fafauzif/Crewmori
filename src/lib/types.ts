@@ -43,6 +43,11 @@ export const money = (v: unknown): string => {
 };
 export const label = (v: unknown): string =>
   s(v).replaceAll("_", " ").replaceAll(".", " ");
+/** Sentence-cased label for dropdown options and other visible choices. */
+export const optionLabel = (v: unknown): string => {
+  const text = label(v);
+  return text.charAt(0).toUpperCase() + text.slice(1);
+};
 export const date = (v: unknown): string => {
   const d = new Date(s(v));
   return Number.isNaN(d.getTime())

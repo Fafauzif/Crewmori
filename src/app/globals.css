@@ -2124,3 +2124,109 @@ input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
 .toast button:hover { background: rgb(255 255 255 / .12); }
 .skeleton-nav { min-height: 20px; border-radius: 6px; background: #e4e8df; margin-top: 28px; }
 label:has(> input[type="checkbox"]), label:has(> input[type="radio"]) { min-height: 44px; padding-block: 8px; cursor: pointer; }
+
+/* Dropdowns: one select style everywhere; Chromium also gets a styled option panel. */
+html select:not([multiple]):not([size]) {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 44px;
+  padding: 0 44px 0 14px;
+  border: 1px solid var(--edge);
+  border-radius: 12px;
+  background-color: var(--surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23566159' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+  color: var(--ink);
+  font: 400 16px/20px Inter, Arial, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.16s, background-color 0.16s, box-shadow 0.16s;
+}
+html select:not([multiple]):not([size]):hover:not(:disabled) {
+  border-color: var(--forest);
+  background-color: #fbfbf6;
+}
+html select:not([multiple]):not([size]):focus-visible {
+  outline: none;
+  border-color: var(--forest);
+  box-shadow: 0 0 0 3px rgb(36 92 71 / 0.18);
+}
+html select:not([multiple]):not([size]):disabled {
+  cursor: not-allowed;
+  opacity: 1;
+  color: var(--muted);
+  background-color: #efeee7;
+  border-color: var(--border);
+}
+html select[aria-invalid="true"] {
+  border-color: #9b3431;
+}
+@supports (appearance: base-select) {
+  html select:not([multiple]):not([size]),
+  html select:not([multiple]):not([size])::picker(select) {
+    appearance: base-select;
+  }
+  /* Base-select sizes to the chosen option; keep toolbar widths steady and truncate. */
+  html select:not([multiple]):not([size]) {
+    display: block;
+    line-height: 42px;
+    overflow: hidden;
+  }
+  html :is(.filter-row, .toolbar, .acq-toolbar, .work-toolbar, .settings-filter) select:not([multiple]):not([size]) {
+    width: 208px;
+    max-width: 100%;
+  }
+  html select:not([multiple]):not([size])::picker-icon {
+    display: none;
+  }
+  html select:not([multiple]):not([size]):open {
+    border-color: var(--forest);
+    box-shadow: 0 0 0 3px rgb(36 92 71 / 0.18);
+  }
+  ::picker(select) {
+    min-width: anchor-size(width);
+    max-height: min(360px, 60dvh);
+    margin-block: 6px;
+    padding: 6px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+    box-shadow: 0 8px 24px rgb(32 42 37 / 0.12);
+    overflow-y: auto;
+  }
+  html select option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 40px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 20px;
+    white-space: normal;
+    cursor: pointer;
+  }
+  html select option::checkmark {
+    order: 1;
+    margin-left: auto;
+    color: var(--forest);
+    font-weight: 600;
+  }
+  html select option:hover,
+  html select option:focus-visible {
+    background: var(--selected);
+    outline: none;
+  }
+  html select option:checked {
+    color: var(--forest);
+    font-weight: 600;
+  }
+  html select option:disabled {
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+}

@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { UiText } from "@/components/ui-text";
 import { BackendClient } from "@/lib/backend-client";
-import { Entity, Input, a, b, date, label, money, n, o, s } from "@/lib/types";
+import { Entity, Input, a, b, date, label, money, optionLabel, n, o, s } from "@/lib/types";
 import { downloadPdf } from "@/lib/downloads";
 import { amendmentSchedule } from "@/lib/engine";
 import { localDateTime, zonedDateTime } from "@/lib/business-time";
@@ -151,7 +151,7 @@ function Choice({
         <option value=""><UiText>{"All"}</UiText> {caption.toLowerCase()}</option>
         {options.map((v) => (
           <option value={v} key={v}>
-            {label(v)}
+            {optionLabel(v)}
           </option>
         ))}
       </select>

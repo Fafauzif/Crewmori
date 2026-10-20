@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useStore } from "@/lib/store";
-import { Entity, s, n, b, a, o, label, date } from "@/lib/types";
+import { Entity, s, n, b, a, o, label, optionLabel, date } from "@/lib/types";
 import {
   PageHead,
   Panel,
@@ -444,7 +444,7 @@ function ProjectList() {
               <option value="all">All current projects</option>
               {statuses.map((x) => (
                 <option key={x} value={x}>
-                  {label(x)}
+                  {optionLabel(x)}
                 </option>
               ))}
             </select>
@@ -694,7 +694,7 @@ function TaskEditor({
               "finance",
             ].map((x) => (
               <option key={x} value={x}>
-                {label(x)}
+                {optionLabel(x)}
               </option>
             ))}
           </select>
@@ -2796,7 +2796,7 @@ function Clients() {
             >
               {["all", "prospect", "active", "past", "archived"].map((x) => (
                 <option key={x} value={x}>
-                  {x === "all" ? "All current clients" : label(x)}
+                  {x === "all" ? "All current clients" : optionLabel(x)}
                 </option>
               ))}
             </select>

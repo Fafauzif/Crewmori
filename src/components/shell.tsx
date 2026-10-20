@@ -24,7 +24,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useStore } from "@/lib/store";
-import { s, n, a, o, label, date, type Entity, type Result } from "@/lib/types";
+import { s, n, a, o, label, optionLabel, date, type Entity, type Result } from "@/lib/types";
 import {
   Button,
   Modal,
@@ -446,7 +446,7 @@ export function Shell({
                   "sources",
                 ].map((x) => (
                   <option key={x} value={x}>
-                    {t(label(x))}
+                    {optionLabel(t(label(x)))}
                   </option>
                 ))}
               </select>

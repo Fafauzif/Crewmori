@@ -13,7 +13,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useStore } from "@/lib/store";
-import { Entity, b, date, label, money, n, o, s } from "@/lib/types";
+import { Entity, b, date, label, optionLabel, money, n, o, s } from "@/lib/types";
 import {
   Button,
   LinkButton,
@@ -2550,7 +2550,7 @@ function ExpensesList() {
             label="Category"
             value={cat}
             options={["all", "software", "fees", "services", "other"].map(
-              (v) => [v, label(v)],
+              (v) => [v, v === "all" ? "All categories" : optionLabel(v)],
             )}
             onChange={(v) => patch({ category: v, page: null })}
           />
@@ -2559,7 +2559,7 @@ function ExpensesList() {
             value={state}
             options={["all", "estimated", "recorded", "archived"].map((v) => [
               v,
-              v === "all" ? "All active" : label(v),
+              v === "all" ? "All active" : optionLabel(v),
             ])}
             onChange={(v) => patch({ state: v, page: null })}
           />
@@ -2979,7 +2979,7 @@ function ExpenseEditor({
               >
                 {["software", "fees", "services", "other"].map((c) => (
                   <option value={c} key={c}>
-                    {label(c)}
+                    {optionLabel(c)}
                   </option>
                 ))}
               </select>

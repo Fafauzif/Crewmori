@@ -20,6 +20,7 @@ import {
   o,
   a,
   label,
+  optionLabel,
   money,
   date,
   type Entity,
@@ -1070,7 +1071,7 @@ export function Team({ onAsk }: { onAsk: (text?: string) => void }) {
                         "inspect_invoice",
                       ].map((x) => (
                         <option key={x} value={x}>
-                          {label(x)}
+                          {optionLabel(x)}
                         </option>
                       ))}
                     </select>
@@ -1380,7 +1381,7 @@ export function Activity() {
         >
           <option value="">All events</option>
           {["offer", "project", "run", "receipt", "assessment"].map((k) => (
-            <option key={k}>{k}</option>
+            <option key={k} value={k}>{optionLabel(k)}</option>
           ))}
         </select>
         <Button
